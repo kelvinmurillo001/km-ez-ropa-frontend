@@ -4,6 +4,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const passwordInput = document.getElementById("password");
   const error = document.getElementById("error");
 
+  // 🚨 Verifica que todos los elementos existan
+  if (!form || !usernameInput || !passwordInput || !error) {
+    console.warn("❌ login.js: No se encontraron elementos del DOM.");
+    return;
+  }
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
