@@ -8,7 +8,7 @@ if (!token) {
 // 📦 DOM Elements
 const form = document.getElementById("productoForm");
 const message = document.getElementById("message");
-const preview = document.getElementById("previewImagen");
+let preview = document.getElementById("previewImagen"); // corregido: sin redeclarar
 
 // 🌐 API base
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api/products";

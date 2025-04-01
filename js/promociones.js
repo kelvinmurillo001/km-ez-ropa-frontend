@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
         loadPromotion();
       } else {
         mensajeExito.classList.remove("oculto");
-        mensajeExito.textContent = "❌ Error al guardar promoción: " + data.mensaje;
+        mensajeExito.textContent = "❌ Error al guardar promoción: " + (data.message || "Error inesperado");
         mensajeExito.style.backgroundColor = "#ffebee";
         mensajeExito.style.color = "#b71c1c";
       }

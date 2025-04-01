@@ -19,7 +19,13 @@ async function cargarPedidos() {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    todosLosPedidos = await res.json();
+    const data = await res.json();
+
+    if (!res.ok || !Array.isArray(data)) {
+      throw new Error("Respuesta inválida del servidor");
+    }
+
+    todosLosPedidos = data;
     renderPedidos(todosLosPedidos);
     pedidosPrevios = todosLosPedidos.length;
 
@@ -61,7 +67,7 @@ function renderPedidos(pedidos) {
         <option value="cancelado" ${p.estado === "cancelado" ? "selected" : ""}>❌ Cancelado</option>
       </select>
 
-      <button onclick="actualizarEstado('${p._id}', document.querySelector('[data-id=\"${p._id}\"]').value)">
+      <button onclick="actualizarEstado('${p._id}', document.querySelector('[data-id=\\'${p._id}\\']').value)">
         🔄 Actualizar
       </button>
     `;
@@ -86,7 +92,8 @@ async function actualizarEstado(id, estado) {
       alert("✅ Estado actualizado");
       cargarPedidos();
     } else {
-      alert("❌ No se pudo actualizar");
+      const err = await res.json();
+      alert("❌ Error: " + (err.message || "No se pudo actualizar"));
     }
   } catch (err) {
     console.error("❌ Error al actualizar estado:", err);
@@ -132,7 +139,7 @@ setInterval(async () => {
     });
 
     const nuevos = await res.json();
-    if (nuevos.length > pedidosPrevios) {
+    if (Array.isArray(nuevos) && nuevos.length > pedidosPrevios) {
       const audio = new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1152-pristine.mp3");
       audio.play();
     }

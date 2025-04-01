@@ -1,6 +1,6 @@
+// 🔐 Verificar sesión
 const token = localStorage.getItem("token");
 
-// 🔐 Verificar sesión
 if (!token) {
   alert("⚠️ No autorizado. Inicia sesión.");
   window.location.href = "login.html";
@@ -27,9 +27,9 @@ async function loadStatistics() {
 
     // ✅ Cálculos generales
     const total = products.length;
-    const featured = products.filter(p => p.destacado || p.featured).length;
+    const featured = products.filter(p => p.featured).length;
     const totalStock = products.reduce((sum, p) => sum + Number(p.stock || 0), 0);
-    const latest = products[0]?.nombre || "-";
+    const latest = products[0]?.name || "-";
 
     // ⏬ Mostrar en HTML
     document.getElementById("totalProducts").textContent = total;
@@ -40,7 +40,7 @@ async function loadStatistics() {
     // 📦 Conteo por categoría
     const categoryCount = {};
     products.forEach((p) => {
-      const cat = p.categoria || p.category || "Sin categoría";
+      const cat = p.category || "Sin categoría";
       categoryCount[cat] = (categoryCount[cat] || 0) + 1;
     });
 

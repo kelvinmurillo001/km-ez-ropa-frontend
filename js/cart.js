@@ -60,7 +60,7 @@ function sendCartToWhatsApp(nombre, nota) {
   cart.forEach(p => {
     mensaje += `- ${p.nombre} (x${p.cantidad})`;
     if (p.talla) mensaje += `, Talla: ${p.talla}`;
-    if (p.color) mensaje += `, Color: ${p.color}`;
+    if (p.color || p.colores) mensaje += `, Color: ${p.color || p.colores}`;
     mensaje += `\n`;
   });
 
@@ -99,12 +99,12 @@ function renderCartItems() {
     div.className = "cart-item fade-in";
 
     div.innerHTML = `
-      <img src="${item.imagen || '../assets/logo.jpg'}" alt="${item.nombre}" />
+      <img src="${item.imagen || item.image || '../assets/logo.jpg'}" alt="${item.nombre || item.name}" />
       <div>
-        <h4>${item.nombre}</h4>
+        <h4>${item.nombre || item.name}</h4>
         <p>$${item.precio} x ${item.cantidad}</p>
         ${item.talla ? `<p><strong>Talla:</strong> ${item.talla}</p>` : ""}
-        ${item.color ? `<p><strong>Color:</strong> ${item.color}</p>` : ""}
+        ${item.color || item.colores ? `<p><strong>Color:</strong> ${item.color || item.colores}</p>` : ""}
         <div class="cart-actions">
           <button onclick="changeQuantity('${item.id}', -1)">-</button>
           <button onclick="changeQuantity('${item.id}', 1)">+</button>
@@ -134,7 +134,7 @@ async function guardarPedido() {
 
   const body = {
     items: cart.map(p => ({
-      nombre: p.nombre,
+      nombre: p.nombre || p.name,
       cantidad: p.cantidad,
       precio: p.precio
     })),

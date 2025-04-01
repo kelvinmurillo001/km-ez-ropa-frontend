@@ -29,7 +29,7 @@ async function loadCategories() {
       // 👉 Agrega al select
       const opt = document.createElement("option");
       opt.value = cat._id;
-      opt.textContent = cat.nombre;
+      opt.textContent = cat.name;
       categorySelect.appendChild(opt);
 
       // 👉 Renderiza en lista
@@ -38,11 +38,11 @@ async function loadCategories() {
 
       catCard.innerHTML = `
         <div class="cat-header">
-          <strong>${cat.nombre}</strong>
+          <strong>${cat.name}</strong>
           <button class="btn btn-sm danger" onclick="deleteCategory('${cat._id}')">🗑</button>
         </div>
         <ul class="subcategoria-list">
-          ${cat.subcategorias.map(sub => `
+          ${(cat.subcategories || []).map(sub => `
             <li>
               ${sub}
               <button onclick="deleteSubcategory('${cat._id}', '${sub}')" class="btn btn-xs">❌</button>
@@ -74,7 +74,7 @@ categoryForm.addEventListener("submit", async (e) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ nombre: name })
+      body: JSON.stringify({ name })
     });
 
     const data = await res.json();
@@ -84,7 +84,7 @@ categoryForm.addEventListener("submit", async (e) => {
       categoryNameInput.value = "";
       loadCategories();
     } else {
-      showMessage(`❌ ${data.mensaje}`, "error");
+      showMessage(`❌ ${data.message || "Error al crear"}`, "error");
     }
 
   } catch (err) {
@@ -101,13 +101,13 @@ subcategoryForm.addEventListener("submit", async (e) => {
   if (!categoryId || !sub) return showMessage("⚠️ Completa todos los campos", "error");
 
   try {
-    const res = await fetch(`${API}/${categoryId}/subcategorias`, {
+    const res = await fetch(`${API}/${categoryId}/subcategories`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ subcategoria: sub })
+      body: JSON.stringify({ subcategory: sub })
     });
 
     const data = await res.json();
@@ -117,7 +117,7 @@ subcategoryForm.addEventListener("submit", async (e) => {
       showMessage("✅ Subcategoría agregada", "success");
       loadCategories();
     } else {
-      showMessage(`❌ ${data.mensaje}`, "error");
+      showMessage(`❌ ${data.message || "Error al agregar"}`, "error");
     }
 
   } catch (err) {
@@ -152,13 +152,13 @@ async function deleteSubcategory(id, sub) {
   if (!confirm("¿Eliminar esta subcategoría?")) return;
 
   try {
-    const res = await fetch(`${API}/${id}/subcategorias`, {
+    const res = await fetch(`${API}/${id}/subcategories`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ subcategoria: sub })
+      body: JSON.stringify({ subcategory: sub })
     });
 
     if (res.ok) {

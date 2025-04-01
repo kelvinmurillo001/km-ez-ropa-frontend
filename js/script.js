@@ -39,31 +39,31 @@ function aplicarFiltros() {
 
   if (categoria !== "todas") {
     filtrados = filtrados.filter(
-      (p) => p.categoria?.toLowerCase() === categoria.toLowerCase()
+      (p) => p.category?.toLowerCase() === categoria.toLowerCase()
     );
   }
 
   if (subcategoria !== "todas") {
     filtrados = filtrados.filter(
-      (p) => p.subcategoria?.toLowerCase() === subcategoria.toLowerCase()
+      (p) => p.subcategory?.toLowerCase() === subcategoria.toLowerCase()
     );
   }
 
   if (termino) {
     filtrados = filtrados.filter((p) =>
-      p.nombre?.toLowerCase().includes(termino)
+      p.name?.toLowerCase().includes(termino)
     );
   }
 
   switch (orden) {
     case "precioAsc":
-      filtrados.sort((a, b) => a.precio - b.precio);
+      filtrados.sort((a, b) => a.price - b.price);
       break;
     case "precioDesc":
-      filtrados.sort((a, b) => b.precio - a.precio);
+      filtrados.sort((a, b) => b.price - a.price);
       break;
     case "destacados":
-      filtrados = filtrados.filter((p) => p.destacado);
+      filtrados = filtrados.filter((p) => p.featured);
       break;
     default:
       filtrados.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -84,18 +84,18 @@ function mostrarProductos(lista) {
   }
 
   lista.forEach((producto) => {
-    const imagen = producto.imagen || "../assets/logo.jpg";
+    const imagen = producto.image || "../assets/logo.jpg";
 
     const card = document.createElement("div");
     card.classList.add("card", "fade-in");
 
     card.innerHTML = `
-      <img src="${imagen}" alt="${producto.nombre}" class="zoomable" />
-      <h3>${producto.nombre}</h3>
-      ${producto.destacado ? '<span class="destacado-badge">⭐ Destacado</span>' : ""}
-      <p><strong>Precio:</strong> $${producto.precio}</p>
-      <p><strong>Categoría:</strong> ${producto.categoria}</p>
-      <p><strong>Subcategoría:</strong> ${producto.subcategoria || "N/A"}</p>
+      <img src="${imagen}" alt="${producto.name}" class="zoomable" />
+      <h3>${producto.name}</h3>
+      ${producto.featured ? '<span class="destacado-badge">⭐ Destacado</span>' : ""}
+      <p><strong>Precio:</strong> $${producto.price}</p>
+      <p><strong>Categoría:</strong> ${producto.category}</p>
+      <p><strong>Subcategoría:</strong> ${producto.subcategory || "N/A"}</p>
       <p><strong>Stock:</strong> ${producto.stock}</p>
       <button onclick="agregarAlCarrito('${producto._id}')">🛒 Agregar al carrito</button>
     `;
@@ -111,8 +111,8 @@ function cargarSubcategoriasUnicas() {
   let subcategorias = new Set();
 
   productos.forEach((p) => {
-    if (categoria === "todas" || p.categoria === categoria) {
-      if (p.subcategoria) subcategorias.add(p.subcategoria);
+    if (categoria === "todas" || p.category === categoria) {
+      if (p.subcategory) subcategorias.add(p.subcategory);
     }
   });
 

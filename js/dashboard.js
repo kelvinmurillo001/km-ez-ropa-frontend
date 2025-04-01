@@ -19,6 +19,10 @@ async function cargarDashboard() {
 
     const pedidos = await res.json();
 
+    if (!Array.isArray(pedidos)) {
+      throw new Error("La respuesta del servidor no es válida.");
+    }
+
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
 
