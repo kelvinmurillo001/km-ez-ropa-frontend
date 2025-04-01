@@ -1,0 +1,182 @@
+.categorias-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fff;
+  color: #333;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.categorias-container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  color: #222;
+}
+
+/* 🧾 Formulario principal */
+.form-categoria {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: #f7f7f7;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.form-categoria input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+.form-categoria .btn {
+  background-color: #00796b;
+  color: #fff;
+}
+
+.form-categoria .btn:hover {
+  background-color: #004d40;
+}
+
+.lista-categorias {
+  margin-top: 20px;
+}
+
+/* 🧩 Item de categoría */
+.categoria-item {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 16px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  transition: background 0.3s ease;
+}
+
+.categoria-item:hover {
+  background-color: #f1f1f1;
+}
+
+.categoria-item strong {
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.subcategorias-list {
+  list-style: none;
+  margin-top: 10px;
+  padding-left: 15px;
+}
+
+.subcategorias-list li {
+  font-size: 14px;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.subcategorias-list button {
+  background-color: transparent;
+  color: crimson;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.subcategorias-list button:hover {
+  text-decoration: underline;
+}
+
+/* 🔘 Botones en categoría */
+.categoria-item button {
+  margin-top: 10px;
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #455a64;
+  color: white;
+  border: none;
+}
+
+.categoria-item button:hover {
+  background-color: #263238;
+}
+
+/* 📢 Mensajes */
+.admin-message {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.admin-message.success { color: green; }
+.admin-message.error { color: red; }
+
+/* 🌗 Modo oscuro */
+body.modo-oscuro .categorias-container {
+  background-color: #1e1e1e;
+  color: #eee;
+}
+
+body.modo-oscuro .form-categoria,
+body.modo-oscuro .categoria-item {
+  background-color: #2a2a2a;
+  border-color: #444;
+}
+
+body.modo-oscuro .form-categoria input {
+  background-color: #1e1e1e;
+  color: #eee;
+  border-color: #555;
+}
+
+body.modo-oscuro .categoria-item strong {
+  color: #fff;
+}
+
+body.modo-oscuro .subcategorias-list li {
+  color: #ccc;
+}
+
+/* 🎞️ FadeIn animación */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 📱 Responsive */
+@media (max-width: 600px) {
+  .form-categoria {
+    padding: 12px;
+  }
+
+  .categoria-item button {
+    width: 100%;
+    margin-top: 6px;
+  }
+
+  .categoria-item {
+    font-size: 14px;
+  }
+
+  .subcategorias-list li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

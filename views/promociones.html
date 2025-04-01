@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Promociones | KM & EZ ROPA</title>
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/componentes.css" />
+  <link rel="stylesheet" href="../css/promociones.css" />
+  <link rel="stylesheet" href="../css/responsive.css" />
+</head>
+<body onload="verificarToken()">
+
+  <div class="promociones-container fade-in">
+    <h1>🎯 Administrar Promoción</h1>
+
+    <!-- 📋 Formulario -->
+    <form id="promoForm">
+      <input type="text" id="promoMessage" placeholder="Texto de promoción..." required />
+
+      <div class="row">
+        <label>
+          Activo:
+          <input type="checkbox" id="isActive" />
+        </label>
+
+        <label>
+          Tema:
+          <select id="theme">
+            <option value="blue">Azul</option>
+            <option value="orange">Naranja</option>
+            <option value="green">Verde</option>
+            <option value="red">Rojo</option>
+          </select>
+        </label>
+      </div>
+
+      <label>
+        Fecha de inicio:
+        <input type="date" id="startDate" />
+      </label>
+
+      <label>
+        Fecha de fin:
+        <input type="date" id="endDate" />
+      </label>
+
+      <button type="submit" class="btn">💾 Guardar Promoción</button>
+    </form>
+
+    <!-- ✅ Feedback de éxito o error -->
+    <div id="promoFeedback" class="admin-message"></div>
+
+    <!-- 👁️ Vista previa -->
+    <h3 class="mt-2">Vista previa:</h3>
+    <div id="promoPreview" class="promo-preview blue">
+      Tu mensaje aparecerá aquí...
+    </div>
+
+    <!-- 🔘 Acciones -->
+    <div class="top-buttons mt-3">
+      <button onclick="goBack()" class="btn">🔙 Volver al Panel</button>
+      <button onclick="logout()" class="btn btn-secundario">🔒 Cerrar sesión</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/login.js"></script>
+  <script src="../js/promociones.js"></script>
+</body>
+</html>

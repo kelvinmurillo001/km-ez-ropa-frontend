@@ -1,0 +1,154 @@
+/* 🌐 Contenedor principal */
+.promociones-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fff;
+  color: #333;
+}
+
+/* 🧾 Encabezado */
+.promociones-container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* 📋 Formulario */
+.promociones-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: #f7f7f7;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.promociones-container input,
+.promociones-container select {
+  padding: 10px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+.promociones-container .row-group {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 10px 0;
+}
+
+/* 🔘 Botones */
+.promociones-container button {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.promociones-container button:hover {
+  background-color: #1565c0;
+}
+
+/* ✅ Vista previa promocional */
+.promo-preview {
+  padding: 12px 20px;
+  font-weight: bold;
+  border-radius: 8px;
+  margin-top: 10px;
+  font-size: 18px;
+  text-align: center;
+}
+
+/* 🌈 Temas de vista previa */
+.promo-preview.blue {
+  background-color: #e3f2fd;
+  color: #0d47a1;
+  border-left: 5px solid #2196f3;
+}
+
+.promo-preview.orange {
+  background-color: #fff3e0;
+  color: #e65100;
+  border-left: 5px solid #fb8c00;
+}
+
+.promo-preview.green {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border-left: 5px solid #66bb6a;
+}
+
+.promo-preview.red {
+  background-color: #ffebee;
+  color: #b71c1c;
+  border-left: 5px solid #ef5350;
+}
+
+/* ✅ Mensajes visuales */
+.admin-message {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-align: center;
+  display: block;
+}
+
+/* 🎯 Acciones */
+.top-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ⛔ Ocultar dinámico */
+.oculto {
+  display: none;
+}
+
+/* ✨ Animación */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 📱 Responsive */
+@media (max-width: 600px) {
+  .promociones-container {
+    padding: 10px;
+  }
+
+  .row-group {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .top-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .promociones-container button {
+    width: 100%;
+  }
+}

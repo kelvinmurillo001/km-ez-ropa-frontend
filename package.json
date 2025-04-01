@@ -1,0 +1,13 @@
+{
+    "name": "km-ez-ropa-frontend",
+    "version": "1.0.0",
+    "description": "Frontend de KM & EZ ROPA para Render",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js"
+    },
+    "dependencies": {
+      "express": "^4.18.2"
+    }
+  }
+  

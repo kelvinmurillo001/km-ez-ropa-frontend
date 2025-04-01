@@ -1,0 +1,171 @@
+/* 🔝 Header */
+.header {
+  text-align: center;
+  padding: 20px;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+body.modo-oscuro .header {
+  background-color: #1f1f1f;
+  border-color: #333;
+}
+
+/* Logo + texto */
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.subtitulo {
+  font-size: 14px;
+  color: #777;
+  margin-top: 5px;
+}
+
+body.modo-oscuro .subtitulo {
+  color: #aaa;
+}
+
+/* Botones superiores */
+.top-buttons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* 🎯 Filtros */
+.filtros-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  padding: 20px;
+  background: #f9f9f9;
+  border-bottom: 1px solid #ddd;
+}
+
+body.modo-oscuro .filtros-container {
+  background-color: #1e1e1e;
+  border-color: #444;
+}
+
+.busqueda-input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  width: 250px;
+}
+
+body.modo-oscuro .busqueda-input {
+  background-color: #2a2a2a;
+  color: #fff;
+  border-color: #444;
+}
+
+/* 🎁 Promoción */
+.promo-banner {
+  background-color: #fff3e0;
+  padding: 10px;
+  color: #5d4037;
+  text-align: center;
+  border-left: 5px solid #ff9800;
+  border-radius: 6px;
+}
+
+body.modo-oscuro .promo-banner {
+  background-color: #3c2f2f;
+  color: #ffe0b2;
+  border-color: #ff9800;
+}
+
+.oculto {
+  display: none !important;
+}
+
+/* 📦 Footer */
+.footer {
+  text-align: center;
+  margin-top: 50px;
+  padding: 20px;
+  font-size: 14px;
+  background-color: #eee;
+}
+
+body.modo-oscuro .footer {
+  background-color: #1a1a1a;
+  color: #ccc;
+}
+
+/* 🛒 Carrito flotante y WhatsApp */
+.whatsapp-float {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+/* 🛍️ Carrito items */
+.cart-item {
+  display: flex;
+  gap: 12px;
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+body.modo-oscuro .cart-item {
+  background-color: #2a2a2a;
+  border-color: #444;
+  color: #fff;
+}
+
+.cart-item img {
+  width: 100px;
+  height: auto;
+  border-radius: 4px;
+}
+
+.cart-item h4 {
+  margin: 0;
+}
+
+.cart-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.cart-actions button {
+  padding: 4px 10px;
+  font-size: 14px;
+  border: none;
+  background-color: #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cart-actions button:hover {
+  background-color: #bbb;
+}
+
+body.modo-oscuro .cart-actions button {
+  background-color: #444;
+  color: #eee;
+}
+
+body.modo-oscuro .cart-actions button:hover {
+  background-color: #555;
+}

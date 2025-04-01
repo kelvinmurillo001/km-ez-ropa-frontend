@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel de Control | KM & EZ ROPA</title>
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/componentes.css" />
+  <link rel="stylesheet" href="../css/panel.css" />
+  <link rel="stylesheet" href="../css/responsive.css" />
+</head>
+<body onload="verificarToken()">
+
+  <div class="panel-container">
+    <header class="header-panel">
+      <h1>🛠️ Panel de Administración</h1>
+      <button onclick="logout()" class="btn btn-danger" aria-label="Cerrar sesión">🔓 Cerrar sesión</button>
+    </header>
+
+    <section class="menu-panel">
+      <a href="admin.html" class="btn-panel-link">📦 Productos</a>
+      <a href="categorias.html" class="btn-panel-link">📁 Categorías</a>
+      <a href="promociones.html" class="btn-panel-link">🎯 Promociones</a>
+      <a href="pedidos.html" class="btn-panel-link">🧾 Pedidos</a>
+      <a href="dashboard.html" class="btn-panel-link">📊 Analítica</a>
+      <a href="index.html" class="btn-panel-link">🏠 Ir al Catálogo</a>
+    </section>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/login.js"></script>
+</body>
+</html>

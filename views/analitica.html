@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📊 Analítica - KM & EZ ROPA</title>
+
+  <!-- 🧩 Estilos -->
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/componentes.css" />
+  <link rel="stylesheet" href="../css/responsive.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body onload="verificarToken()">
+
+  <!-- 🧭 Encabezado -->
+  <header class="text-center mt-2 mb-2">
+    <h1>📊 Dashboard de Analítica - KM & EZ ROPA</h1>
+  </header>
+
+  <main class="admin-container">
+    <h2>Resumen General de Productos</h2>
+
+    <!-- 📈 Estadísticas -->
+    <section class="panel-analitico mt-2">
+      <ul>
+        <li><strong>Total de productos:</strong> <span id="totalProducts">-</span></li>
+        <li><strong>Productos destacados:</strong> <span id="featuredProducts">-</span></li>
+        <li><strong>Stock total disponible:</strong> <span id="totalStock">-</span></li>
+        <li><strong>Último producto añadido:</strong> <span id="latestProduct">-</span></li>
+      </ul>
+
+      <h3>📦 Productos por Categoría</h3>
+      <div id="categorySummary" class="mt-1"></div>
+    </section>
+
+    <!-- 🔙 Volver -->
+    <div class="text-center mt-3">
+      <button onclick="goBack()" class="btn">🔙 Volver al Panel</button>
+    </div>
+  </main>
+
+  <!-- 📜 Scripts -->
+  <script src="../js/login.js"></script>
+  <script src="../js/analitica.js"></script>
+  <script>
+    // 🌗 Aplicar modo oscuro
+    if (localStorage.getItem("modoOscuro") === "true") {
+      document.body.classList.add("modo-oscuro");
+    }
+  </script>
+</body>
+</html>

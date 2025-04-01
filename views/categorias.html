@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Categorías | KM & EZ ROPA</title>
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/componentes.css" />
+  <link rel="stylesheet" href="../css/catalogo.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+  <link rel="stylesheet" href="../css/responsive.css" />
+</head>
+<body class="admin-page fade-in" onload="verificarToken()">
+
+  <div class="admin-container">
+    <h1>📁 Gestión de Categorías</h1>
+
+    <!-- 💬 Mensaje -->
+    <div id="message" class="admin-message"></div>
+
+    <!-- 📋 Crear categoría -->
+    <form id="formCategoria" class="form-block">
+      <input type="text" id="nombreCategoria" placeholder="Nombre de categoría" required />
+      <input type="text" id="nuevaSubcategoria" placeholder="Subcategoría (opcional)" />
+      <button type="submit" class="btn">➕ Crear categoría</button>
+    </form>
+
+    <!-- 🔙 Volver y salir -->
+    <div class="mt-2">
+      <button onclick="goBack()" class="btn-secondary">🔙 Volver al Panel</button>
+      <button onclick="logout()" class="btn-danger">🚪 Cerrar sesión</button>
+    </div>
+
+    <!-- 📦 Lista de categorías -->
+    <section class="lista-categorias mt-3" id="listaCategorias">
+      <!-- Renderizado por JS -->
+    </section>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/login.js"></script>
+  <script src="../js/categorias.js"></script>
+  <script>
+    // 🌗 Modo oscuro persistente
+    if (localStorage.getItem("modoOscuro") === "true") {
+      document.body.classList.add("modo-oscuro");
+    }
+  </script>
+</body>
+</html>

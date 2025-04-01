@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin - Productos | KM & EZ ROPA</title>
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/componentes.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+  <link rel="stylesheet" href="../css/responsive.css" />
+</head>
+<body onload="verificarToken()">
+
+  <div class="admin-container">
+    <!-- 🔙 Botón para volver -->
+    <a class="btn-volver" href="panel.html">⬅️ Volver al Panel</a>
+
+    <h1>🛍️ Administrar Productos</h1>
+
+    <!-- 📋 Formulario producto -->
+    <form id="productoForm" enctype="multipart/form-data">
+      <input type="text" id="nombre" placeholder="Nombre del producto" required />
+      <input type="number" id="precio" placeholder="Precio ($)" step="0.01" required />
+      <input type="text" id="descripcion" placeholder="Descripción" />
+
+      <select id="categoriaSelect" required></select>
+      <select id="subcategoriaSelect" required></select>
+
+      <!-- 🧵 Nuevos campos -->
+      <input type="text" id="talla" placeholder="Talla (Ej: S, M, L, XL)" />
+      <input type="text" id="colores" placeholder="Colores (Ej: rojo, azul, negro)" />
+
+      <!-- 📷 Imagen -->
+      <input type="file" id="imagen" accept="image/*" />
+      <div class="image-preview" id="previewImagen"></div>
+
+      <!-- 💾 Guardar -->
+      <button type="submit" class="btn">📦 Guardar Producto</button>
+    </form>
+
+    <!-- ✅ Mensaje -->
+    <div id="message" class="admin-message"></div>
+
+    <hr />
+
+    <h2>📋 Productos Registrados</h2>
+    <div class="product-list" id="listaProductos">
+      <!-- Aquí aparecerán los productos -->
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/login.js"></script>
+  <script src="../js/admin.js"></script>
+  <script>
+    // 🌗 Aplicar modo oscuro si está activo
+    if (localStorage.getItem("modoOscuro") === "true") {
+      document.body.classList.add("modo-oscuro");
+    }
+
+    // 🖼️ Vista previa imagen
+    const imagenInput = document.getElementById("imagen");
+    const preview = document.getElementById("previewImagen");
+
+    imagenInput.addEventListener("change", () => {
+      const file = imagenInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          preview.innerHTML = `<img src="${e.target.result}" alt="Vista previa" />`;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        preview.innerHTML = "";
+      }
+    });
+  </script>
+</body>
+</html>

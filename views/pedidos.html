@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pedidos | KM & EZ ROPA</title>
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/componentes.css" />
+  <link rel="stylesheet" href="../css/pedidos.css" />
+  <link rel="stylesheet" href="../css/responsive.css" />
+</head>
+<body onload="verificarToken()">
+
+  <div class="pedidos-container fade-in">
+    <h1>📦 Pedidos Recibidos</h1>
+
+    <!-- 🔘 Acciones -->
+    <div class="acciones-barra">
+      <div class="acciones-botones">
+        <button class="btn btn-secundario" onclick="exportarPedidos()">📄 Exportar Pedidos</button>
+        <button class="btn" onclick="regresarAlPanel()">⬅️ Volver al Panel</button>
+      </div>
+
+      <div class="filtros-pedidos">
+        <select id="filtroEstado" onchange="filtrarPedidos()" aria-label="Filtrar por estado">
+          <option value="todos">📋 Todos</option>
+          <option value="pendiente">⏳ Pendiente</option>
+          <option value="en_proceso">⚙️ En proceso</option>
+          <option value="enviado">📦 Enviado</option>
+          <option value="cancelado">❌ Cancelado</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 📋 Lista renderizada por JS -->
+    <section id="pedidos-container">
+      <!-- Render dinámico -->
+    </section>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/login.js"></script>
+  <script src="../js/orders.js"></script>
+</body>
+</html>

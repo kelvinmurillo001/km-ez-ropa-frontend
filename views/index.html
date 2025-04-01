@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KM & EZ ROPA - Catálogo</title>
+
+  <!-- ✅ Estilos -->
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/catalogo.css" />
+  <link rel="stylesheet" href="../css/componentes.css" />
+  <link rel="stylesheet" href="../css/responsive.css" />
+</head>
+<body>
+
+  <!-- 🔝 Header -->
+  <header class="header">
+    <div class="logo">
+      <img src="../assets/logo.jpg" alt="KM & EZ ROPA" class="logo-img" />
+      <h1>KM & EZ ROPA</h1>
+    </div>
+    <p class="subtitulo">Moda para toda la familia | Calidad y precio</p>
+    <div class="top-buttons">
+      <button class="btn" id="modoToggle">🌙 Modo Oscuro</button>
+      <a href="login.html" class="btn">🔐 Iniciar sesión</a>
+    </div>
+  </header>
+
+  <!-- 🎁 Promoción activa -->
+  <section id="promoBanner" class="promo-banner oculto">
+    <p id="promoTexto"></p>
+  </section>
+
+  <!-- 🎯 Filtros de búsqueda -->
+  <section class="filtros-container">
+    <select id="categoria">
+      <option value="todas">Categoría: Todas</option>
+      <option value="Hombre">Hombre</option>
+      <option value="Mujer">Mujer</option>
+      <option value="Niño">Niño</option>
+      <option value="Niña">Niña</option>
+      <option value="Bebé">Bebé</option>
+    </select>
+
+    <select id="subcategoria">
+      <option value="todas">Subcategoría: Todas</option>
+    </select>
+
+    <select id="orden">
+      <option value="reciente">Más recientes</option>
+      <option value="precioAsc">Precio ↑</option>
+      <option value="precioDesc">Precio ↓</option>
+      <option value="destacados">Destacados ⭐</option>
+    </select>
+
+    <input type="text" id="busqueda" placeholder="🔍 Buscar productos..." class="busqueda-input" />
+  </section>
+
+  <!-- 🛍️ Catálogo de productos -->
+  <main class="catalogo-container">
+    <h2 class="text-center">Catálogo de Productos</h2>
+    <div id="catalogo" class="catalogo-grid"></div>
+    <div id="mensajeCatalogo" class="mensaje-error oculto"></div>
+  </main>
+
+  <!-- 🛒 Carrito flotante -->
+  <div id="cart-widget">
+    <a href="carrito.html">
+      <img src="../assets/cart-icon.svg" alt="Carrito" width="48" height="48" />
+      <span id="cart-widget-count">0</span>
+    </a>
+  </div>
+
+  <!-- 🧾 Modal de carrito -->
+  <div id="carritoModal" class="modal">
+    <div class="modal-contenido">
+      <span class="cerrar" id="cerrarCarrito">&times;</span>
+      <h3>🛍️ Tu Carrito</h3>
+      <ul id="listaCarrito"></ul>
+      <button id="enviarWhatsApp" class="btn">📲 Enviar a WhatsApp</button>
+    </div>
+  </div>
+
+  <!-- 📞 WhatsApp flotante -->
+  <a href="https://wa.me/593990270864" class="whatsapp-float" target="_blank" rel="noopener noreferrer">
+    <img src="../assets/whatsapp.svg" alt="WhatsApp" width="48" height="48" />
+  </a>
+
+  <!-- 👣 Footer -->
+  <footer class="footer">
+    <p>© 2025 KM & EZ ROPA - Todos los derechos reservados</p>
+  </footer>
+
+  <!-- ✅ Scripts -->
+  <script src="../js/cart.js"></script>
+  <script src="../js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard | KM & EZ ROPA</title>
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/componentes.css" />
+  <link rel="stylesheet" href="../css/analitica.css" />
+  <link rel="stylesheet" href="../css/responsive.css" />
+</head>
+<body onload="verificarToken()">
+
+  <div class="dashboard-container">
+    <h1 class="text-center">📊 Panel de Analítica</h1>
+
+    <!-- Métricas -->
+    <section class="metricas">
+      <div class="card">
+        <h3>🛒 Ventas</h3>
+        <p>$ <span id="ventasTotales">0</span></p>
+      </div>
+      <div class="card">
+        <h3>👥 Visitas</h3>
+        <p><span id="visitas">0</span></p>
+      </div>
+      <div class="card">
+        <h3>📦 Productos</h3>
+        <p><span id="totalProductos">0</span></p>
+      </div>
+      <div class="card">
+        <h3>🎯 Promos activas</h3>
+        <p><span id="promosActivas">0</span></p>
+      </div>
+    </section>
+
+    <!-- Top categorías o gráfica -->
+    <section class="analitica-extra">
+      <h2 class="text-center">Top Categorías</h2>
+      <ul id="topCategorias">
+        <!-- JS renderiza aquí -->
+      </ul>
+    </section>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/login.js"></script>
+  <script src="../js/analitica.js"></script>
+  <script>
+    // 🌗 Aplicar modo oscuro si está activado
+    if (localStorage.getItem("modoOscuro") === "true") {
+      document.body.classList.add("modo-oscuro");
+    }
+  </script>
+</body>
+</html>

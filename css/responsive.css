@@ -1,0 +1,60 @@
+/* 📱 Responsive global utilities */
+
+@media (max-width: 1200px) {
+  .container {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 992px) {
+  .hide-on-tablet {
+    display: none;
+  }
+
+  .tablet-full {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-responsive {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .responsive-text-center {
+    text-align: center;
+  }
+
+  .mobile-col {
+    flex-direction: column;
+  }
+
+  .btn,
+  button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  .text-sm {
+    font-size: 0.9rem;
+  }
+
+  .hide-on-mobile {
+    display: none;
+  }
+
+  .mobile-full {
+    width: 100%;
+  }
+}
