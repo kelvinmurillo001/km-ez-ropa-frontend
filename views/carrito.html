@@ -37,8 +37,11 @@
     </div>
   </div>
 
-  <!-- Widget carrito flotante -->
-  <script src="carrito-widget.html" type="text/html"></script>
+  <!-- 🔍 Modal de imagen -->
+  <div id="imageModal" class="modal-zoom oculto" onclick="cerrarModalImagen()">
+    <span class="modal-close">✖️</span>
+    <img id="modalImage" src="" alt="Vista ampliada" />
+  </div>
 
   <!-- Scripts -->
   <script src="../js/cart.js"></script>
@@ -47,7 +50,6 @@
       renderCartItems();
       updateCartWidget();
 
-      // Modo oscuro
       if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
       }
@@ -73,6 +75,18 @@
       updateCartWidget();
       document.getElementById("cart-total").textContent = "$0.00";
       document.getElementById("total-unidades").textContent = "Total unidades: 0";
+    }
+
+    // 🔍 Modal de imagen
+    function abrirModalImagen(src) {
+      const modal = document.getElementById("imageModal");
+      const img = document.getElementById("modalImage");
+      img.src = src;
+      modal.classList.remove("oculto");
+    }
+
+    function cerrarModalImagen() {
+      document.getElementById("imageModal").classList.add("oculto");
     }
   </script>
 </body>

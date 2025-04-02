@@ -1,168 +1,220 @@
-/* Título siempre visible */
+/* 🎯 TITULO */
 .carrito-titulo {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #ffffff;
-  }
-  
-  body.modo-oscuro .carrito-titulo {
-    color: #fff;
-  }
-  
-  /* Contenedor de formulario */
-  .carrito-formulario {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 30px auto;
-    padding: 20px 30px;
-    border-radius: 12px;
-    background-color: rgba(255, 255, 255, 0.92);
-    max-width: 600px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    gap: 14px;
-  }
-  
-  body.modo-oscuro .carrito-formulario {
-    background-color: rgba(30, 30, 30, 0.95);
-  }
-  
-  /* Inputs y textarea */
-  .carrito-formulario input,
-  .carrito-formulario textarea {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    transition: all 0.3s ease;
-  }
-  
-  body.modo-oscuro .carrito-formulario input,
-  body.modo-oscuro .carrito-formulario textarea {
-    background-color: #1e1e1e;
-    color: #eee;
-    border-color: #444;
-  }
-  
-  input:focus,
-  textarea:focus {
-    outline: none;
-    border-color: #0077cc;
-    box-shadow: 0 0 4px rgba(0, 119, 204, 0.3);
-  }
-  
-  /* Botón WhatsApp */
-  .btn-whatsapp {
-    background-color: #25d366;
-    color: white;
-    font-size: 16px;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.2s ease, background-color 0.3s ease;
-  }
-  
-  .btn-whatsapp:hover {
-    background-color: #1ebc57;
-    transform: scale(1.05);
-  }
-  
-  /* Confirmación */
-  .confirmacion {
-    margin-top: 10px;
-    font-weight: bold;
-    color: green;
-    transition: opacity 0.3s ease;
-  }
-  .oculto {
-    display: none;
-  }
-  
-  /* 🛒 Productos en el carrito */
-  .carrito-items {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    max-width: 700px;
-    margin: 0 auto 30px auto;
-  }
-  
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+body.modo-oscuro .carrito-titulo {
+  color: #fff;
+}
+
+/* 📝 FORMULARIO */
+.carrito-formulario {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 30px auto;
+  padding: 20px 30px;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.95);
+  max-width: 600px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  gap: 14px;
+}
+
+body.modo-oscuro .carrito-formulario {
+  background-color: rgba(30, 30, 30, 0.95);
+}
+
+.carrito-formulario input,
+.carrito-formulario textarea {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+body.modo-oscuro .carrito-formulario input,
+body.modo-oscuro .carrito-formulario textarea {
+  background-color: #1e1e1e;
+  color: #eee;
+  border-color: #444;
+}
+
+/* ✅ BOTÓN WHATSAPP */
+.btn-whatsapp {
+  background-color: #25d366;
+  color: white;
+  font-size: 16px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-whatsapp:hover {
+  background-color: #1ebc57;
+  transform: scale(1.05);
+}
+
+/* 📦 PRODUCTOS EN CARRITO */
+.carrito-items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 720px;
+  margin: 20px auto 30px auto;
+  padding: 0 10px;
+}
+
+.cart-item {
+  display: flex;
+  gap: 16px;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  align-items: flex-start;
+}
+
+body.modo-oscuro .cart-item {
+  background-color: #2a2a2a;
+  color: #fff;
+  border-color: #444;
+}
+
+.cart-item img {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.cart-info {
+  flex-grow: 1;
+}
+
+.cart-info h4 {
+  margin: 0 0 6px;
+}
+
+.cart-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.cart-actions button {
+  padding: 6px 12px;
+  font-size: 15px;
+  background-color: #eee;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.cart-actions span {
+  min-width: 24px;
+  text-align: center;
+  display: inline-block;
+  font-weight: bold;
+}
+
+.cart-actions button:hover {
+  background-color: darkorange;
+  color: white;
+}
+
+body.modo-oscuro .cart-actions button {
+  background-color: #444;
+  color: #eee;
+}
+
+body.modo-oscuro .cart-actions button:hover {
+  background-color: #555;
+}
+
+/* 💬 NOTA Y CONFIRMACIÓN */
+#total-unidades {
+  margin-top: 6px;
+  font-weight: 500;
+  color: #555;
+}
+
+body.modo-oscuro #total-unidades {
+  color: #bbb;
+}
+
+.confirmacion {
+  margin-top: 10px;
+  font-weight: bold;
+  color: green;
+}
+
+.oculto {
+  display: none;
+}
+
+/* 📱 Responsive */
+@media (max-width: 600px) {
   .cart-item {
-    display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 16px;
-    padding: 14px;
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 10px;
+    text-align: center;
   }
-  
-  body.modo-oscuro .cart-item {
-    background-color: #2a2a2a;
-    color: #fff;
-  }
-  
+
   .cart-item img {
-    width: 80px;
+    width: 100px;
     height: auto;
-    border-radius: 8px;
   }
-  
-  .cart-item-info {
-    flex-grow: 1;
-  }
-  
+
   .cart-actions {
-    display: flex;
-    gap: 6px;
-    margin-top: 6px;
-  }
-  
-  .cart-actions button {
-    padding: 4px 10px;
-    font-size: 14px;
-    border: none;
-    background-color: #eee;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .cart-actions button:hover {
-    background-color: #ccc;
-  }
-  .botones-finales {
-    display: flex;
-    gap: 14px;
     justify-content: center;
     flex-wrap: wrap;
-    margin-top: 10px;
   }
-  
-  .btn-vaciar {
-    background-color: #d32f2f;
-    color: white;
-    font-size: 15px;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
-  
-  .btn-vaciar:hover {
-    background-color: #b71c1c;
-  }
-  
-  #total-unidades {
-    margin-top: -10px;
-    font-weight: 500;
-    color: #555;
-  }
-  
-  body.modo-oscuro #total-unidades {
-    color: #bbb;
-  }
-  
+}
+/* 🔍 MODAL DE ZOOM DE IMAGEN */
+.modal-zoom {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.modal-zoom img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(255,255,255,0.3);
+  object-fit: contain;
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 28px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  z-index: 10000;
+}
+
+body.modo-oscuro .modal-close {
+  color: #ffeb3b;
+}

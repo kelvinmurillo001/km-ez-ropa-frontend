@@ -44,10 +44,10 @@ function changeQuantity(id, delta) {
   updateCartWidget();
 }
 
-// 🧮 Total
+// 🧮 Total corregido
 function calculateTotal() {
   const cart = getCart();
-  return cart.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
+  return cart.reduce((acc, item) => acc + ((parseFloat(item.precio || item.price) || 0) * item.cantidad), 0).toFixed(2);
 }
 
 // 📲 Enviar a WhatsApp
@@ -58,7 +58,7 @@ function sendCartToWhatsApp(nombre, nota) {
   let mensaje = `Hola! Quiero consultar por estas prendas:\n`;
 
   cart.forEach(p => {
-    mensaje += `- ${p.nombre} (x${p.cantidad})`;
+    mensaje += `- ${p.nombre || p.name} (x${p.cantidad})`;
     if (p.talla) mensaje += `, Talla: ${p.talla}`;
     if (p.color || p.colores) mensaje += `, Color: ${p.color || p.colores}`;
     mensaje += `\n`;
@@ -95,20 +95,25 @@ function renderCartItems() {
   cart.forEach(item => {
     unidades += item.cantidad;
 
+    const nombre = item.nombre || item.name || "Producto";
+    const precio = item.precio || item.price || 0;
+    const imagen = item.imagen || item.image || "../assets/logo.jpg";
+
     const div = document.createElement("div");
     div.className = "cart-item fade-in";
 
     div.innerHTML = `
-      <img src="${item.imagen || item.image || '../assets/logo.jpg'}" alt="${item.nombre || item.name}" />
-      <div>
-        <h4>${item.nombre || item.name}</h4>
-        <p>$${item.precio} x ${item.cantidad}</p>
+      <img src="${imagen}" alt="${nombre}" />
+      <div class="cart-info">
+        <h4>${nombre}</h4>
+        <p><strong>Precio:</strong> $${precio} x ${item.cantidad}</p>
         ${item.talla ? `<p><strong>Talla:</strong> ${item.talla}</p>` : ""}
         ${item.color || item.colores ? `<p><strong>Color:</strong> ${item.color || item.colores}</p>` : ""}
         <div class="cart-actions">
-          <button onclick="changeQuantity('${item.id}', -1)">-</button>
-          <button onclick="changeQuantity('${item.id}', 1)">+</button>
-          <button onclick="removeFromCart('${item.id}')">❌</button>
+          <button onclick="changeQuantity('${item.id}', -1)">➖</button>
+          <span>${item.cantidad}</span>
+          <button onclick="changeQuantity('${item.id}', 1)">➕</button>
+          <button onclick="removeFromCart('${item.id}')">🗑️</button>
         </div>
       </div>
     `;
@@ -136,7 +141,7 @@ async function guardarPedido() {
     items: cart.map(p => ({
       nombre: p.nombre || p.name,
       cantidad: p.cantidad,
-      precio: p.precio
+      precio: p.precio || p.price
     })),
     total: calculateTotal(),
     nombreCliente: nombre,
@@ -163,4 +168,17 @@ async function guardarPedido() {
   } catch (e) {
     alert("❌ Error de red: " + e.message);
   }
+}
+// 🔍 Ampliar imagen del producto
+function abrirModalImagen(src) {
+  const modal = document.getElementById("imageModal");
+  const img = document.getElementById("modalImage");
+  img.src = src;
+  modal.classList.remove("oculto");
+}
+
+// ❌ Cerrar modal al hacer clic fuera o en la X
+function cerrarModalImagen() {
+  const modal = document.getElementById("imageModal");
+  modal.classList.add("oculto");
 }
