@@ -1,9 +1,18 @@
 const API_ORDERS = "https://km-ez-ropa-backend.onrender.com/api/orders";
-const container = document.getElementById("pedidos-container"); // ✅ ID correcto
+const container = document.getElementById("pedidos-container");
 let pedidosPrevios = 0;
 let todosLosPedidos = [];
 
-// 🔐 Verificación de token
+// ✅ Verifica el token antes de acceder
+function verificarToken() {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("⚠️ No autorizado. Inicia sesión primero.");
+    window.location.href = "login.html";
+  }
+}
+
+// 🔐 Verificación adicional (por seguridad)
 const token = localStorage.getItem("token");
 if (!token) {
   alert("⚠️ Acceso denegado. Inicia sesión.");

@@ -4,15 +4,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const passwordInput = document.getElementById("password");
   const error = document.getElementById("error");
 
-  // 🚨 Verifica que todos los elementos existan
-  if (!form || !usernameInput || !passwordInput || !error) {
-    console.warn("❌ login.js: No se encontraron elementos del DOM.");
-    return;
-  }
+  // Solo ejecuta si es login.html
+  if (!form || !usernameInput || !passwordInput || !error) return;
 
-  // 🧼 Borra mensaje de error al escribir
+  // Limpiar mensaje de error al escribir
   [usernameInput, passwordInput].forEach(input => {
-    input.addEventListener('input', () => error.textContent = '');
+    input.addEventListener("input", () => error.textContent = "");
   });
 
   form.addEventListener("submit", async (e) => {
@@ -64,7 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // ✅ Verifica el token antes de acceder a páginas protegidas
 function verificarToken() {
   const token = localStorage.getItem("token");
-
   if (!token) {
     alert("⚠️ No autorizado. Inicia sesión primero.");
     window.location.href = "login.html";
