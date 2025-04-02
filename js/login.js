@@ -10,6 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  // 🧼 Borra mensaje de error al escribir
+  [usernameInput, passwordInput].forEach(input => {
+    input.addEventListener('input', () => error.textContent = '');
+  });
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -43,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("token", data.token);
         window.location.href = "panel.html";
       } else {
-        error.textContent = "❌ Usuario o contraseña incorrectos";
+        error.textContent = data.message || "❌ Usuario o contraseña incorrectos";
       }
 
     } catch (err) {

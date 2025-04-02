@@ -8,7 +8,7 @@ if (!token) {
 // 📦 DOM Elements
 const form = document.getElementById("productoForm");
 const message = document.getElementById("message");
-let preview = document.getElementById("previewImagen"); // corregido: sin redeclarar
+const preview = document.getElementById("previewImagen"); // ✅ sin redeclarar
 
 // 🌐 API base
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api/products";
@@ -22,7 +22,7 @@ const categorias = {
   Bebé: ["Mamelucos", "Bodies", "Pijamas"]
 };
 
-// ⏬ Cargar categorías
+// ⏬ Cargar categorías al inicio
 function cargarCategorias() {
   const catSelect = document.getElementById("categoriaSelect");
   catSelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
@@ -34,7 +34,7 @@ function cargarCategorias() {
   });
 }
 
-// 🧠 Cargar subcategorías
+// 🧠 Cargar subcategorías dinámicamente
 document.getElementById("categoriaSelect").addEventListener("change", () => {
   const subSelect = document.getElementById("subcategoriaSelect");
   const cat = document.getElementById("categoriaSelect").value;
@@ -67,13 +67,12 @@ document.getElementById("imagen").addEventListener("change", function () {
 let editing = false;
 let editingId = null;
 
-// 💾 Guardar producto
+// 💾 Guardar producto (crear o actualizar)
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const nombre = document.getElementById("nombre").value.trim();
   const precio = parseFloat(document.getElementById("precio").value);
-  const descripcion = document.getElementById("descripcion").value.trim();
   const categoria = document.getElementById("categoriaSelect").value;
   const subcategoria = document.getElementById("subcategoriaSelect").value;
   const talla = document.getElementById("talla").value.trim();
@@ -85,11 +84,10 @@ form.addEventListener("submit", async (e) => {
   }
 
   const formData = new FormData();
-  formData.append("nombre", nombre);
-  formData.append("precio", precio);
-  formData.append("descripcion", descripcion);
-  formData.append("categoria", categoria);
-  formData.append("subcategoria", subcategoria);
+  formData.append("name", nombre); // campo esperado por el backend
+  formData.append("price", precio);
+  formData.append("category", categoria);
+  formData.append("subcategory", subcategoria);
   formData.append("talla", talla);
   formData.append("colores", colores);
   if (imagen) formData.append("imagen", imagen);
@@ -147,24 +145,23 @@ async function eliminarProducto(id) {
   }
 }
 
-// 🖋 Editar producto
+// ✏️ Editar producto (precarga en formulario)
 function editarProducto(p) {
-  document.getElementById("nombre").value = p.nombre;
-  document.getElementById("precio").value = p.precio;
-  document.getElementById("descripcion").value = p.descripcion || "";
-  document.getElementById("categoriaSelect").value = p.categoria;
+  document.getElementById("nombre").value = p.name;
+  document.getElementById("precio").value = p.price;
+  document.getElementById("categoriaSelect").value = p.category;
   document.getElementById("categoriaSelect").dispatchEvent(new Event("change"));
-  document.getElementById("subcategoriaSelect").value = p.subcategoria;
+  document.getElementById("subcategoriaSelect").value = p.subcategory;
   document.getElementById("talla").value = p.talla || "";
   document.getElementById("colores").value = p.colores || "";
-  preview.innerHTML = p.imagen ? `<img src="${p.imagen}" />` : "";
+  preview.innerHTML = p.image ? `<img src="${p.image}" />` : "";
 
   editing = true;
   editingId = p._id;
   showMessage("✏️ Modo edición activo", "orange");
 }
 
-// 🔄 Cargar productos
+// 🔄 Cargar productos existentes
 async function cargarProductos() {
   try {
     const res = await fetch(API_BASE);
@@ -177,11 +174,11 @@ async function cargarProductos() {
       card.classList.add("card");
 
       card.innerHTML = `
-        <img src="${p.imagen || '../assets/logo.jpg'}" alt="${p.nombre}" />
-        <h3>${p.nombre}</h3>
-        <p><strong>Precio:</strong> $${p.precio}</p>
-        <p><strong>Categoría:</strong> ${p.categoria}</p>
-        <p><strong>Subcategoría:</strong> ${p.subcategoria}</p>
+        <img src="${p.image || '../assets/logo.jpg'}" alt="${p.name}" />
+        <h3>${p.name}</h3>
+        <p><strong>Precio:</strong> $${p.price}</p>
+        <p><strong>Categoría:</strong> ${p.category}</p>
+        <p><strong>Subcategoría:</strong> ${p.subcategory}</p>
         <p><strong>Talla:</strong> ${p.talla || 'N/A'}</p>
         <p><strong>Colores:</strong> ${p.colores || 'N/A'}</p>
         <div style="margin-top: 10px">
@@ -204,6 +201,6 @@ function showMessage(text, color = "black") {
   setTimeout(() => (message.textContent = ""), 3000);
 }
 
-// ▶️ Inicial
+// ▶️ Inicialización
 cargarCategorias();
 cargarProductos();

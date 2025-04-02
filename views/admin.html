@@ -10,8 +10,11 @@
   <link rel="stylesheet" href="../css/componentes.css" />
   <link rel="stylesheet" href="../css/admin.css" />
   <link rel="stylesheet" href="../css/responsive.css" />
+
+  <!-- Scripts -->
+  <script src="../js/admin.js" defer></script>
 </head>
-<body onload="verificarToken()">
+<body>
 
   <div class="admin-container">
     <!-- 🔙 Botón para volver -->
@@ -51,29 +54,11 @@
     </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="../js/login.js"></script>
-  <script src="../js/admin.js"></script>
+  <!-- 🌗 Modo oscuro -->
   <script>
-    // 🌗 Aplicar modo oscuro si está activo
-    if (localStorage.getItem("modoOscuro") === "true") {
-      document.body.classList.add("modo-oscuro");
-    }
-
-    // 🖼️ Vista previa imagen
-    const imagenInput = document.getElementById("imagen");
-    const preview = document.getElementById("previewImagen");
-
-    imagenInput.addEventListener("change", () => {
-      const file = imagenInput.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          preview.innerHTML = `<img src="${e.target.result}" alt="Vista previa" />`;
-        };
-        reader.readAsDataURL(file);
-      } else {
-        preview.innerHTML = "";
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("modoOscuro") === "true") {
+        document.body.classList.add("modo-oscuro");
       }
     });
   </script>
