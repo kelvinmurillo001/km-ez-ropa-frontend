@@ -1,4 +1,4 @@
-// 🔐 Verificar sesión
+// 🔐 Verificar sesión 
 const token = localStorage.getItem("token");
 
 if (!token) {
@@ -32,10 +32,15 @@ async function loadStatistics() {
     const latest = products[0]?.name || "-";
 
     // ⏬ Mostrar en HTML
-    document.getElementById("totalProducts").textContent = total;
-    document.getElementById("featuredProducts").textContent = featured;
-    document.getElementById("totalStock").textContent = totalStock;
-    document.getElementById("latestProduct").textContent = latest;
+    const totalEl = document.getElementById("totalProductos");
+    const featuredEl = document.getElementById("promosActivas"); // Se puede renombrar según necesidad
+    const stockEl = document.getElementById("visitas"); // Usado como placeholder
+    const latestEl = document.getElementById("ventasTotales"); // Usado como placeholder
+
+    if (totalEl) totalEl.textContent = total;
+    if (featuredEl) featuredEl.textContent = featured;
+    if (stockEl) stockEl.textContent = totalStock;
+    if (latestEl) latestEl.textContent = latest;
 
     // 📦 Conteo por categoría
     const categoryCount = {};
@@ -44,13 +49,14 @@ async function loadStatistics() {
       categoryCount[cat] = (categoryCount[cat] || 0) + 1;
     });
 
-    const summary = document.getElementById("categorySummary");
-    summary.innerHTML = "";
-
-    for (const cat in categoryCount) {
-      const badge = document.createElement("span");
-      badge.textContent = `${cat}: ${categoryCount[cat]}`;
-      summary.appendChild(badge);
+    const summary = document.getElementById("topCategorias");
+    if (summary) {
+      summary.innerHTML = "";
+      for (const cat in categoryCount) {
+        const li = document.createElement("li");
+        li.textContent = `${cat}: ${categoryCount[cat]}`;
+        summary.appendChild(li);
+      }
     }
 
   } catch (err) {

@@ -176,5 +176,17 @@ if (loginRedirectBtn) {
   });
 }
 
+// 👁️ Registrar visita automáticamente
+async function registrarVisita() {
+  try {
+    await fetch("https://km-ez-ropa-backend.onrender.com/api/visitas/registrar", {
+      method: "POST"
+    });
+  } catch (err) {
+    console.warn("❌ Error registrando visita:", err);
+  }
+}
+
 // ▶️ Inicial
+registrarVisita();
 cargarProductos();
