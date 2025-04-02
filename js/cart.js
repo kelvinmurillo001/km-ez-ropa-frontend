@@ -50,10 +50,62 @@ function calculateTotal() {
   return cart.reduce((acc, item) => acc + ((parseFloat(item.precio || item.price) || 0) * item.cantidad), 0).toFixed(2);
 }
 
-// 📲 Enviar a WhatsApp
-function sendCartToWhatsApp(nombre, nota) {
+// 💾 Guardar pedido en backend
+async function guardarPedido(nombre, nota, origen = "whatsapp") {
   const cart = getCart();
-  if (cart.length === 0) return alert("El carrito está vacío.");
+  if (!nombre || cart.length === 0) {
+    alert("⚠️ Debes completar tu nombre y agregar productos al carrito.");
+    return false;
+  }
+
+  const body = {
+    items: cart.map(p => ({
+      nombre: p.nombre || p.name,
+      cantidad: p.cantidad,
+      precio: p.precio || p.price
+    })),
+    total: calculateTotal(),
+    nombreCliente: nombre,
+    nota,
+    origen
+  };
+
+  try {
+    const res = await fetch(`${API_URL}/orders`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      alert("❌ Error guardando pedido: " + err.message);
+      return false;
+    }
+
+    return true;
+  } catch (e) {
+    alert("❌ Error de red: " + e.message);
+    return false;
+  }
+}
+
+// 📲 Enviar a WhatsApp y guardar pedido
+async function sendCartToWhatsApp(nombre, nota) {
+  const cart = getCart();
+
+  if (!nombre) {
+    alert("⚠️ Por favor ingresa tu nombre.");
+    return;
+  }
+
+  if (cart.length === 0) {
+    alert("🛒 El carrito está vacío.");
+    return;
+  }
+
+  const guardado = await guardarPedido(nombre, nota);
+  if (!guardado) return;
 
   let mensaje = `Hola! Quiero consultar por estas prendas:\n`;
 
@@ -64,12 +116,14 @@ function sendCartToWhatsApp(nombre, nota) {
     mensaje += `\n`;
   });
 
-  mensaje += `\nTotal estimado: $${calculateTotal()}\n`;
-  if (nombre) mensaje += `Cliente: ${nombre}\n`;
+  mensaje += `\nTotal estimado: $${calculateTotal()}\nCliente: ${nombre}\n`;
   if (nota) mensaje += `Nota: ${nota}\n`;
 
   const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensaje)}`;
   window.open(url, '_blank');
+
+  localStorage.removeItem(CART_KEY);
+  setTimeout(() => window.location.href = "index.html", 2000);
 }
 
 // 🧩 Widget flotante
@@ -126,50 +180,7 @@ function renderCartItems() {
   }
 }
 
-// 💾 Guardar pedido en backend
-async function guardarPedido() {
-  const cart = getCart();
-  const nombre = document.getElementById("cliente-nombre").value;
-  const nota = document.getElementById("cliente-nota").value;
-
-  if (!nombre || cart.length === 0) {
-    alert("Completa tu nombre y asegúrate que el carrito tenga productos.");
-    return;
-  }
-
-  const body = {
-    items: cart.map(p => ({
-      nombre: p.nombre || p.name,
-      cantidad: p.cantidad,
-      precio: p.precio || p.price
-    })),
-    total: calculateTotal(),
-    nombreCliente: nombre,
-    nota
-  };
-
-  try {
-    const res = await fetch(`${API_URL}/orders`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(body)
-    });
-
-    if (res.ok) {
-      alert("✅ Pedido guardado correctamente");
-      localStorage.removeItem(CART_KEY);
-      window.location.reload();
-    } else {
-      const err = await res.json();
-      alert("❌ Error guardando pedido: " + err.message);
-    }
-  } catch (e) {
-    alert("❌ Error de red: " + e.message);
-  }
-}
-// 🔍 Ampliar imagen del producto
+// 🖼️ Modal de imagen
 function abrirModalImagen(src) {
   const modal = document.getElementById("imageModal");
   const img = document.getElementById("modalImage");
@@ -177,7 +188,6 @@ function abrirModalImagen(src) {
   modal.classList.remove("oculto");
 }
 
-// ❌ Cerrar modal al hacer clic fuera o en la X
 function cerrarModalImagen() {
   const modal = document.getElementById("imageModal");
   modal.classList.add("oculto");

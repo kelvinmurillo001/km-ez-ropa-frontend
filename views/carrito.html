@@ -25,7 +25,7 @@
       <h3>Total estimado: <span id="cart-total">$0.00</span></h3>
       <p id="total-unidades">Total unidades: 0</p>
 
-      <input type="text" id="clienteNombre" placeholder="Tu nombre (opcional)" />
+      <input type="text" id="clienteNombre" placeholder="Tu nombre" required />
       <textarea id="nota" placeholder="Nota adicional (opcional)" rows="2"></textarea>
 
       <div class="botones-finales">
@@ -33,7 +33,7 @@
         <button onclick="vaciarCarrito()" class="btn-vaciar">🗑 Vaciar Carrito</button>
       </div>
 
-      <p id="confirmacion" class="confirmacion oculto">✅ ¡Enviado correctamente!</p>
+      <p id="confirmacion" class="confirmacion oculto">✅ ¡Pedido enviado!</p>
     </div>
   </div>
 
@@ -56,17 +56,18 @@
     });
 
     function enviarDesdeCarrito() {
-      const nombre = document.getElementById("clienteNombre").value;
+      const nombre = document.getElementById("clienteNombre").value.trim();
       const nota = document.getElementById("nota").value;
+
+      if (!nombre) {
+        alert("⚠️ Debes ingresar tu nombre para realizar el pedido.");
+        return;
+      }
+
       sendCartToWhatsApp(nombre, nota);
 
       const confirm = document.getElementById("confirmacion");
       confirm.classList.remove("oculto");
-
-      setTimeout(() => {
-        confirm.classList.add("oculto");
-        window.location.href = "index.html";
-      }, 3000);
     }
 
     function vaciarCarrito() {
@@ -75,18 +76,6 @@
       updateCartWidget();
       document.getElementById("cart-total").textContent = "$0.00";
       document.getElementById("total-unidades").textContent = "Total unidades: 0";
-    }
-
-    // 🔍 Modal de imagen
-    function abrirModalImagen(src) {
-      const modal = document.getElementById("imageModal");
-      const img = document.getElementById("modalImage");
-      img.src = src;
-      modal.classList.remove("oculto");
-    }
-
-    function cerrarModalImagen() {
-      document.getElementById("imageModal").classList.add("oculto");
     }
   </script>
 </body>
