@@ -60,3 +60,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+// ✅ Verifica el token antes de acceder a páginas protegidas
+function verificarToken() {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    alert("⚠️ No autorizado. Inicia sesión primero.");
+    window.location.href = "login.html";
+  }
+}

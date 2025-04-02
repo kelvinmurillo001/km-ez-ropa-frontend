@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="../css/pedidos.css" />
   <link rel="stylesheet" href="../css/responsive.css" />
 </head>
-<body onload="verificarToken()">
+<body>
 
   <div class="pedidos-container fade-in">
     <h1>📦 Pedidos Recibidos</h1>
@@ -43,5 +43,21 @@
   <!-- Scripts -->
   <script src="../js/login.js"></script>
   <script src="../js/orders.js"></script>
+  <script>
+    // Ejecutar después de cargar todo el DOM
+    document.addEventListener("DOMContentLoaded", () => {
+      if (typeof verificarToken === "function") {
+        verificarToken();
+      } else {
+        console.warn("⚠️ verificarToken no está definido.");
+      }
+
+      if (typeof cargarPedidos === "function") {
+        cargarPedidos();
+      } else {
+        console.error("❌ cargarPedidos no está definido.");
+      }
+    });
+  </script>
 </body>
 </html>

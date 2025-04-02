@@ -1,5 +1,5 @@
 const API_ORDERS = "https://km-ez-ropa-backend.onrender.com/api/orders";
-const container = document.getElementById("pedidosList");
+const container = document.getElementById("pedidos-container"); // ✅ ID correcto
 let pedidosPrevios = 0;
 let todosLosPedidos = [];
 
@@ -12,6 +12,7 @@ if (!token) {
 
 // ▶️ Cargar todos los pedidos
 async function cargarPedidos() {
+  if (!container) return;
   container.innerHTML = "⏳ Cargando pedidos...";
 
   try {
