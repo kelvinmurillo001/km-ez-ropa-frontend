@@ -59,37 +59,61 @@
 
 /* ✅ Vista previa promocional */
 .promo-preview {
-  padding: 12px 20px;
-  font-weight: bold;
-  border-radius: 8px;
+  padding: 15px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 10px;
   margin-top: 10px;
-  font-size: 18px;
   text-align: center;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* 🌈 Temas de vista previa */
 .promo-preview.blue {
-  background-color: #e3f2fd;
-  color: #0d47a1;
-  border-left: 5px solid #2196f3;
-}
-
-.promo-preview.orange {
-  background-color: #fff3e0;
-  color: #e65100;
-  border-left: 5px solid #fb8c00;
+  background: linear-gradient(135deg, #2196f3, #21cbf3);
+  color: #fff;
 }
 
 .promo-preview.green {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-  border-left: 5px solid #66bb6a;
+  background: linear-gradient(135deg, #43a047, #66bb6a);
+  color: #fff;
 }
 
-.promo-preview.red {
-  background-color: #ffebee;
-  color: #b71c1c;
-  border-left: 5px solid #ef5350;
+.promo-preview.orange {
+  background: linear-gradient(135deg, #fb8c00, #ffb74d);
+  color: #fff;
+}
+
+.promo-preview.pink {
+  background: linear-gradient(135deg, #ec407a, #f48fb1);
+  color: #fff;
+}
+
+.promo-preview.dark {
+  background: #333;
+  color: #eee;
+  border: 1px solid #555;
+}
+
+.promo-preview.yellow {
+  background: linear-gradient(135deg, #fdd835, #fff176);
+  color: #000;
+}
+
+.promo-preview.purple {
+  background: linear-gradient(135deg, #8e24aa, #ba68c8);
+  color: #fff;
+}
+
+.promo-preview.gray {
+  background: linear-gradient(135deg, #bdbdbd, #e0e0e0);
+  color: #333;
+}
+
+.promo-preview.teal {
+  background: linear-gradient(135deg, #009688, #4db6ac);
+  color: #fff;
 }
 
 /* ✅ Mensajes visuales */

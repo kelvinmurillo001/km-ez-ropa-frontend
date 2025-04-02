@@ -129,18 +129,30 @@ function cargarSubcategoriasUnicas() {
   });
 }
 
+// 📣 Cargar y mostrar promoción activa con validación de fechas
 async function cargarPromocionActiva() {
   try {
     const res = await fetch(API_PROMO);
     const data = await res.json();
 
-    if (res.ok && data?.activo && data.mensaje) {
-      document.getElementById("promoTexto").textContent = data.mensaje;
-      document.getElementById("promoBanner").style.display = "block";
+    if (res.ok && data?.message && data.active && isFechaEnRango(data.startDate, data.endDate)) {
+      const promoTexto = document.getElementById("promoTexto");
+      const promoBanner = document.getElementById("promoBanner");
+      if (promoTexto && promoBanner) {
+        promoTexto.textContent = data.message;
+        promoBanner.style.display = "block";
+        promoBanner.className = `promo-banner ${data.theme || "blue"}`;
+      }
     }
   } catch (err) {
     console.error("❌ Error al cargar promoción:", err);
   }
+}
+
+// 📅 Validación de fechas para promociones
+function isFechaEnRango(start, end) {
+  const today = new Date().toISOString().split("T")[0];
+  return (!start || start <= today) && (!end || end >= today);
 }
 
 // 🖼️ Modal para ampliar imagen
@@ -155,7 +167,7 @@ function ampliarImagen(url) {
   document.body.appendChild(modal);
 }
 
-// 🌙 Modo oscuro con persistencia
+// 🌙 Modo oscuro
 const toggleBtn = document.getElementById("modoToggle");
 toggleBtn?.addEventListener("click", () => {
   document.body.classList.toggle("modo-oscuro");
@@ -169,17 +181,16 @@ if (localStorage.getItem("modoOscuro") === "true") {
   if (toggleBtn) toggleBtn.textContent = "☀️ Modo Claro";
 }
 
+// ⛔ Redirección al login si no hay sesión
 const loginRedirectBtn = document.getElementById("loginRedirectBtn");
-if (loginRedirectBtn) {
-  loginRedirectBtn.addEventListener("click", () => {
-    window.location.href = "login.html";
-  });
-}
+loginRedirectBtn?.addEventListener("click", () => {
+  window.location.href = "login.html";
+});
 
-// 👁️ Registrar visita automáticamente
+// 👁️ Registrar visita
 async function registrarVisita() {
   try {
-    await fetch("https://km-ez-ropa-backend.onrender.com/api/visitas/registrar", {
+    await fetch(`${API_BASE}/visitas/registrar`, {
       method: "POST"
     });
   } catch (err) {

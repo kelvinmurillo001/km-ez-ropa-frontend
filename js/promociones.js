@@ -18,6 +18,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const mensajeExito = document.getElementById("promoFeedback");
   const promoPreview = document.getElementById("promoPreview");
 
+  // 📆 Verifica si fecha actual está dentro del rango
+  function isDateInRange(start, end) {
+    const today = new Date().toISOString().split("T")[0];
+    return (!start || start <= today) && (!end || end >= today);
+  }
+
   // ▶️ Cargar promoción existente
   async function loadPromotion() {
     try {
@@ -28,12 +34,23 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
 
       if (res.ok && data) {
-        promoInput.value = data.mensaje || "";
-        isActive.checked = data.activo || false;
-        themeSelect.value = data.tema || "blue";
-        startDate.value = data.fechaInicio || "";
-        endDate.value = data.fechaFin || "";
+        promoInput.value = data.message || "";
+        isActive.checked = data.active || false;
+        themeSelect.value = data.theme || "blue";
+        startDate.value = data.startDate || "";
+        endDate.value = data.endDate || "";
+
         updatePreview();
+
+        // Mostrar mensaje si está activa y en rango
+        if (data.active && isDateInRange(data.startDate, data.endDate)) {
+          promoPreview.textContent = data.message;
+          promoPreview.className = `promo-preview ${data.theme || "blue"}`;
+        } else {
+          promoPreview.textContent = "La promoción no está activa o fuera de fecha.";
+          promoPreview.className = "promo-preview inactive";
+        }
+
       } else {
         promoPreview.textContent = "❌ Error al cargar promoción.";
       }
@@ -49,11 +66,11 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
 
       const payload = {
-        mensaje: promoInput.value.trim(),
-        activo: isActive.checked,
-        tema: themeSelect.value,
-        fechaInicio: startDate.value,
-        fechaFin: endDate.value
+        message: promoInput.value.trim(),
+        active: isActive.checked,
+        theme: themeSelect.value,
+        startDate: startDate.value,
+        endDate: endDate.value
       };
 
       try {
@@ -95,23 +112,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 👁️ Vista previa en vivo
   function updatePreview() {
-    promoPreview.textContent = promoInput.value || "Tu mensaje aparecerá aquí...";
-    promoPreview.className = "promo-preview " + themeSelect.value;
+    const mensaje = promoInput.value || "Tu mensaje aparecerá aquí...";
+    const tema = themeSelect.value;
+    promoPreview.textContent = mensaje;
+    promoPreview.className = "promo-preview " + tema;
   }
 
-  if (promoInput && themeSelect) {
-    promoInput.addEventListener("input", updatePreview);
-    themeSelect.addEventListener("change", updatePreview);
-  }
+  // ⏱️ Detectar cambios
+  promoInput?.addEventListener("input", updatePreview);
+  themeSelect?.addEventListener("change", updatePreview);
 
   // 🔒 Cerrar sesión
-  window.logout = function () {
+  window.logout = () => {
     localStorage.removeItem("token");
     window.location.href = "login.html";
   };
 
   // 🔙 Volver al panel
-  window.goBack = function () {
+  window.goBack = () => {
     window.location.href = "panel.html";
   };
 
