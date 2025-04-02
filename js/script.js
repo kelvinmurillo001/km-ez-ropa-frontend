@@ -1,10 +1,8 @@
 let productos = [];
 
-// 🔗 API en producción (Render)
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
 const API_PROMO = `${API_BASE}/promos`;
 
-// ▶️ Cargar productos al inicio
 async function cargarProductos() {
   try {
     const res = await fetch(`${API_BASE}/products`);
@@ -28,7 +26,6 @@ async function cargarProductos() {
   }
 }
 
-// 🎯 Aplicar filtros
 function aplicarFiltros() {
   const termino = document.getElementById("busqueda").value.toLowerCase();
   const categoria = document.getElementById("categoria").value;
@@ -90,14 +87,16 @@ function mostrarProductos(lista) {
     card.classList.add("card", "fade-in");
 
     card.innerHTML = `
-      <img src="${imagen}" alt="${producto.name}" class="zoomable" />
+      <div class="imagen-catalogo" onclick="ampliarImagen('${imagen}')">
+        <img src="${imagen}" alt="${producto.name}" class="zoomable" />
+      </div>
       <h3>${producto.name}</h3>
       ${producto.featured ? '<span class="destacado-badge">⭐ Destacado</span>' : ""}
       <p><strong>Precio:</strong> $${producto.price}</p>
       <p><strong>Categoría:</strong> ${producto.category}</p>
       <p><strong>Subcategoría:</strong> ${producto.subcategory || "N/A"}</p>
-      <p><strong>Stock:</strong> ${producto.stock}</p>
-      <button onclick="agregarAlCarrito('${producto._id}')">🛒 Agregar al carrito</button>
+      <p><strong>Stock:</strong> ${producto.stock > 0 ? producto.stock : "❌ Agotado"}</p>
+      <button ${producto.stock <= 0 ? "disabled" : ""} onclick='addToCart(${JSON.stringify(producto)})'>🛒 Agregar al carrito</button>
     `;
 
     contenedor.appendChild(card);
@@ -140,6 +139,18 @@ async function cargarPromocionActiva() {
   }
 }
 
+// 🖼️ Modal para ampliar imagen
+function ampliarImagen(url) {
+  const modal = document.createElement("div");
+  modal.classList.add("modal-img");
+  modal.innerHTML = `
+    <div class="overlay" onclick="this.parentElement.remove()"></div>
+    <img src="${url}" alt="Ampliada" />
+    <span class="cerrar" onclick="this.parentElement.remove()">✖</span>
+  `;
+  document.body.appendChild(modal);
+}
+
 // 🌙 Modo oscuro con persistencia
 const toggleBtn = document.getElementById("modoToggle");
 toggleBtn?.addEventListener("click", () => {
@@ -149,13 +160,11 @@ toggleBtn?.addEventListener("click", () => {
   toggleBtn.textContent = oscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
 });
 
-// Aplicar al cargar
 if (localStorage.getItem("modoOscuro") === "true") {
   document.body.classList.add("modo-oscuro");
   if (toggleBtn) toggleBtn.textContent = "☀️ Modo Claro";
 }
 
-// 🔐 Redirección login
 const loginRedirectBtn = document.getElementById("loginRedirectBtn");
 if (loginRedirectBtn) {
   loginRedirectBtn.addEventListener("click", () => {
@@ -163,5 +172,4 @@ if (loginRedirectBtn) {
   });
 }
 
-// ▶️ Inicial
 cargarProductos();
