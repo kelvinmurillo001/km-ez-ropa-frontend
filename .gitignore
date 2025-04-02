@@ -19,3 +19,5 @@ Thumbs.db
 
 # 👉 Otros
 *.local
+
+node_modules/
