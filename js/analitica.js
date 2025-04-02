@@ -1,63 +1,64 @@
 // 🔐 Verificar sesión 
 const token = localStorage.getItem("token");
-
 if (!token) {
   alert("⚠️ No autorizado. Inicia sesión.");
   window.location.href = "login.html";
 }
 
-// 🔗 URL de backend en producción
-const API_URL = "https://km-ez-ropa-backend.onrender.com/api/products";
+// 🔗 Endpoints
+const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
+const API_PRODUCTS = `${API_BASE}/products`;
+const API_PEDIDOS = `${API_BASE}/orders`;
+const API_VISITAS = `${API_BASE}/visitas/contador`;
 
 // 📊 Cargar estadísticas
 async function loadStatistics() {
   try {
-    const response = await fetch(API_URL, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-
-    const products = await response.json();
+    // 👉 Productos
+    const resProd = await fetch(API_PRODUCTS);
+    const products = await resProd.json();
 
     if (!Array.isArray(products)) {
-      console.error("❌ Formato inválido de datos");
+      console.error("❌ Formato inválido de productos");
       return;
     }
 
-    // ✅ Cálculos generales
-    const total = products.length;
-    const featured = products.filter(p => p.featured).length;
-    const totalStock = products.reduce((sum, p) => sum + Number(p.stock || 0), 0);
-    const latest = products[0]?.name || "-";
+    const totalProductos = products.length;
+    const promosActivas = products.filter(p => p.featured).length;
 
-    // ⏬ Mostrar en HTML
-    const totalEl = document.getElementById("totalProductos");
-    const featuredEl = document.getElementById("promosActivas"); // Se puede renombrar según necesidad
-    const stockEl = document.getElementById("visitas"); // Usado como placeholder
-    const latestEl = document.getElementById("ventasTotales"); // Usado como placeholder
+    document.getElementById("totalProductos").textContent = totalProductos;
+    document.getElementById("promosActivas").textContent = promosActivas;
 
-    if (totalEl) totalEl.textContent = total;
-    if (featuredEl) featuredEl.textContent = featured;
-    if (stockEl) stockEl.textContent = totalStock;
-    if (latestEl) latestEl.textContent = latest;
-
-    // 📦 Conteo por categoría
+    // 🧠 Top Categorías
     const categoryCount = {};
-    products.forEach((p) => {
+    products.forEach(p => {
       const cat = p.category || "Sin categoría";
       categoryCount[cat] = (categoryCount[cat] || 0) + 1;
     });
 
-    const summary = document.getElementById("topCategorias");
-    if (summary) {
-      summary.innerHTML = "";
-      for (const cat in categoryCount) {
-        const li = document.createElement("li");
-        li.textContent = `${cat}: ${categoryCount[cat]}`;
-        summary.appendChild(li);
-      }
+    const categoriaEl = document.getElementById("topCategorias");
+    categoriaEl.innerHTML = "";
+    for (const cat in categoryCount) {
+      const li = document.createElement("li");
+      li.textContent = `${cat}: ${categoryCount[cat]}`;
+      categoriaEl.appendChild(li);
     }
+
+    // 👥 Visitas
+    const resVisitas = await fetch(API_VISITAS);
+    const visitasData = await resVisitas.json();
+    document.getElementById("visitas").textContent = visitasData.total || 0;
+
+    // 🛒 Ventas (solo pedidos enviados)
+    const resPedidos = await fetch(API_PEDIDOS, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    const pedidos = await resPedidos.json();
+    const enviados = pedidos.filter(p => p.estado === "enviado");
+    const totalVentas = enviados.reduce((sum, p) => sum + parseFloat(p.total || 0), 0);
+
+    document.getElementById("ventasTotales").textContent = totalVentas.toFixed(2);
 
   } catch (err) {
     console.error("❌ Error cargando estadísticas:", err);
@@ -69,5 +70,5 @@ function goBack() {
   window.location.href = "panel.html";
 }
 
-// ▶️ Ejecutar al cargar
+// ▶️ Ejecutar
 loadStatistics();
