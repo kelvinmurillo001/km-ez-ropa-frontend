@@ -69,7 +69,6 @@ function aplicarFiltros() {
   mostrarProductos(filtrados);
 }
 
-// 🖼️ Mostrar productos
 function mostrarProductos(lista) {
   const contenedor = document.getElementById("catalogo");
   contenedor.innerHTML = "";
@@ -96,14 +95,20 @@ function mostrarProductos(lista) {
       <p><strong>Categoría:</strong> ${producto.category}</p>
       <p><strong>Subcategoría:</strong> ${producto.subcategory || "N/A"}</p>
       <p><strong>Stock:</strong> ${producto.stock > 0 ? producto.stock : "❌ Agotado"}</p>
-      <button ${producto.stock <= 0 ? "disabled" : ""} onclick='addToCart(${JSON.stringify(producto)})'>🛒 Agregar al carrito</button>
+      <button ${producto.stock <= 0 ? "disabled" : ""} onclick='addToCart(${JSON.stringify({
+        id: producto._id,
+        nombre: producto.name,
+        precio: producto.price,
+        imagen: producto.image,
+        talla: producto.talla || "",
+        colores: producto.colores || ""
+      })})'>🛒 Agregar al carrito</button>
     `;
 
     contenedor.appendChild(card);
   });
 }
 
-// 🔁 Subcategorías dinámicas
 function cargarSubcategoriasUnicas() {
   const categoria = document.getElementById("categoria").value;
   const subSelect = document.getElementById("subcategoria");
@@ -124,7 +129,6 @@ function cargarSubcategoriasUnicas() {
   });
 }
 
-// 🎁 Mostrar promoción activa
 async function cargarPromocionActiva() {
   try {
     const res = await fetch(API_PROMO);
@@ -172,4 +176,5 @@ if (loginRedirectBtn) {
   });
 }
 
+// ▶️ Inicial
 cargarProductos();
