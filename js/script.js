@@ -1,24 +1,35 @@
-let productos = [];
+"use strict";
 
+// 🔗 Endpoints
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
 const API_PROMO = `${API_BASE}/promos`;
+let productos = [];
 
+// ▶️ Inicial
+registrarVisita();
+cargarProductos();
+
+// 🧠 Cargar productos
 async function cargarProductos() {
   try {
     const res = await fetch(`${API_BASE}/products`);
     productos = await res.json();
 
+    if (!Array.isArray(productos)) throw new Error("Formato inválido");
+
     aplicarFiltros();
     cargarSubcategoriasUnicas();
     cargarPromocionActiva();
 
-    document.getElementById("busqueda").addEventListener("input", aplicarFiltros);
-    document.getElementById("categoria").addEventListener("change", () => {
+    // Eventos
+    document.getElementById("busqueda")?.addEventListener("input", aplicarFiltros);
+    document.getElementById("categoria")?.addEventListener("change", () => {
       cargarSubcategoriasUnicas();
       aplicarFiltros();
     });
-    document.getElementById("subcategoria").addEventListener("change", aplicarFiltros);
-    document.getElementById("orden").addEventListener("change", aplicarFiltros);
+    document.getElementById("subcategoria")?.addEventListener("change", aplicarFiltros);
+    document.getElementById("orden")?.addEventListener("change", aplicarFiltros);
+
   } catch (error) {
     console.error("❌ Error al cargar productos:", error);
     document.getElementById("catalogo").innerHTML =
@@ -26,30 +37,25 @@ async function cargarProductos() {
   }
 }
 
+// 🔍 Aplicar filtros
 function aplicarFiltros() {
-  const termino = document.getElementById("busqueda").value.toLowerCase();
-  const categoria = document.getElementById("categoria").value;
-  const subcategoria = document.getElementById("subcategoria").value;
-  const orden = document.getElementById("orden").value;
+  const termino = document.getElementById("busqueda")?.value.toLowerCase() || "";
+  const categoria = document.getElementById("categoria")?.value || "todas";
+  const subcategoria = document.getElementById("subcategoria")?.value || "todas";
+  const orden = document.getElementById("orden")?.value || "reciente";
 
   let filtrados = [...productos];
 
   if (categoria !== "todas") {
-    filtrados = filtrados.filter(
-      (p) => p.category?.toLowerCase() === categoria.toLowerCase()
-    );
+    filtrados = filtrados.filter(p => p.category?.toLowerCase() === categoria.toLowerCase());
   }
 
   if (subcategoria !== "todas") {
-    filtrados = filtrados.filter(
-      (p) => p.subcategory?.toLowerCase() === subcategoria.toLowerCase()
-    );
+    filtrados = filtrados.filter(p => p.subcategory?.toLowerCase() === subcategoria.toLowerCase());
   }
 
   if (termino) {
-    filtrados = filtrados.filter((p) =>
-      p.name?.toLowerCase().includes(termino)
-    );
+    filtrados = filtrados.filter(p => p.name?.toLowerCase().includes(termino));
   }
 
   switch (orden) {
@@ -60,7 +66,7 @@ function aplicarFiltros() {
       filtrados.sort((a, b) => b.price - a.price);
       break;
     case "destacados":
-      filtrados = filtrados.filter((p) => p.featured);
+      filtrados = filtrados.filter(p => p.featured);
       break;
     default:
       filtrados.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -69,21 +75,22 @@ function aplicarFiltros() {
   mostrarProductos(filtrados);
 }
 
+// 🖼️ Mostrar productos
 function mostrarProductos(lista) {
   const contenedor = document.getElementById("catalogo");
   contenedor.innerHTML = "";
 
-  if (lista.length === 0) {
-    contenedor.innerHTML =
-      "<p class='mensaje-error'>😕 No hay productos que coincidan con tu búsqueda.</p>";
+  if (!lista.length) {
+    contenedor.innerHTML = "<p class='mensaje-error'>😕 No hay productos que coincidan.</p>";
     return;
   }
 
-  lista.forEach((producto) => {
+  lista.forEach(producto => {
     const imagen = producto.image || "../assets/logo.jpg";
+    const agotado = producto.stock <= 0;
 
     const card = document.createElement("div");
-    card.classList.add("card", "fade-in");
+    card.className = "card fade-in";
 
     card.innerHTML = `
       <div class="imagen-catalogo" onclick="ampliarImagen('${imagen}')">
@@ -94,8 +101,8 @@ function mostrarProductos(lista) {
       <p><strong>Precio:</strong> $${producto.price}</p>
       <p><strong>Categoría:</strong> ${producto.category}</p>
       <p><strong>Subcategoría:</strong> ${producto.subcategory || "N/A"}</p>
-      <p><strong>Stock:</strong> ${producto.stock > 0 ? producto.stock : "❌ Agotado"}</p>
-      <button ${producto.stock <= 0 ? "disabled" : ""} onclick='addToCart(${JSON.stringify({
+      <p><strong>Stock:</strong> ${agotado ? "❌ Agotado" : producto.stock}</p>
+      <button ${agotado ? "disabled" : ""} onclick='addToCart(${JSON.stringify({
         id: producto._id,
         nombre: producto.name,
         precio: producto.price,
@@ -109,70 +116,74 @@ function mostrarProductos(lista) {
   });
 }
 
+// 📂 Subcategorías únicas
 function cargarSubcategoriasUnicas() {
-  const categoria = document.getElementById("categoria").value;
+  const categoria = document.getElementById("categoria")?.value || "todas";
   const subSelect = document.getElementById("subcategoria");
-  let subcategorias = new Set();
+  const subcategorias = new Set();
 
-  productos.forEach((p) => {
+  productos.forEach(p => {
     if (categoria === "todas" || p.category === categoria) {
       if (p.subcategory) subcategorias.add(p.subcategory);
     }
   });
 
   subSelect.innerHTML = `<option value="todas">Todas</option>`;
-  [...subcategorias].forEach((sub) => {
-    const option = document.createElement("option");
-    option.value = sub;
-    option.textContent = sub;
-    subSelect.appendChild(option);
+  [...subcategorias].forEach(sub => {
+    const opt = document.createElement("option");
+    opt.value = sub;
+    opt.textContent = sub;
+    subSelect.appendChild(opt);
   });
 }
 
-// 📣 Cargar y mostrar promoción activa con validación de fechas
+// 📣 Cargar promoción activa
 async function cargarPromocionActiva() {
   try {
     const res = await fetch(API_PROMO);
     const data = await res.json();
 
-    if (res.ok && data?.message && data.active && isFechaEnRango(data.startDate, data.endDate)) {
+    if (
+      res.ok &&
+      data?.message &&
+      data.active &&
+      isFechaEnRango(data.startDate, data.endDate)
+    ) {
       const promoTexto = document.getElementById("promoTexto");
       const promoBanner = document.getElementById("promoBanner");
-      if (promoTexto && promoBanner) {
-        promoTexto.textContent = data.message;
-        promoBanner.style.display = "block";
-        promoBanner.className = `promo-banner ${data.theme || "blue"}`;
-      }
+      promoTexto.textContent = data.message;
+      promoBanner.style.display = "block";
+      promoBanner.className = `promo-banner ${data.theme || "blue"}`;
     }
   } catch (err) {
     console.error("❌ Error al cargar promoción:", err);
   }
 }
 
-// 📅 Validación de fechas para promociones
+// 📅 Validación de fechas
 function isFechaEnRango(start, end) {
-  const today = new Date().toISOString().split("T")[0];
-  return (!start || start <= today) && (!end || end >= today);
+  const hoy = new Date().toISOString().split("T")[0];
+  return (!start || start <= hoy) && (!end || end >= hoy);
 }
 
-// 🖼️ Modal para ampliar imagen
+// 🖼️ Modal de imagen
 function ampliarImagen(url) {
   const modal = document.createElement("div");
-  modal.classList.add("modal-img");
+  modal.className = "modal-img";
   modal.innerHTML = `
     <div class="overlay" onclick="this.parentElement.remove()"></div>
-    <img src="${url}" alt="Ampliada" />
+    <img src="${url}" alt="Vista ampliada" />
     <span class="cerrar" onclick="this.parentElement.remove()">✖</span>
   `;
   document.body.appendChild(modal);
 }
 
-// 🌙 Modo oscuro
+// 🌙 Toggle modo oscuro
 const toggleBtn = document.getElementById("modoToggle");
 toggleBtn?.addEventListener("click", () => {
   document.body.classList.toggle("modo-oscuro");
   const oscuro = document.body.classList.contains("modo-oscuro");
-  localStorage.setItem("modoOscuro", oscuro ? "true" : "false");
+  localStorage.setItem("modoOscuro", oscuro);
   toggleBtn.textContent = oscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
 });
 
@@ -181,23 +192,16 @@ if (localStorage.getItem("modoOscuro") === "true") {
   if (toggleBtn) toggleBtn.textContent = "☀️ Modo Claro";
 }
 
-// ⛔ Redirección al login si no hay sesión
-const loginRedirectBtn = document.getElementById("loginRedirectBtn");
-loginRedirectBtn?.addEventListener("click", () => {
+// ⛔ Redirección si no hay sesión (opcional)
+document.getElementById("loginRedirectBtn")?.addEventListener("click", () => {
   window.location.href = "login.html";
 });
 
 // 👁️ Registrar visita
 async function registrarVisita() {
   try {
-    await fetch(`${API_BASE}/visitas/registrar`, {
-      method: "POST"
-    });
+    await fetch(`${API_BASE}/visitas/registrar`, { method: "POST" });
   } catch (err) {
     console.warn("❌ Error registrando visita:", err);
   }
 }
-
-// ▶️ Inicial
-registrarVisita();
-cargarProductos();
