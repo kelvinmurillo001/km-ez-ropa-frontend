@@ -8,31 +8,32 @@ if (!token) {
 }
 
 // 📌 DOM
-const categoryForm = document.getElementById("categoryForm");
-const subcategoryForm = document.getElementById("subcategoryForm");
-const categoryNameInput = document.getElementById("categoryName");
-const subcategoryNameInput = document.getElementById("subcategoryName");
+const categoryForm = document.getElementById("formCategoria");
+const categoryNameInput = document.getElementById("nombreCategoria");
+const subcategoryNameInput = document.getElementById("nuevaSubcategoria");
 const categorySelect = document.getElementById("categorySelect");
-const categoryList = document.getElementById("categoryList");
+const categoryList = document.getElementById("listaCategorias");
 const message = document.getElementById("message");
 
-// ▶️ Cargar categorías existentes
+// ▶️ Cargar categorías
 async function loadCategories() {
   try {
     const res = await fetch(API);
+    if (!res.ok) throw new Error("Error al obtener categorías");
+
     const data = await res.json();
 
     categorySelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
     categoryList.innerHTML = "";
 
     data.forEach(cat => {
-      // 👉 Agrega al select
+      // 👉 Agregar al select
       const opt = document.createElement("option");
       opt.value = cat._id;
       opt.textContent = cat.name;
       categorySelect.appendChild(opt);
 
-      // 👉 Renderiza en lista
+      // 👉 Renderizar en la lista
       const catCard = document.createElement("div");
       catCard.className = "categoria-card fade-in";
 
@@ -55,7 +56,7 @@ async function loadCategories() {
     });
 
   } catch (error) {
-    console.error("❌ Error al cargar categorías:", error);
+    console.error("❌", error);
     showMessage("❌ Error al cargar categorías", "error");
   }
 }
@@ -63,9 +64,9 @@ async function loadCategories() {
 // ➕ Crear categoría
 categoryForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const name = categoryNameInput.value.trim();
 
-  if (!name) return showMessage("⚠️ Nombre requerido", "error");
+  const name = categoryNameInput.value.trim();
+  if (!name) return showMessage("⚠️ Nombre requerido", "warning");
 
   try {
     const res = await fetch(API, {
@@ -82,23 +83,26 @@ categoryForm.addEventListener("submit", async (e) => {
     if (res.ok) {
       showMessage("✅ Categoría creada", "success");
       categoryNameInput.value = "";
-      loadCategories();
+      await loadCategories();
     } else {
-      showMessage(`❌ ${data.message || "Error al crear"}`, "error");
+      showMessage(`❌ ${data.message || "Error al crear categoría"}`, "error");
     }
 
   } catch (err) {
-    showMessage("❌ Error al crear categoría", "error");
+    showMessage("❌ Error de red al crear categoría", "error");
   }
 });
 
 // ➕ Agregar subcategoría
-subcategoryForm.addEventListener("submit", async (e) => {
+document.getElementById("subcategoryForm").addEventListener("submit", async (e) => {
   e.preventDefault();
+
   const categoryId = categorySelect.value;
   const sub = subcategoryNameInput.value.trim();
 
-  if (!categoryId || !sub) return showMessage("⚠️ Completa todos los campos", "error");
+  if (!categoryId || !sub) {
+    return showMessage("⚠️ Completa todos los campos", "warning");
+  }
 
   try {
     const res = await fetch(`${API}/${categoryId}/subcategories`, {
@@ -113,15 +117,15 @@ subcategoryForm.addEventListener("submit", async (e) => {
     const data = await res.json();
 
     if (res.ok) {
-      subcategoryNameInput.value = "";
       showMessage("✅ Subcategoría agregada", "success");
-      loadCategories();
+      subcategoryNameInput.value = "";
+      await loadCategories();
     } else {
-      showMessage(`❌ ${data.message || "Error al agregar"}`, "error");
+      showMessage(`❌ ${data.message || "Error al agregar subcategoría"}`, "error");
     }
 
   } catch (err) {
-    showMessage("❌ Error al agregar subcategoría", "error");
+    showMessage("❌ Error de red al agregar subcategoría", "error");
   }
 });
 
@@ -132,16 +136,17 @@ async function deleteCategory(id) {
   try {
     const res = await fetch(`${API}/${id}`, {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` }
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     });
 
     if (res.ok) {
       showMessage("✅ Categoría eliminada", "success");
-      loadCategories();
+      await loadCategories();
     } else {
-      showMessage("❌ No se pudo eliminar", "error");
+      showMessage("❌ No se pudo eliminar la categoría", "error");
     }
-
   } catch (err) {
     showMessage("❌ Error eliminando categoría", "error");
   }
@@ -163,9 +168,9 @@ async function deleteSubcategory(id, sub) {
 
     if (res.ok) {
       showMessage("✅ Subcategoría eliminada", "success");
-      loadCategories();
+      await loadCategories();
     } else {
-      showMessage("❌ No se pudo eliminar", "error");
+      showMessage("❌ No se pudo eliminar subcategoría", "error");
     }
 
   } catch (err) {
@@ -184,12 +189,19 @@ function goBack() {
   window.location.href = "panel.html";
 }
 
-// 💬 Mensaje
+// 💬 Mostrar mensaje
 function showMessage(text, type = "error") {
   if (!message) return;
   message.textContent = text;
-  message.style.color = type === "success" ? "green" : type === "warning" ? "orange" : "red";
-  setTimeout(() => message.textContent = "", 3000);
+
+  const colors = {
+    success: "green",
+    warning: "orange",
+    error: "red"
+  };
+
+  message.style.color = colors[type] || "black";
+  setTimeout(() => (message.textContent = ""), 3000);
 }
 
 // ▶️ Init

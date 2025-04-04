@@ -5,7 +5,7 @@ if (!token) {
   window.location.href = "login.html";
 }
 
-// 🌐 API backend de producción
+// 🌐 API backend
 const API_ORDERS = "https://km-ez-ropa-backend.onrender.com/api/orders";
 
 // 📊 Cargar datos del dashboard
@@ -17,11 +17,10 @@ async function cargarDashboard() {
       }
     });
 
+    if (!res.ok) throw new Error("Error al obtener pedidos");
+    
     const pedidos = await res.json();
-
-    if (!Array.isArray(pedidos)) {
-      throw new Error("La respuesta del servidor no es válida.");
-    }
+    if (!Array.isArray(pedidos)) throw new Error("Respuesta inesperada del servidor");
 
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
@@ -35,16 +34,19 @@ async function cargarDashboard() {
       total: pedidos.length
     };
 
-    pedidos.forEach(p => {
-      if (estadoContador[p.estado] !== undefined) {
-        estadoContador[p.estado]++;
+    pedidos.forEach(pedido => {
+      const estado = pedido.estado || "pendiente";
+      if (estadoContador[estado] !== undefined) {
+        estadoContador[estado]++;
       }
 
-      const fechaPedido = new Date(p.createdAt);
-      if (fechaPedido >= hoy) estadoContador.hoy++;
+      const fecha = new Date(pedido.createdAt);
+      if (!isNaN(fecha) && fecha >= hoy) {
+        estadoContador.hoy++;
+      }
     });
 
-    // 🧾 Pintar en HTML
+    // 🧾 Mostrar datos en el DOM
     document.getElementById("total").textContent = estadoContador.total;
     document.getElementById("pendientes").textContent = estadoContador.pendiente;
     document.getElementById("en_proceso").textContent = estadoContador.en_proceso;

@@ -4,7 +4,12 @@ const API_URL = "https://km-ez-ropa-backend.onrender.com/api";
 
 // 📥 Obtener carrito desde localStorage
 function getCart() {
-  return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+  try {
+    const cart = JSON.parse(localStorage.getItem(CART_KEY));
+    return Array.isArray(cart) ? cart : [];
+  } catch {
+    return [];
+  }
 }
 
 // 💾 Guardar carrito
@@ -39,6 +44,7 @@ function changeQuantity(id, delta) {
     if (item.id === id) item.cantidad += delta;
     return item;
   }).filter(p => p.cantidad > 0);
+
   saveCart(cart);
   renderCartItems();
   updateCartWidget();
@@ -77,9 +83,10 @@ async function guardarPedido(nombre, nota, origen = "whatsapp") {
       body: JSON.stringify(body)
     });
 
+    const result = await res.json();
+
     if (!res.ok) {
-      const err = await res.json();
-      alert("❌ Error guardando pedido: " + err.message);
+      alert("❌ Error guardando pedido: " + (result.message || "Error desconocido"));
       return false;
     }
 

@@ -3,19 +3,11 @@ const container = document.getElementById("pedidos-container");
 let pedidosPrevios = 0;
 let todosLosPedidos = [];
 
-// ✅ Verifica el token antes de acceder
-function verificarToken() {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    alert("⚠️ No autorizado. Inicia sesión primero.");
-    window.location.href = "login.html";
-  }
-}
-
-// 🔐 Verificación adicional (por seguridad)
 const token = localStorage.getItem("token");
+
+// 🔐 Validación de sesión
 if (!token) {
-  alert("⚠️ Acceso denegado. Inicia sesión.");
+  alert("⚠️ No autorizado. Inicia sesión primero.");
   window.location.href = "login.html";
 }
 
@@ -29,19 +21,18 @@ async function cargarPedidos() {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    const data = await res.json();
+    if (!res.ok) throw new Error("Error en la solicitud");
 
-    if (!res.ok || !Array.isArray(data)) {
-      throw new Error("Respuesta inválida del servidor");
-    }
+    const data = await res.json();
+    if (!Array.isArray(data)) throw new Error("Respuesta inválida del servidor");
 
     todosLosPedidos = data;
+    pedidosPrevios = data.length;
     renderPedidos(todosLosPedidos);
-    pedidosPrevios = todosLosPedidos.length;
 
   } catch (err) {
-    console.error("❌ Error al cargar pedidos:", err);
-    container.innerHTML = "❌ Error al cargar pedidos.";
+    console.error("❌", err);
+    container.innerHTML = "❌ No se pudieron cargar los pedidos.";
   }
 }
 
@@ -50,7 +41,7 @@ function renderPedidos(pedidos) {
   container.innerHTML = "";
 
   if (!pedidos.length) {
-    container.innerHTML = "<p>No hay pedidos en este estado.</p>";
+    container.innerHTML = "<p>No hay pedidos para mostrar.</p>";
     return;
   }
 
@@ -69,7 +60,7 @@ function renderPedidos(pedidos) {
       <p><strong>Nota:</strong> ${p.nota || '—'}</p>
       <p class="fecha">📅 ${new Date(p.createdAt).toLocaleString()}</p>
 
-      <label class="estado-label">Estado:</label>
+      <label>Estado:</label>
       <select class="estado-select estado-${p.estado}" onchange="actualizarEstado('${p._id}', this.value)" data-id="${p._id}">
         <option value="pendiente" ${p.estado === "pendiente" ? "selected" : ""}>⏳ Pendiente</option>
         <option value="en_proceso" ${p.estado === "en_proceso" ? "selected" : ""}>⚙️ En Proceso</option>
@@ -98,15 +89,18 @@ async function actualizarEstado(id, estado) {
       body: JSON.stringify({ estado })
     });
 
+    const result = await res.json();
+
     if (res.ok) {
       alert("✅ Estado actualizado");
       cargarPedidos();
     } else {
-      const err = await res.json();
-      alert("❌ Error: " + (err.message || "No se pudo actualizar"));
+      alert("❌ Error: " + (result.message || "No se pudo actualizar"));
     }
+
   } catch (err) {
     console.error("❌ Error al actualizar estado:", err);
+    alert("❌ No se pudo conectar al servidor");
   }
 }
 
@@ -130,8 +124,7 @@ Estado: ${p.estado}
 Fecha: ${new Date(p.createdAt).toLocaleString()}
 Items:
 ${items}
-==============================
-`;
+==============================`;
   }).join("\n");
 
   const blob = new Blob([contenido], { type: "text/plain" });
@@ -141,7 +134,7 @@ ${items}
   link.click();
 }
 
-// 🔔 Alerta de nuevos pedidos cada 10s
+// 🔔 Alerta por nuevos pedidos
 setInterval(async () => {
   try {
     const res = await fetch(API_ORDERS, {
@@ -149,18 +142,20 @@ setInterval(async () => {
     });
 
     const nuevos = await res.json();
+
     if (Array.isArray(nuevos) && nuevos.length > pedidosPrevios) {
       const audio = new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1152-pristine.mp3");
       audio.play();
     }
+
     pedidosPrevios = nuevos.length;
 
   } catch (err) {
-    console.warn("❌ Error monitoreando nuevos pedidos");
+    console.warn("❌ Error monitoreando pedidos:", err);
   }
 }, 10000);
 
-// 🔙 Regresar al panel
+// 🔙 Volver al panel
 function regresarAlPanel() {
   window.location.href = "panel.html";
 }

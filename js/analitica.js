@@ -16,12 +16,9 @@ async function loadStatistics() {
   try {
     // 👉 Productos
     const resProd = await fetch(API_PRODUCTS);
+    if (!resProd.ok) throw new Error("Error al obtener productos");
     const products = await resProd.json();
-
-    if (!Array.isArray(products)) {
-      console.error("❌ Formato inválido de productos");
-      return;
-    }
+    if (!Array.isArray(products)) throw new Error("❌ Formato inválido de productos");
 
     const totalProductos = products.length;
     const promosActivas = products.filter(p => p.featured).length;
@@ -29,7 +26,7 @@ async function loadStatistics() {
     document.getElementById("totalProductos").textContent = totalProductos;
     document.getElementById("promosActivas").textContent = promosActivas;
 
-    // 🧠 Top Categorías
+    // 🧠 Top Categorías ordenadas
     const categoryCount = {};
     products.forEach(p => {
       const cat = p.category || "Sin categoría";
@@ -38,14 +35,17 @@ async function loadStatistics() {
 
     const categoriaEl = document.getElementById("topCategorias");
     categoriaEl.innerHTML = "";
-    for (const cat in categoryCount) {
+
+    const sortedCategories = Object.entries(categoryCount).sort((a, b) => b[1] - a[1]);
+    sortedCategories.forEach(([cat, count]) => {
       const li = document.createElement("li");
-      li.textContent = `${cat}: ${categoryCount[cat]}`;
+      li.textContent = `${cat}: ${count}`;
       categoriaEl.appendChild(li);
-    }
+    });
 
     // 👥 Visitas
     const resVisitas = await fetch(API_VISITAS);
+    if (!resVisitas.ok) throw new Error("Error al obtener visitas");
     const visitasData = await resVisitas.json();
     document.getElementById("visitas").textContent = visitasData.total || 0;
 
@@ -53,8 +53,11 @@ async function loadStatistics() {
     const resPedidos = await fetch(API_PEDIDOS, {
       headers: { Authorization: `Bearer ${token}` }
     });
+    if (!resPedidos.ok) throw new Error("Error al obtener pedidos");
 
     const pedidos = await resPedidos.json();
+    if (!Array.isArray(pedidos)) throw new Error("❌ Formato inválido de pedidos");
+
     const enviados = pedidos.filter(p => p.estado === "enviado");
     const totalVentas = enviados.reduce((sum, p) => sum + parseFloat(p.total || 0), 0);
 
@@ -62,6 +65,7 @@ async function loadStatistics() {
 
   } catch (err) {
     console.error("❌ Error cargando estadísticas:", err);
+    alert("❌ No se pudieron cargar las estadísticas.");
   }
 }
 

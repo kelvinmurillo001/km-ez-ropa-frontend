@@ -71,6 +71,9 @@ let editingId = null;
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
+  const submitBtn = form.querySelector("button[type=submit]");
+  submitBtn.disabled = true;
+
   const nombre = document.getElementById("nombre").value.trim();
   const precio = parseFloat(document.getElementById("precio").value);
   const categoria = document.getElementById("categoriaSelect").value;
@@ -81,7 +84,15 @@ form.addEventListener("submit", async (e) => {
   const stock = parseInt(document.getElementById("stock").value) || 0;
 
   if (!nombre || isNaN(precio) || !categoria || !subcategoria) {
-    return showMessage("⚠️ Todos los campos obligatorios deben completarse", "red");
+    showMessage("⚠️ Todos los campos obligatorios deben completarse", "red");
+    submitBtn.disabled = false;
+    return;
+  }
+
+  if (!imagen && !editing) {
+    showMessage("⚠️ Debes subir una imagen", "red");
+    submitBtn.disabled = false;
+    return;
   }
 
   const formData = new FormData();
@@ -123,6 +134,8 @@ form.addEventListener("submit", async (e) => {
   } catch (err) {
     console.error("❌ Error:", err);
     showMessage("❌ Error del servidor", "red");
+  } finally {
+    submitBtn.disabled = false;
   }
 });
 
@@ -156,7 +169,7 @@ function editarProducto(p) {
   document.getElementById("subcategoriaSelect").value = p.subcategory;
   document.getElementById("talla").value = p.talla || "";
   document.getElementById("colores").value = p.colores || "";
-  document.getElementById("stock").value = p.stock || 0; // ✅ NUEVO
+  document.getElementById("stock").value = p.stock || 0;
   preview.innerHTML = p.image ? `<img src="${p.image}" />` : "";
 
   editing = true;
@@ -177,14 +190,15 @@ async function cargarProductos() {
       card.classList.add("card");
 
       card.innerHTML = `
-        <img src="${p.image || '../assets/logo.jpg'}" alt="${p.name}" />
+        <img src="${p.image || '/assets/logo.jpg'}" alt="${p.name}" />
         <h3>${p.name}</h3>
         <p><strong>Precio:</strong> $${p.price}</p>
         <p><strong>Categoría:</strong> ${p.category}</p>
         <p><strong>Subcategoría:</strong> ${p.subcategory}</p>
         <p><strong>Talla:</strong> ${p.talla || 'N/A'}</p>
         <p><strong>Colores:</strong> ${p.colores || 'N/A'}</p>
-        <p><strong>Stock:</strong> ${p.stock ?? 'N/A'}</p> <!-- ✅ NUEVO -->
+        <p><strong>Stock:</strong> ${p.stock ?? 'N/A'}</p>
+        <p><strong>Creado:</strong> ${new Date(p.createdAt).toLocaleDateString()}</p>
         <div style="margin-top: 10px">
           <button onclick='editarProducto(${JSON.stringify(p)})'>✏️ Editar</button>
           <button onclick="eliminarProducto('${p._id}')">🗑️ Eliminar</button>
