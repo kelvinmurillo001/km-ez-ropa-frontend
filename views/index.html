@@ -5,11 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>KM & EZ ROPA - Catálogo</title>
 
+  <!-- ✅ SEO -->
+  <meta name="description" content="Tienda de ropa para toda la familia. Encuentra moda para hombre, mujer, niños y bebés a precios accesibles." />
+  <meta name="keywords" content="ropa, moda, tienda de ropa, catálogo, hombre, mujer, niño, niña, bebé, ofertas, vestimenta" />
+  <meta name="author" content="KM & EZ ROPA" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- 🌐 Open Graph -->
+  <meta property="og:title" content="KM & EZ ROPA - Tienda de Moda para la Familia" />
+  <meta property="og:description" content="Explora nuestra tienda en línea con prendas para todas las edades. Calidad, estilo y buenos precios." />
+  <meta property="og:image" content="https://km-ez-ropa.onrender.com/assets/logo.jpg" />
+  <meta property="og:url" content="https://km-ez-ropa.onrender.com" />
+  <meta property="og:type" content="website" />
+
+  <!-- 🐦 Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="KM & EZ ROPA - Catálogo" />
+  <meta name="twitter:description" content="Moda para toda la familia con excelente calidad y precio. Visítanos online." />
+  <meta name="twitter:image" content="https://km-ez-ropa.onrender.com/assets/logo.jpg" />
+
+  <!-- 🖼️ Favicon -->
+  <link rel="icon" href="/assets/logo.jpg" type="image/jpeg" />
+
   <!-- ✅ Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/catalogo.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
+
+  <!-- 📊 Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LPEBT3EKGE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LPEBT3EKGE');
+  </script>
 </head>
 <body>
 
@@ -31,7 +62,7 @@
     <p id="promoTexto"></p>
   </section>
 
-  <!-- 🎯 Filtros de búsqueda -->
+  <!-- 🎯 Filtros -->
   <section class="filtros-container">
     <select id="categoria">
       <option value="todas">Categoría: Todas</option>
@@ -56,7 +87,7 @@
     <input type="text" id="busqueda" placeholder="🔍 Buscar productos..." class="busqueda-input" />
   </section>
 
-  <!-- 🛍️ Catálogo de productos -->
+  <!-- 🛍️ Catálogo -->
   <main class="catalogo-container">
     <h2 class="text-center">Catálogo de Productos</h2>
     <div id="catalogo" class="catalogo-grid"></div>
@@ -71,7 +102,7 @@
     </a>
   </div>
 
-  <!-- 🧾 Modal de carrito -->
+  <!-- 🧾 Modal carrito -->
   <div id="carritoModal" class="modal">
     <div class="modal-contenido">
       <span class="cerrar" id="cerrarCarrito">&times;</span>
@@ -81,7 +112,7 @@
     </div>
   </div>
 
-  <!-- 📞 WhatsApp flotante -->
+  <!-- 📞 WhatsApp -->
   <a href="https://wa.me/593990270864" class="whatsapp-float" target="_blank" rel="noopener noreferrer">
     <img src="/assets/whatsapp.svg" alt="WhatsApp" width="48" height="48" />
   </a>
