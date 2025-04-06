@@ -33,12 +33,11 @@
   width: 100%;
 }
 
-.promociones-container .row-group {
+.promociones-container .row {
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
   align-items: center;
-  margin: 10px 0;
 }
 
 /* 🔘 Botones */
@@ -69,51 +68,34 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* 🌈 Temas de vista previa */
-.promo-preview.blue {
-  background: linear-gradient(135deg, #2196f3, #21cbf3);
-  color: #fff;
+/* 🌈 Temas */
+.promo-preview.blue    { background: linear-gradient(135deg, #2196f3, #21cbf3); color: #fff; }
+.promo-preview.green   { background: linear-gradient(135deg, #43a047, #66bb6a); color: #fff; }
+.promo-preview.orange  { background: linear-gradient(135deg, #fb8c00, #ffb74d); color: #fff; }
+.promo-preview.red     { background: linear-gradient(135deg, #e53935, #ef5350); color: #fff; }
+.promo-preview.purple  { background: linear-gradient(135deg, #8e24aa, #ba68c8); color: #fff; }
+.promo-preview.yellow  { background: linear-gradient(135deg, #fdd835, #fff176); color: #000; }
+.promo-preview.teal    { background: linear-gradient(135deg, #009688, #4db6ac); color: #fff; }
+.promo-preview.gray    { background: linear-gradient(135deg, #bdbdbd, #e0e0e0); color: #333; }
+.promo-preview.dark    { background: #333; color: #eee; border: 1px solid #555; }
+
+/* 🔴 Estados adicionales */
+.promo-preview.inactive {
+  background-color: #eeeeee;
+  color: #666;
+  border: 1px dashed #bbb;
 }
 
-.promo-preview.green {
-  background: linear-gradient(135deg, #43a047, #66bb6a);
-  color: #fff;
+.promo-preview.error {
+  background-color: #ffebee;
+  color: #b71c1c;
+  border: 1px solid #c62828;
 }
 
-.promo-preview.orange {
-  background: linear-gradient(135deg, #fb8c00, #ffb74d);
-  color: #fff;
-}
-
-.promo-preview.pink {
-  background: linear-gradient(135deg, #ec407a, #f48fb1);
-  color: #fff;
-}
-
-.promo-preview.dark {
-  background: #333;
-  color: #eee;
-  border: 1px solid #555;
-}
-
-.promo-preview.yellow {
-  background: linear-gradient(135deg, #fdd835, #fff176);
-  color: #000;
-}
-
-.promo-preview.purple {
-  background: linear-gradient(135deg, #8e24aa, #ba68c8);
-  color: #fff;
-}
-
-.promo-preview.gray {
-  background: linear-gradient(135deg, #bdbdbd, #e0e0e0);
-  color: #333;
-}
-
-.promo-preview.teal {
-  background: linear-gradient(135deg, #009688, #4db6ac);
-  color: #fff;
+.promo-preview.empty {
+  background-color: #fafafa;
+  color: #888;
+  font-style: italic;
 }
 
 /* ✅ Mensajes visuales */
@@ -146,14 +128,8 @@
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* 📱 Responsive */
@@ -162,7 +138,7 @@
     padding: 10px;
   }
 
-  .row-group {
+  .row {
     flex-direction: column;
     gap: 12px;
   }

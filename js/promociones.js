@@ -20,13 +20,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const mensajeExito = document.getElementById("promoFeedback");
   const promoPreview = document.getElementById("promoPreview");
 
-  // 📆 Validar fechas
+  // 📆 Validar fechas para saber si está dentro del rango
   const isDateInRange = (start, end) => {
     const today = new Date().toISOString().split("T")[0];
     return (!start || start <= today) && (!end || end >= today);
   };
 
-  // 👁️ Vista previa en vivo
+  // 👁️ Vista previa dinámica
   const updatePreview = () => {
     const mensaje = promoInput.value || "Tu mensaje aparecerá aquí...";
     const tema = themeSelect.value || "blue";
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     promoPreview.className = `promo-preview ${tema}`;
   };
 
-  // ▶️ Cargar promoción actual
+  // ▶️ Cargar datos de promoción actual
   const loadPromotion = async () => {
     try {
       const res = await fetch(API_PROMO, {
@@ -47,9 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
         promoInput.value = data.message || "";
         isActive.checked = data.active || false;
         themeSelect.value = data.theme || "blue";
-        startDate.value = data.startDate || "";
-        endDate.value = data.endDate || "";
-        updatePreview();
+        startDate.value = data.startDate ? data.startDate.split("T")[0] : "";
+        endDate.value = data.endDate ? data.endDate.split("T")[0] : "";
 
         if (data.active && isDateInRange(data.startDate, data.endDate)) {
           promoPreview.textContent = data.message;
@@ -58,13 +57,16 @@ document.addEventListener("DOMContentLoaded", () => {
           promoPreview.textContent = "⚠️ Promoción inactiva o fuera de fecha.";
           promoPreview.className = "promo-preview inactive";
         }
+
       } else {
         promoPreview.textContent = "❌ No se pudo cargar la promoción.";
         promoPreview.className = "promo-preview error";
       }
+
     } catch (err) {
       console.error("❌ Error al obtener promoción:", err);
       promoPreview.textContent = "❌ Error de red.";
+      promoPreview.className = "promo-preview error";
     }
   };
 
@@ -115,14 +117,12 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => mensajeExito.classList.add("oculto"), 3000);
   };
 
-  // ⏱️ Detectar cambios en inputs
+  // 🎯 Eventos
   promoInput?.addEventListener("input", updatePreview);
   themeSelect?.addEventListener("change", updatePreview);
-
-  // 💾 Guardar promoción al enviar
   form?.addEventListener("submit", guardarPromocion);
 
-  // 🔙 Volver al panel
+  // 🔙 Volver
   window.goBack = () => window.location.href = "panel.html";
 
   // 🔒 Logout
@@ -131,6 +131,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "login.html";
   };
 
-  // ▶️ Init
+  // ▶️ Inicializar
   loadPromotion();
 });

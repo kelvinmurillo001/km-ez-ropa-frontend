@@ -17,16 +17,16 @@
     <h1>🎯 Administrar Promoción</h1>
 
     <!-- 📋 Formulario -->
-    <form id="promoForm">
+    <form id="promoForm" autocomplete="off">
       <input type="text" id="promoMessage" placeholder="Texto de promoción..." required />
 
       <div class="row">
-        <label>
-          Activo:
+        <label for="isActive">
           <input type="checkbox" id="isActive" />
+          Activo
         </label>
 
-        <label>
+        <label for="theme">
           Tema:
           <select id="theme">
             <option value="blue">Azul</option>
@@ -37,21 +37,23 @@
         </label>
       </div>
 
-      <label>
-        Fecha de inicio:
-        <input type="date" id="startDate" />
-      </label>
+      <div class="row">
+        <label for="startDate">
+          Fecha de inicio:
+          <input type="date" id="startDate" />
+        </label>
 
-      <label>
-        Fecha de fin:
-        <input type="date" id="endDate" />
-      </label>
+        <label for="endDate">
+          Fecha de fin:
+          <input type="date" id="endDate" />
+        </label>
+      </div>
 
       <button type="submit" class="btn">💾 Guardar Promoción</button>
     </form>
 
     <!-- ✅ Feedback de éxito o error -->
-    <div id="promoFeedback" class="admin-message"></div>
+    <div id="promoFeedback" class="admin-message oculto"></div>
 
     <!-- 👁️ Vista previa -->
     <h3 class="mt-2">Vista previa:</h3>
