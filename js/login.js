@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!form || !usernameInput || !passwordInput || !error) return;
 
-  // Limpiar error al escribir
+  // 🔄 Limpiar error al escribir
   [usernameInput, passwordInput].forEach(input => {
     input.addEventListener("input", () => {
       error.textContent = "";
@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // 🔐 Envío de formulario
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -43,6 +44,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
 
       if (res.ok && data.token) {
+        // 🧠 Validar rol
+        const payload = JSON.parse(atob(data.token.split('.')[1]));
+        if (payload.role !== "admin") {
+          showError("⛔ Solo los administradores pueden ingresar");
+          return;
+        }
+
+        // ✅ Guardar token y redirigir
         localStorage.setItem("token", data.token);
         window.location.href = "panel.html";
       } else {
@@ -64,11 +73,25 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ✅ Verifica token antes de acceder a páginas privadas
+// ✅ Verifica token para páginas protegidas (ej. panel.html)
 function verificarToken() {
   const token = localStorage.getItem("token");
   if (!token) {
     alert("⚠️ No autorizado. Inicia sesión primero.");
     window.location.href = "login.html";
+    return;
   }
+
+  const payload = JSON.parse(atob(token.split('.')[1]));
+  if (payload.role !== "admin") {
+    alert("⛔ Acceso restringido. Solo administradores.");
+    localStorage.removeItem("token");
+    window.location.href = "login.html";
+  }
+}
+
+// 🔁 Cerrar sesión
+function logout() {
+  localStorage.removeItem("token");
+  window.location.href = "login.html";
 }

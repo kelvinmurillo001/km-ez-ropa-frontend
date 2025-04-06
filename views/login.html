@@ -9,7 +9,7 @@
   <meta name="description" content="Accede al panel de administración de KM & EZ ROPA para gestionar productos, pedidos y promociones.">
   <meta name="keywords" content="login, administrador, km ez ropa, iniciar sesión, tienda online">
   <meta name="author" content="KM & EZ ROPA">
-  <meta name="robots" content="noindex, nofollow"> <!-- no indexar login -->
+  <meta name="robots" content="noindex, nofollow"> <!-- 🔐 Protegido de indexación -->
 
   <!-- 🌐 Open Graph -->
   <meta property="og:title" content="Iniciar sesión | KM & EZ ROPA">
@@ -47,17 +47,24 @@
 </head>
 <body>
 
-  <div class="login-box">
+  <main class="login-box" role="main">
     <h1>🔐 Iniciar sesión</h1>
 
-    <!-- ✅ FORMULARIO SEGURO -->
-    <form id="loginForm" autocomplete="off" novalidate>
+    <form id="loginForm" autocomplete="off" novalidate aria-label="Formulario de acceso">
+      <label for="username" class="sr-only">Usuario</label>
       <input type="text" id="username" placeholder="Usuario" required />
+
+      <label for="password" class="sr-only">Contraseña</label>
       <input type="password" id="password" placeholder="Contraseña" required />
+
       <button type="submit" class="btn">Entrar</button>
       <p class="error" id="error" role="alert"></p>
     </form>
-  </div>
+  </main>
+
+  <noscript>
+    <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+  </noscript>
 
 </body>
 </html>
