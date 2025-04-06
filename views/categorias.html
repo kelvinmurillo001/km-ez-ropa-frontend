@@ -23,8 +23,16 @@
     <!-- 📋 Crear categoría -->
     <form id="formCategoria" class="form-block">
       <input type="text" id="nombreCategoria" placeholder="Nombre de categoría" required />
-      <input type="text" id="nuevaSubcategoria" placeholder="Subcategoría (opcional)" />
       <button type="submit" class="btn">➕ Crear categoría</button>
+    </form>
+
+    <!-- ➕ Subcategorías -->
+    <form id="subcategoryForm" class="form-block mt-2">
+      <select id="categorySelect" required>
+        <option value="">Selecciona una categoría</option>
+      </select>
+      <input type="text" id="nuevaSubcategoria" placeholder="Nueva subcategoría" required />
+      <button type="submit" class="btn">➕ Agregar subcategoría</button>
     </form>
 
     <!-- 🔙 Volver y salir -->
