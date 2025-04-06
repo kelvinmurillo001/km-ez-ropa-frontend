@@ -23,15 +23,19 @@ async function loadCategories() {
 
     const data = await res.json();
 
-    categorySelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
+    if (categorySelect) {
+      categorySelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
+    }
     categoryList.innerHTML = "";
 
     data.forEach(cat => {
-      // 👉 Agregar al select
-      const opt = document.createElement("option");
-      opt.value = cat._id;
-      opt.textContent = cat.name;
-      categorySelect.appendChild(opt);
+      // 👉 Agregar al select si existe
+      if (categorySelect) {
+        const opt = document.createElement("option");
+        opt.value = cat._id;
+        opt.textContent = cat.name;
+        categorySelect.appendChild(opt);
+      }
 
       // 👉 Renderizar en la lista
       const catCard = document.createElement("div");
@@ -62,7 +66,7 @@ async function loadCategories() {
 }
 
 // ➕ Crear categoría
-categoryForm.addEventListener("submit", async (e) => {
+categoryForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const name = categoryNameInput.value.trim();
@@ -93,12 +97,12 @@ categoryForm.addEventListener("submit", async (e) => {
   }
 });
 
-// ➕ Agregar subcategoría
-document.getElementById("subcategoryForm").addEventListener("submit", async (e) => {
+// ➕ Agregar subcategoría (si existe el formulario)
+document.getElementById("subcategoryForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const categoryId = categorySelect.value;
-  const sub = subcategoryNameInput.value.trim();
+  const categoryId = categorySelect?.value;
+  const sub = subcategoryNameInput?.value.trim();
 
   if (!categoryId || !sub) {
     return showMessage("⚠️ Completa todos los campos", "warning");
