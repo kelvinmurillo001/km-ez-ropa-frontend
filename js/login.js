@@ -44,15 +44,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
 
       if (res.ok && data.token) {
-        // 🧠 Validar rol
-        const payload = JSON.parse(atob(data.token.split('.')[1]));
-        if (payload.role !== "admin") {
+        const token = data.token;
+        const payload = parseJwt(token);
+
+        // 🔐 Verificar que sea administrador
+        if (payload?.role !== "admin") {
           showError("⛔ Solo los administradores pueden ingresar");
           return;
         }
 
-        // ✅ Guardar token y redirigir
-        localStorage.setItem("token", data.token);
+        localStorage.setItem("token", token);
         window.location.href = "panel.html";
       } else {
         showError(data.message || "❌ Usuario o contraseña incorrectos");
@@ -71,13 +72,23 @@ document.addEventListener("DOMContentLoaded", () => {
     error.textContent = msg;
     error.setAttribute("role", "alert");
   }
+
+  function parseJwt(token) {
+    try {
+      const payload = token.split('.')[1];
+      return JSON.parse(atob(payload));
+    } catch (e) {
+      return null;
+    }
+  }
 });
 
 // ✅ Verifica token para páginas protegidas (ej. panel.html)
 function verificarToken() {
   const token = localStorage.getItem("token");
-  if (!token) {
+  if (!token || token.split('.').length !== 3) {
     alert("⚠️ No autorizado. Inicia sesión primero.");
+    localStorage.removeItem("token");
     window.location.href = "login.html";
     return;
   }
@@ -90,7 +101,7 @@ function verificarToken() {
   }
 }
 
-// 🔁 Cerrar sesión
+// 🔁 Cerrar sesión (opcional si se importa este archivo en más páginas)
 function logout() {
   localStorage.removeItem("token");
   window.location.href = "login.html";
