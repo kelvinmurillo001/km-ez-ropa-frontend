@@ -3,25 +3,36 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ Sirve todos los archivos estáticos desde la raíz del proyecto
+// ✅ Servir archivos estáticos como /css, /js, /assets
 app.use(express.static(__dirname));
 
-// 🗺️ Servir sitemap.xml
+// 🗺️ sitemap.xml
 app.get('/sitemap.xml', (req, res) => {
   res.sendFile(path.join(__dirname, 'sitemap.xml'));
 });
 
-// 🤖 Servir robots.txt
+// 🤖 robots.txt
 app.get('/robots.txt', (req, res) => {
   res.sendFile(path.join(__dirname, 'robots.txt'));
 });
 
-// 🔁 Redirecciona todas las rutas desconocidas a index.html (SPA fallback)
-app.get('*', (req, res) => {
+// ✅ Página principal
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-// ▶️ Iniciar servidor
+// ✅ Rutas como /login.html, /carrito.html, /admin.html
+app.get('/:page.html', (req, res) => {
+  const requestedPage = req.params.page;
+  const filePath = path.join(__dirname, 'views', `${requestedPage}.html`);
+  
+  res.sendFile(filePath, (err) => {
+    if (err) {
+      res.status(404).send("❌ Página no encontrada");
+    }
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`🌐 Frontend servido en http://localhost:${PORT}`);
 });
