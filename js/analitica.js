@@ -9,7 +9,7 @@ if (!token) {
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
 const API_PRODUCTS = `${API_BASE}/products`;
 const API_PEDIDOS = `${API_BASE}/orders`;
-const API_VISITAS = `${API_BASE}/visitas/contador`;
+const API_VISITAS = `${API_BASE}/stats/contador`;
 
 // 📊 Cargar estadísticas
 async function loadStatistics() {
@@ -44,7 +44,9 @@ async function loadStatistics() {
     });
 
     // 👥 Visitas
-    const resVisitas = await fetch(API_VISITAS);
+    const resVisitas = await fetch(API_VISITAS, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
     if (!resVisitas.ok) throw new Error("Error al obtener visitas");
     const visitasData = await resVisitas.json();
     document.getElementById("visitas").textContent = visitasData.total || 0;
