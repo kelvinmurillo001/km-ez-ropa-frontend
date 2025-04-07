@@ -107,7 +107,6 @@ function renderizarVariantes() {
 }
 
 function eliminarVariante(i) {
-  // ⚠️ Esta lógica elimina de la vista. Si quieres eliminar de Cloudinary, deberás hacer un fetch al backend.
   variantes.splice(i, 1);
   renderizarVariantes();
 }
@@ -143,7 +142,7 @@ form.addEventListener("submit", async (e) => {
     subcategory: subcategoria,
     stock,
     featured: destacado,
-    variants
+    variants: variantes // ✅ CORREGIDO
   };
 
   try {
