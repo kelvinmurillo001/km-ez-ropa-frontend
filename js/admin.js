@@ -9,8 +9,8 @@ const message = document.getElementById("message");
 const preview = document.getElementById("previewImagen");
 
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api/products";
-const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/<TU_CLOUD_NAME>/image/upload";
-const CLOUDINARY_UPLOAD_PRESET = "<TU_UPLOAD_PRESET>";
+const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dmbnkrhek/image/upload";
+const CLOUDINARY_UPLOAD_PRESET = "ml_default";
 
 const categorias = {
   Hombre: ["Camisas", "Pantalones", "Chaquetas", "Ropa interior"],
