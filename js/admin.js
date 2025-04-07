@@ -44,21 +44,18 @@ document.getElementById("categoriaSelect").addEventListener("change", () => {
   }
 });
 
-// ✅ Subir imagen al BACKEND (quien sube a Cloudinary)
+// ✅ Subir imagen al BACKEND
 async function uploadToBackend(file) {
   const formData = new FormData();
   formData.append("image", file);
 
   const res = await fetch(API_UPLOAD, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`
-    },
+    headers: { Authorization: `Bearer ${token}` },
     body: formData
   });
 
   if (!res.ok) throw new Error("❌ Error al subir imagen al servidor");
-
   const data = await res.json();
   return {
     imageUrl: data.url,
@@ -82,16 +79,20 @@ document.getElementById("addVariante").addEventListener("click", async () => {
     const { imageUrl, cloudinaryId } = await uploadToBackend(imagen);
     variantes.push({ talla, color, imageUrl, cloudinaryId });
     renderizarVariantes();
-    document.getElementById("talla").value = "";
-    document.getElementById("color").value = "";
-    document.getElementById("imagen").value = "";
-    preview.innerHTML = "";
+    limpiarCamposVariante();
     showMessage("✅ Variante agregada", "green");
   } catch (err) {
     console.error(err);
     showMessage("❌ Error subiendo imagen", "red");
   }
 });
+
+function limpiarCamposVariante() {
+  document.getElementById("talla").value = "";
+  document.getElementById("color").value = "";
+  document.getElementById("imagen").value = "";
+  preview.innerHTML = "";
+}
 
 function renderizarVariantes() {
   const contenedor = document.getElementById("listaVariantes");

@@ -3,18 +3,22 @@ body {
   background: url("../assets/logo.jpg") no-repeat center center fixed;
   background-size: cover;
   backdrop-filter: brightness(0.97);
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 body.modo-oscuro {
   backdrop-filter: brightness(0.25);
+  color: white;
 }
 
-/* 📦 Contenedor */
+/* 📦 Contenedor principal */
 .admin-container {
-  max-width: 600px;
+  max-width: 700px;
   margin: 40px auto;
   padding: 2rem;
-  background-color: rgba(255, 255, 255, 0.96);
+  background-color: rgba(255, 255, 255, 0.97);
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.2);
 }
@@ -25,27 +29,44 @@ body.modo-oscuro .admin-container {
 }
 
 /* 🧾 Títulos */
-.admin-container h1,
-.admin-container h2 {
+h1, h2, h3, legend {
   text-align: center;
   margin-bottom: 20px;
+  font-weight: bold;
 }
 
-/* 📋 Formulario */
-.admin-container form {
+/* 🧾 Fieldsets */
+fieldset {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+}
+
+body.modo-oscuro fieldset {
+  border-color: #555;
+}
+
+legend {
+  padding: 0 12px;
+  font-size: 1rem;
+}
+
+/* 📝 Formulario */
+form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 1rem;
 }
 
-/* 📁 Inputs y Selects */
-.admin-container input,
-.admin-container select,
-.admin-container textarea {
+/* 🧩 Inputs, selects */
+input, select, textarea {
+  width: 100%;
   padding: 12px;
   font-size: 16px;
   border-radius: 8px;
   border: 1px solid #ccc;
+  box-sizing: border-box;
 }
 
 body.modo-oscuro input,
@@ -56,7 +77,17 @@ body.modo-oscuro textarea {
   border-color: #444;
 }
 
-/* 🖼 Vista previa */
+/* 🧱 Fila de campos */
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.form-row > * {
+  flex: 1;
+}
+
+/* 🖼️ Vista previa de imagen */
 .image-preview img {
   max-width: 100%;
   margin-top: 10px;
@@ -64,19 +95,33 @@ body.modo-oscuro textarea {
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
-/* 📦 Botón principal */
-.btn {
-  background-color: #007bff;
-  color: white;
-  font-weight: bold;
+/* 🔘 Botones */
+.btn, .btn-guardar, .btn-secundario {
   padding: 12px;
+  font-size: 16px;
   border-radius: 8px;
   border: none;
+  font-weight: bold;
+  cursor: pointer;
   transition: background 0.3s;
 }
 
-.btn:hover {
+.btn-guardar {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-guardar:hover {
   background-color: #0056b3;
+}
+
+.btn-secundario {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.btn-secundario:hover {
+  background-color: #117a8b;
 }
 
 /* 🔙 Botón volver */
@@ -95,11 +140,11 @@ body.modo-oscuro textarea {
   background-color: #222;
 }
 
-/* ✅ Mensaje de éxito/error */
+/* ✅ Mensajes */
 .admin-message {
   text-align: center;
-  margin-top: 10px;
   font-weight: bold;
+  margin-top: 10px;
   color: green;
 }
 
@@ -107,35 +152,57 @@ body.modo-oscuro textarea {
   color: red;
 }
 
-/* 📋 Lista productos */
+/* 📋 Variantes */
+.variantes-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.variante-card {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  width: 160px;
+  text-align: center;
+}
+
+body.modo-oscuro .variante-card {
+  background-color: #2a2a2a;
+  border-color: #444;
+  color: white;
+}
+
+.variante-card img {
+  max-width: 100%;
+  border-radius: 6px;
+  margin-bottom: 5px;
+}
+
+/* 🗂 Lista productos */
 .product-list {
   margin-top: 1rem;
-}
-/* ✨ Mejoras UX */
-input:focus-visible, select:focus-visible, textarea:focus-visible {
-  outline: 2px solid #007bff;
-  box-shadow: 0 0 0 2px rgba(0,123,255,0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-/* 💬 Animación para mensajes */
-.admin-message {
-  transition: all 0.3s ease;
-  opacity: 0.9;
+.card {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 10px;
+  background-color: #f4f4f4;
 }
 
-/* 📱 Responsive mejora */
-@media (max-width: 600px) {
-  .admin-container {
-    margin: 20px;
-    padding: 1rem;
-  }
+body.modo-oscuro .card {
+  background-color: #262626;
+  color: white;
+  border-color: #444;
+}
 
-  .variante-group {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .btn {
-    width: 100%;
-  }
+.card img {
+  border-radius: 6px;
+  margin-top: 6px;
 }

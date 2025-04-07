@@ -1,11 +1,13 @@
-/* 📱 Responsive global utilities */
+/* 📱 Responsive Design */
 
+/* Escritorio medio (≤ 1200px) */
 @media (max-width: 1200px) {
   .container {
     padding: 20px;
   }
 }
 
+/* Tablet (≤ 992px) */
 @media (max-width: 992px) {
   .hide-on-tablet {
     display: none;
@@ -14,8 +16,17 @@
   .tablet-full {
     width: 100% !important;
   }
+
+  .admin-container {
+    padding: 1.5rem;
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
 }
 
+/* Móviles (≤ 768px) */
 @media (max-width: 768px) {
   .grid-responsive {
     display: grid;
@@ -32,11 +43,27 @@
   }
 
   .btn,
-  button {
+  button,
+  input,
+  select {
+    width: 100% !important;
+  }
+
+  .admin-container {
+    margin: 20px 10px;
+  }
+
+  .variante-card {
     width: 100%;
+  }
+
+  .image-preview img {
+    max-width: 100%;
+    height: auto;
   }
 }
 
+/* Teléfonos pequeños (≤ 480px) */
 @media (max-width: 480px) {
   h1 {
     font-size: 1.4rem;
@@ -56,5 +83,16 @@
 
   .mobile-full {
     width: 100%;
+  }
+
+  .admin-message {
+    font-size: 0.95rem;
+  }
+
+  .btn-volver {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1rem;
   }
 }
