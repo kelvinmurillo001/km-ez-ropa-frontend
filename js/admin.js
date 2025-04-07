@@ -9,8 +9,8 @@ const message = document.getElementById("message");
 const preview = document.getElementById("previewImagen");
 
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api/products";
-const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/<tu-cloud-name>/image/upload";
-const CLOUDINARY_UPLOAD_PRESET = "<tu-upload-preset>";
+const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/<TU_CLOUD_NAME>/image/upload";
+const CLOUDINARY_UPLOAD_PRESET = "<TU_UPLOAD_PRESET>";
 
 const categorias = {
   Hombre: ["Camisas", "Pantalones", "Chaquetas", "Ropa interior"],
@@ -56,12 +56,13 @@ async function uploadToCloudinary(file) {
   });
 
   if (!res.ok) throw new Error("❌ Error al subir imagen");
-
   const data = await res.json();
-  return data.secure_url;
+  return {
+    imageUrl: data.secure_url,
+    cloudinaryId: data.public_id
+  };
 }
 
-// Variantes locales
 let variantes = [];
 
 document.getElementById("addVariante").addEventListener("click", async () => {
@@ -75,8 +76,8 @@ document.getElementById("addVariante").addEventListener("click", async () => {
   }
 
   try {
-    const imageUrl = await uploadToCloudinary(imagen);
-    variantes.push({ talla, color, image: imageUrl });
+    const { imageUrl, cloudinaryId } = await uploadToCloudinary(imagen);
+    variantes.push({ talla, color, imageUrl, cloudinaryId });
     renderizarVariantes();
     document.getElementById("talla").value = "";
     document.getElementById("color").value = "";
@@ -84,6 +85,7 @@ document.getElementById("addVariante").addEventListener("click", async () => {
     preview.innerHTML = "";
     showMessage("✅ Variante agregada", "green");
   } catch (err) {
+    console.error(err);
     showMessage("❌ Error subiendo imagen", "red");
   }
 });
@@ -97,7 +99,7 @@ function renderizarVariantes() {
     div.innerHTML = `
       <p><strong>Talla:</strong> ${v.talla}</p>
       <p><strong>Color:</strong> ${v.color}</p>
-      <img src="${v.image}" width="100" />
+      <img src="${v.imageUrl}" width="100" />
       <button onclick="eliminarVariante(${i})">❌ Eliminar</button>
     `;
     contenedor.appendChild(div);
@@ -140,7 +142,7 @@ form.addEventListener("submit", async (e) => {
     subcategory: subcategoria,
     stock,
     featured: destacado,
-    variants: variantes
+    variants
   };
 
   try {
@@ -186,7 +188,7 @@ async function cargarProductos() {
       const variantesHtml = p.variants?.map(v => `
         <div>
           <p>${v.talla} - ${v.color}</p>
-          <img src="${v.image}" width="80" />
+          <img src="${v.imageUrl}" width="80" />
         </div>`).join("") || "Sin variantes";
 
       card.innerHTML = `

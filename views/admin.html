@@ -17,9 +17,8 @@
 <body>
 
   <div class="admin-container">
-    <!-- 🔙 Botón para volver -->
+    <!-- 🔙 Volver -->
     <a class="btn-volver" href="panel.html">⬅️ Volver al Panel</a>
-
     <h1>🛍️ Administrar Productos</h1>
 
     <!-- 📋 Formulario producto -->
@@ -31,25 +30,28 @@
       <select id="categoriaSelect" required></select>
       <select id="subcategoriaSelect" required></select>
 
-      <!-- 🧵 Campos de variantes -->
+      <!-- 🧵 Variantes -->
+      <h3>🧩 Agregar Variante (talla + color + imagen)</h3>
       <div class="variante-group">
         <input type="text" id="talla" placeholder="Talla (Ej: S, M, L)" />
         <input type="text" id="color" placeholder="Color (Ej: rojo, azul)" />
         <input type="file" id="imagen" accept="image/*" />
         <button type="button" id="addVariante">➕ Agregar Variante</button>
       </div>
+
+      <!-- 🖼️ Vista previa -->
       <div class="image-preview" id="previewImagen"></div>
 
-      <!-- 🧾 Stock y destacado -->
+      <!-- 🧾 Stock general y destacado -->
       <input type="number" id="stock" placeholder="Stock disponible" min="0" required />
       <label><input type="checkbox" id="featured" /> Destacado ⭐</label>
 
-      <!-- 💾 Guardar -->
+      <!-- 💾 Guardar producto -->
       <button type="submit" class="btn">📦 Guardar Producto</button>
     </form>
 
-    <!-- ✅ Lista de variantes -->
-    <h3>🧩 Variantes añadidas</h3>
+    <!-- ✅ Lista de variantes agregadas -->
+    <h3>📸 Variantes añadidas:</h3>
     <div id="listaVariantes" class="variantes-container"></div>
 
     <!-- ✅ Mensaje -->
@@ -57,10 +59,9 @@
 
     <hr />
 
-    <h2>📋 Productos Registrados</h2>
-    <div class="product-list" id="listaProductos">
-      <!-- Renderizado por JS -->
-    </div>
+    <!-- 📋 Lista productos -->
+    <h2>🗂️ Productos Registrados</h2>
+    <div class="product-list" id="listaProductos"></div>
   </div>
 
   <!-- 🌗 Modo oscuro -->
