@@ -23,7 +23,7 @@
     <h1>🛍️ Administrar Productos</h1>
 
     <!-- 📋 Formulario producto -->
-    <form id="productoForm" enctype="multipart/form-data">
+    <form id="productoForm">
       <input type="text" id="nombre" placeholder="Nombre del producto" required />
       <input type="number" id="precio" placeholder="Precio ($)" step="0.01" required />
       <input type="text" id="descripcion" placeholder="Descripción" />
@@ -31,20 +31,26 @@
       <select id="categoriaSelect" required></select>
       <select id="subcategoriaSelect" required></select>
 
-      <!-- 🧵 Campos adicionales -->
-      <input type="text" id="talla" placeholder="Talla (Ej: S, M, L, XL)" />
-      <input type="text" id="colores" placeholder="Colores (Ej: rojo, azul, negro)" />
-
-      <!-- ✅ Nuevo: Stock -->
-      <input type="number" id="stock" placeholder="Stock disponible" min="0" required />
-
-      <!-- 📷 Imagen -->
-      <input type="file" id="imagen" accept="image/*" />
+      <!-- 🧵 Campos de variantes -->
+      <div class="variante-group">
+        <input type="text" id="talla" placeholder="Talla (Ej: S, M, L)" />
+        <input type="text" id="color" placeholder="Color (Ej: rojo, azul)" />
+        <input type="file" id="imagen" accept="image/*" />
+        <button type="button" id="addVariante">➕ Agregar Variante</button>
+      </div>
       <div class="image-preview" id="previewImagen"></div>
+
+      <!-- 🧾 Stock y destacado -->
+      <input type="number" id="stock" placeholder="Stock disponible" min="0" required />
+      <label><input type="checkbox" id="featured" /> Destacado ⭐</label>
 
       <!-- 💾 Guardar -->
       <button type="submit" class="btn">📦 Guardar Producto</button>
     </form>
+
+    <!-- ✅ Lista de variantes -->
+    <h3>🧩 Variantes añadidas</h3>
+    <div id="listaVariantes" class="variantes-container"></div>
 
     <!-- ✅ Mensaje -->
     <div id="message" class="admin-message"></div>
@@ -53,7 +59,7 @@
 
     <h2>📋 Productos Registrados</h2>
     <div class="product-list" id="listaProductos">
-      <!-- Aquí aparecerán los productos -->
+      <!-- Renderizado por JS -->
     </div>
   </div>
 
