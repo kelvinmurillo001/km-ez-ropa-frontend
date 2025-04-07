@@ -9,8 +9,7 @@ const message = document.getElementById("message");
 const preview = document.getElementById("previewImagen");
 
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api/products";
-const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dmbnkrhek/image/upload";
-const CLOUDINARY_UPLOAD_PRESET = "ml_default";
+const API_UPLOAD = "https://km-ez-ropa-backend.onrender.com/api/uploads";
 
 const categorias = {
   Hombre: ["Camisas", "Pantalones", "Chaquetas", "Ropa interior"],
@@ -45,20 +44,24 @@ document.getElementById("categoriaSelect").addEventListener("change", () => {
   }
 });
 
-async function uploadToCloudinary(file) {
+// ✅ Subir imagen al BACKEND (quien sube a Cloudinary)
+async function uploadToBackend(file) {
   const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+  formData.append("image", file);
 
-  const res = await fetch(CLOUDINARY_URL, {
+  const res = await fetch(API_UPLOAD, {
     method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
     body: formData
   });
 
-  if (!res.ok) throw new Error("❌ Error al subir imagen");
+  if (!res.ok) throw new Error("❌ Error al subir imagen al servidor");
+
   const data = await res.json();
   return {
-    imageUrl: data.secure_url,
+    imageUrl: data.url,
     cloudinaryId: data.public_id
   };
 }
@@ -76,7 +79,7 @@ document.getElementById("addVariante").addEventListener("click", async () => {
   }
 
   try {
-    const { imageUrl, cloudinaryId } = await uploadToCloudinary(imagen);
+    const { imageUrl, cloudinaryId } = await uploadToBackend(imagen);
     variantes.push({ talla, color, imageUrl, cloudinaryId });
     renderizarVariantes();
     document.getElementById("talla").value = "";
@@ -111,10 +114,12 @@ function eliminarVariante(i) {
   renderizarVariantes();
 }
 
+// 💾 Guardar producto
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const btn = form.querySelector("button[type=submit]");
   btn.disabled = true;
+  btn.textContent = "⏳ Guardando...";
 
   const nombre = document.getElementById("nombre").value.trim();
   const precio = parseFloat(document.getElementById("precio").value);
@@ -126,12 +131,14 @@ form.addEventListener("submit", async (e) => {
   if (!nombre || isNaN(precio) || !categoria || !subcategoria) {
     showMessage("⚠️ Todos los campos obligatorios deben completarse", "red");
     btn.disabled = false;
+    btn.textContent = "📦 Guardar Producto";
     return;
   }
 
   if (variantes.length === 0) {
     showMessage("⚠️ Debes agregar al menos una variante", "red");
     btn.disabled = false;
+    btn.textContent = "📦 Guardar Producto";
     return;
   }
 
@@ -142,7 +149,7 @@ form.addEventListener("submit", async (e) => {
     subcategory: subcategoria,
     stock,
     featured: destacado,
-    variants: variantes // ✅ CORREGIDO
+    variants
   };
 
   try {
@@ -171,6 +178,7 @@ form.addEventListener("submit", async (e) => {
     showMessage("❌ Error del servidor", "red");
   } finally {
     btn.disabled = false;
+    btn.textContent = "📦 Guardar Producto";
   }
 });
 
