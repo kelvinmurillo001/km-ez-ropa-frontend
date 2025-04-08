@@ -5,20 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tu Carrito | KM & EZ ROPA</title>
 
-  <!-- 🧠 SEO Meta Tags -->
+  <!-- ✅ SEO -->
   <meta name="description" content="Revisa y finaliza tu pedido con KM & EZ ROPA. Consulta por WhatsApp y recibe tu ropa a domicilio.">
   <meta name="keywords" content="carrito, pedidos, ropa, km ez, moda, whatsapp, ecommerce, comprar ropa">
   <meta name="author" content="KM & EZ ROPA">
   <meta name="robots" content="index, follow">
 
-  <!-- 🌐 Open Graph -->
+  <!-- 🌐 Open Graph / Twitter -->
   <meta property="og:title" content="Tu Carrito | KM & EZ ROPA">
   <meta property="og:description" content="Revisa y finaliza tu pedido con KM & EZ ROPA. Consulta por WhatsApp y recibe tu ropa a domicilio.">
   <meta property="og:image" content="https://km-ez-ropa-backend.onrender.com/assets/logo.jpg">
   <meta property="og:url" content="https://km-ez-ropa-frontend.onrender.com/carrito.html">
   <meta property="og:type" content="website">
-
-  <!-- 🐦 Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Tu Carrito | KM & EZ ROPA">
   <meta name="twitter:description" content="Consulta tus productos seleccionados y realiza tu pedido fácilmente.">
@@ -45,42 +43,46 @@
 </head>
 <body>
 
-  <div class="catalogo-container">
+  <main class="catalogo-container" role="main" aria-label="Contenido principal del carrito">
     <h1 class="text-center carrito-titulo">🛍️ Tu Carrito</h1>
 
-    <div id="cart-items" class="carrito-items">
-      <!-- Renderizado por JS -->
-    </div>
+    <!-- Productos del carrito -->
+    <section id="cart-items" class="carrito-items" aria-live="polite">
+      <!-- Render dinámico con JS -->
+    </section>
 
-    <div class="carrito-formulario">
+    <!-- Formulario de pedido -->
+    <section class="carrito-formulario">
       <h3>Total estimado: <span id="cart-total">$0.00</span></h3>
       <p id="total-unidades">Total unidades: 0</p>
 
+      <label for="clienteNombre" class="sr-only">Nombre del cliente</label>
       <input type="text" id="clienteNombre" placeholder="Tu nombre" required />
+
+      <label for="nota" class="sr-only">Nota adicional</label>
       <textarea id="nota" placeholder="Nota adicional (opcional)" rows="2"></textarea>
 
       <div class="botones-finales">
-        <button onclick="enviarDesdeCarrito()" class="btn-whatsapp">📲 Consultar por WhatsApp</button>
-        <button onclick="vaciarCarrito()" class="btn-vaciar">🗑 Vaciar Carrito</button>
+        <button onclick="enviarDesdeCarrito()" class="btn-whatsapp" aria-label="Enviar pedido por WhatsApp">📲 Consultar por WhatsApp</button>
+        <button onclick="vaciarCarrito()" class="btn-vaciar" aria-label="Vaciar el carrito">🗑 Vaciar Carrito</button>
       </div>
 
-      <p id="confirmacion" class="confirmacion oculto">✅ ¡Pedido enviado!</p>
-    </div>
-  </div>
+      <p id="confirmacion" class="confirmacion oculto" role="status" aria-live="polite">✅ ¡Pedido enviado!</p>
+    </section>
+  </main>
 
-  <!-- 🔍 Modal de imagen -->
+  <!-- Modal de imagen -->
   <div id="imageModal" class="modal-zoom oculto" onclick="cerrarModalImagen()">
     <span class="modal-close">✖️</span>
-    <img id="modalImage" src="" alt="Vista ampliada" />
+    <img id="modalImage" src="" alt="Vista ampliada del producto" />
   </div>
 
   <!-- Scripts -->
   <script src="/js/cart.js"></script>
   <script>
-    window.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", () => {
       renderCartItems();
       updateCartWidget();
-
       if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
       }
@@ -99,6 +101,7 @@
 
       const confirm = document.getElementById("confirmacion");
       confirm.classList.remove("oculto");
+      confirm.focus();
     }
 
     function vaciarCarrito() {

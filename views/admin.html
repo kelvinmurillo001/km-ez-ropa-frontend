@@ -5,79 +5,96 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin - Productos | KM & EZ ROPA</title>
 
-  <!-- Estilos -->
+  <!-- 🛡️ Protección SEO -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="author" content="KM & EZ ROPA">
+  <meta name="description" content="Panel de administración para gestionar productos en la tienda KM & EZ ROPA.">
+
+  <!-- ✅ Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/admin.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
 
-  <!-- Script principal -->
+  <!-- 📦 Script principal -->
   <script src="/js/admin.js" defer></script>
 </head>
 <body>
 
-  <div class="admin-container">
+  <main class="admin-container" role="main" aria-label="Gestión de productos">
+
     <!-- 🔙 Volver -->
-    <a class="btn-volver" href="panel.html">⬅️ Volver al Panel</a>
+    <nav aria-label="Volver al panel">
+      <a class="btn-volver" href="panel.html">⬅️ Volver al Panel</a>
+    </nav>
+
     <h1>🛍️ Administrar Productos</h1>
 
-    <!-- 📋 Formulario producto -->
-    <form id="productoForm">
+    <!-- 📝 Formulario producto -->
+    <form id="productoForm" autocomplete="off" aria-label="Formulario de producto">
 
-      <!-- 📦 Información del producto -->
+      <!-- 📦 Información básica -->
       <fieldset>
         <legend>📦 Información del Producto</legend>
         <div class="form-row">
-          <input type="text" id="nombre" placeholder="Nombre del producto" required />
-          <input type="number" id="precio" placeholder="Precio ($)" step="0.01" required />
+          <input type="text" id="nombre" name="nombre" placeholder="Nombre del producto" required />
+          <input type="number" id="precio" name="precio" placeholder="Precio ($)" step="0.01" required />
         </div>
-        <input type="text" id="descripcion" placeholder="Descripción del producto" />
+        <input type="text" id="descripcion" name="descripcion" placeholder="Descripción del producto" />
         <div class="form-row">
-          <select id="categoriaSelect" required></select>
-          <select id="subcategoriaSelect" required></select>
+          <select id="categoriaSelect" name="categoria" required aria-label="Categoría"></select>
+          <select id="subcategoriaSelect" name="subcategoria" required aria-label="Subcategoría"></select>
         </div>
       </fieldset>
 
-      <!-- 🧩 Variante -->
+      <!-- 🧩 Variantes -->
       <fieldset>
-        <legend>🧩 Agregar Variante</legend>
+        <legend>🧩 Variantes</legend>
         <div class="form-row">
           <input type="text" id="talla" placeholder="Talla (Ej: S, M, L)" />
           <input type="text" id="color" placeholder="Color (Ej: rojo, azul)" />
         </div>
-        <input type="file" id="imagen" accept="image/*" />
-        <button type="button" id="addVariante" class="btn-secundario">➕ Agregar Variante</button>
+        <input type="file" id="imagen" accept="image/*" aria-label="Subir imagen de variante" />
+        <button type="button" id="addVariante" class="btn-secundario" aria-label="Agregar variante">➕ Agregar Variante</button>
         <div class="image-preview" id="previewImagen"></div>
       </fieldset>
 
-      <!-- 🧾 Stock -->
+      <!-- 📦 Stock -->
       <fieldset>
         <legend>📊 Inventario</legend>
         <div class="form-row">
           <input type="number" id="stock" placeholder="Stock disponible" min="0" required />
-          <label><input type="checkbox" id="featured" /> Producto destacado ⭐</label>
+          <label>
+            <input type="checkbox" id="featured" />
+            Producto destacado ⭐
+          </label>
         </div>
       </fieldset>
 
-      <!-- 💾 Guardar -->
-      <button type="submit" class="btn-guardar">💾 Guardar Producto</button>
+      <!-- 💾 Guardar producto -->
+      <button type="submit" class="btn-guardar" aria-label="Guardar producto">💾 Guardar Producto</button>
     </form>
 
-    <!-- ✅ Lista de variantes agregadas -->
-    <h3>📸 Variantes añadidas:</h3>
-    <div id="listaVariantes" class="variantes-container"></div>
+    <!-- ✅ Variantes agregadas -->
+    <section aria-label="Variantes agregadas">
+      <h3>📸 Variantes añadidas</h3>
+      <div id="listaVariantes" class="variantes-container"></div>
+    </section>
 
-    <!-- ✅ Mensaje -->
-    <div id="message" class="admin-message"></div>
+    <!-- 📢 Mensaje de estado -->
+    <div id="message" class="admin-message" role="alert" aria-live="polite"></div>
 
     <hr />
 
-    <!-- 📋 Lista productos -->
-    <h2>📦 Productos Registrados</h2>
-    <div class="product-list" id="listaProductos"></div>
-  </div>
+    <!-- 📋 Productos registrados -->
+    <section aria-label="Lista de productos">
+      <h2>📦 Productos Registrados</h2>
+      <div class="product-list" id="listaProductos"></div>
+    </section>
 
-  <!-- 🌗 Modo oscuro -->
+  </main>
+
+  <!-- 🌗 Modo oscuro persistente -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("modoOscuro") === "true") {

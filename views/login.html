@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Iniciar Sesión | KM & EZ ROPA</title>
 
-  <!-- 🔍 SEO Meta Tags -->
+  <!-- 🔍 SEO -->
   <meta name="description" content="Accede al panel de administración de KM & EZ ROPA para gestionar productos, pedidos y promociones.">
   <meta name="keywords" content="login, administrador, km ez ropa, iniciar sesión, tienda online">
   <meta name="author" content="KM & EZ ROPA">
-  <meta name="robots" content="noindex, nofollow"> <!-- 🔐 Protegido de indexación -->
+  <meta name="robots" content="noindex, nofollow">
 
   <!-- 🌐 Open Graph -->
   <meta property="og:title" content="Iniciar sesión | KM & EZ ROPA">
@@ -37,31 +37,57 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-LPEBT3EKGE"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag(){ dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'G-LPEBT3EKGE');
   </script>
 
-  <!-- ✅ Script diferido -->
+  <!-- ✅ Lógica de autenticación -->
   <script src="/js/login.js" defer></script>
 </head>
 <body>
 
+  <!-- 🧾 Contenido principal -->
   <main class="login-box" role="main">
     <h1>🔐 Iniciar sesión</h1>
 
-    <form id="loginForm" autocomplete="off" novalidate aria-label="Formulario de acceso">
-      <label for="username" class="sr-only">Usuario</label>
-      <input type="text" id="username" placeholder="Usuario" required />
+    <form id="loginForm" autocomplete="off" novalidate aria-labelledby="form-title">
+      <input type="hidden" name="csrf" value="<!-- opcional si se implementa -->">
 
-      <label for="password" class="sr-only">Contraseña</label>
-      <input type="password" id="password" placeholder="Contraseña" required />
+      <div class="form-group">
+        <label for="username" class="sr-only">Usuario</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          placeholder="Usuario"
+          required
+          aria-required="true"
+          aria-label="Usuario"
+        />
+      </div>
 
-      <button type="submit" class="btn">Entrar</button>
-      <p class="error" id="error" role="alert"></p>
+      <div class="form-group">
+        <label for="password" class="sr-only">Contraseña</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Contraseña"
+          required
+          aria-required="true"
+          aria-label="Contraseña"
+        />
+      </div>
+
+      <button type="submit" class="btn" aria-label="Iniciar sesión">Entrar</button>
+
+      <!-- Mensaje de error accesible -->
+      <p class="error" id="error" role="alert" aria-live="polite"></p>
     </form>
   </main>
 
+  <!-- 🔕 Sin JS -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>

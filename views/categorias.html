@@ -5,7 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Categorías | KM & EZ ROPA</title>
 
-  <!-- Estilos -->
+  <!-- 🔐 Meta -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="Gestión de categorías y subcategorías para los productos de KM & EZ ROPA." />
+  <meta name="author" content="KM & EZ ROPA" />
+
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/catalogo.css" />
@@ -14,44 +19,49 @@
 </head>
 <body class="admin-page fade-in" onload="verificarToken()">
 
-  <div class="admin-container">
+  <main class="admin-container" role="main" aria-label="Gestión de categorías y subcategorías">
     <h1>📁 Gestión de Categorías</h1>
 
-    <!-- 💬 Mensaje -->
-    <div id="message" class="admin-message"></div>
+    <!-- 💬 Mensaje dinámico -->
+    <div id="message" class="admin-message" role="alert" aria-live="polite"></div>
 
     <!-- 📋 Crear categoría -->
-    <form id="formCategoria" class="form-block">
-      <input type="text" id="nombreCategoria" placeholder="Nombre de categoría" required />
+    <form id="formCategoria" class="form-block" aria-label="Formulario para crear categoría">
+      <input type="text" id="nombreCategoria" placeholder="Nombre de categoría" required aria-label="Nombre de categoría" />
       <button type="submit" class="btn">➕ Crear categoría</button>
     </form>
 
-    <!-- ➕ Subcategorías -->
-    <form id="subcategoryForm" class="form-block mt-2">
-      <select id="categorySelect" required>
+    <!-- ➕ Agregar subcategoría -->
+    <form id="subcategoryForm" class="form-block mt-2" aria-label="Formulario para agregar subcategoría">
+      <select id="categorySelect" required aria-label="Selecciona una categoría">
         <option value="">Selecciona una categoría</option>
       </select>
-      <input type="text" id="nuevaSubcategoria" placeholder="Nueva subcategoría" required />
+      <input type="text" id="nuevaSubcategoria" placeholder="Nueva subcategoría" required aria-label="Nueva subcategoría" />
       <button type="submit" class="btn">➕ Agregar subcategoría</button>
     </form>
 
-    <!-- 🔙 Volver y salir -->
+    <!-- 🔙 Volver y cerrar sesión -->
     <div class="mt-2">
-      <button onclick="goBack()" class="btn-secondary">🔙 Volver al Panel</button>
-      <button onclick="logout()" class="btn-danger">🚪 Cerrar sesión</button>
+      <button onclick="goBack()" class="btn-secondary" aria-label="Volver al panel">🔙 Volver al Panel</button>
+      <button onclick="logout()" class="btn-danger" aria-label="Cerrar sesión">🚪 Cerrar sesión</button>
     </div>
 
-    <!-- 📦 Lista de categorías -->
-    <section class="lista-categorias mt-3" id="listaCategorias">
+    <!-- 📦 Lista dinámica -->
+    <section class="lista-categorias mt-3" id="listaCategorias" aria-label="Listado de categorías existentes">
       <!-- Renderizado por JS -->
     </section>
-  </div>
+  </main>
 
-  <!-- Scripts -->
+  <!-- 🚫 No JS -->
+  <noscript>
+    <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+  </noscript>
+
+  <!-- ✅ Scripts -->
   <script src="/js/login.js"></script>
   <script src="/js/categorias.js"></script>
   <script>
-    // 🌗 Modo oscuro persistente
+    // 🌙 Modo oscuro
     if (localStorage.getItem("modoOscuro") === "true") {
       document.body.classList.add("modo-oscuro");
     }

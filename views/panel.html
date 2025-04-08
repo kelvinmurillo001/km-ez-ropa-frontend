@@ -5,35 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Panel de Control | KM & EZ ROPA</title>
 
-  <!-- Estilos -->
+  <!-- 🔐 SEO básico -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="author" content="KM & EZ ROPA" />
+  <meta name="description" content="Accede al panel administrativo de KM & EZ ROPA para gestionar tu tienda." />
+
+  <!-- ✅ Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/panel.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
 
-  <!-- Seguridad: Protege el panel al cargar -->
+  <!-- 🔒 Seguridad JS: Protección de sesión -->
   <script src="/js/panel.js" defer></script>
 </head>
 <body>
-  <div class="panel-container">
+
+  <main class="panel-container" role="main" aria-label="Panel de administración">
+    <!-- 🧭 Header -->
     <header class="header-panel">
       <h1>🛠️ Panel de Administración</h1>
-      <button onclick="logout()" class="btn btn-danger" aria-label="Cerrar sesión">🔓 Cerrar sesión</button>
+      <button onclick="logout()" class="btn btn-danger" aria-label="Cerrar sesión de administrador">🔓 Cerrar sesión</button>
     </header>
 
-    <section class="menu-panel">
-      <a href="admin.html" class="btn-panel-link">📦 Productos</a>
-      <a href="categorias.html" class="btn-panel-link">📁 Categorías</a>
-      <a href="promociones.html" class="btn-panel-link">🎯 Promociones</a>
-      <a href="pedidos.html" class="btn-panel-link">🧾 Pedidos</a>
-      <a href="dashboard.html" class="btn-panel-link">📊 Analítica</a>
-      <a href="index.html" class="btn-panel-link">🏠 Ir al Catálogo</a>
-    </section>
-  </div>
+    <!-- 📋 Menú principal -->
+    <nav class="menu-panel" aria-label="Navegación del panel">
+      <ul class="panel-links">
+        <li><a href="admin.html" class="btn-panel-link">📦 Productos</a></li>
+        <li><a href="categorias.html" class="btn-panel-link">📁 Categorías</a></li>
+        <li><a href="promociones.html" class="btn-panel-link">🎯 Promociones</a></li>
+        <li><a href="pedidos.html" class="btn-panel-link">🧾 Pedidos</a></li>
+        <li><a href="dashboard.html" class="btn-panel-link">📊 Analítica</a></li>
+        <li><a href="index.html" class="btn-panel-link">🏠 Ir al Catálogo</a></li>
+      </ul>
+    </nav>
+  </main>
 
-  <!-- Accesibilidad y scripts adicionales -->
+  <!-- 🚫 Sin JavaScript -->
   <noscript>
     <p style="color: red; text-align: center;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
+
 </body>
 </html>

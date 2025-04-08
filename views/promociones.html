@@ -5,7 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Promociones | KM & EZ ROPA</title>
 
-  <!-- Estilos -->
+  <!-- 🔐 Seguridad -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="Administrador de promociones activas en KM & EZ ROPA. Define el mensaje, colores y fechas.">
+
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/promociones.css" />
@@ -13,12 +17,12 @@
 </head>
 <body onload="verificarToken()">
 
-  <div class="promociones-container fade-in">
+  <main class="promociones-container fade-in" role="main" aria-label="Gestión de promociones">
     <h1>🎯 Administrar Promoción</h1>
 
     <!-- 📋 Formulario -->
-    <form id="promoForm" autocomplete="off">
-      <input type="text" id="promoMessage" placeholder="Texto de promoción..." required />
+    <form id="promoForm" autocomplete="off" aria-label="Formulario de promoción" role="form">
+      <input type="text" id="promoMessage" placeholder="Texto de promoción..." required aria-label="Texto de promoción" />
 
       <div class="row">
         <label for="isActive">
@@ -28,7 +32,7 @@
 
         <label for="theme">
           Tema:
-          <select id="theme">
+          <select id="theme" aria-label="Selecciona un color de tema">
             <option value="blue">Azul</option>
             <option value="orange">Naranja</option>
             <option value="green">Verde</option>
@@ -40,36 +44,47 @@
       <div class="row">
         <label for="startDate">
           Fecha de inicio:
-          <input type="date" id="startDate" />
+          <input type="date" id="startDate" aria-label="Fecha de inicio" />
         </label>
 
         <label for="endDate">
           Fecha de fin:
-          <input type="date" id="endDate" />
+          <input type="date" id="endDate" aria-label="Fecha de fin" />
         </label>
       </div>
 
       <button type="submit" class="btn">💾 Guardar Promoción</button>
     </form>
 
-    <!-- ✅ Feedback de éxito o error -->
-    <div id="promoFeedback" class="admin-message oculto"></div>
+    <!-- ✅ Feedback -->
+    <div id="promoFeedback" class="admin-message oculto" role="alert" aria-live="polite"></div>
 
     <!-- 👁️ Vista previa -->
     <h3 class="mt-2">Vista previa:</h3>
-    <div id="promoPreview" class="promo-preview blue">
+    <div id="promoPreview" class="promo-preview blue" aria-label="Vista previa de promoción">
       Tu mensaje aparecerá aquí...
     </div>
 
     <!-- 🔘 Acciones -->
     <div class="top-buttons mt-3">
-      <button onclick="goBack()" class="btn">🔙 Volver al Panel</button>
-      <button onclick="logout()" class="btn btn-secundario">🔒 Cerrar sesión</button>
+      <button onclick="goBack()" class="btn" aria-label="Volver al panel">🔙 Volver al Panel</button>
+      <button onclick="logout()" class="btn btn-secundario" aria-label="Cerrar sesión">🔒 Cerrar sesión</button>
     </div>
-  </div>
+  </main>
+
+  <!-- 🚫 No JS -->
+  <noscript>
+    <p style="text-align:center; color:red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+  </noscript>
 
   <!-- Scripts -->
   <script src="/js/login.js"></script>
   <script src="/js/promociones.js"></script>
+  <script>
+    // 🌗 Modo oscuro persistente
+    if (localStorage.getItem("modoOscuro") === "true") {
+      document.body.classList.add("modo-oscuro");
+    }
+  </script>
 </body>
 </html>

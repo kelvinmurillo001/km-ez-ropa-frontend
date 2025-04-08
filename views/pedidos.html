@@ -2,10 +2,15 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pedidos | KM & EZ ROPA</title>
 
-  <!-- Estilos -->
+  <!-- 🔐 Seguridad SEO -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="author" content="KM & EZ ROPA" />
+  <meta name="description" content="Gestión de pedidos para la tienda KM & EZ ROPA." />
+
+  <!-- ✅ Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/pedidos.css" />
@@ -13,17 +18,18 @@
 </head>
 <body>
 
-  <div class="pedidos-container fade-in">
+  <main class="pedidos-container fade-in" role="main" aria-label="Sección de pedidos">
     <h1>📦 Pedidos Recibidos</h1>
 
-    <!-- 🔘 Acciones -->
-    <div class="acciones-barra">
+    <!-- 🔘 Barra de acciones -->
+    <section class="acciones-barra" aria-label="Controles de pedidos">
       <div class="acciones-botones">
-        <button class="btn btn-secundario" onclick="exportarPedidos()">📄 Exportar Pedidos</button>
-        <button class="btn" onclick="regresarAlPanel()">⬅️ Volver al Panel</button>
+        <button class="btn btn-secundario" onclick="exportarPedidos()" aria-label="Exportar pedidos">📄 Exportar</button>
+        <button class="btn" onclick="regresarAlPanel()" aria-label="Volver al panel">⬅️ Panel</button>
       </div>
 
       <div class="filtros-pedidos">
+        <label for="filtroEstado" class="sr-only">Filtrar por estado</label>
         <select id="filtroEstado" onchange="filtrarPedidos()" aria-label="Filtrar por estado">
           <option value="todos">📋 Todos</option>
           <option value="pendiente">⏳ Pendiente</option>
@@ -32,30 +38,29 @@
           <option value="cancelado">❌ Cancelado</option>
         </select>
       </div>
-    </div>
-
-    <!-- 📋 Lista renderizada por JS -->
-    <section id="pedidos-container">
-      <!-- Render dinámico -->
     </section>
-  </div>
 
-  <!-- Scripts -->
+    <!-- 📋 Contenedor de pedidos -->
+    <section id="pedidos-container" aria-live="polite" aria-label="Lista de pedidos">
+      <!-- Renderizado dinámico por JS -->
+    </section>
+  </main>
+
+  <!-- ✅ Scripts -->
   <script src="/js/login.js"></script>
   <script src="/js/orders.js"></script>
   <script>
-    // Ejecutar después de cargar todo el DOM
     document.addEventListener("DOMContentLoaded", () => {
       if (typeof verificarToken === "function") {
         verificarToken();
       } else {
-        console.warn("⚠️ verificarToken no está definido.");
+        console.warn("⚠️ Función verificarToken no encontrada.");
       }
 
       if (typeof cargarPedidos === "function") {
         cargarPedidos();
       } else {
-        console.error("❌ cargarPedidos no está definido.");
+        console.error("❌ cargarPedidos() no está definido.");
       }
     });
   </script>
