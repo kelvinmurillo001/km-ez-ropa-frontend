@@ -7,7 +7,6 @@
   font-weight: bold;
   animation: fadeIn 0.6s ease-in-out;
 }
-
 body.modo-oscuro .carrito-titulo {
   color: #ffffff;
 }
@@ -26,7 +25,6 @@ body.modo-oscuro .carrito-titulo {
   gap: 16px;
   animation: fadeIn 0.5s ease;
 }
-
 body.modo-oscuro .carrito-formulario {
   background-color: rgba(25, 25, 25, 0.95);
 }
@@ -41,13 +39,11 @@ body.modo-oscuro .carrito-formulario {
   background-color: #fff;
   transition: border 0.3s;
 }
-
 .carrito-formulario input:focus,
 .carrito-formulario textarea:focus {
   border-color: #1976d2;
   outline: none;
 }
-
 body.modo-oscuro .carrito-formulario input,
 body.modo-oscuro .carrito-formulario textarea {
   background-color: #1e1e1e;
@@ -66,7 +62,6 @@ body.modo-oscuro .carrito-formulario textarea {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
 .btn-whatsapp:hover {
   background-color: #1ebc57;
   transform: scale(1.05);
@@ -83,7 +78,6 @@ body.modo-oscuro .carrito-formulario textarea {
   cursor: pointer;
   transition: background-color 0.3s;
 }
-
 .btn-vaciar:hover {
   background-color: #c62828;
 }
@@ -105,34 +99,30 @@ body.modo-oscuro .carrito-formulario textarea {
   background-color: #fff;
   border-radius: 12px;
   border: 1px solid #ddd;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   align-items: flex-start;
   transition: transform 0.2s;
 }
-
 .cart-item:hover {
   transform: translateY(-2px);
 }
-
 body.modo-oscuro .cart-item {
   background-color: #2a2a2a;
   color: #fff;
   border-color: #444;
 }
-
 .cart-item img {
   width: 90px;
   height: 90px;
   object-fit: cover;
   border-radius: 8px;
   flex-shrink: 0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .cart-info {
   flex-grow: 1;
 }
-
 .cart-info h4 {
   margin: 0 0 6px;
   font-size: 16px;
@@ -147,7 +137,6 @@ body.modo-oscuro .cart-item {
   margin-top: 10px;
   flex-wrap: wrap;
 }
-
 .cart-actions button {
   padding: 6px 12px;
   font-size: 15px;
@@ -157,24 +146,20 @@ body.modo-oscuro .cart-item {
   cursor: pointer;
   transition: background 0.2s ease;
 }
-
+.cart-actions button:hover {
+  background-color: darkorange;
+  color: white;
+}
 .cart-actions span {
   min-width: 24px;
   text-align: center;
   display: inline-block;
   font-weight: bold;
 }
-
-.cart-actions button:hover {
-  background-color: darkorange;
-  color: white;
-}
-
 body.modo-oscuro .cart-actions button {
   background-color: #444;
   color: #eee;
 }
-
 body.modo-oscuro .cart-actions button:hover {
   background-color: #555;
 }
@@ -185,11 +170,9 @@ body.modo-oscuro .cart-actions button:hover {
   font-weight: 500;
   color: #555;
 }
-
 body.modo-oscuro #total-unidades {
   color: #bbb;
 }
-
 .confirmacion {
   margin-top: 10px;
   font-weight: bold;
@@ -198,7 +181,6 @@ body.modo-oscuro #total-unidades {
   padding: 10px 16px;
   border-radius: 6px;
 }
-
 .oculto {
   display: none !important;
 }
@@ -210,22 +192,20 @@ body.modo-oscuro #total-unidades {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
   padding: 20px;
 }
-
 .modal-zoom img {
   max-width: 90%;
   max-height: 90%;
   border-radius: 10px;
-  box-shadow: 0 0 24px rgba(255,255,255,0.3);
+  box-shadow: 0 0 24px rgba(255, 255, 255, 0.3);
   object-fit: contain;
 }
-
 .modal-close {
   position: absolute;
   top: 20px;
@@ -236,7 +216,6 @@ body.modo-oscuro #total-unidades {
   font-weight: bold;
   z-index: 10000;
 }
-
 body.modo-oscuro .modal-close {
   color: #ffeb3b;
 }
@@ -248,12 +227,10 @@ body.modo-oscuro .modal-close {
     align-items: center;
     text-align: center;
   }
-
   .cart-item img {
     width: 100px;
     height: auto;
   }
-
   .cart-actions {
     justify-content: center;
   }

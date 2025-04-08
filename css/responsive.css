@@ -92,6 +92,16 @@
   .estado-select {
     width: 100%;
   }
+
+  .cart-actions {
+    justify-content: center;
+  }
+
+  .modal-close {
+    top: 10px;
+    right: 16px;
+    font-size: 26px;
+  }
 }
 
 /* 📲 Teléfonos pequeños (≤ 480px) */
@@ -138,5 +148,9 @@
   .promo-preview {
     font-size: 15px;
     padding: 14px;
+  }
+
+  .login-box {
+    padding: 20px;
   }
 }

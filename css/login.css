@@ -1,4 +1,4 @@
-/* 🎨 Login centrado */
+/* 🎨 Fondo login centrado */
 body {
   display: flex;
   justify-content: center;
@@ -10,7 +10,6 @@ body {
   color: #333;
   transition: background-color 0.3s ease;
 }
-
 body.modo-oscuro {
   background: linear-gradient(120deg, #121212, #1e1e1e);
   color: #eee;
@@ -26,7 +25,6 @@ body.modo-oscuro {
   max-width: 400px;
   animation: fadeIn 0.5s ease-in-out;
 }
-
 body.modo-oscuro .login-box {
   background-color: #1f1f1f;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
@@ -50,12 +48,10 @@ body.modo-oscuro .login-box {
   border: 1px solid #ccc;
   transition: border-color 0.3s ease;
 }
-
 .login-box input:focus {
   border-color: #1976d2;
   outline: none;
 }
-
 body.modo-oscuro .login-box input {
   background-color: #2a2a2a;
   color: #fff;
@@ -76,16 +72,13 @@ body.modo-oscuro .login-box input {
   transition: background-color 0.3s ease, transform 0.2s ease;
   margin-top: 10px;
 }
-
 .login-box .btn:hover {
   background-color: #125ea8;
   transform: translateY(-1px);
 }
-
 body.modo-oscuro .login-box .btn {
   background-color: #2196f3;
 }
-
 body.modo-oscuro .login-box .btn:hover {
   background-color: #1e88e5;
 }
@@ -110,12 +103,11 @@ body.modo-oscuro .login-box .btn:hover {
   }
 }
 
-/* 📱 Responsive (opcional si ya está en responsive.css) */
+/* 📱 Responsive */
 @media (max-width: 480px) {
   .login-box {
     padding: 24px;
   }
-
   .login-box h1 {
     font-size: 1.5rem;
   }

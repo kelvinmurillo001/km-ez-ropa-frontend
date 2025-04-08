@@ -76,6 +76,7 @@ body.modo-oscuro .panel-container {
   box-shadow: 0 6px 12px rgba(0,0,0,0.08);
 }
 
+/* 🌙 Dark mode ajustes */
 body.modo-oscuro .menu-panel a {
   background-color: #1e1e1e;
   color: #eee;

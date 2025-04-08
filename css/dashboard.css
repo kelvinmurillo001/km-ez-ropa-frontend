@@ -92,6 +92,7 @@ body.modo-oscuro .dashboard-grid .card p {
   border-left-color: #757575;
 }
 
+/* 🌙 Modo oscuro de colores de estado */
 body.modo-oscuro .card-pendiente {
   background-color: #2a1c1c;
 }

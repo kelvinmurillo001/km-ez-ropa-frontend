@@ -7,10 +7,9 @@
   background-color: #fff;
   color: #333;
   border-radius: 12px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
   animation: fadeIn 0.4s ease-in-out;
 }
-
 body.modo-oscuro .promociones-container {
   background-color: #1f1f1f;
   color: #eee;
@@ -21,7 +20,7 @@ body.modo-oscuro .promociones-container {
   text-align: center;
   margin-bottom: 24px;
   font-size: 1.8rem;
-  color: #222;
+  color: inherit;
 }
 
 /* 📋 Formulario */
@@ -32,9 +31,8 @@ body.modo-oscuro .promociones-container {
   background-color: #f7f7f7;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
-
 body.modo-oscuro .promociones-container form {
   background-color: #2a2a2a;
 }
@@ -45,16 +43,14 @@ body.modo-oscuro .promociones-container form {
   font-size: 16px;
   border-radius: 8px;
   border: 1px solid #ccc;
-  transition: all 0.2s ease;
   background-color: #fff;
+  transition: all 0.2s ease;
 }
-
 .promociones-container input:focus,
 .promociones-container select:focus {
   border-color: #1976d2;
   outline: none;
 }
-
 body.modo-oscuro .promociones-container input,
 body.modo-oscuro .promociones-container select {
   background-color: #1e1e1e;
@@ -82,17 +78,13 @@ body.modo-oscuro .promociones-container select {
   cursor: pointer;
   transition: background-color 0.25s ease, transform 0.2s ease;
 }
-
 .promociones-container button:hover {
   background-color: #125ea9;
   transform: translateY(-2px);
 }
-
 body.modo-oscuro .promociones-container button {
   background-color: #2196f3;
-  color: #fff;
 }
-
 body.modo-oscuro .promociones-container button:hover {
   background-color: #1b7fcc;
 }
@@ -106,7 +98,7 @@ body.modo-oscuro .promociones-container button:hover {
   margin-top: 16px;
   text-align: center;
   transition: all 0.3s ease-in-out;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 /* 🌈 Temas visuales */
@@ -126,13 +118,11 @@ body.modo-oscuro .promociones-container button:hover {
   color: #666;
   border: 1px dashed #bbb;
 }
-
 .promo-preview.error {
   background-color: #ffebee;
   color: #b71c1c;
   border: 1px solid #c62828;
 }
-
 .promo-preview.empty {
   background-color: #fafafa;
   color: #888;
@@ -148,9 +138,8 @@ body.modo-oscuro .promociones-container button:hover {
   text-align: center;
   display: block;
 }
-
-.admin-message.success { color: green; }
-.admin-message.error { color: red; }
+.admin-message.success { color: #2e7d32; }
+.admin-message.error { color: #c62828; }
 
 /* 🎯 Botones finales */
 .top-buttons {
@@ -160,7 +149,6 @@ body.modo-oscuro .promociones-container button:hover {
   justify-content: center;
   flex-wrap: wrap;
 }
-
 .top-buttons .btn {
   min-width: 120px;
 }
@@ -174,7 +162,6 @@ body.modo-oscuro .promociones-container button:hover {
 .fade-in {
   animation: fadeIn 0.5s ease-in-out;
 }
-
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -185,16 +172,13 @@ body.modo-oscuro .promociones-container button:hover {
   .promociones-container {
     padding: 14px;
   }
-
   .row {
     flex-direction: column;
     gap: 12px;
   }
-
   .top-buttons {
     flex-direction: column;
   }
-
   .promociones-container button {
     width: 100%;
   }

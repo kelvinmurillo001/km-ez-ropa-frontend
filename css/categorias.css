@@ -10,7 +10,6 @@
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
   animation: fadeIn 0.5s ease;
 }
-
 body.modo-oscuro .categorias-container {
   background-color: #1e1e1e;
   color: #eee;
@@ -24,7 +23,6 @@ body.modo-oscuro .categorias-container {
   font-weight: 600;
   color: #222;
 }
-
 body.modo-oscuro .categorias-container h1 {
   color: #f0f0f0;
 }
@@ -37,11 +35,10 @@ body.modo-oscuro .categorias-container h1 {
   background-color: #f7f7f7;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   margin-bottom: 24px;
   animation: fadeIn 0.6s ease;
 }
-
 body.modo-oscuro .form-categoria {
   background-color: #2a2a2a;
   border: 1px solid #444;
@@ -53,7 +50,6 @@ body.modo-oscuro .form-categoria {
   border-radius: 6px;
   font-size: 15px;
 }
-
 body.modo-oscuro .form-categoria input {
   background-color: #1e1e1e;
   color: #eee;
@@ -65,7 +61,6 @@ body.modo-oscuro .form-categoria input {
   color: #fff;
   transition: background 0.3s ease;
 }
-
 .form-categoria .btn:hover {
   background-color: #004d40;
 }
@@ -84,11 +79,9 @@ body.modo-oscuro .form-categoria input {
   margin-bottom: 16px;
   transition: background 0.3s ease;
 }
-
 .categoria-item:hover {
   background-color: #f0f0f0;
 }
-
 body.modo-oscuro .categoria-item {
   background-color: #2a2a2a;
   border-color: #444;
@@ -98,7 +91,6 @@ body.modo-oscuro .categoria-item {
   font-size: 1.1rem;
   color: #333;
 }
-
 body.modo-oscuro .categoria-item strong {
   color: #fff;
 }
@@ -109,7 +101,6 @@ body.modo-oscuro .categoria-item strong {
   padding-left: 16px;
   margin-top: 10px;
 }
-
 .subcategorias-list li {
   font-size: 14px;
   margin-bottom: 6px;
@@ -118,7 +109,6 @@ body.modo-oscuro .categoria-item strong {
   align-items: center;
   gap: 10px;
 }
-
 .subcategorias-list button {
   background-color: transparent;
   color: crimson;
@@ -126,11 +116,9 @@ body.modo-oscuro .categoria-item strong {
   font-size: 13px;
   cursor: pointer;
 }
-
 .subcategorias-list button:hover {
   text-decoration: underline;
 }
-
 body.modo-oscuro .subcategorias-list li {
   color: #ccc;
 }
@@ -147,7 +135,6 @@ body.modo-oscuro .subcategorias-list li {
   border: none;
   transition: background-color 0.3s ease;
 }
-
 .categoria-item button:hover {
   background-color: #263238;
 }
@@ -161,12 +148,10 @@ body.modo-oscuro .subcategorias-list li {
   border-radius: 6px;
   font-size: 15px;
 }
-
 .admin-message.success {
   color: #2e7d32;
   background-color: #e8f5e9;
 }
-
 .admin-message.error {
   color: #c62828;
   background-color: #ffebee;
@@ -176,7 +161,6 @@ body.modo-oscuro .subcategorias-list li {
 .fade-in {
   animation: fadeIn 0.5s ease-in-out;
 }
-
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
