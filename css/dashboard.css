@@ -1,71 +1,132 @@
 /* 📊 Dashboard general */
 .dashboard-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: 'Segoe UI', sans-serif;
-    color: #333;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 20px;
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.dashboard-container h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  color: #222;
+}
+
+body.modo-oscuro .dashboard-container {
+  background-color: #1e1e1e;
+  color: #eee;
+}
+
+/* 🎛️ Tarjetas de métricas */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.dashboard-grid .card {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-left: 5px solid transparent;
+}
+
+.dashboard-grid .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+
+.dashboard-grid .card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 12px;
+  color: #1976d2;
+}
+
+.dashboard-grid .card p {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #333;
+}
+
+body.modo-oscuro .dashboard-grid .card {
+  background-color: #262626;
+  color: #fff;
+}
+
+body.modo-oscuro .dashboard-grid .card h3 {
+  color: #90caf9;
+}
+
+body.modo-oscuro .dashboard-grid .card p {
+  color: #f0f0f0;
+}
+
+/* 🎨 Colores de estado */
+.card-pendiente {
+  background-color: #fff3f3;
+  border-left-color: #e53935;
+}
+
+.card-en_proceso {
+  background-color: #e3f2fd;
+  border-left-color: #1976d2;
+}
+
+.card-enviado {
+  background-color: #e8f5e9;
+  border-left-color: #2e7d32;
+}
+
+.card-cancelado {
+  background-color: #f5f5f5;
+  border-left-color: #757575;
+}
+
+body.modo-oscuro .card-pendiente {
+  background-color: #2a1c1c;
+}
+
+body.modo-oscuro .card-en_proceso {
+  background-color: #1c2635;
+}
+
+body.modo-oscuro .card-enviado {
+  background-color: #1e2e1e;
+}
+
+body.modo-oscuro .card-cancelado {
+  background-color: #2d2d2d;
+}
+
+/* ✨ Animación */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  
-  .dashboard-container h1 {
-    text-align: center;
-    margin-bottom: 30px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  /* 🎛️ Tarjetas de métricas */
+}
+
+/* 📱 Responsive */
+@media (max-width: 600px) {
   .dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 20px;
+    grid-template-columns: 1fr;
   }
-  
-  .dashboard-grid .card {
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    padding: 16px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  .dashboard-container {
+    padding: 20px 12px;
   }
-  
-  .dashboard-grid .card h3 {
-    font-size: 1.5rem;
-    margin: 0;
-    padding: 10px 0;
-  }
-  
-  .dashboard-grid .card p {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-top: 10px;
-    color: #555;
-  }
-  
-  /* 🎨 Colores de estado */
-  .card-pendiente {
-    background-color: #ffebee;
-    border-left: 4px solid red;
-  }
-  
-  .card-en_proceso {
-    background-color: #e3f2fd;
-    border-left: 4px solid blue;
-  }
-  
-  .card-enviado {
-    background-color: #e8f5e9;
-    border-left: 4px solid green;
-  }
-  
-  .card-cancelado {
-    background-color: #f5f5f5;
-    border-left: 4px solid gray;
-  }
-  
-  /* 📱 Responsive */
-  @media (max-width: 600px) {
-    .dashboard-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-  
+}

@@ -1,4 +1,4 @@
-/* 🌐 Reset y estructura base */
+/* 🌐 Reset general */
 * {
   margin: 0;
   padding: 0;
@@ -9,90 +9,123 @@ html {
   scroll-behavior: smooth;
 }
 
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #f5f5f5;
-  color: #333;
-  line-height: 1.5;
+:root {
+  --color-bg: #f9f9f9;
+  --color-text: #2b2b2b;
+  --color-primario: #2c3e50;
+  --color-acento: #e67e22;
+  --color-secundario: #3498db;
+  --color-success: #27ae60;
+  --color-error: #c0392b;
+  --color-border: #ddd;
+  --shadow-soft: 0 2px 6px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --font-main: 'Segoe UI', sans-serif;
 }
 
-/* 🖱️ Links */
+/* 🖥️ Base */
+body {
+  font-family: var(--font-main);
+  background: url("../assets/logo.jpg") no-repeat center center fixed;
+  background-size: cover;
+  color: var(--color-text);
+  line-height: 1.6;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(15, 15, 15, 0.85);
+  z-index: -1;
+}
+
+/* 🖼️ Estructura */
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 1rem;
+}
+
+h1, h2, h3 {
+  color: var(--color-primario);
+  margin-bottom: 0.5rem;
+}
+
 a {
-  color: #1976d2;
+  color: var(--color-secundario);
   text-decoration: none;
 }
-
 a:hover {
   text-decoration: underline;
 }
 
-/* 🧱 Títulos */
-h1, h2, h3 {
-  color: #222;
-  margin-bottom: 0.5rem;
-}
-
-/* 🪟 Contenedores */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1rem;
-}
-
-/* 🔘 Botones básicos */
-button {
-  font-family: inherit;
-  cursor: pointer;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 16px;
-  transition: background-color 0.2s ease;
-}
-
-/* 📦 Inputs */
+/* 🧮 Inputs */
 input, select, textarea {
   font-family: inherit;
-  font-size: 16px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  font-size: 1rem;
   padding: 10px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
   outline: none;
+  transition: border-color 0.2s;
 }
-
 input:focus, select:focus, textarea:focus {
-  border-color: #1976d2;
+  border-color: var(--color-acento);
 }
 
-/* 🧼 Utils */
-.text-center {
-  text-align: center;
+/* 🔘 Botones */
+button, .btn {
+  font-family: inherit;
+  background: var(--color-primario);
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+button:hover, .btn:hover {
+  background: #1a252f;
 }
 
+/* 🎯 Utilidades */
+.text-center { text-align: center; }
 .mt-1 { margin-top: 0.5rem; }
 .mt-2 { margin-top: 1rem; }
 .mt-3 { margin-top: 1.5rem; }
-
 .mb-1 { margin-bottom: 0.5rem; }
 .mb-2 { margin-bottom: 1rem; }
 .mb-3 { margin-bottom: 1.5rem; }
-
 .p-1 { padding: 0.5rem; }
 .p-2 { padding: 1rem; }
-.p-3 { padding: 1.5rem; }
+
+/* 💬 Promo banner */
+.promo-banner {
+  background-color: #ffe082;
+  padding: 0.75rem;
+  text-align: center;
+  font-weight: bold;
+}
+.promo-banner.oculto { display: none; }
 
 /* 🛒 Widget carrito */
 #cart-widget {
   position: fixed;
-  bottom: 16px;
-  right: 16px;
-  z-index: 1000;
+  bottom: 20px;
+  right: 20px;
+  z-index: 999;
 }
-
 #cart-widget img {
   width: 48px;
   height: 48px;
+  background-color: white;
+  padding: 6px;
+  border-radius: 50%;
+  box-shadow: var(--shadow-soft);
 }
-
 #cart-widget-count {
   position: absolute;
   top: -5px;
@@ -104,78 +137,60 @@ input:focus, select:focus, textarea:focus {
   border-radius: 50%;
 }
 
-/* 📞 Botón WhatsApp flotante */
+/* 📞 WhatsApp */
 .whatsapp-float {
   position: fixed;
-  bottom: 16px;
-  left: 16px;
-  z-index: 1000;
+  bottom: 20px;
+  left: 20px;
+  z-index: 999;
+}
+.whatsapp-float img {
+  background-color: white;
+  padding: 6px;
+  border-radius: 50%;
+  box-shadow: var(--shadow-soft);
 }
 
-/* 🎁 Banner promoción */
-.promo-banner {
-  background-color: #ffe082;
-  color: #444;
-  text-align: center;
-  padding: 0.5rem;
-  font-weight: bold;
-}
-
-.promo-banner.oculto {
-  display: none;
-}
-
-/* Tarjetas de producto con sombra y hover */
+/* 🧱 Tarjetas de producto */
 .card {
-  border: 1px solid #ddd;
-  padding: 16px;
-  border-radius: 10px;
   background: #fff;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  box-shadow: var(--shadow-soft);
   transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   text-align: center;
 }
-
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: var(--shadow-hover);
 }
-
 .card img {
   max-width: 100%;
   border-radius: 8px;
   margin-bottom: 10px;
 }
-
 .card button {
-  background-color: #0077cc;
-  color: white;
-  padding: 8px 14px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.2s ease;
+  background-color: var(--color-secundario);
 }
-
 .card button:hover {
-  background-color: #005fa3;
+  background-color: #216a94;
 }
 
-/* 🌙 Modo oscuro PRO */
+/* 🌙 Modo oscuro */
 body.modo-oscuro {
   background-color: #121212;
   color: #eee;
 }
-
-body.modo-oscuro header,
-body.modo-oscuro footer,
+body.modo-oscuro .header,
+body.modo-oscuro .footer,
 body.modo-oscuro .promo-banner,
-body.modo-oscuro .card {
-  background-color: #1f1f1f;
-  color: #fff;
-  border-color: #333;
+body.modo-oscuro .card,
+body.modo-oscuro .filtros-container {
+  background-color: rgba(30, 30, 30, 0.8);
+  color: #eee;
+  border-color: #444;
 }
-
 body.modo-oscuro input,
 body.modo-oscuro select,
 body.modo-oscuro textarea {
@@ -183,127 +198,52 @@ body.modo-oscuro textarea {
   color: #fff;
   border-color: #444;
 }
-
-body.modo-oscuro .btn {
-  background-color: #333;
-  color: #fff;
-  border: 1px solid #666;
-}
-
-body.modo-oscuro .btn:hover {
-  background-color: #444;
-}
-
-body.modo-oscuro a {
-  color: #90caf9;
-}
-
-/* 📱 Responsive helpers */
-@media (max-width: 600px) {
-  .container {
-    padding: 10px;
-  }
-
-  h1 {
-    font-size: 1.5rem;
-  }
-}
-/* 🌌 Fondo con logo para todo el sitio */
-body {
-  background: url("../assets/logo.jpg") no-repeat center center fixed;
-  background-size: cover;
-  position: relative;
-}
-
-/* 🧱 Capa oscura encima del fondo */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(15, 15, 15, 0.85);
-  z-index: -1;
-}
-
-/* ✅ Mejor contraste en modo oscuro */
-body.modo-oscuro {
-  color: #f0f0f0;
-}
-
-body.modo-oscuro .header,
-body.modo-oscuro .footer,
-body.modo-oscuro .filtros-container,
-body.modo-oscuro .promo-banner {
-  background-color: rgba(30, 30, 30, 0.8);
-  color: #eee;
-  border-color: #444;
-}
-
-body.modo-oscuro .card,
-body.modo-oscuro input,
-body.modo-oscuro select {
-  background-color: #222;
-  color: #fff;
-  border: 1px solid #444;
-}
-
-body.modo-oscuro .card button {
-  background-color: #1976d2;
-}
-
-body.modo-oscuro .card button:hover {
-  background-color: #125a9c;
-}
-/* 🌟 Encabezado y secciones con fondo semitransparente */
-.header, .footer, .filtros-container, .promo-banner {
-  background-color: rgba(0, 0, 0, 0.75);
-  color: #fff;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* 🧊 Textos destacados en modo oscuro */
-body.modo-oscuro h1, 
-body.modo-oscuro h2, 
-body.modo-oscuro h3, 
-body.modo-oscuro p {
-  color: #ffffff;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
-}
-
-/* 🛍️ Íconos visibles */
-#cart-widget img,
-.whatsapp-float img {
-  background-color: #fff;
-  padding: 6px;
-  border-radius: 50%;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-}
-
-/* 🔘 Botones modo oscuro */
 body.modo-oscuro button,
 body.modo-oscuro .btn {
-  background-color: #2196f3;
-  color: white;
+  background-color: var(--color-secundario);
 }
-
-body.modo-oscuro button:hover {
+body.modo-oscuro .btn:hover {
   background-color: #1e88e5;
 }
-/* ✨ Animación de aparición suave */
+
+/* ✨ Animaciones */
 .fade-in {
-  animation: fadeIn 0.5s ease-in-out;
+  animation: fadeIn 0.5s ease;
+}
+.zoom-in {
+  animation: zoomIn 0.4s ease;
+}
+.slide-up {
+  animation: slideUp 0.4s ease;
+}
+.pulse {
+  animation: pulse 1.5s infinite;
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  h1 { font-size: 1.5rem; }
 }

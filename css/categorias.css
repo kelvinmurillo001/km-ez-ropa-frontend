@@ -1,67 +1,97 @@
+/* 📦 Contenedor Principal */
 .categorias-container {
   max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
+  margin: 40px auto;
+  padding: 24px;
   font-family: 'Segoe UI', sans-serif;
-  background-color: #fff;
+  background-color: #ffffff;
   color: #333;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  position: relative;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  animation: fadeIn 0.5s ease;
 }
 
+body.modo-oscuro .categorias-container {
+  background-color: #1e1e1e;
+  color: #eee;
+}
+
+/* 🧾 Título */
 .categorias-container h1 {
   text-align: center;
-  margin-bottom: 20px;
-  font-size: 1.8rem;
+  margin-bottom: 24px;
+  font-size: 2rem;
+  font-weight: 600;
   color: #222;
 }
 
-/* 🧾 Formulario principal */
+body.modo-oscuro .categorias-container h1 {
+  color: #f0f0f0;
+}
+
+/* 📝 Formulario Categoría */
 .form-categoria {
   display: flex;
   flex-direction: column;
   gap: 12px;
   background-color: #f7f7f7;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  margin-bottom: 20px;
-  animation: fadeIn 0.5s ease-in-out;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin-bottom: 24px;
+  animation: fadeIn 0.6s ease;
+}
+
+body.modo-oscuro .form-categoria {
+  background-color: #2a2a2a;
+  border: 1px solid #444;
 }
 
 .form-categoria input {
-  padding: 10px;
+  padding: 12px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 15px;
 }
 
+body.modo-oscuro .form-categoria input {
+  background-color: #1e1e1e;
+  color: #eee;
+  border-color: #555;
+}
+
 .form-categoria .btn {
   background-color: #00796b;
   color: #fff;
+  transition: background 0.3s ease;
 }
 
 .form-categoria .btn:hover {
   background-color: #004d40;
 }
 
+/* 🧩 Lista de Categorías */
 .lista-categorias {
   margin-top: 20px;
 }
 
-/* 🧩 Item de categoría */
+/* Item de categoría */
 .categoria-item {
   background-color: #f9f9f9;
   border: 1px solid #ddd;
   padding: 16px;
-  border-radius: 6px;
-  margin-bottom: 15px;
+  border-radius: 10px;
+  margin-bottom: 16px;
   transition: background 0.3s ease;
 }
 
 .categoria-item:hover {
-  background-color: #f1f1f1;
+  background-color: #f0f0f0;
+}
+
+body.modo-oscuro .categoria-item {
+  background-color: #2a2a2a;
+  border-color: #444;
 }
 
 .categoria-item strong {
@@ -69,19 +99,24 @@
   color: #333;
 }
 
+body.modo-oscuro .categoria-item strong {
+  color: #fff;
+}
+
+/* Subcategorías */
 .subcategorias-list {
   list-style: none;
+  padding-left: 16px;
   margin-top: 10px;
-  padding-left: 15px;
 }
 
 .subcategorias-list li {
   font-size: 14px;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .subcategorias-list button {
@@ -96,16 +131,21 @@
   text-decoration: underline;
 }
 
-/* 🔘 Botones en categoría */
+body.modo-oscuro .subcategorias-list li {
+  color: #ccc;
+}
+
+/* 🔘 Botón de categoría */
 .categoria-item button {
   margin-top: 10px;
-  padding: 6px 12px;
-  font-size: 13px;
+  padding: 8px 14px;
+  font-size: 14px;
   border-radius: 6px;
   cursor: pointer;
   background-color: #455a64;
   color: white;
   border: none;
+  transition: background-color 0.3s ease;
 }
 
 .categoria-item button:hover {
@@ -116,41 +156,23 @@
 .admin-message {
   text-align: center;
   font-weight: bold;
-  margin-top: 10px;
+  margin-top: 14px;
   padding: 10px;
   border-radius: 6px;
+  font-size: 15px;
 }
 
-.admin-message.success { color: green; }
-.admin-message.error { color: red; }
-
-/* 🌗 Modo oscuro */
-body.modo-oscuro .categorias-container {
-  background-color: #1e1e1e;
-  color: #eee;
+.admin-message.success {
+  color: #2e7d32;
+  background-color: #e8f5e9;
 }
 
-body.modo-oscuro .form-categoria,
-body.modo-oscuro .categoria-item {
-  background-color: #2a2a2a;
-  border-color: #444;
+.admin-message.error {
+  color: #c62828;
+  background-color: #ffebee;
 }
 
-body.modo-oscuro .form-categoria input {
-  background-color: #1e1e1e;
-  color: #eee;
-  border-color: #555;
-}
-
-body.modo-oscuro .categoria-item strong {
-  color: #fff;
-}
-
-body.modo-oscuro .subcategorias-list li {
-  color: #ccc;
-}
-
-/* 🎞️ FadeIn animación */
+/* 🎞️ FadeIn Animación */
 .fade-in {
   animation: fadeIn 0.5s ease-in-out;
 }
@@ -163,12 +185,12 @@ body.modo-oscuro .subcategorias-list li {
 /* 📱 Responsive */
 @media (max-width: 600px) {
   .form-categoria {
-    padding: 12px;
+    padding: 14px;
   }
 
   .categoria-item button {
     width: 100%;
-    margin-top: 6px;
+    margin-top: 8px;
   }
 
   .categoria-item {

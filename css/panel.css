@@ -1,66 +1,102 @@
+/* 🎛️ Contenedor principal del Panel */
 .panel-container {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 24px;
   font-family: 'Segoe UI', sans-serif;
-  background-color: #fff;
+  background-color: #ffffff;
   color: #333;
+  animation: fadeIn 0.4s ease;
 }
 
-/* 🔰 Header del panel */
+body.modo-oscuro .panel-container {
+  background-color: #121212;
+  color: #eee;
+}
+
+/* 🔰 Encabezado */
 .header-panel {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #1976d2;
   color: white;
-  padding: 16px 20px;
-  border-radius: 6px;
-  margin-bottom: 20px;
+  padding: 16px 24px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
 .header-panel h1 {
   margin: 0;
   font-size: 1.6rem;
+  font-weight: 600;
 }
 
 .header-panel button {
   background-color: #e53935;
   border: none;
-  padding: 8px 12px;
+  padding: 10px 16px;
   color: white;
-  border-radius: 4px;
-  font-size: 14px;
+  border-radius: 6px;
+  font-size: 15px;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .header-panel button:hover {
   background-color: #c62828;
 }
 
-/* 🧭 Menú principal */
+/* 🌐 Menú del panel */
 .menu-panel {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
+  gap: 20px;
 }
 
 .menu-panel a {
   display: block;
-  padding: 20px;
-  background-color: #f5f5f5;
-  border-radius: 6px;
+  padding: 22px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
   text-align: center;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 15px;
   color: #333;
   text-decoration: none;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  transition: background-color 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: all 0.25s ease;
 }
 
 .menu-panel a:hover {
   background-color: #eeeeee;
   color: #1976d2;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+}
+
+body.modo-oscuro .menu-panel a {
+  background-color: #1e1e1e;
+  color: #eee;
+  border: 1px solid #333;
+}
+
+body.modo-oscuro .menu-panel a:hover {
+  background-color: #2a2a2a;
+  color: #90caf9;
+}
+
+/* ✅ Animación suave */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* 📱 Responsive */

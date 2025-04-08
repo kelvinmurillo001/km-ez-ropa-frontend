@@ -1,42 +1,122 @@
-/* 🧱 Login Box */
+/* 🎨 Login centrado */
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background: linear-gradient(120deg, #eceff1, #f5f5f5);
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+  transition: background-color 0.3s ease;
+}
+
+body.modo-oscuro {
+  background: linear-gradient(120deg, #121212, #1e1e1e);
+  color: #eee;
+}
+
+/* 🧱 Caja de login */
+.login-box {
+  background-color: white;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 400px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+body.modo-oscuro .login-box {
+  background-color: #1f1f1f;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  color: #fff;
+}
+
+/* 🧾 Título */
+.login-box h1 {
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 1.8rem;
+}
+
+/* 🧩 Campos de entrada */
+.login-box input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: border-color 0.3s ease;
+}
+
+.login-box input:focus {
+  border-color: #1976d2;
+  outline: none;
+}
+
+body.modo-oscuro .login-box input {
+  background-color: #2a2a2a;
+  color: #fff;
+  border-color: #444;
+}
+
+/* 🔘 Botón */
+.login-box .btn {
+  width: 100%;
+  background-color: #1976d2;
+  color: white;
+  padding: 12px;
+  font-size: 15px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 10px;
+}
+
+.login-box .btn:hover {
+  background-color: #125ea8;
+  transform: translateY(-1px);
+}
+
+body.modo-oscuro .login-box .btn {
+  background-color: #2196f3;
+}
+
+body.modo-oscuro .login-box .btn:hover {
+  background-color: #1e88e5;
+}
+
+/* ❌ Mensaje de error */
+.login-box .error {
+  color: crimson;
+  text-align: center;
+  margin-top: 12px;
+  font-weight: bold;
+}
+
+/* ✨ Animación de entrada */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 📱 Responsive (opcional si ya está en responsive.css) */
+@media (max-width: 480px) {
   .login-box {
-    background-color: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
+    padding: 24px;
   }
-  
+
   .login-box h1 {
-    text-align: center;
-    margin-bottom: 20px;
+    font-size: 1.5rem;
   }
-  
-  .login-box input {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    font-size: 15px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-  }
-  
-  .login-box .btn {
-    width: 100%;
-  }
-  
-  .login-box .error {
-    color: red;
-    text-align: center;
-    margin-top: 10px;
-  }
-  
+}

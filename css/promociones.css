@@ -2,37 +2,67 @@
 .promociones-container {
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 28px 20px;
   font-family: 'Segoe UI', sans-serif;
   background-color: #fff;
   color: #333;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+body.modo-oscuro .promociones-container {
+  background-color: #1f1f1f;
+  color: #eee;
 }
 
 /* 🧾 Encabezado */
 .promociones-container h1 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  font-size: 1.8rem;
+  color: #222;
 }
 
 /* 📋 Formulario */
 .promociones-container form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   background-color: #f7f7f7;
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+body.modo-oscuro .promociones-container form {
+  background-color: #2a2a2a;
 }
 
 .promociones-container input,
 .promociones-container select {
-  padding: 10px;
-  font-size: 15px;
-  border-radius: 6px;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
   border: 1px solid #ccc;
-  width: 100%;
+  transition: all 0.2s ease;
+  background-color: #fff;
 }
 
+.promociones-container input:focus,
+.promociones-container select:focus {
+  border-color: #1976d2;
+  outline: none;
+}
+
+body.modo-oscuro .promociones-container input,
+body.modo-oscuro .promociones-container select {
+  background-color: #1e1e1e;
+  color: #eee;
+  border-color: #555;
+}
+
+/* Fila flexible */
 .promociones-container .row {
   display: flex;
   gap: 20px;
@@ -45,30 +75,41 @@
   background-color: #1976d2;
   color: white;
   border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
+  padding: 12px 20px;
+  border-radius: 8px;
   font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.25s ease, transform 0.2s ease;
 }
 
 .promociones-container button:hover {
-  background-color: #1565c0;
+  background-color: #125ea9;
+  transform: translateY(-2px);
 }
 
-/* ✅ Vista previa promocional */
+body.modo-oscuro .promociones-container button {
+  background-color: #2196f3;
+  color: #fff;
+}
+
+body.modo-oscuro .promociones-container button:hover {
+  background-color: #1b7fcc;
+}
+
+/* ✅ Vista previa */
 .promo-preview {
-  padding: 15px 20px;
-  font-size: 16px;
+  padding: 18px 24px;
+  font-size: 17px;
   font-weight: 600;
-  border-radius: 10px;
-  margin-top: 10px;
+  border-radius: 12px;
+  margin-top: 16px;
   text-align: center;
   transition: all 0.3s ease-in-out;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-/* 🌈 Temas */
+/* 🌈 Temas visuales */
 .promo-preview.blue    { background: linear-gradient(135deg, #2196f3, #21cbf3); color: #fff; }
 .promo-preview.green   { background: linear-gradient(135deg, #43a047, #66bb6a); color: #fff; }
 .promo-preview.orange  { background: linear-gradient(135deg, #fb8c00, #ffb74d); color: #fff; }
@@ -79,7 +120,7 @@
 .promo-preview.gray    { background: linear-gradient(135deg, #bdbdbd, #e0e0e0); color: #333; }
 .promo-preview.dark    { background: #333; color: #eee; border: 1px solid #555; }
 
-/* 🔴 Estados adicionales */
+/* 💤 Estados */
 .promo-preview.inactive {
   background-color: #eeeeee;
   color: #666;
@@ -98,9 +139,9 @@
   font-style: italic;
 }
 
-/* ✅ Mensajes visuales */
+/* ✅ Feedback / mensaje */
 .admin-message {
-  margin-top: 15px;
+  margin-top: 16px;
   padding: 12px;
   border-radius: 6px;
   font-weight: bold;
@@ -108,18 +149,25 @@
   display: block;
 }
 
-/* 🎯 Acciones */
+.admin-message.success { color: green; }
+.admin-message.error { color: red; }
+
+/* 🎯 Botones finales */
 .top-buttons {
-  margin-top: 20px;
+  margin-top: 24px;
   display: flex;
-  gap: 10px;
+  gap: 12px;
   justify-content: center;
   flex-wrap: wrap;
 }
 
-/* ⛔ Ocultar dinámico */
+.top-buttons .btn {
+  min-width: 120px;
+}
+
+/* Ocultar dinámico */
 .oculto {
-  display: none;
+  display: none !important;
 }
 
 /* ✨ Animación */
@@ -135,7 +183,7 @@
 /* 📱 Responsive */
 @media (max-width: 600px) {
   .promociones-container {
-    padding: 10px;
+    padding: 14px;
   }
 
   .row {
@@ -145,7 +193,6 @@
 
   .top-buttons {
     flex-direction: column;
-    gap: 10px;
   }
 
   .promociones-container button {
