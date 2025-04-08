@@ -1,27 +1,29 @@
 "use strict";
 
-// 🔗 Endpoints
+// 🌐 Endpoints base
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
 const API_PROMO = `${API_BASE}/promos`;
 let productos = [];
 
-// ▶️ Inicial
+// ▶️ Iniciar flujo
 registrarVisita();
 cargarProductos();
 
-// 🧠 Cargar productos
+/**
+ * 📦 Obtener todos los productos del backend y preparar catálogo
+ */
 async function cargarProductos() {
   try {
     const res = await fetch(`${API_BASE}/products`);
     productos = await res.json();
 
-    if (!Array.isArray(productos)) throw new Error("Formato inválido");
+    if (!Array.isArray(productos)) throw new Error("Formato de productos inválido");
 
     aplicarFiltros();
     cargarSubcategoriasUnicas();
     cargarPromocionActiva();
 
-    // Eventos
+    // 🧠 Filtros y búsquedas
     document.getElementById("busqueda")?.addEventListener("input", aplicarFiltros);
     document.getElementById("categoria")?.addEventListener("change", () => {
       cargarSubcategoriasUnicas();
@@ -37,7 +39,9 @@ async function cargarProductos() {
   }
 }
 
-// 🔍 Aplicar filtros
+/**
+ * 🔍 Filtrar productos según inputs del usuario
+ */
 function aplicarFiltros() {
   const termino = document.getElementById("busqueda")?.value.toLowerCase() || "";
   const categoria = document.getElementById("categoria")?.value || "todas";
@@ -75,7 +79,9 @@ function aplicarFiltros() {
   mostrarProductos(filtrados);
 }
 
-// 🖼️ Mostrar productos
+/**
+ * 🖼️ Renderiza lista de productos al DOM
+ */
 function mostrarProductos(lista) {
   const contenedor = document.getElementById("catalogo");
   contenedor.innerHTML = "";
@@ -116,7 +122,9 @@ function mostrarProductos(lista) {
   });
 }
 
-// 📂 Subcategorías únicas
+/**
+ * 📂 Genera subcategorías únicas según la categoría seleccionada
+ */
 function cargarSubcategoriasUnicas() {
   const categoria = document.getElementById("categoria")?.value || "todas";
   const subSelect = document.getElementById("subcategoria");
@@ -137,7 +145,9 @@ function cargarSubcategoriasUnicas() {
   });
 }
 
-// 📣 Cargar promoción activa
+/**
+ * 📣 Cargar promoción activa desde backend
+ */
 async function cargarPromocionActiva() {
   try {
     const res = await fetch(API_PROMO);
@@ -151,6 +161,7 @@ async function cargarPromocionActiva() {
     ) {
       const promoTexto = document.getElementById("promoTexto");
       const promoBanner = document.getElementById("promoBanner");
+
       promoTexto.textContent = data.message;
       promoBanner.style.display = "block";
       promoBanner.className = `promo-banner ${data.theme || "blue"}`;
@@ -160,13 +171,17 @@ async function cargarPromocionActiva() {
   }
 }
 
-// 📅 Validación de fechas
+/**
+ * 📅 Validar si fecha actual está dentro del rango de promoción
+ */
 function isFechaEnRango(start, end) {
   const hoy = new Date().toISOString().split("T")[0];
   return (!start || start <= hoy) && (!end || end >= hoy);
 }
 
-// 🖼️ Modal de imagen
+/**
+ * 🔍 Mostrar imagen ampliada en modal
+ */
 function ampliarImagen(url) {
   const modal = document.createElement("div");
   modal.className = "modal-img";
@@ -178,7 +193,9 @@ function ampliarImagen(url) {
   document.body.appendChild(modal);
 }
 
-// 🌙 Toggle modo oscuro
+/**
+ * 🌙 Alternar modo oscuro
+ */
 const toggleBtn = document.getElementById("modoToggle");
 toggleBtn?.addEventListener("click", () => {
   document.body.classList.toggle("modo-oscuro");
@@ -187,17 +204,20 @@ toggleBtn?.addEventListener("click", () => {
   toggleBtn.textContent = oscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
 });
 
+// 🌓 Restaurar preferencia modo oscuro al cargar
 if (localStorage.getItem("modoOscuro") === "true") {
   document.body.classList.add("modo-oscuro");
   if (toggleBtn) toggleBtn.textContent = "☀️ Modo Claro";
 }
 
-// ⛔ Redirección si no hay sesión (opcional)
+// 🔁 Redirección manual a login
 document.getElementById("loginRedirectBtn")?.addEventListener("click", () => {
   window.location.href = "login.html";
 });
 
-// 👁️ Registrar visita
+/**
+ * 👁️ Registrar visita al cargar página
+ */
 async function registrarVisita() {
   try {
     await fetch(`${API_BASE}/visitas/registrar`, { method: "POST" });

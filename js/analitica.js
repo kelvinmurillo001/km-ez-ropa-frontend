@@ -1,20 +1,29 @@
-// 🔐 Verificar sesión 
+"use strict";
+
+// 🔐 Verificar sesión
 const token = localStorage.getItem("token");
 if (!token) {
   alert("⚠️ No autorizado. Inicia sesión.");
   window.location.href = "login.html";
 }
 
-// 🔗 Endpoints
+// 🌐 Endpoints
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
 const API_PRODUCTS = `${API_BASE}/products`;
 const API_PEDIDOS = `${API_BASE}/orders`;
 const API_VISITAS = `${API_BASE}/stats/contador`;
 
-// 📊 Cargar estadísticas
+/**
+ * 📊 Cargar estadísticas del sistema
+ * - Total productos
+ * - Promociones activas
+ * - Top categorías
+ * - Total visitas
+ * - Ventas enviadas
+ */
 async function loadStatistics() {
   try {
-    // 👉 Productos
+    // 📦 Productos
     const resProd = await fetch(API_PRODUCTS);
     if (!resProd.ok) throw new Error("Error al obtener productos");
     const products = await resProd.json();
@@ -26,7 +35,7 @@ async function loadStatistics() {
     document.getElementById("totalProductos").textContent = totalProductos;
     document.getElementById("promosActivas").textContent = promosActivas;
 
-    // 🧠 Top Categorías ordenadas
+    // 📂 Top categorías
     const categoryCount = {};
     products.forEach(p => {
       const cat = p.category || "Sin categoría";
@@ -43,15 +52,16 @@ async function loadStatistics() {
       categoriaEl.appendChild(li);
     });
 
-    // 👥 Visitas
+    // 👁️ Visitas
     const resVisitas = await fetch(API_VISITAS, {
       headers: { Authorization: `Bearer ${token}` }
     });
     if (!resVisitas.ok) throw new Error("Error al obtener visitas");
+
     const visitasData = await resVisitas.json();
     document.getElementById("visitas").textContent = visitasData.total || 0;
 
-    // 🛒 Ventas (solo pedidos enviados)
+    // 💰 Ventas (solo pedidos enviados)
     const resPedidos = await fetch(API_PEDIDOS, {
       headers: { Authorization: `Bearer ${token}` }
     });
@@ -71,10 +81,12 @@ async function loadStatistics() {
   }
 }
 
-// 🔙 Volver al panel
+/**
+ * 🔙 Regresar al panel principal
+ */
 function goBack() {
   window.location.href = "panel.html";
 }
 
-// ▶️ Ejecutar
+// ▶️ Ejecutar carga al iniciar
 loadStatistics();

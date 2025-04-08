@@ -1,16 +1,22 @@
+"use strict";
+
+// 🔐 Verificar sesión
 const token = localStorage.getItem("token");
 if (!token) {
   alert("⚠️ No autorizado. Inicia sesión.");
   window.location.href = "login.html";
 }
 
+// 🌐 Endpoints
+const API_BASE = "https://km-ez-ropa-backend.onrender.com/api/products";
+const API_UPLOAD = "https://km-ez-ropa-backend.onrender.com/api/uploads";
+
+// 📌 DOM
 const form = document.getElementById("productoForm");
 const message = document.getElementById("message");
 const preview = document.getElementById("previewImagen");
 
-const API_BASE = "https://km-ez-ropa-backend.onrender.com/api/products";
-const API_UPLOAD = "https://km-ez-ropa-backend.onrender.com/api/uploads";
-
+// 📚 Categorías predefinidas
 const categorias = {
   Hombre: ["Camisas", "Pantalones", "Chaquetas", "Ropa interior"],
   Mujer: ["Vestidos", "Blusas", "Leggins", "Ropa interior"],
@@ -19,6 +25,9 @@ const categorias = {
   Bebé: ["Mamelucos", "Bodies", "Pijamas"]
 };
 
+/**
+ * 📂 Cargar categorías en el select
+ */
 function cargarCategorias() {
   const catSelect = document.getElementById("categoriaSelect");
   catSelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
@@ -30,6 +39,9 @@ function cargarCategorias() {
   });
 }
 
+/**
+ * 📂 Cargar subcategorías según categoría seleccionada
+ */
 document.getElementById("categoriaSelect").addEventListener("change", () => {
   const subSelect = document.getElementById("subcategoriaSelect");
   const cat = document.getElementById("categoriaSelect").value;
@@ -44,7 +56,9 @@ document.getElementById("categoriaSelect").addEventListener("change", () => {
   }
 });
 
-// ✅ Subir imagen al BACKEND
+/**
+ * 📤 Subir imagen al servidor (Cloudinary)
+ */
 async function uploadToBackend(file) {
   const formData = new FormData();
   formData.append("image", file);
@@ -56,6 +70,7 @@ async function uploadToBackend(file) {
   });
 
   if (!res.ok) throw new Error("❌ Error al subir imagen al servidor");
+
   const data = await res.json();
   return {
     imageUrl: data.url,
@@ -63,8 +78,12 @@ async function uploadToBackend(file) {
   };
 }
 
+// 🧱 Variantes del producto
 let variantes = [];
 
+/**
+ * ➕ Agregar nueva variante
+ */
 document.getElementById("addVariante").addEventListener("click", async () => {
   const talla = document.getElementById("talla").value.trim();
   const color = document.getElementById("color").value.trim();
@@ -87,6 +106,9 @@ document.getElementById("addVariante").addEventListener("click", async () => {
   }
 });
 
+/**
+ * 🧽 Limpiar campos de variante
+ */
 function limpiarCamposVariante() {
   document.getElementById("talla").value = "";
   document.getElementById("color").value = "";
@@ -94,6 +116,9 @@ function limpiarCamposVariante() {
   preview.innerHTML = "";
 }
 
+/**
+ * 🧩 Renderizar variantes cargadas
+ */
 function renderizarVariantes() {
   const contenedor = document.getElementById("listaVariantes");
   contenedor.innerHTML = "";
@@ -110,14 +135,20 @@ function renderizarVariantes() {
   });
 }
 
+/**
+ * ❌ Eliminar variante por índice
+ */
 function eliminarVariante(i) {
   variantes.splice(i, 1);
   renderizarVariantes();
 }
 
-// 💾 Guardar producto
+/**
+ * 💾 Guardar producto nuevo
+ */
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+
   const btn = form.querySelector("button[type=submit]");
   btn.disabled = true;
   btn.textContent = "⏳ Guardando...";
@@ -150,7 +181,7 @@ form.addEventListener("submit", async (e) => {
     subcategory: subcategoria,
     stock,
     featured: destacado,
-    variants
+    variants: variantes
   };
 
   try {
@@ -174,6 +205,7 @@ form.addEventListener("submit", async (e) => {
     } else {
       showMessage(data.message || "❌ Error al guardar", "red");
     }
+
   } catch (err) {
     console.error("❌", err);
     showMessage("❌ Error del servidor", "red");
@@ -183,6 +215,9 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
+/**
+ * 📋 Cargar productos existentes
+ */
 async function cargarProductos() {
   try {
     const res = await fetch(API_BASE);
@@ -217,8 +252,12 @@ async function cargarProductos() {
   }
 }
 
+/**
+ * ❌ Eliminar producto existente
+ */
 async function eliminarProducto(id) {
   if (!confirm("¿Eliminar producto?")) return;
+
   try {
     const res = await fetch(`${API_BASE}/${id}`, {
       method: "DELETE",
@@ -236,11 +275,15 @@ async function eliminarProducto(id) {
   }
 }
 
+/**
+ * 💬 Mostrar mensaje de feedback
+ */
 function showMessage(text, color = "black") {
   message.textContent = text;
   message.style.color = color;
   setTimeout(() => (message.textContent = ""), 3000);
 }
 
+// ▶️ Inicializar
 cargarCategorias();
 cargarProductos();

@@ -1,17 +1,23 @@
+"use strict";
+
+// 🌐 Endpoints
 const API_ORDERS = "https://km-ez-ropa-backend.onrender.com/api/orders";
 const container = document.getElementById("pedidos-container");
+
+// 📦 Estado inicial
 let pedidosPrevios = 0;
 let todosLosPedidos = [];
 
-const token = localStorage.getItem("token");
-
 // 🔐 Validación de sesión
+const token = localStorage.getItem("token");
 if (!token) {
   alert("⚠️ No autorizado. Inicia sesión primero.");
   window.location.href = "login.html";
 }
 
-// ▶️ Cargar todos los pedidos
+/**
+ * ▶️ Cargar todos los pedidos del sistema
+ */
 async function cargarPedidos() {
   if (!container) return;
   container.innerHTML = "⏳ Cargando pedidos...";
@@ -24,11 +30,11 @@ async function cargarPedidos() {
     if (!res.ok) throw new Error("Error en la solicitud");
 
     const data = await res.json();
-    if (!Array.isArray(data)) throw new Error("Respuesta inválida del servidor");
+    if (!Array.isArray(data)) throw new Error("❌ Respuesta inválida del servidor");
 
     todosLosPedidos = data;
     pedidosPrevios = data.length;
-    renderPedidos(todosLosPedidos);
+    renderPedidos(data);
 
   } catch (err) {
     console.error("❌", err);
@@ -36,7 +42,9 @@ async function cargarPedidos() {
   }
 }
 
-// 🧾 Renderizar pedidos
+/**
+ * 🧾 Renderiza visualmente cada pedido
+ */
 function renderPedidos(pedidos) {
   container.innerHTML = "";
 
@@ -47,7 +55,7 @@ function renderPedidos(pedidos) {
 
   pedidos.forEach(p => {
     const card = document.createElement("div");
-    card.className = `pedido-card fade-in`;
+    card.className = "pedido-card fade-in";
 
     const itemsHTML = p.items.map(i =>
       `<li>${i.nombre} (x${i.cantidad}) - $${i.precio}</li>`
@@ -77,7 +85,9 @@ function renderPedidos(pedidos) {
   });
 }
 
-// 🔄 Cambiar estado del pedido
+/**
+ * 🔄 Actualizar estado de un pedido
+ */
 async function actualizarEstado(id, estado) {
   try {
     const res = await fetch(`${API_ORDERS}/${id}/estado`, {
@@ -104,7 +114,9 @@ async function actualizarEstado(id, estado) {
   }
 }
 
-// 🔍 Filtro por estado
+/**
+ * 🔍 Filtro por estado de pedidos
+ */
 function filtrarPedidos() {
   const filtro = document.getElementById("filtroEstado").value;
   const filtrados = filtro === "todos"
@@ -113,7 +125,9 @@ function filtrarPedidos() {
   renderPedidos(filtrados);
 }
 
-// 🧾 Exportar pedidos
+/**
+ * 📤 Exportar pedidos a archivo .txt
+ */
 function exportarPedidos() {
   const contenido = todosLosPedidos.map(p => {
     const items = p.items.map(i => `- ${i.nombre} x${i.cantidad}`).join("\n");
@@ -134,7 +148,9 @@ ${items}
   link.click();
 }
 
-// 🔔 Alerta por nuevos pedidos
+/**
+ * 🔔 Monitorear nuevos pedidos cada 10 segundos
+ */
 setInterval(async () => {
   try {
     const res = await fetch(API_ORDERS, {
@@ -155,10 +171,12 @@ setInterval(async () => {
   }
 }, 10000);
 
-// 🔙 Volver al panel
+/**
+ * 🔙 Volver al panel principal
+ */
 function regresarAlPanel() {
   window.location.href = "panel.html";
 }
 
-// ▶️ Inicial
+// ▶️ Ejecutar al iniciar
 cargarPedidos();

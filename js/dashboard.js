@@ -1,14 +1,20 @@
-// 🔐 Verificación de sesión
+"use strict";
+
+// 🔐 Verificación de sesión antes de cargar dashboard
 const token = localStorage.getItem("token");
 if (!token) {
   alert("⚠️ No autorizado. Inicia sesión.");
   window.location.href = "login.html";
 }
 
-// 🌐 API backend
+// 🌐 Endpoint API de pedidos
 const API_ORDERS = "https://km-ez-ropa-backend.onrender.com/api/orders";
 
-// 📊 Cargar datos del dashboard
+/**
+ * 📊 Cargar datos estadísticos del dashboard
+ * - Cuenta pedidos por estado
+ * - Cuenta cuántos fueron realizados hoy
+ */
 async function cargarDashboard() {
   try {
     const res = await fetch(API_ORDERS, {
@@ -18,12 +24,12 @@ async function cargarDashboard() {
     });
 
     if (!res.ok) throw new Error("Error al obtener pedidos");
-    
+
     const pedidos = await res.json();
     if (!Array.isArray(pedidos)) throw new Error("Respuesta inesperada del servidor");
 
     const hoy = new Date();
-    hoy.setHours(0, 0, 0, 0);
+    hoy.setHours(0, 0, 0, 0); // 🕛 Establece el inicio del día
 
     const estadoContador = {
       pendiente: 0,
@@ -34,6 +40,7 @@ async function cargarDashboard() {
       total: pedidos.length
     };
 
+    // 🔄 Clasificar pedidos
     pedidos.forEach(pedido => {
       const estado = pedido.estado || "pendiente";
       if (estadoContador[estado] !== undefined) {
@@ -46,7 +53,7 @@ async function cargarDashboard() {
       }
     });
 
-    // 🧾 Mostrar datos en el DOM
+    // 🧾 Mostrar métricas en el DOM
     document.getElementById("total").textContent = estadoContador.total;
     document.getElementById("pendientes").textContent = estadoContador.pendiente;
     document.getElementById("en_proceso").textContent = estadoContador.en_proceso;
@@ -60,5 +67,5 @@ async function cargarDashboard() {
   }
 }
 
-// ▶️ Ejecutar al iniciar
+// ▶️ Ejecutar al iniciar la vista del panel
 cargarDashboard();

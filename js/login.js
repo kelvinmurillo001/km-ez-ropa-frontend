@@ -8,7 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!form || !usernameInput || !passwordInput || !error) return;
 
-  // 🔄 Limpiar error al escribir
+  /**
+   * 🔄 Limpia errores al escribir
+   */
   [usernameInput, passwordInput].forEach(input => {
     input.addEventListener("input", () => {
       error.textContent = "";
@@ -16,7 +18,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 🔐 Envío de formulario
+  /**
+   * 🔐 Manejo del envío de formulario de login
+   */
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -25,8 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = passwordInput.value.trim();
 
     if (!username || !password) {
-      showError("⚠️ Debes completar ambos campos");
-      return;
+      return showError("⚠️ Debes completar ambos campos");
     }
 
     button.disabled = true;
@@ -47,10 +50,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const token = data.token;
         const payload = parseJwt(token);
 
-        // 🔐 Verificar que sea administrador
+        // ✅ Validar rol de administrador
         if (payload?.role !== "admin") {
-          showError("⛔ Solo los administradores pueden ingresar");
-          return;
+          return showError("⛔ Solo los administradores pueden ingresar");
         }
 
         localStorage.setItem("token", token);
@@ -60,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
     } catch (err) {
-      console.error("❌ Error al conectar:", err);
+      console.error("❌ Error de red:", err);
       showError("❌ Error de red. Intenta nuevamente.");
     } finally {
       button.disabled = false;
@@ -68,40 +70,50 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  /**
+   * ⚠️ Mostrar errores accesibles
+   */
   function showError(msg) {
     error.textContent = msg;
     error.setAttribute("role", "alert");
   }
 
+  /**
+   * 🔍 Decodificar payload del JWT
+   */
   function parseJwt(token) {
     try {
       const payload = token.split('.')[1];
       return JSON.parse(atob(payload));
-    } catch (e) {
+    } catch {
       return null;
     }
   }
 });
 
-// ✅ Verifica token para páginas protegidas (ej. panel.html)
+/**
+ * ✅ Verifica token en páginas protegidas
+ */
 function verificarToken() {
   const token = localStorage.getItem("token");
+
   if (!token || token.split('.').length !== 3) {
     alert("⚠️ No autorizado. Inicia sesión primero.");
-    localStorage.removeItem("token");
-    window.location.href = "login.html";
+    logout();
     return;
   }
 
   const payload = JSON.parse(atob(token.split('.')[1]));
+
   if (payload.role !== "admin") {
     alert("⛔ Acceso restringido. Solo administradores.");
-    localStorage.removeItem("token");
-    window.location.href = "login.html";
+    logout();
   }
 }
 
-// 🔁 Cerrar sesión (opcional si se importa este archivo en más páginas)
+/**
+ * 🔁 Cerrar sesión y redirigir
+ */
 function logout() {
   localStorage.removeItem("token");
   window.location.href = "login.html";

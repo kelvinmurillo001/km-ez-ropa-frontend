@@ -1,22 +1,27 @@
 "use strict";
 
-// ✅ Protección de acceso al panel
+/**
+ * ✅ Verificación de token al cargar el panel
+ * - Impide acceso si el token no existe o es inválido
+ * - Redirige a login si el rol no es "admin"
+ */
 document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
 
+  // ❌ Token ausente o inválido
   if (!token || typeof token !== "string" || token.length < 10) {
-    bloquearAcceso("⚠️ Token ausente o inválido. Inicia sesión.");
-    return;
+    return bloquearAcceso("⚠️ Token ausente o inválido. Inicia sesión.");
   }
 
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
 
+    // ❌ Rol incorrecto
     if (!payload || payload.role !== "admin") {
-      bloquearAcceso("⛔ Acceso denegado. Solo administradores.");
+      return bloquearAcceso("⛔ Acceso denegado. Solo administradores.");
     }
 
-    // ✅ Si pasó todos los chequeos, puedes continuar con la carga del panel
+    // ✅ Acceso autorizado
     console.log("✅ Acceso válido como administrador:", payload.username || payload.email);
 
   } catch (error) {
@@ -25,14 +30,20 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// 🔁 Función reutilizable para redirigir en caso de fallo
+/**
+ * 🔁 Función para bloquear acceso no autorizado
+ * - Elimina token y redirige a login
+ */
 function bloquearAcceso(mensaje) {
   alert(mensaje);
   localStorage.removeItem("token");
   window.location.href = "login.html";
 }
 
-// 🔒 Cerrar sesión (logout seguro)
+/**
+ * 🔒 Logout manual
+ * - Limpia token y vuelve a login
+ */
 function logout() {
   localStorage.removeItem("token");
   window.location.href = "login.html";

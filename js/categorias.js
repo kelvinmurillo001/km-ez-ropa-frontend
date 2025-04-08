@@ -1,13 +1,16 @@
+"use strict";
+
+// 🌐 Endpoint y token
 const API = "https://km-ez-ropa-backend.onrender.com/api/categories";
 const token = localStorage.getItem("token");
 
-// 🔐 Verifica login
+// 🔐 Validar sesión
 if (!token) {
   alert("⚠️ No autorizado. Inicia sesión.");
   window.location.href = "login.html";
 }
 
-// 📌 DOM
+// 📌 Referencias al DOM
 const categoryForm = document.getElementById("formCategoria");
 const categoryNameInput = document.getElementById("nombreCategoria");
 const subcategoryNameInput = document.getElementById("nuevaSubcategoria");
@@ -15,7 +18,9 @@ const categorySelect = document.getElementById("categorySelect");
 const categoryList = document.getElementById("listaCategorias");
 const message = document.getElementById("message");
 
-// ▶️ Cargar categorías
+/**
+ * ▶️ Cargar todas las categorías y mostrarlas en el DOM
+ */
 async function loadCategories() {
   try {
     const res = await fetch(API);
@@ -23,13 +28,14 @@ async function loadCategories() {
 
     const data = await res.json();
 
+    // Reset select y lista
     if (categorySelect) {
       categorySelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
     }
     categoryList.innerHTML = "";
 
     data.forEach(cat => {
-      // 👉 Agregar al select si existe
+      // 👉 Select para subcategoría
       if (categorySelect) {
         const opt = document.createElement("option");
         opt.value = cat._id;
@@ -37,7 +43,7 @@ async function loadCategories() {
         categorySelect.appendChild(opt);
       }
 
-      // 👉 Renderizar en la lista
+      // 👉 Renderizar categorías + subcategorías
       const catCard = document.createElement("div");
       catCard.className = "categoria-card fade-in";
 
@@ -65,7 +71,9 @@ async function loadCategories() {
   }
 }
 
-// ➕ Crear categoría
+/**
+ * ➕ Crear nueva categoría
+ */
 categoryForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -97,7 +105,9 @@ categoryForm?.addEventListener("submit", async (e) => {
   }
 });
 
-// ➕ Agregar subcategoría (si existe el formulario)
+/**
+ * ➕ Agregar subcategoría a una categoría existente
+ */
 document.getElementById("subcategoryForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -133,16 +143,16 @@ document.getElementById("subcategoryForm")?.addEventListener("submit", async (e)
   }
 });
 
-// ❌ Eliminar categoría
+/**
+ * ❌ Eliminar una categoría por ID
+ */
 async function deleteCategory(id) {
   if (!confirm("¿Eliminar esta categoría?")) return;
 
   try {
     const res = await fetch(`${API}/${id}`, {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      headers: { Authorization: `Bearer ${token}` }
     });
 
     if (res.ok) {
@@ -156,7 +166,9 @@ async function deleteCategory(id) {
   }
 }
 
-// ❌ Eliminar subcategoría
+/**
+ * ❌ Eliminar subcategoría específica de una categoría
+ */
 async function deleteSubcategory(id, sub) {
   if (!confirm("¿Eliminar esta subcategoría?")) return;
 
@@ -182,18 +194,24 @@ async function deleteSubcategory(id, sub) {
   }
 }
 
-// 🔐 Logout
+/**
+ * 🔐 Logout
+ */
 function logout() {
   localStorage.removeItem("token");
   window.location.href = "login.html";
 }
 
-// 🔙 Volver
+/**
+ * 🔙 Volver al panel principal
+ */
 function goBack() {
   window.location.href = "panel.html";
 }
 
-// 💬 Mostrar mensaje
+/**
+ * 💬 Mostrar mensajes de estado
+ */
 function showMessage(text, type = "error") {
   if (!message) return;
   message.textContent = text;
@@ -208,5 +226,5 @@ function showMessage(text, type = "error") {
   setTimeout(() => (message.textContent = ""), 3000);
 }
 
-// ▶️ Init
+// ▶️ Inicializar
 loadCategories();
