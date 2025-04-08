@@ -1,50 +1,59 @@
 "use strict";
 
 /**
- * ✅ Verificación de token al cargar el panel
- * - Impide acceso si el token no existe o es inválido
- * - Redirige a login si el rol no es "admin"
+ * ✅ Verificación de acceso al panel de administración
+ * - Comprueba token y rol "admin"
+ * - Redirige a login en caso de error o acceso no autorizado
  */
 document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
 
-  // ❌ Token ausente o inválido
-  if (!token || typeof token !== "string" || token.length < 10) {
-    return bloquearAcceso("⚠️ Token ausente o inválido. Inicia sesión.");
+  if (!esTokenValido(token)) {
+    return bloquearAcceso("⚠️ Token inválido o inexistente. Inicia sesión.");
   }
 
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
+  const payload = obtenerPayload(token);
 
-    // ❌ Rol incorrecto
-    if (!payload || payload.role !== "admin") {
-      return bloquearAcceso("⛔ Acceso denegado. Solo administradores.");
-    }
-
-    // ✅ Acceso autorizado
-    console.log("✅ Acceso válido como administrador:", payload.username || payload.email);
-
-  } catch (error) {
-    console.error("❌ Error al decodificar token:", error);
-    bloquearAcceso("⚠️ Token corrupto o malformado. Inicia sesión nuevamente.");
+  if (!payload || payload.role !== "admin") {
+    return bloquearAcceso("⛔ Acceso denegado. Solo administradores.");
   }
+
+  console.log("✅ Acceso autorizado como administrador:", payload.username || payload.email);
 });
 
 /**
- * 🔁 Función para bloquear acceso no autorizado
- * - Elimina token y redirige a login
+ * 🔐 Verifica estructura mínima del token
+ */
+function esTokenValido(token) {
+  return token && typeof token === "string" && token.split(".").length === 3;
+}
+
+/**
+ * 🔍 Decodifica el payload del JWT
+ */
+function obtenerPayload(token) {
+  try {
+    const base64Payload = token.split('.')[1];
+    return JSON.parse(atob(base64Payload));
+  } catch (e) {
+    console.error("❌ Error al decodificar el token:", e);
+    return null;
+  }
+}
+
+/**
+ * 🔁 Bloquea el acceso y redirige a login
  */
 function bloquearAcceso(mensaje) {
   alert(mensaje);
   localStorage.removeItem("token");
-  window.location.href = "login.html";
+  location.href = "login.html";
 }
 
 /**
- * 🔒 Logout manual
- * - Limpia token y vuelve a login
+ * 🚪 Cierra sesión manualmente
  */
 function logout() {
   localStorage.removeItem("token");
-  window.location.href = "login.html";
+  location.href = "login.html";
 }

@@ -25,14 +25,13 @@ function saveCart(cart) {
 
 /**
  * ➕ Agregar producto al carrito
- * - Si ya existe, incrementa cantidad
  */
 function addToCart(product) {
   const cart = getCart();
-  const index = cart.findIndex(p => p.id === product.id);
+  const existingIndex = cart.findIndex(p => p.id === product.id);
 
-  if (index !== -1) {
-    cart[index].cantidad += 1;
+  if (existingIndex !== -1) {
+    cart[existingIndex].cantidad += 1;
   } else {
     cart.push({ ...product, cantidad: 1 });
   }
@@ -45,24 +44,24 @@ function addToCart(product) {
  * ❌ Eliminar producto del carrito
  */
 function removeFromCart(id) {
-  const cart = getCart().filter(item => item.id !== id);
-  saveCart(cart);
+  const updatedCart = getCart().filter(item => item.id !== id);
+  saveCart(updatedCart);
   renderCartItems();
   updateCartWidget();
 }
 
 /**
- * 🔁 Cambiar cantidad de un producto (+/-)
+ * 🔁 Cambiar cantidad de un producto
  */
 function changeQuantity(id, delta) {
-  const cart = getCart()
+  const updatedCart = getCart()
     .map(item => {
       if (item.id === id) item.cantidad += delta;
       return item;
     })
-    .filter(p => p.cantidad > 0);
+    .filter(item => item.cantidad > 0);
 
-  saveCart(cart);
+  saveCart(updatedCart);
   renderCartItems();
   updateCartWidget();
 }
@@ -71,14 +70,13 @@ function changeQuantity(id, delta) {
  * 🧮 Calcular total del carrito
  */
 function calculateTotal() {
-  const cart = getCart();
-  return cart
+  return getCart()
     .reduce((acc, item) => acc + ((parseFloat(item.precio || item.price) || 0) * item.cantidad), 0)
     .toFixed(2);
 }
 
 /**
- * 💾 Guardar pedido en backend
+ * 💾 Guardar pedido en el backend
  */
 async function guardarPedido(nombre, nota, origen = "whatsapp") {
   const cart = getCart();
@@ -89,10 +87,10 @@ async function guardarPedido(nombre, nota, origen = "whatsapp") {
   }
 
   const body = {
-    items: cart.map(p => ({
-      nombre: p.nombre || p.name,
-      cantidad: p.cantidad,
-      precio: p.precio || p.price
+    items: cart.map(item => ({
+      nombre: item.nombre || item.name,
+      cantidad: item.cantidad,
+      precio: item.precio || item.price
     })),
     total: calculateTotal(),
     nombreCliente: nombre,
@@ -115,25 +113,23 @@ async function guardarPedido(nombre, nota, origen = "whatsapp") {
     }
 
     return true;
-  } catch (e) {
-    alert("❌ Error de red: " + e.message);
+  } catch (err) {
+    alert("❌ Error de red: " + err.message);
     return false;
   }
 }
 
 /**
- * 📲 Enviar carrito vía WhatsApp y guardar pedido en backend
+ * 📲 Enviar pedido por WhatsApp
  */
 async function sendCartToWhatsApp(nombre, nota) {
   const cart = getCart();
-
-  if (!nombre) return alert("⚠️ Por favor ingresa tu nombre.");
+  if (!nombre) return alert("⚠️ Ingresa tu nombre.");
   if (cart.length === 0) return alert("🛒 El carrito está vacío.");
 
   const guardado = await guardarPedido(nombre, nota);
   if (!guardado) return;
 
-  // 📝 Generar mensaje de WhatsApp
   let mensaje = `Hola! Quiero consultar por estas prendas:\n`;
 
   cart.forEach(p => {
@@ -146,25 +142,24 @@ async function sendCartToWhatsApp(nombre, nota) {
   mensaje += `\nTotal estimado: $${calculateTotal()}\nCliente: ${nombre}\n`;
   if (nota) mensaje += `Nota: ${nota}\n`;
 
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensaje)}`;
-  window.open(url, '_blank');
+  const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensaje)}`;
+  window.open(whatsappURL, "_blank");
 
   localStorage.removeItem(CART_KEY);
   setTimeout(() => window.location.href = "index.html", 2000);
 }
 
 /**
- * 🧩 Actualizar contador del widget flotante
+ * 🔢 Actualiza el contador del widget de carrito
  */
 function updateCartWidget() {
-  const cart = getCart();
-  const totalItems = cart.reduce((acc, item) => acc + item.cantidad, 0);
+  const totalItems = getCart().reduce((acc, item) => acc + item.cantidad, 0);
   const badge = document.querySelector("#cart-widget-count");
   if (badge) badge.textContent = totalItems;
 }
 
 /**
- * 🖼️ Renderizar productos del carrito en carrito.html
+ * 🖼️ Renderizar productos en carrito.html
  */
 function renderCartItems() {
   const cart = getCart();
@@ -186,14 +181,13 @@ function renderCartItems() {
 
     const div = document.createElement("div");
     div.className = "cart-item fade-in";
-
     div.innerHTML = `
       <img src="${imagen}" alt="${nombre}" />
       <div class="cart-info">
         <h4>${nombre}</h4>
         <p><strong>Precio:</strong> $${precio} x ${item.cantidad}</p>
         ${item.talla ? `<p><strong>Talla:</strong> ${item.talla}</p>` : ""}
-        ${item.color || item.colores ? `<p><strong>Color:</strong> ${item.color || item.colores}</p>` : ""}
+        ${(item.color || item.colores) ? `<p><strong>Color:</strong> ${item.color || item.colores}</p>` : ""}
         <div class="cart-actions">
           <button onclick="changeQuantity('${item.id}', -1)">➖</button>
           <span>${item.cantidad}</span>
@@ -207,26 +201,25 @@ function renderCartItems() {
   });
 
   total.textContent = `$${calculateTotal()}`;
-  if (totalUnidades) {
-    totalUnidades.textContent = `Total unidades: ${unidades}`;
-  }
+  if (totalUnidades) totalUnidades.textContent = `Total unidades: ${unidades}`;
 }
 
 /**
- * 🖼️ Modal de imagen desde carrito
+ * 🖼️ Abrir modal con imagen
  */
 function abrirModalImagen(src) {
   const modal = document.getElementById("imageModal");
   const img = document.getElementById("modalImage");
-
-  img.src = src;
-  modal.classList.remove("oculto");
+  if (img && modal) {
+    img.src = src;
+    modal.classList.remove("oculto");
+  }
 }
 
 /**
- * ✖️ Cerrar modal de imagen
+ * ❌ Cerrar modal de imagen
  */
 function cerrarModalImagen() {
   const modal = document.getElementById("imageModal");
-  modal.classList.add("oculto");
+  if (modal) modal.classList.add("oculto");
 }

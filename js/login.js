@@ -8,111 +8,114 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!form || !usernameInput || !passwordInput || !error) return;
 
-  /**
-   * 🔄 Limpia errores al escribir
-   */
+  // 🔄 Limpiar errores al escribir
   [usernameInput, passwordInput].forEach(input => {
     input.addEventListener("input", () => {
-      error.textContent = "";
-      error.removeAttribute("role");
+      clearError(error);
     });
   });
 
-  /**
-   * 🔐 Manejo del envío de formulario de login
-   */
+  // 🔐 Login on submit
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-
-    const button = form.querySelector("button");
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value.trim();
-
-    if (!username || !password) {
-      return showError("⚠️ Debes completar ambos campos");
-    }
-
-    button.disabled = true;
-    button.textContent = "Entrando...";
-
-    try {
-      const res = await fetch(`${API_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ username, password })
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.token) {
-        const token = data.token;
-        const payload = parseJwt(token);
-
-        // ✅ Validar rol de administrador
-        if (payload?.role !== "admin") {
-          return showError("⛔ Solo los administradores pueden ingresar");
-        }
-
-        localStorage.setItem("token", token);
-        window.location.href = "panel.html";
-      } else {
-        showError(data.message || "❌ Usuario o contraseña incorrectos");
-      }
-
-    } catch (err) {
-      console.error("❌ Error de red:", err);
-      showError("❌ Error de red. Intenta nuevamente.");
-    } finally {
-      button.disabled = false;
-      button.textContent = "Entrar";
-    }
+    await handleLogin(usernameInput.value, passwordInput.value, error, form.querySelector("button"));
   });
-
-  /**
-   * ⚠️ Mostrar errores accesibles
-   */
-  function showError(msg) {
-    error.textContent = msg;
-    error.setAttribute("role", "alert");
-  }
-
-  /**
-   * 🔍 Decodificar payload del JWT
-   */
-  function parseJwt(token) {
-    try {
-      const payload = token.split('.')[1];
-      return JSON.parse(atob(payload));
-    } catch {
-      return null;
-    }
-  }
 });
 
 /**
- * ✅ Verifica token en páginas protegidas
+ * 🛂 Verifica token en páginas protegidas
  */
 function verificarToken() {
   const token = localStorage.getItem("token");
 
   if (!token || token.split('.').length !== 3) {
     alert("⚠️ No autorizado. Inicia sesión primero.");
-    logout();
-    return;
+    return logout();
   }
 
-  const payload = JSON.parse(atob(token.split('.')[1]));
-
-  if (payload.role !== "admin") {
+  const payload = parseJwt(token);
+  if (!payload || payload.role !== "admin") {
     alert("⛔ Acceso restringido. Solo administradores.");
-    logout();
+    return logout();
   }
 }
 
 /**
- * 🔁 Cerrar sesión y redirigir
+ * 🔓 Maneja el login completo
+ */
+async function handleLogin(username, password, errorEl, button) {
+  const user = username.trim();
+  const pass = password.trim();
+
+  if (!user || !pass) {
+    return showError("⚠️ Debes completar ambos campos", errorEl);
+  }
+
+  button.disabled = true;
+  button.textContent = "Entrando...";
+
+  try {
+    const res = await fetch(`${API_URL}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: user, password: pass })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.token) {
+      const payload = parseJwt(data.token);
+      if (payload?.role !== "admin") {
+        return showError("⛔ Solo los administradores pueden ingresar", errorEl);
+      }
+
+      localStorage.setItem("token", data.token);
+      window.location.href = "panel.html";
+    } else {
+      showError(data.message || "❌ Usuario o contraseña incorrectos", errorEl);
+    }
+
+  } catch (err) {
+    console.error("❌ Error de red:", err);
+    showError("❌ Error de red. Intenta nuevamente.", errorEl);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Entrar";
+  }
+}
+
+/**
+ * ❌ Mostrar mensaje de error accesible
+ */
+function showError(msg, el) {
+  if (!el) return;
+  el.textContent = msg;
+  el.setAttribute("role", "alert");
+}
+
+/**
+ * 🔁 Limpia error visible
+ */
+function clearError(el) {
+  el.textContent = "";
+  el.removeAttribute("role");
+}
+
+/**
+ * 🔍 Decodifica payload JWT
+ */
+function parseJwt(token) {
+  try {
+    const base64 = token.split('.')[1];
+    return JSON.parse(atob(base64));
+  } catch (err) {
+    console.warn("❌ Token inválido:", err);
+    return null;
+  }
+}
+
+/**
+ * 🔚 Cierra sesión y redirige
  */
 function logout() {
   localStorage.removeItem("token");

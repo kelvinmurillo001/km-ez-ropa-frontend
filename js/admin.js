@@ -4,7 +4,7 @@
 const token = localStorage.getItem("token");
 if (!token) {
   alert("⚠️ No autorizado. Inicia sesión.");
-  window.location.href = "login.html";
+  location.href = "login.html";
 }
 
 // 🌐 Endpoints
@@ -25,7 +25,6 @@ const categorias = {
   Bebé: ["Mamelucos", "Bodies", "Pijamas"]
 };
 
-// 🧱 Variantes y edición
 let variantes = [];
 let editandoId = null;
 
@@ -34,42 +33,35 @@ function cargarCategorias() {
   const catSelect = document.getElementById("categoriaSelect");
   catSelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
   Object.keys(categorias).forEach(cat => {
-    const opt = document.createElement("option");
-    opt.value = cat;
-    opt.textContent = cat;
+    const opt = new Option(cat, cat);
     catSelect.appendChild(opt);
   });
 }
 
-// 📂 Subcategorías
+// 📂 Subcategorías según categoría
 document.getElementById("categoriaSelect").addEventListener("change", () => {
-  const subSelect = document.getElementById("subcategoriaSelect");
   const cat = document.getElementById("categoriaSelect").value;
+  const subSelect = document.getElementById("subcategoriaSelect");
   subSelect.innerHTML = `<option value="">Selecciona una subcategoría</option>`;
   if (categorias[cat]) {
     categorias[cat].forEach(sub => {
-      const opt = document.createElement("option");
-      opt.value = sub;
-      opt.textContent = sub;
-      subSelect.appendChild(opt);
+      subSelect.appendChild(new Option(sub, sub));
     });
   }
 });
 
-// 📤 Subir imagen al servidor (Cloudinary)
+// 📤 Subir imagen al backend
 async function uploadToBackend(file) {
   const formData = new FormData();
   formData.append("image", file);
 
   const res = await fetch(API_UPLOAD, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`
-    },
+    headers: { Authorization: `Bearer ${token}` },
     body: formData
   });
 
-  if (!res.ok) throw new Error("❌ Error al subir imagen al servidor");
+  if (!res.ok) throw new Error("❌ Error al subir imagen");
 
   const data = await res.json();
   return {
@@ -85,8 +77,7 @@ document.getElementById("addVariante").addEventListener("click", async () => {
   const imagen = document.getElementById("imagen").files[0];
 
   if (!talla || !color || !imagen) {
-    showMessage("⚠️ Completa talla, color e imagen", "red");
-    return;
+    return showMessage("⚠️ Completa talla, color e imagen", "red");
   }
 
   try {
@@ -127,15 +118,14 @@ function renderizarVariantes() {
 }
 
 // ❌ Eliminar variante
-function eliminarVariante(i) {
-  variantes.splice(i, 1);
+function eliminarVariante(index) {
+  variantes.splice(index, 1);
   renderizarVariantes();
 }
 
-// 💾 Guardar producto (nuevo o editado)
-form.addEventListener("submit", async (e) => {
+// 💾 Guardar producto
+form.addEventListener("submit", async e => {
   e.preventDefault();
-
   const btn = form.querySelector("button[type=submit]");
   btn.disabled = true;
   btn.textContent = "⏳ Guardando...";
@@ -148,17 +138,13 @@ form.addEventListener("submit", async (e) => {
   const destacado = document.getElementById("featured")?.checked || false;
 
   if (!nombre || isNaN(precio) || !categoria || !subcategoria) {
-    showMessage("⚠️ Todos los campos obligatorios deben completarse", "red");
-    btn.disabled = false;
-    btn.textContent = "📦 Guardar Producto";
-    return;
+    showMessage("⚠️ Completa todos los campos obligatorios", "red");
+    return resetBoton(btn);
   }
 
   if (variantes.length === 0) {
     showMessage("⚠️ Debes agregar al menos una variante", "red");
-    btn.disabled = false;
-    btn.textContent = "📦 Guardar Producto";
-    return;
+    return resetBoton(btn);
   }
 
   const payload = {
@@ -172,10 +158,10 @@ form.addEventListener("submit", async (e) => {
   };
 
   const method = editandoId ? "PUT" : "POST";
-  const endpoint = editandoId ? `${API_BASE}/${editandoId}` : API_BASE;
+  const url = editandoId ? `${API_BASE}/${editandoId}` : API_BASE;
 
   try {
-    const res = await fetch(endpoint, {
+    const res = await fetch(url, {
       method,
       headers: {
         "Content-Type": "application/json",
@@ -200,12 +186,11 @@ form.addEventListener("submit", async (e) => {
     console.error("❌", err);
     showMessage("❌ Error del servidor", "red");
   } finally {
-    btn.disabled = false;
-    btn.textContent = "📦 Guardar Producto";
+    resetBoton(btn);
   }
 });
 
-// 📋 Cargar productos
+// 📋 Cargar lista de productos
 async function cargarProductos() {
   try {
     const res = await fetch(API_BASE);
@@ -213,16 +198,16 @@ async function cargarProductos() {
     const lista = document.getElementById("listaProductos");
     lista.innerHTML = "";
 
-    productos.forEach((p) => {
-      const card = document.createElement("div");
-      card.classList.add("card");
-
+    productos.forEach(p => {
       const variantesHtml = p.variants?.map(v => `
         <div>
           <p>${v.talla} - ${v.color}</p>
           <img src="${v.imageUrl}" width="80" />
-        </div>`).join("") || "Sin variantes";
+        </div>
+      `).join("") || "Sin variantes";
 
+      const card = document.createElement("div");
+      card.className = "card";
       card.innerHTML = `
         <h3>${p.name}</h3>
         <p><strong>Precio:</strong> $${p.price}</p>
@@ -263,11 +248,11 @@ async function editarProducto(id) {
     showMessage("✏️ Editando producto", "orange");
   } catch (err) {
     console.error("❌", err);
-    showMessage("❌ Error cargando producto", "red");
+    showMessage("❌ Error al cargar producto", "red");
   }
 }
 
-// ❌ Eliminar producto
+// 🗑️ Eliminar producto
 async function eliminarProducto(id) {
   if (!confirm("¿Eliminar producto?")) return;
 
@@ -288,11 +273,17 @@ async function eliminarProducto(id) {
   }
 }
 
-// 💬 Mostrar mensaje de estado
+// 💬 Mostrar mensaje
 function showMessage(text, color = "black") {
   message.textContent = text;
   message.style.color = color;
   setTimeout(() => (message.textContent = ""), 3000);
+}
+
+// 🔁 Resetear botón submit
+function resetBoton(btn) {
+  btn.disabled = false;
+  btn.textContent = "📦 Guardar Producto";
 }
 
 // ▶️ Inicializar

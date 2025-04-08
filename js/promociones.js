@@ -11,7 +11,7 @@ if (!token || typeof token !== "string" || token.length < 10) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 📌 Referencias al DOM
+  // 📌 DOM Elements
   const form = document.getElementById("promoForm");
   const promoInput = document.getElementById("promoMessage");
   const isActive = document.getElementById("isActive");
@@ -21,17 +21,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const mensajeExito = document.getElementById("promoFeedback");
   const promoPreview = document.getElementById("promoPreview");
 
-  /**
-   * 📅 Valida si la promoción está dentro de la fecha válida
-   */
+  // 📅 Validar si fecha está dentro del rango
   const isDateInRange = (start, end) => {
     const today = new Date().toISOString().split("T")[0];
     return (!start || start <= today) && (!end || end >= today);
   };
 
-  /**
-   * 👁️ Actualiza la vista previa dinámica de la promoción
-   */
+  // 👁️ Vista previa dinámica
   const updatePreview = () => {
     const mensaje = promoInput.value || "Tu mensaje aparecerá aquí...";
     const tema = themeSelect.value || "blue";
@@ -39,9 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     promoPreview.className = `promo-preview ${tema}`;
   };
 
-  /**
-   * 📥 Cargar datos actuales de promoción desde la API
-   */
+  // 📥 Cargar promoción actual
   const loadPromotion = async () => {
     try {
       const res = await fetch(API_PROMO, {
@@ -50,37 +44,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await res.json();
 
-      if (res.ok && data) {
-        promoInput.value = data.message || "";
-        isActive.checked = data.active || false;
-        themeSelect.value = data.theme || "blue";
-        startDate.value = data.startDate ? data.startDate.split("T")[0] : "";
-        endDate.value = data.endDate ? data.endDate.split("T")[0] : "";
+      if (!res.ok || !data) {
+        mostrarErrorPreview("❌ No se pudo cargar la promoción.");
+        return;
+      }
 
-        // Mostrar vista previa según estado
-        if (data.active && isDateInRange(data.startDate, data.endDate)) {
-          promoPreview.textContent = data.message;
-          promoPreview.className = `promo-preview ${data.theme || "blue"}`;
-        } else {
-          promoPreview.textContent = "⚠️ Promoción inactiva o fuera de fecha.";
-          promoPreview.className = "promo-preview inactive";
-        }
+      promoInput.value = data.message || "";
+      isActive.checked = data.active || false;
+      themeSelect.value = data.theme || "blue";
+      startDate.value = data.startDate?.split("T")[0] || "";
+      endDate.value = data.endDate?.split("T")[0] || "";
 
+      if (data.active && isDateInRange(data.startDate, data.endDate)) {
+        promoPreview.textContent = data.message;
+        promoPreview.className = `promo-preview ${data.theme || "blue"}`;
       } else {
-        promoPreview.textContent = "❌ No se pudo cargar la promoción.";
-        promoPreview.className = "promo-preview error";
+        mostrarErrorPreview("⚠️ Promoción inactiva o fuera de fecha.", "inactive");
       }
 
     } catch (err) {
       console.error("❌ Error al obtener promoción:", err);
-      promoPreview.textContent = "❌ Error de red.";
-      promoPreview.className = "promo-preview error";
+      mostrarErrorPreview("❌ Error de red.");
     }
   };
 
-  /**
-   * 💾 Guardar o actualizar la promoción
-   */
+  // ⚠️ Mostrar errores en preview
+  const mostrarErrorPreview = (mensaje, clase = "error") => {
+    promoPreview.textContent = mensaje;
+    promoPreview.className = `promo-preview ${clase}`;
+  };
+
+  // 💾 Guardar promoción
   const guardarPromocion = async (e) => {
     e.preventDefault();
 
@@ -103,51 +97,50 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const data = await res.json();
-
       mensajeExito.classList.remove("oculto");
 
       if (res.ok) {
-        mensajeExito.textContent = "✅ Promoción actualizada correctamente";
-        mensajeExito.style.backgroundColor = "#e8f5e9";
-        mensajeExito.style.color = "#2e7d32";
-        loadPromotion();
+        mostrarMensaje("✅ Promoción actualizada correctamente", "success");
+        await loadPromotion();
       } else {
-        mensajeExito.textContent = "❌ Error: " + (data.message || "Error inesperado");
-        mensajeExito.style.backgroundColor = "#ffebee";
-        mensajeExito.style.color = "#b71c1c";
+        mostrarMensaje("❌ " + (data.message || "Error inesperado"), "error");
       }
 
     } catch (error) {
       console.error("❌ Error al guardar:", error);
-      mensajeExito.classList.remove("oculto");
-      mensajeExito.textContent = "❌ Error del servidor.";
-      mensajeExito.style.backgroundColor = "#ffebee";
-      mensajeExito.style.color = "#b71c1c";
+      mostrarMensaje("❌ Error del servidor.", "error");
     }
+  };
+
+  // ✅ Mostrar mensaje visual de éxito/error
+  const mostrarMensaje = (msg, tipo = "info") => {
+    mensajeExito.textContent = msg;
+    mensajeExito.classList.remove("oculto");
+
+    const colores = {
+      success: { bg: "#e8f5e9", color: "#2e7d32" },
+      error: { bg: "#ffebee", color: "#b71c1c" },
+      warning: { bg: "#fff8e1", color: "#f57c00" },
+      info: { bg: "#e3f2fd", color: "#0277bd" }
+    };
+
+    const { bg, color } = colores[tipo] || colores.info;
+    mensajeExito.style.backgroundColor = bg;
+    mensajeExito.style.color = color;
 
     setTimeout(() => mensajeExito.classList.add("oculto"), 3000);
   };
 
-  /**
-   * 🎯 Listeners
-   */
-  promoInput?.addEventListener("input", updatePreview);
-  themeSelect?.addEventListener("change", updatePreview);
-  form?.addEventListener("submit", guardarPromocion);
-
-  /**
-   * 🔙 Ir al panel principal
-   */
+  // 🔗 Navegación
   window.goBack = () => window.location.href = "panel.html";
-
-  /**
-   * 🔒 Cerrar sesión
-   */
   window.logout = () => {
     localStorage.removeItem("token");
     window.location.href = "login.html";
   };
 
-  // ▶️ Iniciar cargando la promoción actual
+  // ▶️ Init
+  promoInput?.addEventListener("input", updatePreview);
+  themeSelect?.addEventListener("change", updatePreview);
+  form?.addEventListener("submit", guardarPromocion);
   loadPromotion();
 });

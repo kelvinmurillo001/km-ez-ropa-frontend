@@ -1,17 +1,17 @@
 "use strict";
 
-// 🌐 Endpoints base
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
 const API_PROMO = `${API_BASE}/promos`;
 let productos = [];
 
-// ▶️ Iniciar flujo
-registrarVisita();
-cargarProductos();
+document.addEventListener("DOMContentLoaded", () => {
+  registrarVisita();
+  cargarProductos();
+  restaurarModoOscuro();
+  inicializarBotones();
+});
 
-/**
- * 📦 Obtener todos los productos del backend y preparar catálogo
- */
+/* 📦 Carga inicial de productos y promociones */
 async function cargarProductos() {
   try {
     const res = await fetch(`${API_BASE}/products`);
@@ -23,7 +23,7 @@ async function cargarProductos() {
     cargarSubcategoriasUnicas();
     cargarPromocionActiva();
 
-    // 🧠 Filtros y búsquedas
+    // Listeners
     document.getElementById("busqueda")?.addEventListener("input", aplicarFiltros);
     document.getElementById("categoria")?.addEventListener("change", () => {
       cargarSubcategoriasUnicas();
@@ -39,28 +39,20 @@ async function cargarProductos() {
   }
 }
 
-/**
- * 🔍 Filtrar productos según inputs del usuario
- */
+/* 🔍 Filtros personalizados */
 function aplicarFiltros() {
   const termino = document.getElementById("busqueda")?.value.toLowerCase() || "";
   const categoria = document.getElementById("categoria")?.value || "todas";
   const subcategoria = document.getElementById("subcategoria")?.value || "todas";
   const orden = document.getElementById("orden")?.value || "reciente";
 
-  let filtrados = [...productos];
-
-  if (categoria !== "todas") {
-    filtrados = filtrados.filter(p => p.category?.toLowerCase() === categoria.toLowerCase());
-  }
-
-  if (subcategoria !== "todas") {
-    filtrados = filtrados.filter(p => p.subcategory?.toLowerCase() === subcategoria.toLowerCase());
-  }
-
-  if (termino) {
-    filtrados = filtrados.filter(p => p.name?.toLowerCase().includes(termino));
-  }
+  let filtrados = productos.filter(p => {
+    return (
+      (categoria === "todas" || p.category?.toLowerCase() === categoria.toLowerCase()) &&
+      (subcategoria === "todas" || p.subcategory?.toLowerCase() === subcategoria.toLowerCase()) &&
+      (!termino || p.name?.toLowerCase().includes(termino))
+    );
+  });
 
   switch (orden) {
     case "precioAsc":
@@ -79,9 +71,7 @@ function aplicarFiltros() {
   mostrarProductos(filtrados);
 }
 
-/**
- * 🖼️ Renderiza lista de productos al DOM
- */
+/* 🖼️ Mostrar productos en DOM */
 function mostrarProductos(lista) {
   const contenedor = document.getElementById("catalogo");
   contenedor.innerHTML = "";
@@ -91,40 +81,37 @@ function mostrarProductos(lista) {
     return;
   }
 
-  lista.forEach(producto => {
-    const imagen = producto.image || "../assets/logo.jpg";
-    const agotado = producto.stock <= 0;
+  lista.forEach(p => {
+    const { _id, name, image, price, category, subcategory, stock, featured, talla, colores } = p;
+    const agotado = stock <= 0;
+    const imgSrc = image || "../assets/logo.jpg";
 
     const card = document.createElement("div");
     card.className = "card fade-in";
-
     card.innerHTML = `
-      <div class="imagen-catalogo" onclick="ampliarImagen('${imagen}')">
-        <img src="${imagen}" alt="${producto.name}" class="zoomable" />
+      <div class="imagen-catalogo" onclick="ampliarImagen('${imgSrc}')">
+        <img src="${imgSrc}" alt="${name}" class="zoomable" />
       </div>
-      <h3>${producto.name}</h3>
-      ${producto.featured ? '<span class="destacado-badge">⭐ Destacado</span>' : ""}
-      <p><strong>Precio:</strong> $${producto.price}</p>
-      <p><strong>Categoría:</strong> ${producto.category}</p>
-      <p><strong>Subcategoría:</strong> ${producto.subcategory || "N/A"}</p>
-      <p><strong>Stock:</strong> ${agotado ? "❌ Agotado" : producto.stock}</p>
+      <h3>${name}</h3>
+      ${featured ? `<span class="destacado-badge">⭐ Destacado</span>` : ""}
+      <p><strong>Precio:</strong> $${price}</p>
+      <p><strong>Categoría:</strong> ${category}</p>
+      <p><strong>Subcategoría:</strong> ${subcategory || "N/A"}</p>
+      <p><strong>Stock:</strong> ${agotado ? "❌ Agotado" : stock}</p>
       <button ${agotado ? "disabled" : ""} onclick='addToCart(${JSON.stringify({
-        id: producto._id,
-        nombre: producto.name,
-        precio: producto.price,
-        imagen: producto.image,
-        talla: producto.talla || "",
-        colores: producto.colores || ""
+        id: _id,
+        nombre: name,
+        precio: price,
+        imagen: image,
+        talla: talla || "",
+        colores: colores || ""
       })})'>🛒 Agregar al carrito</button>
     `;
-
     contenedor.appendChild(card);
   });
 }
 
-/**
- * 📂 Genera subcategorías únicas según la categoría seleccionada
- */
+/* 📂 Subcategorías dinámicas */
 function cargarSubcategoriasUnicas() {
   const categoria = document.getElementById("categoria")?.value || "todas";
   const subSelect = document.getElementById("subcategoria");
@@ -145,43 +132,34 @@ function cargarSubcategoriasUnicas() {
   });
 }
 
-/**
- * 📣 Cargar promoción activa desde backend
- */
+/* 📣 Mostrar promoción activa */
 async function cargarPromocionActiva() {
   try {
     const res = await fetch(API_PROMO);
     const data = await res.json();
 
-    if (
-      res.ok &&
-      data?.message &&
-      data.active &&
-      isFechaEnRango(data.startDate, data.endDate)
-    ) {
-      const promoTexto = document.getElementById("promoTexto");
-      const promoBanner = document.getElementById("promoBanner");
+    if (res.ok && data?.message && data.active && isFechaEnRango(data.startDate, data.endDate)) {
+      const banner = document.getElementById("promoBanner");
+      const texto = document.getElementById("promoTexto");
 
-      promoTexto.textContent = data.message;
-      promoBanner.style.display = "block";
-      promoBanner.className = `promo-banner ${data.theme || "blue"}`;
+      if (banner && texto) {
+        texto.textContent = data.message;
+        banner.style.display = "block";
+        banner.className = `promo-banner ${data.theme || "blue"}`;
+      }
     }
   } catch (err) {
     console.error("❌ Error al cargar promoción:", err);
   }
 }
 
-/**
- * 📅 Validar si fecha actual está dentro del rango de promoción
- */
+/* 📅 Validar si hoy está en rango */
 function isFechaEnRango(start, end) {
   const hoy = new Date().toISOString().split("T")[0];
   return (!start || start <= hoy) && (!end || end >= hoy);
 }
 
-/**
- * 🔍 Mostrar imagen ampliada en modal
- */
+/* 🔍 Imagen en modal */
 function ampliarImagen(url) {
   const modal = document.createElement("div");
   modal.className = "modal-img";
@@ -193,31 +171,32 @@ function ampliarImagen(url) {
   document.body.appendChild(modal);
 }
 
-/**
- * 🌙 Alternar modo oscuro
- */
-const toggleBtn = document.getElementById("modoToggle");
-toggleBtn?.addEventListener("click", () => {
-  document.body.classList.toggle("modo-oscuro");
-  const oscuro = document.body.classList.contains("modo-oscuro");
-  localStorage.setItem("modoOscuro", oscuro);
-  toggleBtn.textContent = oscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
-});
-
-// 🌓 Restaurar preferencia modo oscuro al cargar
-if (localStorage.getItem("modoOscuro") === "true") {
-  document.body.classList.add("modo-oscuro");
-  if (toggleBtn) toggleBtn.textContent = "☀️ Modo Claro";
+/* 🌙 Restaurar modo oscuro */
+function restaurarModoOscuro() {
+  const oscuro = localStorage.getItem("modoOscuro") === "true";
+  if (oscuro) {
+    document.body.classList.add("modo-oscuro");
+    const btn = document.getElementById("modoToggle");
+    if (btn) btn.textContent = "☀️ Modo Claro";
+  }
 }
 
-// 🔁 Redirección manual a login
-document.getElementById("loginRedirectBtn")?.addEventListener("click", () => {
-  window.location.href = "login.html";
-});
+/* 🌘 Alternar tema */
+function inicializarBotones() {
+  const toggleBtn = document.getElementById("modoToggle");
+  toggleBtn?.addEventListener("click", () => {
+    document.body.classList.toggle("modo-oscuro");
+    const oscuro = document.body.classList.contains("modo-oscuro");
+    localStorage.setItem("modoOscuro", oscuro);
+    toggleBtn.textContent = oscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+  });
 
-/**
- * 👁️ Registrar visita al cargar página
- */
+  document.getElementById("loginRedirectBtn")?.addEventListener("click", () => {
+    window.location.href = "login.html";
+  });
+}
+
+/* 👁️ Registrar visita */
 async function registrarVisita() {
   try {
     await fetch(`${API_BASE}/visitas/registrar`, { method: "POST" });

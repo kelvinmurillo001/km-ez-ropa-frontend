@@ -1,16 +1,16 @@
 "use strict";
 
-// 🌐 Endpoint y token
+// 🌐 Configuración inicial
 const API = "https://km-ez-ropa-backend.onrender.com/api/categories";
 const token = localStorage.getItem("token");
 
-// 🔐 Validar sesión
+// 🔐 Validar sesión activa
 if (!token) {
   alert("⚠️ No autorizado. Inicia sesión.");
   window.location.href = "login.html";
 }
 
-// 📌 Referencias al DOM
+// 📌 Elementos del DOM
 const categoryForm = document.getElementById("formCategoria");
 const categoryNameInput = document.getElementById("nombreCategoria");
 const subcategoryNameInput = document.getElementById("nuevaSubcategoria");
@@ -19,7 +19,7 @@ const categoryList = document.getElementById("listaCategorias");
 const message = document.getElementById("message");
 
 /**
- * ▶️ Cargar todas las categorías y mostrarlas en el DOM
+ * ▶️ Cargar todas las categorías desde el backend
  */
 async function loadCategories() {
   try {
@@ -27,44 +27,8 @@ async function loadCategories() {
     if (!res.ok) throw new Error("Error al obtener categorías");
 
     const data = await res.json();
-
-    // Reset select y lista
-    if (categorySelect) {
-      categorySelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
-    }
-    categoryList.innerHTML = "";
-
-    data.forEach(cat => {
-      // 👉 Select para subcategoría
-      if (categorySelect) {
-        const opt = document.createElement("option");
-        opt.value = cat._id;
-        opt.textContent = cat.name;
-        categorySelect.appendChild(opt);
-      }
-
-      // 👉 Renderizar categorías + subcategorías
-      const catCard = document.createElement("div");
-      catCard.className = "categoria-card fade-in";
-
-      catCard.innerHTML = `
-        <div class="cat-header">
-          <strong>${cat.name}</strong>
-          <button class="btn btn-sm danger" onclick="deleteCategory('${cat._id}')">🗑</button>
-        </div>
-        <ul class="subcategoria-list">
-          ${(cat.subcategories || []).map(sub => `
-            <li>
-              ${sub}
-              <button onclick="deleteSubcategory('${cat._id}', '${sub}')" class="btn btn-xs">❌</button>
-            </li>
-          `).join("")}
-        </ul>
-      `;
-
-      categoryList.appendChild(catCard);
-    });
-
+    renderCategorySelect(data);
+    renderCategoryCards(data);
   } catch (error) {
     console.error("❌", error);
     showMessage("❌ Error al cargar categorías", "error");
@@ -72,11 +36,54 @@ async function loadCategories() {
 }
 
 /**
- * ➕ Crear nueva categoría
+ * 🧩 Rellena el select de categorías
+ */
+function renderCategorySelect(categories) {
+  if (!categorySelect) return;
+
+  categorySelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
+  categories.forEach(cat => {
+    const opt = document.createElement("option");
+    opt.value = cat._id;
+    opt.textContent = cat.name;
+    categorySelect.appendChild(opt);
+  });
+}
+
+/**
+ * 🧾 Muestra las categorías y sus subcategorías
+ */
+function renderCategoryCards(categories) {
+  categoryList.innerHTML = "";
+
+  categories.forEach(cat => {
+    const card = document.createElement("div");
+    card.className = "categoria-card fade-in";
+
+    const subcats = (cat.subcategories || []).map(sub => `
+      <li>
+        ${sub}
+        <button onclick="deleteSubcategory('${cat._id}', '${sub}')" class="btn btn-xs">❌</button>
+      </li>
+    `).join("");
+
+    card.innerHTML = `
+      <div class="cat-header">
+        <strong>${cat.name}</strong>
+        <button class="btn btn-sm danger" onclick="deleteCategory('${cat._id}')">🗑</button>
+      </div>
+      <ul class="subcategoria-list">${subcats}</ul>
+    `;
+
+    categoryList.appendChild(card);
+  });
+}
+
+/**
+ * ➕ Crear una nueva categoría
  */
 categoryForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const name = categoryNameInput.value.trim();
   if (!name) return showMessage("⚠️ Nombre requerido", "warning");
 
@@ -99,14 +106,13 @@ categoryForm?.addEventListener("submit", async (e) => {
     } else {
       showMessage(`❌ ${data.message || "Error al crear categoría"}`, "error");
     }
-
-  } catch (err) {
+  } catch {
     showMessage("❌ Error de red al crear categoría", "error");
   }
 });
 
 /**
- * ➕ Agregar subcategoría a una categoría existente
+ * ➕ Agregar subcategoría a categoría existente
  */
 document.getElementById("subcategoryForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -114,9 +120,7 @@ document.getElementById("subcategoryForm")?.addEventListener("submit", async (e)
   const categoryId = categorySelect?.value;
   const sub = subcategoryNameInput?.value.trim();
 
-  if (!categoryId || !sub) {
-    return showMessage("⚠️ Completa todos los campos", "warning");
-  }
+  if (!categoryId || !sub) return showMessage("⚠️ Completa todos los campos", "warning");
 
   try {
     const res = await fetch(`${API}/${categoryId}/subcategories`, {
@@ -137,14 +141,13 @@ document.getElementById("subcategoryForm")?.addEventListener("submit", async (e)
     } else {
       showMessage(`❌ ${data.message || "Error al agregar subcategoría"}`, "error");
     }
-
-  } catch (err) {
+  } catch {
     showMessage("❌ Error de red al agregar subcategoría", "error");
   }
 });
 
 /**
- * ❌ Eliminar una categoría por ID
+ * ❌ Eliminar categoría
  */
 async function deleteCategory(id) {
   if (!confirm("¿Eliminar esta categoría?")) return;
@@ -161,13 +164,13 @@ async function deleteCategory(id) {
     } else {
       showMessage("❌ No se pudo eliminar la categoría", "error");
     }
-  } catch (err) {
+  } catch {
     showMessage("❌ Error eliminando categoría", "error");
   }
 }
 
 /**
- * ❌ Eliminar subcategoría específica de una categoría
+ * ❌ Eliminar subcategoría
  */
 async function deleteSubcategory(id, sub) {
   if (!confirm("¿Eliminar esta subcategoría?")) return;
@@ -188,14 +191,13 @@ async function deleteSubcategory(id, sub) {
     } else {
       showMessage("❌ No se pudo eliminar subcategoría", "error");
     }
-
-  } catch (err) {
+  } catch {
     showMessage("❌ Error eliminando subcategoría", "error");
   }
 }
 
 /**
- * 🔐 Logout
+ * 🔐 Cerrar sesión
  */
 function logout() {
   localStorage.removeItem("token");
@@ -203,14 +205,14 @@ function logout() {
 }
 
 /**
- * 🔙 Volver al panel principal
+ * 🔙 Volver al panel
  */
 function goBack() {
   window.location.href = "panel.html";
 }
 
 /**
- * 💬 Mostrar mensajes de estado
+ * 💬 Mostrar mensaje visual
  */
 function showMessage(text, type = "error") {
   if (!message) return;
@@ -226,5 +228,5 @@ function showMessage(text, type = "error") {
   setTimeout(() => (message.textContent = ""), 3000);
 }
 
-// ▶️ Inicializar
+// ▶️ Iniciar
 loadCategories();
