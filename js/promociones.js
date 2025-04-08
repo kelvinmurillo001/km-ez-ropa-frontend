@@ -1,14 +1,10 @@
 "use strict";
 
 // 🌐 Endpoint y token
-const API_PROMO = "https://km-ez-ropa-backend.onrender.com/api/promos";
-const token = localStorage.getItem("token");
+import { verificarSesion, mostrarMensaje, isDateInRange, logout, goBack } from "./admin-utils.js";
 
-// 🔐 Verificación de sesión
-if (!token || typeof token !== "string" || token.length < 10) {
-  alert("⚠️ Acceso no autorizado. Por favor, inicia sesión.");
-  window.location.href = "login.html";
-}
+const API_PROMO = "https://km-ez-ropa-backend.onrender.com/api/promos";
+const token = verificarSesion();
 
 document.addEventListener("DOMContentLoaded", () => {
   // 📌 DOM Elements
@@ -21,18 +17,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const mensajeExito = document.getElementById("promoFeedback");
   const promoPreview = document.getElementById("promoPreview");
 
-  // 📅 Validar si fecha está dentro del rango
-  const isDateInRange = (start, end) => {
-    const today = new Date().toISOString().split("T")[0];
-    return (!start || start <= today) && (!end || end >= today);
-  };
-
   // 👁️ Vista previa dinámica
   const updatePreview = () => {
     const mensaje = promoInput.value || "Tu mensaje aparecerá aquí...";
     const tema = themeSelect.value || "blue";
     promoPreview.textContent = mensaje;
     promoPreview.className = `promo-preview ${tema}`;
+  };
+
+  // ⚠️ Mostrar errores en preview
+  const mostrarErrorPreview = (mensaje, clase = "error") => {
+    promoPreview.textContent = mensaje;
+    promoPreview.className = `promo-preview ${clase}`;
   };
 
   // 📥 Cargar promoción actual
@@ -68,12 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // ⚠️ Mostrar errores en preview
-  const mostrarErrorPreview = (mensaje, clase = "error") => {
-    promoPreview.textContent = mensaje;
-    promoPreview.className = `promo-preview ${clase}`;
-  };
-
   // 💾 Guardar promoción
   const guardarPromocion = async (e) => {
     e.preventDefault();
@@ -100,42 +90,16 @@ document.addEventListener("DOMContentLoaded", () => {
       mensajeExito.classList.remove("oculto");
 
       if (res.ok) {
-        mostrarMensaje("✅ Promoción actualizada correctamente", "success");
+        mostrarMensaje(mensajeExito, "✅ Promoción actualizada correctamente", "success");
         await loadPromotion();
       } else {
-        mostrarMensaje("❌ " + (data.message || "Error inesperado"), "error");
+        mostrarMensaje(mensajeExito, "❌ " + (data.message || "Error inesperado"), "error");
       }
 
     } catch (error) {
       console.error("❌ Error al guardar:", error);
-      mostrarMensaje("❌ Error del servidor.", "error");
+      mostrarMensaje(mensajeExito, "❌ Error del servidor.", "error");
     }
-  };
-
-  // ✅ Mostrar mensaje visual de éxito/error
-  const mostrarMensaje = (msg, tipo = "info") => {
-    mensajeExito.textContent = msg;
-    mensajeExito.classList.remove("oculto");
-
-    const colores = {
-      success: { bg: "#e8f5e9", color: "#2e7d32" },
-      error: { bg: "#ffebee", color: "#b71c1c" },
-      warning: { bg: "#fff8e1", color: "#f57c00" },
-      info: { bg: "#e3f2fd", color: "#0277bd" }
-    };
-
-    const { bg, color } = colores[tipo] || colores.info;
-    mensajeExito.style.backgroundColor = bg;
-    mensajeExito.style.color = color;
-
-    setTimeout(() => mensajeExito.classList.add("oculto"), 3000);
-  };
-
-  // 🔗 Navegación
-  window.goBack = () => window.location.href = "panel.html";
-  window.logout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "login.html";
   };
 
   // ▶️ Init
@@ -143,4 +107,8 @@ document.addEventListener("DOMContentLoaded", () => {
   themeSelect?.addEventListener("change", updatePreview);
   form?.addEventListener("submit", guardarPromocion);
   loadPromotion();
+
+  // 🔗 Navegación
+  window.goBack = goBack;
+  window.logout = logout;
 });
