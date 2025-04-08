@@ -26,7 +26,7 @@ const categorias = {
 };
 
 /**
- * 📂 Cargar categorías en el select
+ * 📂 Cargar categorías
  */
 function cargarCategorias() {
   const catSelect = document.getElementById("categoriaSelect");
@@ -39,9 +39,6 @@ function cargarCategorias() {
   });
 }
 
-/**
- * 📂 Cargar subcategorías según categoría seleccionada
- */
 document.getElementById("categoriaSelect").addEventListener("change", () => {
   const subSelect = document.getElementById("subcategoriaSelect");
   const cat = document.getElementById("categoriaSelect").value;
@@ -57,7 +54,7 @@ document.getElementById("categoriaSelect").addEventListener("change", () => {
 });
 
 /**
- * 📤 Subir imagen al servidor (Cloudinary)
+ * 📤 Subir imagen al servidor
  */
 async function uploadToBackend(file) {
   const formData = new FormData();
@@ -65,7 +62,9 @@ async function uploadToBackend(file) {
 
   const res = await fetch(API_UPLOAD, {
     method: "POST",
-    headers: { Authorization: `Bearer ${token}` },
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
     body: formData
   });
 
@@ -82,7 +81,7 @@ async function uploadToBackend(file) {
 let variantes = [];
 
 /**
- * ➕ Agregar nueva variante
+ * ➕ Agregar variante
  */
 document.getElementById("addVariante").addEventListener("click", async () => {
   const talla = document.getElementById("talla").value.trim();
@@ -117,7 +116,7 @@ function limpiarCamposVariante() {
 }
 
 /**
- * 🧩 Renderizar variantes cargadas
+ * 🧩 Renderizar variantes
  */
 function renderizarVariantes() {
   const contenedor = document.getElementById("listaVariantes");
@@ -136,7 +135,7 @@ function renderizarVariantes() {
 }
 
 /**
- * ❌ Eliminar variante por índice
+ * ❌ Eliminar variante
  */
 function eliminarVariante(i) {
   variantes.splice(i, 1);
@@ -144,7 +143,7 @@ function eliminarVariante(i) {
 }
 
 /**
- * 💾 Guardar producto nuevo
+ * 💾 Guardar producto
  */
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -205,7 +204,6 @@ form.addEventListener("submit", async (e) => {
     } else {
       showMessage(data.message || "❌ Error al guardar", "red");
     }
-
   } catch (err) {
     console.error("❌", err);
     showMessage("❌ Error del servidor", "red");
@@ -216,7 +214,7 @@ form.addEventListener("submit", async (e) => {
 });
 
 /**
- * 📋 Cargar productos existentes
+ * 📋 Cargar productos
  */
 async function cargarProductos() {
   try {
@@ -253,7 +251,7 @@ async function cargarProductos() {
 }
 
 /**
- * ❌ Eliminar producto existente
+ * ❌ Eliminar producto
  */
 async function eliminarProducto(id) {
   if (!confirm("¿Eliminar producto?")) return;
@@ -276,7 +274,7 @@ async function eliminarProducto(id) {
 }
 
 /**
- * 💬 Mostrar mensaje de feedback
+ * 💬 Mostrar mensaje
  */
 function showMessage(text, color = "black") {
   message.textContent = text;
