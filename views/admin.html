@@ -24,7 +24,7 @@
   <main class="admin-container" role="main" aria-label="Gestión de productos">
 
     <!-- 🔙 Volver -->
-    <nav aria-label="Volver al panel">
+    <nav aria-label="Volver al panel" role="navigation">
       <a class="btn-volver" href="panel.html">⬅️ Volver al Panel</a>
     </nav>
 
@@ -51,23 +51,23 @@
       <fieldset>
         <legend>🧩 Variantes</legend>
         <div class="form-row">
-          <input type="text" id="talla" placeholder="Talla (Ej: S, M, L)" />
-          <input type="text" id="color" placeholder="Color (Ej: rojo, azul)" />
+          <input type="text" id="talla" placeholder="Talla (Ej: S, M, L)" autocomplete="off" />
+          <input type="text" id="color" placeholder="Color (Ej: rojo, azul)" autocomplete="off" />
         </div>
         <input type="file" id="imagen" accept="image/*" aria-label="Subir imagen de variante" />
         <button type="button" id="addVariante" class="btn-secundario" aria-label="Agregar variante">➕ Agregar Variante</button>
         <div class="image-preview" id="previewImagen" aria-live="polite"></div>
       </fieldset>
 
-      <!-- 📦 Stock -->
+      <!-- 📊 Inventario -->
       <fieldset>
         <legend>📊 Inventario</legend>
         <div class="form-row">
           <input type="number" id="stock" placeholder="Stock disponible" min="0" required />
-          <label>
+          <div>
             <input type="checkbox" id="featured" />
-            Producto destacado ⭐
-          </label>
+            <label for="featured">Producto destacado ⭐</label>
+          </div>
         </div>
       </fieldset>
 
@@ -76,8 +76,8 @@
     </form>
 
     <!-- ✅ Variantes agregadas -->
-    <section aria-label="Variantes agregadas">
-      <h3>📸 Variantes añadidas</h3>
+    <section aria-label="Variantes agregadas" aria-labelledby="tituloVariantes">
+      <h3 id="tituloVariantes">📸 Variantes añadidas</h3>
       <div id="listaVariantes" class="variantes-container"></div>
     </section>
 
@@ -87,8 +87,8 @@
     <hr />
 
     <!-- 📋 Productos registrados -->
-    <section aria-label="Lista de productos">
-      <h2>📦 Productos Registrados</h2>
+    <section aria-label="Lista de productos" aria-labelledby="tituloProductos">
+      <h2 id="tituloProductos">📦 Productos Registrados</h2>
       <div class="product-list" id="listaProductos"></div>
     </section>
 

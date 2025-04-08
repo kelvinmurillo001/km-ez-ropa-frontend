@@ -49,10 +49,11 @@
 
   <!-- 🧾 Contenido principal -->
   <main class="login-box" role="main">
-    <h1>🔐 Iniciar sesión</h1>
+    <h1 id="form-title">🔐 Iniciar sesión</h1>
 
     <form id="loginForm" autocomplete="off" novalidate aria-labelledby="form-title">
-      <input type="hidden" name="csrf" value="<!-- opcional si se implementa -->">
+      <!-- Si implementas CSRF, activa esto -->
+      <!-- <input type="hidden" name="csrf" value="TOKEN_GENERADO_SERVER"> -->
 
       <div class="form-group">
         <label for="username" class="sr-only">Usuario</label>
@@ -64,6 +65,7 @@
           required
           aria-required="true"
           aria-label="Usuario"
+          autocapitalize="off"
         />
       </div>
 

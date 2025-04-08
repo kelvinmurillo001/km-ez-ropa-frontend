@@ -1,29 +1,15 @@
 <!-- ✅ carrito-widget.html - Widget flotante del carrito -->
-
-<div id="cart-widget" 
-     style="position: fixed; bottom: 20px; right: 20px; z-index: 999;" 
-     aria-label="Widget de carrito">
+<div id="cart-widget" class="cart-widget" aria-label="Widget de carrito">
   <a href="carrito.html" aria-label="Ir al carrito de compras">
     <img src="/assets/cart-icon.svg" 
          alt="Icono del carrito" 
          width="48" 
          height="48" 
-         style="display: block;" />
+         class="cart-icon" />
 
     <span id="cart-widget-count"
-          style="
-            position: absolute;
-            top: 0;
-            right: 0;
-            background-color: #e53935;
-            color: #fff;
-            font-size: 13px;
-            font-weight: bold;
-            padding: 2px 6px;
-            border-radius: 50%;
-            transform: translate(50%, -50%);
-            box-shadow: 0 0 0 2px white;
-          "
+          class="cart-count"
+          tabindex="-1"
           aria-label="Cantidad de productos en carrito">
       0
     </span>

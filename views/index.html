@@ -52,7 +52,7 @@
     </div>
     <p class="subtitulo">Moda para toda la familia | Calidad y precio</p>
     <div class="top-buttons">
-      <button class="btn" id="modoToggle" aria-label="Cambiar a modo oscuro o claro">🌙 Modo Oscuro</button>
+      <button type="button" class="btn" id="modoToggle" aria-label="Cambiar a modo oscuro o claro">🌙 Modo Oscuro</button>
       <a href="login.html" class="btn" title="Ingresar como administrador">🔐 Iniciar sesión</a>
     </div>
   </header>
@@ -64,6 +64,7 @@
 
   <!-- 🎯 Filtros -->
   <section class="filtros-container" aria-label="Filtros de búsqueda de productos">
+    <label for="categoria" class="visually-hidden">Filtrar por categoría</label>
     <select id="categoria" aria-label="Filtrar por categoría">
       <option value="todas">Categoría: Todas</option>
       <option value="Hombre">Hombre</option>
@@ -73,10 +74,12 @@
       <option value="Bebé">Bebé</option>
     </select>
 
+    <label for="subcategoria" class="visually-hidden">Filtrar por subcategoría</label>
     <select id="subcategoria" aria-label="Filtrar por subcategoría">
       <option value="todas">Subcategoría: Todas</option>
     </select>
 
+    <label for="orden" class="visually-hidden">Ordenar productos</label>
     <select id="orden" aria-label="Ordenar productos">
       <option value="reciente">Más recientes</option>
       <option value="precioAsc">Precio ↑</option>
@@ -108,7 +111,7 @@
       <span class="cerrar" id="cerrarCarrito" role="button" aria-label="Cerrar carrito">&times;</span>
       <h3 id="tituloCarrito">🛍️ Tu Carrito</h3>
       <ul id="listaCarrito"></ul>
-      <button id="enviarWhatsApp" class="btn" aria-label="Enviar pedido por WhatsApp">📲 Enviar a WhatsApp</button>
+      <button type="button" id="enviarWhatsApp" class="btn" aria-label="Enviar pedido por WhatsApp">📲 Enviar a WhatsApp</button>
     </div>
   </div>
 

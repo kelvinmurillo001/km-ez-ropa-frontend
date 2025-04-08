@@ -52,22 +52,22 @@
     </section>
 
     <!-- Formulario de pedido -->
-    <section class="carrito-formulario">
+    <section class="carrito-formulario" role="form" aria-label="Formulario para enviar pedido">
       <h3>Total estimado: <span id="cart-total">$0.00</span></h3>
       <p id="total-unidades">Total unidades: 0</p>
 
       <label for="clienteNombre" class="sr-only">Nombre del cliente</label>
-      <input type="text" id="clienteNombre" placeholder="Tu nombre" required />
+      <input type="text" id="clienteNombre" placeholder="Tu nombre" required aria-label="Tu nombre" />
 
       <label for="nota" class="sr-only">Nota adicional</label>
-      <textarea id="nota" placeholder="Nota adicional (opcional)" rows="2"></textarea>
+      <textarea id="nota" placeholder="Nota adicional (opcional)" rows="2" aria-label="Nota adicional"></textarea>
 
       <div class="botones-finales">
-        <button onclick="enviarDesdeCarrito()" class="btn-whatsapp" aria-label="Enviar pedido por WhatsApp">📲 Consultar por WhatsApp</button>
-        <button onclick="vaciarCarrito()" class="btn-vaciar" aria-label="Vaciar el carrito">🗑 Vaciar Carrito</button>
+        <button type="button" onclick="enviarDesdeCarrito()" class="btn-whatsapp" aria-label="Enviar pedido por WhatsApp">📲 Consultar por WhatsApp</button>
+        <button type="button" onclick="vaciarCarrito()" class="btn-vaciar" aria-label="Vaciar el carrito">🗑 Vaciar Carrito</button>
       </div>
 
-      <p id="confirmacion" class="confirmacion oculto" role="status" aria-live="polite">✅ ¡Pedido enviado!</p>
+      <p id="confirmacion" class="confirmacion oculto" role="status" aria-live="polite" tabindex="-1">✅ ¡Pedido enviado!</p>
     </section>
   </main>
 
@@ -81,8 +81,9 @@
   <script src="/js/cart.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      renderCartItems();
-      updateCartWidget();
+      if (typeof renderCartItems === "function") renderCartItems();
+      if (typeof updateCartWidget === "function") updateCartWidget();
+
       if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
       }
@@ -97,7 +98,9 @@
         return;
       }
 
-      sendCartToWhatsApp(nombre, nota);
+      if (typeof sendCartToWhatsApp === "function") {
+        sendCartToWhatsApp(nombre, nota);
+      }
 
       const confirm = document.getElementById("confirmacion");
       confirm.classList.remove("oculto");
@@ -106,8 +109,8 @@
 
     function vaciarCarrito() {
       localStorage.removeItem("km_ez_cart");
-      renderCartItems();
-      updateCartWidget();
+      if (typeof renderCartItems === "function") renderCartItems();
+      if (typeof updateCartWidget === "function") updateCartWidget();
       document.getElementById("cart-total").textContent = "$0.00";
       document.getElementById("total-unidades").textContent = "Total unidades: 0";
     }

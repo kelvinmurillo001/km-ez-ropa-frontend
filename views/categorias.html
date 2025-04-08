@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/css/admin.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
 </head>
-<body class="admin-page fade-in" onload="verificarToken()">
+<body class="admin-page fade-in">
 
   <main class="admin-container" role="main" aria-label="Gestión de categorías y subcategorías">
     <h1>📁 Gestión de Categorías</h1>
@@ -26,25 +26,25 @@
     <div id="message" class="admin-message" role="alert" aria-live="polite"></div>
 
     <!-- 📋 Crear categoría -->
-    <form id="formCategoria" class="form-block" aria-label="Formulario para crear categoría">
+    <form id="formCategoria" class="form-block" autocomplete="off" aria-label="Formulario para crear categoría">
       <input type="text" id="nombreCategoria" placeholder="Nombre de categoría" required aria-label="Nombre de categoría" />
-      <button type="submit" class="btn">➕ Crear categoría</button>
+      <button type="submit" class="btn" aria-label="Crear categoría">➕ Crear categoría</button>
     </form>
 
     <!-- ➕ Agregar subcategoría -->
-    <form id="subcategoryForm" class="form-block mt-2" aria-label="Formulario para agregar subcategoría">
+    <form id="subcategoryForm" class="form-block mt-2" autocomplete="off" aria-label="Formulario para agregar subcategoría">
       <select id="categorySelect" required aria-label="Selecciona una categoría">
         <option value="">Selecciona una categoría</option>
       </select>
       <input type="text" id="nuevaSubcategoria" placeholder="Nueva subcategoría" required aria-label="Nueva subcategoría" />
-      <button type="submit" class="btn">➕ Agregar subcategoría</button>
+      <button type="submit" class="btn" aria-label="Agregar subcategoría">➕ Agregar subcategoría</button>
     </form>
 
     <!-- 🔙 Volver y cerrar sesión -->
-    <div class="mt-2">
-      <button onclick="goBack()" class="btn-secondary" aria-label="Volver al panel">🔙 Volver al Panel</button>
-      <button onclick="logout()" class="btn-danger" aria-label="Cerrar sesión">🚪 Cerrar sesión</button>
-    </div>
+    <section class="mt-2" role="navigation" aria-label="Botones de navegación">
+      <button type="button" onclick="goBack()" class="btn-secondary" aria-label="Volver al panel">🔙 Volver al Panel</button>
+      <button type="button" onclick="logout()" class="btn-danger" aria-label="Cerrar sesión">🚪 Cerrar sesión</button>
+    </section>
 
     <!-- 📦 Lista dinámica -->
     <section class="lista-categorias mt-3" id="listaCategorias" aria-label="Listado de categorías existentes">
@@ -61,10 +61,19 @@
   <script src="/js/login.js"></script>
   <script src="/js/categorias.js"></script>
   <script>
-    // 🌙 Modo oscuro
-    if (localStorage.getItem("modoOscuro") === "true") {
-      document.body.classList.add("modo-oscuro");
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+      // 🌙 Modo oscuro
+      if (localStorage.getItem("modoOscuro") === "true") {
+        document.body.classList.add("modo-oscuro");
+      }
+
+      // 🔐 Verifica sesión
+      if (typeof verificarToken === "function") {
+        verificarToken();
+      } else {
+        console.warn("⚠️ verificarToken no está definido");
+      }
+    });
   </script>
 </body>
 </html>

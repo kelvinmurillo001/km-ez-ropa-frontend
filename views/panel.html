@@ -22,14 +22,17 @@
 <body>
 
   <main class="panel-container" role="main" aria-label="Panel de administración">
+
     <!-- 🧭 Header -->
     <header class="header-panel">
       <h1>🛠️ Panel de Administración</h1>
-      <button onclick="logout()" class="btn btn-danger" aria-label="Cerrar sesión de administrador">🔓 Cerrar sesión</button>
+      <button type="button" onclick="logout()" class="btn btn-danger" aria-label="Cerrar sesión de administrador">
+        🔓 Cerrar sesión
+      </button>
     </header>
 
     <!-- 📋 Menú principal -->
-    <nav class="menu-panel" aria-label="Navegación del panel">
+    <nav class="menu-panel" aria-label="Navegación del panel" role="navigation">
       <ul class="panel-links">
         <li><a href="admin.html" class="btn-panel-link">📦 Productos</a></li>
         <li><a href="categorias.html" class="btn-panel-link">📁 Categorías</a></li>
@@ -39,6 +42,7 @@
         <li><a href="index.html" class="btn-panel-link">🏠 Ir al Catálogo</a></li>
       </ul>
     </nav>
+
   </main>
 
   <!-- 🚫 Sin JavaScript -->

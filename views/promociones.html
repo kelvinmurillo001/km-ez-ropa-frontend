@@ -53,7 +53,7 @@
         </label>
       </div>
 
-      <button type="submit" class="btn">💾 Guardar Promoción</button>
+      <button type="submit" class="btn" aria-label="Guardar promoción">💾 Guardar Promoción</button>
     </form>
 
     <!-- ✅ Feedback -->
@@ -66,9 +66,9 @@
     </div>
 
     <!-- 🔘 Acciones -->
-    <div class="top-buttons mt-3">
-      <button onclick="goBack()" class="btn" aria-label="Volver al panel">🔙 Volver al Panel</button>
-      <button onclick="logout()" class="btn btn-secundario" aria-label="Cerrar sesión">🔒 Cerrar sesión</button>
+    <div class="top-buttons mt-3" role="navigation" aria-label="Navegación">
+      <button type="button" onclick="goBack()" class="btn" aria-label="Volver al panel">🔙 Volver al Panel</button>
+      <button type="button" onclick="logout()" class="btn btn-secundario" aria-label="Cerrar sesión">🔒 Cerrar sesión</button>
     </div>
   </main>
 

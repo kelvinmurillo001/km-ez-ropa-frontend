@@ -20,10 +20,9 @@
   </header>
 
   <main class="admin-container" role="main" aria-label="Panel de analítica">
-    <h2 class="mb-1">📋 Resumen General</h2>
 
-    <!-- 📈 Estadísticas -->
-    <section class="panel-analitico mt-2" aria-live="polite">
+    <section aria-labelledby="tituloResumen" class="panel-analitico mt-2" aria-live="polite">
+      <h2 id="tituloResumen" class="mb-1">📋 Resumen General</h2>
       <ul>
         <li><strong>Total de productos:</strong> <span id="totalProductos">-</span></li>
         <li><strong>Productos destacados:</strong> <span id="promosActivas">-</span></li>
@@ -38,9 +37,10 @@
     </section>
 
     <!-- 🔙 Navegación -->
-    <div class="text-center mt-3">
-      <button onclick="goBack()" class="btn" aria-label="Volver al panel">🔙 Volver al Panel</button>
-    </div>
+    <section class="text-center mt-3" role="navigation" aria-label="Navegación de retorno">
+      <button type="button" onclick="goBack()" class="btn" aria-label="Volver al panel">🔙 Volver al Panel</button>
+    </section>
+
   </main>
 
   <!-- 🚫 No JS -->
