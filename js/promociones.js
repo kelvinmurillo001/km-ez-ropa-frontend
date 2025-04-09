@@ -1,6 +1,6 @@
 "use strict";
 
-// ✅ Importar funciones necesarias
+// ✅ Importar funciones compartidas
 import {
   verificarSesion,
   mostrarMensaje,
@@ -9,12 +9,12 @@ import {
   goBack
 } from "./admin-utils.js";
 
-// 🌐 Endpoint y token
+// 🌐 API y token
 const API_PROMO = "https://km-ez-ropa-backend.onrender.com/api/promos";
 const token = verificarSesion();
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 📌 DOM Elements
+  // 📌 Elementos del DOM
   const form = document.getElementById("promoForm");
   const promoInput = document.getElementById("promoMessage");
   const isActive = document.getElementById("isActive");
@@ -24,9 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const mensajeExito = document.getElementById("promoFeedback");
   const promoPreview = document.getElementById("promoPreview");
 
-  /**
-   * 👁️ Actualizar vista previa de promoción
-   */
+  // 👁️ Vista previa
   function updatePreview() {
     const mensaje = promoInput.value || "Tu mensaje aparecerá aquí...";
     const tema = themeSelect.value || "blue";
@@ -34,17 +32,13 @@ document.addEventListener("DOMContentLoaded", () => {
     promoPreview.className = `promo-preview ${tema}`;
   }
 
-  /**
-   * ⚠️ Mostrar error visual en la vista previa
-   */
+  // ⚠️ Vista previa con error
   function mostrarErrorPreview(msg, clase = "error") {
     promoPreview.textContent = msg;
     promoPreview.className = `promo-preview ${clase}`;
   }
 
-  /**
-   * 📥 Cargar promoción actual desde backend
-   */
+  // 📥 Cargar promoción actual
   async function loadPromotion() {
     try {
       const res = await fetch(API_PROMO, {
@@ -58,12 +52,14 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      // Mostrar datos actuales
       promoInput.value = data.message || "";
       isActive.checked = data.active || false;
       themeSelect.value = data.theme || "blue";
       startDate.value = data.startDate?.split("T")[0] || "";
       endDate.value = data.endDate?.split("T")[0] || "";
 
+      // Vista previa
       if (data.active && isDateInRange(data.startDate, data.endDate)) {
         promoPreview.textContent = data.message;
         promoPreview.className = `promo-preview ${data.theme || "blue"}`;
@@ -76,9 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /**
-   * 💾 Guardar promoción en backend
-   */
+  // 💾 Guardar promoción
   async function guardarPromocion(e) {
     e.preventDefault();
 
@@ -115,15 +109,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ▶️ Inicializar eventos
+  // ▶️ Eventos de usuario
   promoInput?.addEventListener("input", updatePreview);
   themeSelect?.addEventListener("change", updatePreview);
   form?.addEventListener("submit", guardarPromocion);
 
-  // ▶️ Cargar promoción al iniciar
+  // ▶️ Inicialización
   loadPromotion();
 
-  // 🔗 Asignar funciones globales
+  // 🔗 Exponer utilidades al HTML
   window.goBack = goBack;
   window.logout = logout;
 });

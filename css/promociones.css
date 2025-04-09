@@ -1,3 +1,14 @@
+:root {
+  --color-blue: linear-gradient(135deg, #2196f3, #21cbf3);
+  --color-green: linear-gradient(135deg, #43a047, #66bb6a);
+  --color-orange: linear-gradient(135deg, #fb8c00, #ffb74d);
+  --color-red: linear-gradient(135deg, #e53935, #ef5350);
+  --color-purple: linear-gradient(135deg, #8e24aa, #ba68c8);
+  --color-yellow: linear-gradient(135deg, #fdd835, #fff176);
+  --color-teal: linear-gradient(135deg, #009688, #4db6ac);
+  --color-gray: linear-gradient(135deg, #bdbdbd, #e0e0e0);
+}
+
 /* 🌐 Contenedor principal */
 .promociones-container {
   max-width: 800px;
@@ -20,7 +31,6 @@ body.modo-oscuro .promociones-container {
   text-align: center;
   margin-bottom: 24px;
   font-size: 1.8rem;
-  color: inherit;
 }
 
 /* 📋 Formulario */
@@ -37,6 +47,7 @@ body.modo-oscuro .promociones-container form {
   background-color: #2a2a2a;
 }
 
+/* Inputs */
 .promociones-container input,
 .promociones-container select {
   padding: 12px;
@@ -101,15 +112,15 @@ body.modo-oscuro .promociones-container button:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* 🌈 Temas visuales */
-.promo-preview.blue    { background: linear-gradient(135deg, #2196f3, #21cbf3); color: #fff; }
-.promo-preview.green   { background: linear-gradient(135deg, #43a047, #66bb6a); color: #fff; }
-.promo-preview.orange  { background: linear-gradient(135deg, #fb8c00, #ffb74d); color: #fff; }
-.promo-preview.red     { background: linear-gradient(135deg, #e53935, #ef5350); color: #fff; }
-.promo-preview.purple  { background: linear-gradient(135deg, #8e24aa, #ba68c8); color: #fff; }
-.promo-preview.yellow  { background: linear-gradient(135deg, #fdd835, #fff176); color: #000; }
-.promo-preview.teal    { background: linear-gradient(135deg, #009688, #4db6ac); color: #fff; }
-.promo-preview.gray    { background: linear-gradient(135deg, #bdbdbd, #e0e0e0); color: #333; }
+/* 🌈 Temas */
+.promo-preview.blue    { background: var(--color-blue); color: #fff; }
+.promo-preview.green   { background: var(--color-green); color: #fff; }
+.promo-preview.orange  { background: var(--color-orange); color: #fff; }
+.promo-preview.red     { background: var(--color-red); color: #fff; }
+.promo-preview.purple  { background: var(--color-purple); color: #fff; }
+.promo-preview.yellow  { background: var(--color-yellow); color: #000; }
+.promo-preview.teal    { background: var(--color-teal); color: #fff; }
+.promo-preview.gray    { background: var(--color-gray); color: #333; }
 .promo-preview.dark    { background: #333; color: #eee; border: 1px solid #555; }
 
 /* 💤 Estados */
@@ -129,14 +140,13 @@ body.modo-oscuro .promociones-container button:hover {
   font-style: italic;
 }
 
-/* ✅ Feedback / mensaje */
+/* ✅ Feedback */
 .admin-message {
   margin-top: 16px;
   padding: 12px;
   border-radius: 6px;
   font-weight: bold;
   text-align: center;
-  display: block;
 }
 .admin-message.success { color: #2e7d32; }
 .admin-message.error { color: #c62828; }
@@ -153,12 +163,12 @@ body.modo-oscuro .promociones-container button:hover {
   min-width: 120px;
 }
 
-/* Ocultar dinámico */
+/* Oculto dinámico */
 .oculto {
   display: none !important;
 }
 
-/* ✨ Animación */
+/* ✨ Fade */
 .fade-in {
   animation: fadeIn 0.5s ease-in-out;
 }
