@@ -2,7 +2,7 @@
 
 // 🔐 Verificación de sesión
 const token = localStorage.getItem("token");
-if (!token) {
+if (!token || typeof token !== "string" || token.length < 10) {
   alert("⚠️ No autorizado. Inicia sesión.");
   window.location.href = "login.html";
 }
@@ -26,12 +26,15 @@ async function loadStatistics() {
       fetchData(API_PRODUCTS)
     ]);
 
+    if (!resumen || !Array.isArray(productos)) {
+      throw new Error("❌ Datos inválidos");
+    }
+
     estadisticasResumen = resumen;
     productosGlobal = productos;
 
     renderResumen(resumen);
     renderTopCategorias(productos);
-
   } catch (err) {
     console.error("❌ Error cargando estadísticas:", err);
     alert("❌ No se pudieron cargar las estadísticas.");
@@ -47,13 +50,14 @@ async function fetchData(url, auth = false) {
   });
 
   if (!res.ok) throw new Error(`❌ Error al obtener: ${url}`);
+
   const data = await res.json();
   if (!data) throw new Error(`❌ Respuesta vacía desde: ${url}`);
   return data;
 }
 
 /**
- * 📥 Renderiza resumen general (ventas, visitas, pedidos, etc)
+ * 🧾 Mostrar resumen general en el DOM
  */
 function renderResumen(data) {
   setText("totalProductos", data.totalProductos);
@@ -65,7 +69,7 @@ function renderResumen(data) {
 }
 
 /**
- * 📦 Muestra productos agrupados por categoría
+ * 📦 Mostrar categorías más utilizadas
  */
 function renderTopCategorias(productos) {
   const categorias = {};
@@ -88,7 +92,7 @@ function renderTopCategorias(productos) {
 }
 
 /**
- * 🧾 Helper para asignar valores al DOM
+ * 🧾 Utilidad para asignar valores a elementos del DOM
  */
 function setText(id, value) {
   const el = document.getElementById(id);
@@ -96,14 +100,14 @@ function setText(id, value) {
 }
 
 /**
- * 🔙 Volver al panel
+ * 🔙 Volver al panel principal
  */
 function goBack() {
   window.location.href = "panel.html";
 }
 
 /**
- * 📤 Exportar estadísticas a CSV
+ * 📤 Exportar las estadísticas actuales a un archivo CSV
  */
 function exportarEstadisticas() {
   if (!estadisticasResumen || productosGlobal.length === 0) {
@@ -111,17 +115,17 @@ function exportarEstadisticas() {
     return;
   }
 
-  const fecha = new Date().toLocaleString();
-  const resumen = estadisticasResumen;
+  const fecha = new Date().toLocaleString("es-ES");
+  const r = estadisticasResumen;
 
-  let csv = `📊 Estadísticas de KM & EZ ROPA\nFecha: ${fecha}\n\n`;
+  let csv = `📊 Estadísticas de KM & EZ ROPA\nFecha:,${fecha}\n\n`;
   csv += "Resumen General\n";
-  csv += `Ventas Totales,${resumen.ventasTotales}\n`;
-  csv += `Pedidos Totales,${resumen.pedidosTotales}\n`;
-  csv += `Pedidos del Día,${resumen.pedidosHoy}\n`;
-  csv += `Total Productos,${resumen.totalProductos}\n`;
-  csv += `Promociones Activas,${resumen.productosDestacados}\n`;
-  csv += `Visitas al Sitio,${resumen.totalVisitas}\n\n`;
+  csv += `Ventas Totales,${r.ventasTotales}\n`;
+  csv += `Pedidos Totales,${r.pedidosTotales}\n`;
+  csv += `Pedidos del Día,${r.pedidosHoy}\n`;
+  csv += `Total Productos,${r.totalProductos}\n`;
+  csv += `Promociones Activas,${r.productosDestacados}\n`;
+  csv += `Visitas al Sitio,${r.totalVisitas}\n\n`;
 
   csv += "Top Categorías\n";
   const categorias = {};
@@ -134,7 +138,7 @@ function exportarEstadisticas() {
     csv += `${cat},${count}\n`;
   }
 
-  // Crear y descargar archivo CSV
+  // 🧾 Descargar archivo CSV
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
@@ -143,5 +147,6 @@ function exportarEstadisticas() {
   link.click();
 }
 
-// Exponer la función al global
+// ⬆️ Hacer accesible desde el botón del HTML
 window.exportarEstadisticas = exportarEstadisticas;
+window.goBack = goBack;
