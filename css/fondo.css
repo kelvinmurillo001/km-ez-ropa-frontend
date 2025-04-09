@@ -1,0 +1,38 @@
+/* ✅ Fondo con logo de KM & EZ ROPA */
+body {
+  background-image: url("/assets/logo.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  backdrop-filter: blur(2px);
+  position: relative;
+  z-index: 1;
+  transition: background 0.4s ease;
+}
+
+/* Capa de opacidad clara u oscura según tema */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: -1;
+  transition: background 0.3s ease;
+}
+
+/* 🌙 Si está en modo oscuro, aplicar fondo más oscuro */
+body.modo-oscuro::before {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+/* ✅ Animación suave para entradas */
+.fade-in {
+  animation: fadeIn 0.6s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
