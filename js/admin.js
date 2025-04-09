@@ -1,11 +1,8 @@
 "use strict";
+import { verificarSesion, mostrarMensaje, isDateInRange, logout, goBack } from "./admin-utils.js";
 
-// 🔐 Verificar sesión
-const token = localStorage.getItem("token");
-if (!token) {
-  alert("⚠️ No autorizado. Inicia sesión.");
-  location.href = "login.html";
-}
+// 🔐 Verificación de sesión
+const token = verificarSesion();
 
 // 🌐 Endpoints
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api/products";
@@ -16,6 +13,9 @@ const form = document.getElementById("productoForm");
 const message = document.getElementById("message");
 const preview = document.getElementById("previewImagen");
 
+let variantes = [];
+let editandoId = null;
+
 // 📚 Categorías predefinidas
 const categorias = {
   Hombre: ["Camisas", "Pantalones", "Chaquetas", "Ropa interior"],
@@ -25,32 +25,23 @@ const categorias = {
   Bebé: ["Mamelucos", "Bodies", "Pijamas"]
 };
 
-let variantes = [];
-let editandoId = null;
-
-// 📂 Cargar categorías
+// 📂 Cargar categorías y subcategorías
 function cargarCategorias() {
   const catSelect = document.getElementById("categoriaSelect");
   catSelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
   Object.keys(categorias).forEach(cat => {
-    const opt = new Option(cat, cat);
-    catSelect.appendChild(opt);
+    catSelect.appendChild(new Option(cat, cat));
   });
 }
 
-// 📂 Subcategorías según categoría
 document.getElementById("categoriaSelect").addEventListener("change", () => {
   const cat = document.getElementById("categoriaSelect").value;
   const subSelect = document.getElementById("subcategoriaSelect");
   subSelect.innerHTML = `<option value="">Selecciona una subcategoría</option>`;
-  if (categorias[cat]) {
-    categorias[cat].forEach(sub => {
-      subSelect.appendChild(new Option(sub, sub));
-    });
-  }
+  categorias[cat]?.forEach(sub => subSelect.appendChild(new Option(sub, sub)));
 });
 
-// 📤 Subir imagen al backend
+// 📤 Subir imagen
 async function uploadToBackend(file) {
   const formData = new FormData();
   formData.append("image", file);
@@ -62,12 +53,7 @@ async function uploadToBackend(file) {
   });
 
   if (!res.ok) throw new Error("❌ Error al subir imagen");
-
-  const data = await res.json();
-  return {
-    imageUrl: data.url,
-    cloudinaryId: data.public_id
-  };
+  return await res.json();
 }
 
 // ➕ Agregar variante
@@ -77,22 +63,21 @@ document.getElementById("addVariante").addEventListener("click", async () => {
   const imagen = document.getElementById("imagen").files[0];
 
   if (!talla || !color || !imagen) {
-    return showMessage("⚠️ Completa talla, color e imagen", "red");
+    return mostrarMensaje(message, "⚠️ Completa talla, color e imagen", "warning");
   }
 
   try {
-    const { imageUrl, cloudinaryId } = await uploadToBackend(imagen);
-    variantes.push({ talla, color, imageUrl, cloudinaryId });
+    const { url, public_id } = await uploadToBackend(imagen);
+    variantes.push({ talla, color, imageUrl: url, cloudinaryId: public_id });
     renderizarVariantes();
     limpiarCamposVariante();
-    showMessage("✅ Variante agregada", "green");
+    mostrarMensaje(message, "✅ Variante agregada", "success");
   } catch (err) {
     console.error(err);
-    showMessage("❌ Error subiendo imagen", "red");
+    mostrarMensaje(message, "❌ Error subiendo imagen", "error");
   }
 });
 
-// 🧽 Limpiar campos variante
 function limpiarCamposVariante() {
   document.getElementById("talla").value = "";
   document.getElementById("color").value = "";
@@ -100,62 +85,35 @@ function limpiarCamposVariante() {
   preview.innerHTML = "";
 }
 
-// 🧩 Renderizar variantes
 function renderizarVariantes() {
   const contenedor = document.getElementById("listaVariantes");
   contenedor.innerHTML = "";
   variantes.forEach((v, i) => {
-    const div = document.createElement("div");
-    div.className = "variante-card";
-    div.innerHTML = `
-      <p><strong>Talla:</strong> ${v.talla}</p>
-      <p><strong>Color:</strong> ${v.color}</p>
-      <img src="${v.imageUrl}" width="100" />
-      <button onclick="eliminarVariante(${i})">❌ Eliminar</button>
+    contenedor.innerHTML += `
+      <div class="variante-card">
+        <p><strong>Talla:</strong> ${v.talla}</p>
+        <p><strong>Color:</strong> ${v.color}</p>
+        <img src="${v.imageUrl}" width="100" />
+        <button onclick="eliminarVariante(${i})">❌ Eliminar</button>
+      </div>
     `;
-    contenedor.appendChild(div);
   });
 }
 
-// ❌ Eliminar variante
-function eliminarVariante(index) {
-  variantes.splice(index, 1);
+window.eliminarVariante = (i) => {
+  variantes.splice(i, 1);
   renderizarVariantes();
-}
+};
 
-// 💾 Guardar producto
-form.addEventListener("submit", async e => {
+// 💾 Guardar o actualizar producto
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const btn = form.querySelector("button[type=submit]");
   btn.disabled = true;
   btn.textContent = "⏳ Guardando...";
 
-  const nombre = document.getElementById("nombre").value.trim();
-  const precio = parseFloat(document.getElementById("precio").value);
-  const categoria = document.getElementById("categoriaSelect").value;
-  const subcategoria = document.getElementById("subcategoriaSelect").value;
-  const stock = parseInt(document.getElementById("stock").value) || 0;
-  const destacado = document.getElementById("featured")?.checked || false;
-
-  if (!nombre || isNaN(precio) || !categoria || !subcategoria) {
-    showMessage("⚠️ Completa todos los campos obligatorios", "red");
-    return resetBoton(btn);
-  }
-
-  if (variantes.length === 0) {
-    showMessage("⚠️ Debes agregar al menos una variante", "red");
-    return resetBoton(btn);
-  }
-
-  const payload = {
-    name: nombre,
-    price: precio,
-    category: categoria,
-    subcategory: subcategoria,
-    stock,
-    featured: destacado,
-    variants: variantes
-  };
+  const payload = obtenerDatosFormulario();
+  if (!payload) return resetBoton(btn);
 
   const method = editandoId ? "PUT" : "POST";
   const url = editandoId ? `${API_BASE}/${editandoId}` : API_BASE;
@@ -173,24 +131,60 @@ form.addEventListener("submit", async e => {
     const data = await res.json();
 
     if (res.ok) {
-      showMessage(editandoId ? "✅ Producto actualizado" : "✅ Producto guardado", "green");
+      mostrarMensaje(message, editandoId ? "✅ Producto actualizado" : "✅ Producto guardado", "success");
       form.reset();
       variantes = [];
       editandoId = null;
       renderizarVariantes();
       cargarProductos();
     } else {
-      showMessage(data.message || "❌ Error al guardar", "red");
+      mostrarMensaje(message, `❌ ${data.message || "Error al guardar"}`, "error");
     }
+
   } catch (err) {
     console.error("❌", err);
-    showMessage("❌ Error del servidor", "red");
+    mostrarMensaje(message, "❌ Error del servidor", "error");
   } finally {
     resetBoton(btn);
   }
 });
 
-// 📋 Cargar lista de productos
+// 🔄 Obtener datos del formulario
+function obtenerDatosFormulario() {
+  const nombre = document.getElementById("nombre").value.trim();
+  const precio = parseFloat(document.getElementById("precio").value);
+  const categoria = document.getElementById("categoriaSelect").value;
+  const subcategoria = document.getElementById("subcategoriaSelect").value;
+  const stock = parseInt(document.getElementById("stock").value) || 0;
+  const destacado = document.getElementById("featured")?.checked || false;
+
+  if (!nombre || isNaN(precio) || !categoria || !subcategoria) {
+    mostrarMensaje(message, "⚠️ Completa todos los campos obligatorios", "warning");
+    return null;
+  }
+
+  if (variantes.length === 0) {
+    mostrarMensaje(message, "⚠️ Agrega al menos una variante", "warning");
+    return null;
+  }
+
+  return {
+    name: nombre,
+    price: precio,
+    category: categoria,
+    subcategory: subcategoria,
+    stock,
+    featured: destacado,
+    variants: variantes
+  };
+}
+
+function resetBoton(btn) {
+  btn.disabled = false;
+  btn.textContent = "📦 Guardar Producto";
+}
+
+// 📋 Cargar productos existentes
 async function cargarProductos() {
   try {
     const res = await fetch(API_BASE);
@@ -203,23 +197,21 @@ async function cargarProductos() {
         <div>
           <p>${v.talla} - ${v.color}</p>
           <img src="${v.imageUrl}" width="80" />
-        </div>
-      `).join("") || "Sin variantes";
+        </div>`).join("") || "Sin variantes";
 
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <h3>${p.name}</h3>
-        <p><strong>Precio:</strong> $${p.price}</p>
-        <p><strong>Categoría:</strong> ${p.category}</p>
-        <p><strong>Subcategoría:</strong> ${p.subcategory}</p>
-        <p><strong>Stock:</strong> ${p.stock}</p>
-        <p><strong>Destacado:</strong> ${p.featured ? "✅" : "❌"}</p>
-        <div>${variantesHtml}</div>
-        <button onclick="editarProducto('${p._id}')">✏️ Editar</button>
-        <button onclick="eliminarProducto('${p._id}')">🗑️ Eliminar</button>
+      lista.innerHTML += `
+        <div class="card">
+          <h3>${p.name}</h3>
+          <p><strong>Precio:</strong> $${p.price}</p>
+          <p><strong>Categoría:</strong> ${p.category}</p>
+          <p><strong>Subcategoría:</strong> ${p.subcategory}</p>
+          <p><strong>Stock:</strong> ${p.stock}</p>
+          <p><strong>Destacado:</strong> ${p.featured ? "✅" : "❌"}</p>
+          <div>${variantesHtml}</div>
+          <button onclick="editarProducto('${p._id}')">✏️ Editar</button>
+          <button onclick="eliminarProducto('${p._id}')">🗑️ Eliminar</button>
+        </div>
       `;
-      lista.appendChild(card);
     });
   } catch (err) {
     console.error("❌ Error al cargar productos:", err);
@@ -227,12 +219,12 @@ async function cargarProductos() {
 }
 
 // ✏️ Editar producto
-async function editarProducto(id) {
+window.editarProducto = async (id) => {
   try {
     const res = await fetch(API_BASE);
     const productos = await res.json();
     const producto = productos.find(p => p._id === id);
-    if (!producto) return showMessage("❌ Producto no encontrado", "red");
+    if (!producto) return mostrarMensaje(message, "❌ Producto no encontrado", "error");
 
     document.getElementById("nombre").value = producto.name;
     document.getElementById("precio").value = producto.price;
@@ -245,15 +237,15 @@ async function editarProducto(id) {
     renderizarVariantes();
     editandoId = id;
 
-    showMessage("✏️ Editando producto", "orange");
+    mostrarMensaje(message, "✏️ Editando producto", "info");
   } catch (err) {
     console.error("❌", err);
-    showMessage("❌ Error al cargar producto", "red");
+    mostrarMensaje(message, "❌ Error cargando producto", "error");
   }
-}
+};
 
 // 🗑️ Eliminar producto
-async function eliminarProducto(id) {
+window.eliminarProducto = async (id) => {
   if (!confirm("¿Eliminar producto?")) return;
 
   try {
@@ -263,28 +255,16 @@ async function eliminarProducto(id) {
     });
 
     if (res.ok) {
-      showMessage("🗑 Producto eliminado", "green");
+      mostrarMensaje(message, "🗑 Producto eliminado", "success");
       cargarProductos();
     } else {
-      showMessage("❌ No se pudo eliminar", "red");
+      mostrarMensaje(message, "❌ No se pudo eliminar", "error");
     }
   } catch (err) {
     console.error("❌", err);
+    mostrarMensaje(message, "❌ Error al eliminar", "error");
   }
-}
-
-// 💬 Mostrar mensaje
-function showMessage(text, color = "black") {
-  message.textContent = text;
-  message.style.color = color;
-  setTimeout(() => (message.textContent = ""), 3000);
-}
-
-// 🔁 Resetear botón submit
-function resetBoton(btn) {
-  btn.disabled = false;
-  btn.textContent = "📦 Guardar Producto";
-}
+};
 
 // ▶️ Inicializar
 cargarCategorias();

@@ -1,14 +1,17 @@
 "use strict";
 
-// 🌐 Configuración inicial
-const API = "https://km-ez-ropa-backend.onrender.com/api/categories";
-const token = localStorage.getItem("token");
+import {
+  verificarSesion,
+  mostrarMensaje,
+  logout,
+  goBack
+} from "./admin-utils.js";
 
-// 🔐 Validar sesión activa
-if (!token) {
-  alert("⚠️ No autorizado. Inicia sesión.");
-  window.location.href = "login.html";
-}
+// ✅ Verificar token
+const token = verificarSesion();
+
+// 🌐 API
+const API = "https://km-ez-ropa-backend.onrender.com/api/categories";
 
 // 📌 Elementos del DOM
 const categoryForm = document.getElementById("formCategoria");
@@ -19,7 +22,7 @@ const categoryList = document.getElementById("listaCategorias");
 const message = document.getElementById("message");
 
 /**
- * ▶️ Cargar todas las categorías desde el backend
+ * ▶️ Cargar categorías desde backend
  */
 async function loadCategories() {
   try {
@@ -29,20 +32,20 @@ async function loadCategories() {
     const data = await res.json();
     renderCategorySelect(data);
     renderCategoryCards(data);
-  } catch (error) {
-    console.error("❌", error);
-    showMessage("❌ Error al cargar categorías", "error");
+  } catch (err) {
+    console.error("❌", err);
+    mostrarMensaje(message, "❌ Error al cargar categorías", "error");
   }
 }
 
 /**
- * 🧩 Rellena el select de categorías
+ * 🧩 Rellenar <select> con categorías
  */
-function renderCategorySelect(categories) {
+function renderCategorySelect(categorias) {
   if (!categorySelect) return;
 
   categorySelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
-  categories.forEach(cat => {
+  categorias.forEach(cat => {
     const opt = document.createElement("option");
     opt.value = cat._id;
     opt.textContent = cat.name;
@@ -51,12 +54,12 @@ function renderCategorySelect(categories) {
 }
 
 /**
- * 🧾 Muestra las categorías y sus subcategorías
+ * 🧾 Mostrar tarjetas de categoría
  */
-function renderCategoryCards(categories) {
+function renderCategoryCards(categorias) {
   categoryList.innerHTML = "";
 
-  categories.forEach(cat => {
+  categorias.forEach(cat => {
     const card = document.createElement("div");
     card.className = "categoria-card fade-in";
 
@@ -80,12 +83,13 @@ function renderCategoryCards(categories) {
 }
 
 /**
- * ➕ Crear una nueva categoría
+ * ➕ Crear nueva categoría
  */
 categoryForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
+
   const name = categoryNameInput.value.trim();
-  if (!name) return showMessage("⚠️ Nombre requerido", "warning");
+  if (!name) return mostrarMensaje(message, "⚠️ Nombre requerido", "warning");
 
   try {
     const res = await fetch(API, {
@@ -100,19 +104,19 @@ categoryForm?.addEventListener("submit", async (e) => {
     const data = await res.json();
 
     if (res.ok) {
-      showMessage("✅ Categoría creada", "success");
+      mostrarMensaje(message, "✅ Categoría creada", "success");
       categoryNameInput.value = "";
       await loadCategories();
     } else {
-      showMessage(`❌ ${data.message || "Error al crear categoría"}`, "error");
+      mostrarMensaje(message, `❌ ${data.message || "Error al crear categoría"}`, "error");
     }
   } catch {
-    showMessage("❌ Error de red al crear categoría", "error");
+    mostrarMensaje(message, "❌ Error de red al crear categoría", "error");
   }
 });
 
 /**
- * ➕ Agregar subcategoría a categoría existente
+ * ➕ Agregar subcategoría
  */
 document.getElementById("subcategoryForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -120,7 +124,9 @@ document.getElementById("subcategoryForm")?.addEventListener("submit", async (e)
   const categoryId = categorySelect?.value;
   const sub = subcategoryNameInput?.value.trim();
 
-  if (!categoryId || !sub) return showMessage("⚠️ Completa todos los campos", "warning");
+  if (!categoryId || !sub) {
+    return mostrarMensaje(message, "⚠️ Completa todos los campos", "warning");
+  }
 
   try {
     const res = await fetch(`${API}/${categoryId}/subcategories`, {
@@ -135,21 +141,21 @@ document.getElementById("subcategoryForm")?.addEventListener("submit", async (e)
     const data = await res.json();
 
     if (res.ok) {
-      showMessage("✅ Subcategoría agregada", "success");
+      mostrarMensaje(message, "✅ Subcategoría agregada", "success");
       subcategoryNameInput.value = "";
       await loadCategories();
     } else {
-      showMessage(`❌ ${data.message || "Error al agregar subcategoría"}`, "error");
+      mostrarMensaje(message, `❌ ${data.message || "Error al agregar subcategoría"}`, "error");
     }
   } catch {
-    showMessage("❌ Error de red al agregar subcategoría", "error");
+    mostrarMensaje(message, "❌ Error de red al agregar subcategoría", "error");
   }
 });
 
 /**
  * ❌ Eliminar categoría
  */
-async function deleteCategory(id) {
+window.deleteCategory = async (id) => {
   if (!confirm("¿Eliminar esta categoría?")) return;
 
   try {
@@ -159,20 +165,20 @@ async function deleteCategory(id) {
     });
 
     if (res.ok) {
-      showMessage("✅ Categoría eliminada", "success");
+      mostrarMensaje(message, "✅ Categoría eliminada", "success");
       await loadCategories();
     } else {
-      showMessage("❌ No se pudo eliminar la categoría", "error");
+      mostrarMensaje(message, "❌ No se pudo eliminar la categoría", "error");
     }
   } catch {
-    showMessage("❌ Error eliminando categoría", "error");
+    mostrarMensaje(message, "❌ Error eliminando categoría", "error");
   }
-}
+};
 
 /**
  * ❌ Eliminar subcategoría
  */
-async function deleteSubcategory(id, sub) {
+window.deleteSubcategory = async (id, sub) => {
   if (!confirm("¿Eliminar esta subcategoría?")) return;
 
   try {
@@ -186,47 +192,15 @@ async function deleteSubcategory(id, sub) {
     });
 
     if (res.ok) {
-      showMessage("✅ Subcategoría eliminada", "success");
+      mostrarMensaje(message, "✅ Subcategoría eliminada", "success");
       await loadCategories();
     } else {
-      showMessage("❌ No se pudo eliminar subcategoría", "error");
+      mostrarMensaje(message, "❌ No se pudo eliminar subcategoría", "error");
     }
   } catch {
-    showMessage("❌ Error eliminando subcategoría", "error");
+    mostrarMensaje(message, "❌ Error eliminando subcategoría", "error");
   }
-}
+};
 
-/**
- * 🔐 Cerrar sesión
- */
-function logout() {
-  localStorage.removeItem("token");
-  window.location.href = "login.html";
-}
-
-/**
- * 🔙 Volver al panel
- */
-function goBack() {
-  window.location.href = "panel.html";
-}
-
-/**
- * 💬 Mostrar mensaje visual
- */
-function showMessage(text, type = "error") {
-  if (!message) return;
-  message.textContent = text;
-
-  const colors = {
-    success: "green",
-    warning: "orange",
-    error: "red"
-  };
-
-  message.style.color = colors[type] || "black";
-  setTimeout(() => (message.textContent = ""), 3000);
-}
-
-// ▶️ Iniciar
+// ▶️ Cargar al iniciar
 loadCategories();
