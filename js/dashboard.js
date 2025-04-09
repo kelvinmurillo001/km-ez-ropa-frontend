@@ -63,12 +63,14 @@ function contarPedidos(pedidos) {
     enviado: 0,
     cancelado: 0,
     hoy: 0,
-    total: pedidos.length,
+    total: Array.isArray(pedidos) ? pedidos.length : 0,
   };
+
+  if (!Array.isArray(pedidos)) return resumen;
 
   pedidos.forEach(p => {
     const estado = (p.estado || "pendiente").toLowerCase();
-    if (resumen[estado] !== undefined) resumen[estado]++;
+    if (resumen.hasOwnProperty(estado)) resumen[estado]++;
 
     const fecha = new Date(p.createdAt).setHours(0, 0, 0, 0);
     if (fecha === hoy) resumen.hoy++;
@@ -81,10 +83,10 @@ function contarPedidos(pedidos) {
  * 🧾 Mostrar datos en tarjetas del dashboard
  */
 function renderMetrics(pedidos, resumen) {
-  setText("ventasTotales", `$${resumen.ventasTotales}`);
-  setText("visitasTotales", resumen.totalVisitas);
-  setText("totalProductos", resumen.totalProductos);
-  setText("promosActivas", resumen.productosDestacados);
+  setText("ventasTotales", `$${resumen.ventasTotales || 0}`);
+  setText("visitasTotales", resumen.totalVisitas || 0);
+  setText("totalProductos", resumen.totalProductos || 0);
+  setText("promosActivas", resumen.productosDestacados || 0);
 
   setText("total", pedidos.total);
   setText("pendientes", pedidos.pendiente);
@@ -136,7 +138,7 @@ function exportarEstadisticas() {
 
   const fecha = new Date().toLocaleString("es-ES");
 
-  let csv = `📊 Estadísticas - KM & EZ ROPA\nFecha: ${fecha}\n\n`;
+  let csv = `📊 Estadísticas - KM & EZ ROPA\nFecha:,${fecha}\n\n`;
 
   csv += "Resumen de Ventas\n";
   csv += `Ventas Totales,${resumenVentas.ventasTotales}\n`;
