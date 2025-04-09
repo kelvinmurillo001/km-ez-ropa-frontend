@@ -18,6 +18,9 @@
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
+  <!-- ✅ Scripts -->
+  <script src="/js/login.js" defer></script>
+  <script src="/js/categorias.js" defer></script>
 </head>
 <body class="admin-page fade-in">
 
@@ -54,26 +57,22 @@
     </section>
   </main>
 
-  <!-- 🚫 No JS -->
+  <!-- 🚫 Sin JavaScript -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
 
-  <!-- ✅ Scripts -->
-  <script src="/js/login.js"></script>
-  <script src="/js/categorias.js"></script>
+  <!-- 🌙 Modo oscuro automático -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // 🌙 Modo oscuro
       if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
       }
 
-      // 🔐 Verifica sesión
       if (typeof verificarToken === "function") {
         verificarToken();
       } else {
-        console.warn("⚠️ verificarToken no está definido");
+        console.warn("⚠️ Función de verificación no encontrada");
       }
     });
   </script>

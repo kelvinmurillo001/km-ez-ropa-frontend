@@ -1,19 +1,66 @@
 "use strict";
 
-import {
-  verificarSesion,
-  mostrarMensaje,
-  logout,
-  goBack
-} from "./admin-utils.js";
+// Utilidades reubicadas dentro de este script para compatibilidad
+function verificarSesion() {
+  const token = localStorage.getItem("token");
+  if (!token || typeof token !== "string" || token.length < 10) {
+    alert("⚠️ No autorizado. Inicia sesión.");
+    window.location.href = "login.html";
+    return null;
+  }
 
-// ✅ Verificar token
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    if (!payload || payload.role !== "admin") {
+      alert("⛔ Acceso denegado. Solo administradores.");
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+      return null;
+    }
+    return token;
+  } catch (err) {
+    console.error("❌ Token malformado:", err);
+    alert("⚠️ Sesión inválida. Vuelve a iniciar sesión.");
+    localStorage.removeItem("token");
+    window.location.href = "login.html";
+    return null;
+  }
+}
+
+function mostrarMensaje(elElemento, mensaje, tipo = "info") {
+  const colores = {
+    success: { bg: "#e8f5e9", color: "#2e7d32" },
+    error: { bg: "#ffebee", color: "#b71c1c" },
+    warning: { bg: "#fff8e1", color: "#f57c00" },
+    info: { bg: "#e3f2fd", color: "#0277bd" }
+  };
+
+  const { bg, color } = colores[tipo] || colores.info;
+
+  elElemento.textContent = mensaje;
+  elElemento.classList.remove("oculto");
+  elElemento.style.backgroundColor = bg;
+  elElemento.style.color = color;
+
+  setTimeout(() => elElemento.classList.add("oculto"), 3000);
+}
+
+function logout() {
+  localStorage.removeItem("token");
+  window.location.href = "login.html";
+}
+
+function goBack() {
+  window.location.href = "panel.html";
+}
+
+// ✅ Verificar sesión
 const token = verificarSesion();
 
 // 🌐 API
 const API = "https://km-ez-ropa-backend.onrender.com/api/categories";
 
-// 📌 Elementos del DOM
+// 📌 DOM
 const categoryForm = document.getElementById("formCategoria");
 const categoryNameInput = document.getElementById("nombreCategoria");
 const subcategoryNameInput = document.getElementById("nuevaSubcategoria");
@@ -22,13 +69,11 @@ const categoryList = document.getElementById("listaCategorias");
 const message = document.getElementById("message");
 
 /**
- * ▶️ Cargar categorías desde backend
+ * ▶️ Cargar categorías
  */
 async function loadCategories() {
   try {
     const res = await fetch(API);
-    if (!res.ok) throw new Error("Error al obtener categorías");
-
     const data = await res.json();
     renderCategorySelect(data);
     renderCategoryCards(data);
@@ -38,12 +83,7 @@ async function loadCategories() {
   }
 }
 
-/**
- * 🧩 Rellenar <select> con categorías
- */
 function renderCategorySelect(categorias) {
-  if (!categorySelect) return;
-
   categorySelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
   categorias.forEach(cat => {
     const opt = document.createElement("option");
@@ -53,12 +93,8 @@ function renderCategorySelect(categorias) {
   });
 }
 
-/**
- * 🧾 Mostrar tarjetas de categoría
- */
 function renderCategoryCards(categorias) {
   categoryList.innerHTML = "";
-
   categorias.forEach(cat => {
     const card = document.createElement("div");
     card.className = "categoria-card fade-in";
@@ -67,8 +103,7 @@ function renderCategoryCards(categorias) {
       <li>
         ${sub}
         <button onclick="deleteSubcategory('${cat._id}', '${sub}')" class="btn btn-xs">❌</button>
-      </li>
-    `).join("");
+      </li>`).join("");
 
     card.innerHTML = `
       <div class="cat-header">
@@ -82,12 +117,9 @@ function renderCategoryCards(categorias) {
   });
 }
 
-/**
- * ➕ Crear nueva categoría
- */
+// ➕ Crear categoría
 categoryForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const name = categoryNameInput.value.trim();
   if (!name) return mostrarMensaje(message, "⚠️ Nombre requerido", "warning");
 
@@ -106,7 +138,7 @@ categoryForm?.addEventListener("submit", async (e) => {
     if (res.ok) {
       mostrarMensaje(message, "✅ Categoría creada", "success");
       categoryNameInput.value = "";
-      await loadCategories();
+      loadCategories();
     } else {
       mostrarMensaje(message, `❌ ${data.message || "Error al crear categoría"}`, "error");
     }
@@ -115,14 +147,11 @@ categoryForm?.addEventListener("submit", async (e) => {
   }
 });
 
-/**
- * ➕ Agregar subcategoría
- */
+// ➕ Subcategoría
 document.getElementById("subcategoryForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
-
-  const categoryId = categorySelect?.value;
-  const sub = subcategoryNameInput?.value.trim();
+  const categoryId = categorySelect.value;
+  const sub = subcategoryNameInput.value.trim();
 
   if (!categoryId || !sub) {
     return mostrarMensaje(message, "⚠️ Completa todos los campos", "warning");
@@ -143,7 +172,7 @@ document.getElementById("subcategoryForm")?.addEventListener("submit", async (e)
     if (res.ok) {
       mostrarMensaje(message, "✅ Subcategoría agregada", "success");
       subcategoryNameInput.value = "";
-      await loadCategories();
+      loadCategories();
     } else {
       mostrarMensaje(message, `❌ ${data.message || "Error al agregar subcategoría"}`, "error");
     }
@@ -152,9 +181,7 @@ document.getElementById("subcategoryForm")?.addEventListener("submit", async (e)
   }
 });
 
-/**
- * ❌ Eliminar categoría
- */
+// ❌ Eliminar categoría
 window.deleteCategory = async (id) => {
   if (!confirm("¿Eliminar esta categoría?")) return;
 
@@ -166,18 +193,16 @@ window.deleteCategory = async (id) => {
 
     if (res.ok) {
       mostrarMensaje(message, "✅ Categoría eliminada", "success");
-      await loadCategories();
+      loadCategories();
     } else {
-      mostrarMensaje(message, "❌ No se pudo eliminar la categoría", "error");
+      mostrarMensaje(message, "❌ No se pudo eliminar", "error");
     }
   } catch {
     mostrarMensaje(message, "❌ Error eliminando categoría", "error");
   }
 };
 
-/**
- * ❌ Eliminar subcategoría
- */
+// ❌ Eliminar subcategoría
 window.deleteSubcategory = async (id, sub) => {
   if (!confirm("¿Eliminar esta subcategoría?")) return;
 
@@ -193,7 +218,7 @@ window.deleteSubcategory = async (id, sub) => {
 
     if (res.ok) {
       mostrarMensaje(message, "✅ Subcategoría eliminada", "success");
-      await loadCategories();
+      loadCategories();
     } else {
       mostrarMensaje(message, "❌ No se pudo eliminar subcategoría", "error");
     }
@@ -202,5 +227,5 @@ window.deleteSubcategory = async (id, sub) => {
   }
 };
 
-// ▶️ Cargar al iniciar
+// ▶️ Init
 loadCategories();

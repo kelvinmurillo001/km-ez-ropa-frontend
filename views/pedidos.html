@@ -16,12 +16,18 @@
   <link rel="stylesheet" href="/css/pedidos.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
-
 </head>
 <body>
 
-  <main class="pedidos-container fade-in" role="main" aria-label="Sección de pedidos">
+  <!-- 🧭 Cabecera -->
+  <header class="header text-center" role="banner">
     <h1>📦 Pedidos Recibidos</h1>
+    <div class="top-buttons mt-1">
+      <button type="button" class="btn" id="modoToggle" aria-label="Cambiar modo claro/oscuro">🌙 Modo Oscuro</button>
+    </div>
+  </header>
+
+  <main class="pedidos-container fade-in" role="main" aria-label="Sección de pedidos">
 
     <!-- 🔘 Barra de acciones -->
     <section class="acciones-barra" role="navigation" aria-label="Controles de pedidos">
@@ -64,6 +70,20 @@
       } else {
         console.error("❌ cargarPedidos() no está definido.");
       }
+
+      // 🌙 Modo oscuro
+      const toggleBtn = document.getElementById("modoToggle");
+      if (localStorage.getItem("modoOscuro") === "true") {
+        document.body.classList.add("modo-oscuro");
+        if (toggleBtn) toggleBtn.textContent = "☀️ Modo Claro";
+      }
+
+      toggleBtn?.addEventListener("click", () => {
+        document.body.classList.toggle("modo-oscuro");
+        const isDark = document.body.classList.contains("modo-oscuro");
+        localStorage.setItem("modoOscuro", isDark);
+        toggleBtn.textContent = isDark ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+      });
     });
   </script>
 </body>

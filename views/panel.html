@@ -17,13 +17,17 @@
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-
-  <!-- 🔒 Seguridad JS: Protección de sesión -->
+  <!-- 🔒 Seguridad JS -->
   <script src="/js/panel.js" defer></script>
 </head>
 <body>
 
-  <main class="panel-container" role="main" aria-label="Panel de administración">
+  <!-- ☀️🌙 Botón modo claro/oscuro -->
+  <div style="position: absolute; top: 15px; right: 15px;">
+    <button id="modoToggle" class="btn btn-sm">🌙 Modo Oscuro</button>
+  </div>
+
+  <main class="panel-container fade-in" role="main" aria-label="Panel de administración">
 
     <!-- 🧭 Header -->
     <header class="header-panel">
@@ -51,6 +55,31 @@
   <noscript>
     <p style="color: red; text-align: center;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
+
+  <!-- 🌗 Script para modo oscuro -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const btn = document.getElementById("modoToggle");
+      const isDark = localStorage.getItem("modoOscuro") === "true";
+
+      if (isDark) {
+        document.body.classList.add("modo-oscuro");
+        btn.textContent = "☀️ Modo Claro";
+      }
+
+      btn?.addEventListener("click", () => {
+        document.body.classList.toggle("modo-oscuro");
+        const oscuro = document.body.classList.contains("modo-oscuro");
+        localStorage.setItem("modoOscuro", oscuro);
+        btn.textContent = oscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+      });
+    });
+
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+    }
+  </script>
 
 </body>
 </html>

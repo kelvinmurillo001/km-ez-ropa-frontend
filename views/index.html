@@ -34,7 +34,6 @@
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-
   <!-- 📊 Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-LPEBT3EKGE"></script>
   <script>
@@ -47,7 +46,7 @@
 <body>
 
   <!-- 🔝 Encabezado -->
-  <header class="header" role="banner">
+  <header class="header fade-in" role="banner">
     <div class="logo">
       <img src="/assets/logo.jpg" alt="Logo de KM & EZ ROPA" class="logo-img" />
       <h1>KM & EZ ROPA</h1>
@@ -60,12 +59,12 @@
   </header>
 
   <!-- 🎁 Promoción activa -->
-  <section id="promoBanner" class="promo-banner oculto" aria-live="polite" role="region">
+  <section id="promoBanner" class="promo-banner oculto fade-in" aria-live="polite" role="region">
     <p id="promoTexto"></p>
   </section>
 
   <!-- 🎯 Filtros -->
-  <section class="filtros-container" aria-label="Filtros de búsqueda de productos">
+  <section class="filtros-container fade-in" aria-label="Filtros de búsqueda de productos">
     <label for="categoria" class="visually-hidden">Filtrar por categoría</label>
     <select id="categoria" aria-label="Filtrar por categoría">
       <option value="todas">Categoría: Todas</option>
@@ -93,14 +92,14 @@
   </section>
 
   <!-- 🛍️ Catálogo principal -->
-  <main class="catalogo-container" role="main">
+  <main class="catalogo-container fade-in" role="main">
     <h2 class="text-center">Catálogo de Productos</h2>
     <div id="catalogo" class="catalogo-grid" role="list"></div>
     <div id="mensajeCatalogo" class="mensaje-error oculto" role="alert"></div>
   </main>
 
   <!-- 🛒 Carrito flotante -->
-  <div id="cart-widget" aria-label="Acceso rápido al carrito">
+  <div id="cart-widget" class="fade-in" aria-label="Acceso rápido al carrito">
     <a href="carrito.html" aria-label="Ver carrito de compras">
       <img src="/assets/cart-icon.svg" alt="Ícono del carrito" width="48" height="48" />
       <span id="cart-widget-count">0</span>
@@ -108,7 +107,7 @@
   </div>
 
   <!-- 🧾 Modal carrito -->
-  <div id="carritoModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloCarrito">
+  <div id="carritoModal" class="modal fade-in" role="dialog" aria-modal="true" aria-labelledby="tituloCarrito">
     <div class="modal-contenido">
       <span class="cerrar" id="cerrarCarrito" role="button" aria-label="Cerrar carrito">&times;</span>
       <h3 id="tituloCarrito">🛍️ Tu Carrito</h3>
@@ -118,12 +117,12 @@
   </div>
 
   <!-- 📞 Botón flotante de WhatsApp -->
-  <a href="https://wa.me/593990270864" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
+  <a href="https://wa.me/593990270864" class="whatsapp-float fade-in" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
     <img src="/assets/whatsapp.svg" alt="Icono de WhatsApp" width="48" height="48" />
   </a>
 
   <!-- 👣 Pie de página -->
-  <footer class="footer" role="contentinfo">
+  <footer class="footer fade-in" role="contentinfo">
     <p>© 2025 KM & EZ ROPA - Todos los derechos reservados</p>
   </footer>
 

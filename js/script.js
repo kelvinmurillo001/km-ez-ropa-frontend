@@ -23,7 +23,6 @@ async function cargarProductos() {
     cargarSubcategoriasUnicas();
     cargarPromocionActiva();
 
-    // Listeners
     document.getElementById("busqueda")?.addEventListener("input", aplicarFiltros);
     document.getElementById("categoria")?.addEventListener("change", () => {
       cargarSubcategoriasUnicas();
@@ -77,14 +76,14 @@ function mostrarProductos(lista) {
   contenedor.innerHTML = "";
 
   if (!lista.length) {
-    contenedor.innerHTML = "<p class='mensaje-error'>😕 No hay productos que coincidan.</p>";
+    contenedor.innerHTML = "<p class='mensaje-error fade-in'>😕 No hay productos que coincidan.</p>";
     return;
   }
 
   lista.forEach(p => {
     const { _id, name, image, price, category, subcategory, stock, featured, talla, colores } = p;
     const agotado = stock <= 0;
-    const imgSrc = image || "../assets/logo.jpg";
+    const imgSrc = image || "/assets/logo.jpg";
 
     const card = document.createElement("div");
     card.className = "card fade-in";
@@ -123,7 +122,7 @@ function cargarSubcategoriasUnicas() {
     }
   });
 
-  subSelect.innerHTML = `<option value="todas">Todas</option>`;
+  subSelect.innerHTML = `<option value="todas">Subcategoría: Todas</option>`;
   [...subcategorias].forEach(sub => {
     const opt = document.createElement("option");
     opt.value = sub;
@@ -145,7 +144,7 @@ async function cargarPromocionActiva() {
       if (banner && texto) {
         texto.textContent = data.message;
         banner.style.display = "block";
-        banner.className = `promo-banner ${data.theme || "blue"}`;
+        banner.className = `promo-banner fade-in ${data.theme || "blue"}`;
       }
     }
   } catch (err) {
@@ -162,7 +161,7 @@ function isFechaEnRango(start, end) {
 /* 🔍 Imagen en modal */
 function ampliarImagen(url) {
   const modal = document.createElement("div");
-  modal.className = "modal-img";
+  modal.className = "modal-img fade-in";
   modal.innerHTML = `
     <div class="overlay" onclick="this.parentElement.remove()"></div>
     <img src="${url}" alt="Vista ampliada" />

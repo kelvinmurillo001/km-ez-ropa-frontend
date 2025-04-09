@@ -1,8 +1,15 @@
 "use strict";
 
-// 🌐 Endpoint y token
-import { verificarSesion, mostrarMensaje, isDateInRange, logout, goBack } from "./admin-utils.js";
+// ✅ Importar funciones necesarias
+import {
+  verificarSesion,
+  mostrarMensaje,
+  isDateInRange,
+  logout,
+  goBack
+} from "./admin-utils.js";
 
+// 🌐 Endpoint y token
 const API_PROMO = "https://km-ez-ropa-backend.onrender.com/api/promos";
 const token = verificarSesion();
 
@@ -17,22 +24,28 @@ document.addEventListener("DOMContentLoaded", () => {
   const mensajeExito = document.getElementById("promoFeedback");
   const promoPreview = document.getElementById("promoPreview");
 
-  // 👁️ Vista previa dinámica
-  const updatePreview = () => {
+  /**
+   * 👁️ Actualizar vista previa de promoción
+   */
+  function updatePreview() {
     const mensaje = promoInput.value || "Tu mensaje aparecerá aquí...";
     const tema = themeSelect.value || "blue";
     promoPreview.textContent = mensaje;
     promoPreview.className = `promo-preview ${tema}`;
-  };
+  }
 
-  // ⚠️ Mostrar errores en preview
-  const mostrarErrorPreview = (mensaje, clase = "error") => {
-    promoPreview.textContent = mensaje;
+  /**
+   * ⚠️ Mostrar error visual en la vista previa
+   */
+  function mostrarErrorPreview(msg, clase = "error") {
+    promoPreview.textContent = msg;
     promoPreview.className = `promo-preview ${clase}`;
-  };
+  }
 
-  // 📥 Cargar promoción actual
-  const loadPromotion = async () => {
+  /**
+   * 📥 Cargar promoción actual desde backend
+   */
+  async function loadPromotion() {
     try {
       const res = await fetch(API_PROMO, {
         headers: { Authorization: `Bearer ${token}` }
@@ -57,15 +70,16 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         mostrarErrorPreview("⚠️ Promoción inactiva o fuera de fecha.", "inactive");
       }
-
     } catch (err) {
       console.error("❌ Error al obtener promoción:", err);
       mostrarErrorPreview("❌ Error de red.");
     }
-  };
+  }
 
-  // 💾 Guardar promoción
-  const guardarPromocion = async (e) => {
+  /**
+   * 💾 Guardar promoción en backend
+   */
+  async function guardarPromocion(e) {
     e.preventDefault();
 
     const payload = {
@@ -95,20 +109,21 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         mostrarMensaje(mensajeExito, "❌ " + (data.message || "Error inesperado"), "error");
       }
-
     } catch (error) {
       console.error("❌ Error al guardar:", error);
       mostrarMensaje(mensajeExito, "❌ Error del servidor.", "error");
     }
-  };
+  }
 
-  // ▶️ Init
+  // ▶️ Inicializar eventos
   promoInput?.addEventListener("input", updatePreview);
   themeSelect?.addEventListener("change", updatePreview);
   form?.addEventListener("submit", guardarPromocion);
+
+  // ▶️ Cargar promoción al iniciar
   loadPromotion();
 
-  // 🔗 Navegación
+  // 🔗 Asignar funciones globales
   window.goBack = goBack;
   window.logout = logout;
 });

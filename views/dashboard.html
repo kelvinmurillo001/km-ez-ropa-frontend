@@ -17,6 +17,17 @@
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
+  <!-- 💡 Animación opcional -->
+  <style>
+    .metricas .card, .analitica-extra {
+      animation: fadeIn 0.6s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body onload="verificarToken()">
 
@@ -25,14 +36,14 @@
     <h1 class="text-center">📊 Panel de Analítica</h1>
 
     <!-- 📈 Métricas clave -->
-    <section class="metricas" aria-label="Resumen de métricas">
+    <section class="metricas grid-responsive" aria-label="Resumen de métricas">
       <div class="card" role="region" aria-labelledby="ventas">
         <h3 id="ventas">🛒 Ventas</h3>
         <p>$ <span id="ventasTotales" aria-live="polite">0</span></p>
       </div>
       <div class="card" role="region" aria-labelledby="visitas">
         <h3 id="visitas">👥 Visitas</h3>
-        <p><span aria-live="polite">0</span></p>
+        <p><span id="visitasTotales" aria-live="polite">0</span></p>
       </div>
       <div class="card" role="region" aria-labelledby="productos">
         <h3 id="productos">📦 Productos</h3>
@@ -45,7 +56,7 @@
     </section>
 
     <!-- 🔝 Categorías -->
-    <section class="analitica-extra" aria-label="Categorías más populares">
+    <section class="analitica-extra mt-3" aria-label="Categorías más populares">
       <h2 class="text-center">📁 Top Categorías</h2>
       <ul id="topCategorias" aria-live="polite">
         <!-- Renderizado dinámicamente por analitica.js -->

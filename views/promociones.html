@@ -16,8 +16,14 @@
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
+  <!-- 🌙 Modo oscuro persistente -->
+  <script>
+    if (localStorage.getItem("modoOscuro") === "true") {
+      document.documentElement.classList.add("modo-oscuro");
+    }
+  </script>
 </head>
-<body onload="verificarToken()">
+<body>
 
   <main class="promociones-container fade-in" role="main" aria-label="Gestión de promociones">
     <h1>🎯 Administrar Promoción</h1>
@@ -79,14 +85,7 @@
     <p style="text-align:center; color:red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
 
-  <!-- Scripts -->
-  <script src="/js/login.js"></script>
-  <script src="/js/promociones.js"></script>
-  <script>
-    // 🌗 Modo oscuro persistente
-    if (localStorage.getItem("modoOscuro") === "true") {
-      document.body.classList.add("modo-oscuro");
-    }
-  </script>
+  <!-- ✅ Scripts -->
+  <script src="/js/promociones.js" defer></script>
 </body>
 </html>

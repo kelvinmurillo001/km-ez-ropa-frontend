@@ -10,12 +10,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const token = verificarSesion(); // Esto valida token + rol
 
   if (token) {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    console.log("✅ Acceso autorizado como administrador:", payload.username || payload.email);
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      console.log("✅ Acceso autorizado como administrador:", payload.username || payload.email);
+    } catch (err) {
+      console.error("❌ Error decodificando token:", err);
+    }
   }
 });
 
 /**
- * 🔒 Logout manual
+ * 🔒 Logout manual (expuesto para botón)
  */
 window.logout = logout;

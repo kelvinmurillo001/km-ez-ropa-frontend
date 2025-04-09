@@ -7,11 +7,12 @@ if (!token) {
   window.location.href = "login.html";
 }
 
-// 🌐 Endpoints
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
 const API_PRODUCTS = `${API_BASE}/products`;
 const API_ORDERS = `${API_BASE}/orders`;
 const API_VISITS = `${API_BASE}/stats/contador`;
+
+document.addEventListener("DOMContentLoaded", loadStatistics);
 
 /**
  * 📊 Cargar estadísticas generales
@@ -23,6 +24,10 @@ async function loadStatistics() {
       fetchData(API_ORDERS, true),
       fetchData(API_VISITS, true)
     ]);
+
+    if (!Array.isArray(products) || !Array.isArray(orders)) {
+      throw new Error("❌ Respuesta inesperada");
+    }
 
     renderProductStats(products);
     renderTopCategories(products);
@@ -36,14 +41,14 @@ async function loadStatistics() {
 }
 
 /**
- * 🌐 Obtener datos de un endpoint
+ * 🌐 Fetch con o sin token
  */
 async function fetchData(url, auth = false) {
   const res = await fetch(url, {
     headers: auth ? { Authorization: `Bearer ${token}` } : {}
   });
 
-  if (!res.ok) throw new Error(`❌ Error al obtener datos de: ${url}`);
+  if (!res.ok) throw new Error(`❌ Error al obtener: ${url}`);
 
   const data = await res.json();
   if (!data) throw new Error(`❌ Respuesta vacía desde: ${url}`);
@@ -51,62 +56,42 @@ async function fetchData(url, auth = false) {
   return data;
 }
 
-/**
- * 🧮 Mostrar total de productos y promociones activas
- */
 function renderProductStats(products) {
-  const total = products.length;
-  const destacados = products.filter(p => p.featured).length;
-
-  document.getElementById("totalProductos").textContent = total;
-  document.getElementById("promosActivas").textContent = destacados;
+  setText("totalProductos", products.length);
+  setText("promosActivas", products.filter(p => p.featured).length);
 }
 
-/**
- * 📂 Calcular y mostrar top categorías
- */
 function renderTopCategories(products) {
   const counter = {};
 
-  products.forEach(p => {
+  for (const p of products) {
     const cat = p.category || "Sin categoría";
     counter[cat] = (counter[cat] || 0) + 1;
-  });
+  }
 
   const sorted = Object.entries(counter).sort((a, b) => b[1] - a[1]);
-  const listEl = document.getElementById("topCategorias");
-  listEl.innerHTML = "";
+  const list = document.getElementById("topCategorias");
+  list.innerHTML = "";
 
-  sorted.forEach(([name, count]) => {
+  for (const [cat, count] of sorted) {
     const li = document.createElement("li");
-    li.textContent = `${name}: ${count}`;
-    listEl.appendChild(li);
-  });
+    li.textContent = `📁 ${cat}: ${count}`;
+    list.appendChild(li);
+  }
 }
 
-/**
- * 👁️ Mostrar visitas registradas
- */
 function renderVisitStats(visitasData) {
-  const total = visitasData.total || 0;
-  document.getElementById("visitas").textContent = total;
+  const total = visitasData.total || visitasData.length || 0;
+  setText("visitas", total);
 }
 
-/**
- * 💰 Mostrar total de ventas (solo pedidos enviados)
- */
 function renderSalesStats(orders) {
   const enviados = orders.filter(p => p.estado === "enviado");
-  const totalVentas = enviados.reduce((acc, p) => acc + parseFloat(p.total || 0), 0);
-  document.getElementById("ventasTotales").textContent = totalVentas.toFixed(2);
+  const total = enviados.reduce((sum, p) => sum + parseFloat(p.total || 0), 0);
+  setText("ventasTotales", total.toFixed(2));
 }
 
-/**
- * 🔙 Regresar al panel
- */
-function goBack() {
-  window.location.href = "panel.html";
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
 }
-
-// ▶️ Ejecutar carga al iniciar
-loadStatistics();

@@ -1,8 +1,27 @@
 "use strict";
-import { verificarSesion, mostrarMensaje, isDateInRange, logout, goBack } from "./admin-utils.js";
 
-// 🔐 Verificación de sesión
-const token = verificarSesion();
+// ✅ VERIFICAR SESIÓN (equivalente a verificarSesion())
+(function () {
+  const token = localStorage.getItem("token");
+  if (!token || typeof token !== "string" || token.length < 10) {
+    alert("⚠️ No autorizado. Inicia sesión.");
+    window.location.href = "login.html";
+  }
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    if (!payload || payload.role !== "admin") {
+      alert("⛔ Acceso denegado. Solo administradores.");
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+    }
+  } catch (err) {
+    console.error("❌ Token malformado:", err);
+    alert("⚠️ Sesión inválida. Vuelve a iniciar sesión.");
+    localStorage.removeItem("token");
+    window.location.href = "login.html";
+  }
+})();
 
 // 🌐 Endpoints
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api/products";
@@ -12,6 +31,7 @@ const API_UPLOAD = "https://km-ez-ropa-backend.onrender.com/api/uploads";
 const form = document.getElementById("productoForm");
 const message = document.getElementById("message");
 const preview = document.getElementById("previewImagen");
+const token = localStorage.getItem("token");
 
 let variantes = [];
 let editandoId = null;
@@ -24,6 +44,22 @@ const categorias = {
   Niña: ["Faldas", "Vestidos", "Chaquetas"],
   Bebé: ["Mamelucos", "Bodies", "Pijamas"]
 };
+
+// 🔁 Mostrar mensaje con estilo
+function mostrarMensaje(el, mensaje, tipo = "info") {
+  const colores = {
+    success: { bg: "#e8f5e9", color: "#2e7d32" },
+    error: { bg: "#ffebee", color: "#b71c1c" },
+    warning: { bg: "#fff8e1", color: "#f57c00" },
+    info: { bg: "#e3f2fd", color: "#0277bd" }
+  };
+  const { bg, color } = colores[tipo] || colores.info;
+  el.textContent = mensaje;
+  el.classList.remove("oculto");
+  el.style.backgroundColor = bg;
+  el.style.color = color;
+  setTimeout(() => el.classList.add("oculto"), 3000);
+}
 
 // 📂 Cargar categorías y subcategorías
 function cargarCategorias() {
@@ -90,7 +126,7 @@ function renderizarVariantes() {
   contenedor.innerHTML = "";
   variantes.forEach((v, i) => {
     contenedor.innerHTML += `
-      <div class="variante-card">
+      <div class="variante-card fade-in">
         <p><strong>Talla:</strong> ${v.talla}</p>
         <p><strong>Color:</strong> ${v.color}</p>
         <img src="${v.imageUrl}" width="100" />
@@ -105,7 +141,7 @@ window.eliminarVariante = (i) => {
   renderizarVariantes();
 };
 
-// 💾 Guardar o actualizar producto
+// 💾 Guardar producto
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const btn = form.querySelector("button[type=submit]");
@@ -140,7 +176,6 @@ form.addEventListener("submit", async (e) => {
     } else {
       mostrarMensaje(message, `❌ ${data.message || "Error al guardar"}`, "error");
     }
-
   } catch (err) {
     console.error("❌", err);
     mostrarMensaje(message, "❌ Error del servidor", "error");
@@ -149,7 +184,7 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-// 🔄 Obtener datos del formulario
+// 🔄 Obtener datos
 function obtenerDatosFormulario() {
   const nombre = document.getElementById("nombre").value.trim();
   const precio = parseFloat(document.getElementById("precio").value);
@@ -184,7 +219,7 @@ function resetBoton(btn) {
   btn.textContent = "📦 Guardar Producto";
 }
 
-// 📋 Cargar productos existentes
+// 📋 Cargar productos
 async function cargarProductos() {
   try {
     const res = await fetch(API_BASE);
@@ -200,7 +235,7 @@ async function cargarProductos() {
         </div>`).join("") || "Sin variantes";
 
       lista.innerHTML += `
-        <div class="card">
+        <div class="card fade-in">
           <h3>${p.name}</h3>
           <p><strong>Precio:</strong> $${p.price}</p>
           <p><strong>Categoría:</strong> ${p.category}</p>
@@ -266,6 +301,6 @@ window.eliminarProducto = async (id) => {
   }
 };
 
-// ▶️ Inicializar
+// ▶️ Iniciar
 cargarCategorias();
 cargarProductos();

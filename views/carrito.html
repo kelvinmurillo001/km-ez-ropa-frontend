@@ -32,20 +32,10 @@
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/carrito.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
-
-
-  <!-- 📊 Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LPEBT3EKGE"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-LPEBT3EKGE');
-  </script>
 </head>
 <body>
 
-  <main class="catalogo-container" role="main" aria-label="Contenido principal del carrito">
+  <main class="catalogo-container fade-in" role="main" aria-label="Contenido principal del carrito">
     <h1 class="text-center carrito-titulo">🛍️ Tu Carrito</h1>
 
     <!-- Productos del carrito -->
@@ -54,7 +44,7 @@
     </section>
 
     <!-- Formulario de pedido -->
-    <section class="carrito-formulario" role="form" aria-label="Formulario para enviar pedido">
+    <section class="carrito-formulario fade-in" role="form" aria-label="Formulario para enviar pedido">
       <h3>Total estimado: <span id="cart-total">$0.00</span></h3>
       <p id="total-unidades">Total unidades: 0</p>
 
@@ -74,7 +64,7 @@
   </main>
 
   <!-- Modal de imagen -->
-  <div id="imageModal" class="modal-zoom oculto" onclick="cerrarModalImagen()">
+  <div id="imageModal" class="modal-zoom oculto fade-in" onclick="cerrarModalImagen()">
     <span class="modal-close">✖️</span>
     <img id="modalImage" src="" alt="Vista ampliada del producto" />
   </div>
@@ -86,6 +76,7 @@
       if (typeof renderCartItems === "function") renderCartItems();
       if (typeof updateCartWidget === "function") updateCartWidget();
 
+      // Restaurar modo oscuro
       if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
       }
