@@ -1,6 +1,6 @@
 "use strict";
 
-// ✅ VERIFICAR SESIÓN (equivalente a verificarSesion())
+// ✅ VERIFICAR SESIÓN
 (function () {
   const token = localStorage.getItem("token");
   if (!token || typeof token !== "string" || token.length < 10) {
@@ -35,6 +35,7 @@ const token = localStorage.getItem("token");
 
 let variantes = [];
 let editandoId = null;
+let imagenesPrincipales = []; // ✅ NUEVO: array para múltiples imágenes principales
 
 // 📚 Categorías predefinidas
 const categorias = {
@@ -77,7 +78,7 @@ document.getElementById("categoriaSelect").addEventListener("change", () => {
   categorias[cat]?.forEach(sub => subSelect.appendChild(new Option(sub, sub)));
 });
 
-// 📤 Subir imagen
+// 📤 Subida de imagen a backend (Cloudinary)
 async function uploadToBackend(file) {
   const formData = new FormData();
   formData.append("image", file);
@@ -91,6 +92,31 @@ async function uploadToBackend(file) {
   if (!res.ok) throw new Error("❌ Error al subir imagen");
   return await res.json();
 }
+
+// 📤 Imagen PRINCIPAL del producto (varias)
+document.getElementById("imagenesPrincipales").addEventListener("change", async (e) => {
+  const files = Array.from(e.target.files);
+  const previewContenedor = document.getElementById("previewImagenesPrincipales");
+  previewContenedor.innerHTML = "";
+  imagenesPrincipales = [];
+
+  for (const file of files) {
+    try {
+      const { url, public_id } = await uploadToBackend(file);
+      imagenesPrincipales.push({ url, public_id });
+
+      const img = document.createElement("img");
+      img.src = url;
+      img.width = 100;
+      img.alt = "Imagen principal";
+      img.classList.add("fade-in");
+      previewContenedor.appendChild(img);
+    } catch (err) {
+      console.error("❌ Error al subir imagen principal:", err);
+      mostrarMensaje(message, "❌ Error subiendo imagen principal", "error");
+    }
+  }
+});
 
 // ➕ Agregar variante
 document.getElementById("addVariante").addEventListener("click", async () => {
@@ -170,6 +196,7 @@ form.addEventListener("submit", async (e) => {
       mostrarMensaje(message, editandoId ? "✅ Producto actualizado" : "✅ Producto guardado", "success");
       form.reset();
       variantes = [];
+      imagenesPrincipales = [];
       editandoId = null;
       renderizarVariantes();
       cargarProductos();
@@ -184,7 +211,7 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-// 🔄 Obtener datos
+// 📝 Obtener datos del formulario
 function obtenerDatosFormulario() {
   const nombre = document.getElementById("nombre").value.trim();
   const precio = parseFloat(document.getElementById("precio").value);
@@ -195,6 +222,11 @@ function obtenerDatosFormulario() {
 
   if (!nombre || isNaN(precio) || !categoria || !subcategoria) {
     mostrarMensaje(message, "⚠️ Completa todos los campos obligatorios", "warning");
+    return null;
+  }
+
+  if (imagenesPrincipales.length === 0) {
+    mostrarMensaje(message, "⚠️ Sube al menos una imagen principal", "warning");
     return null;
   }
 
@@ -210,7 +242,8 @@ function obtenerDatosFormulario() {
     subcategory: subcategoria,
     stock,
     featured: destacado,
-    variants: variantes
+    variants,
+    mainImages: imagenesPrincipales // ✅ NUEVO
   };
 }
 
@@ -234,6 +267,8 @@ async function cargarProductos() {
           <img src="${v.imageUrl}" width="80" />
         </div>`).join("") || "Sin variantes";
 
+      const imagenesHtml = p.mainImages?.map(img => `<img src="${img.url}" width="80" />`).join("") || "";
+
       lista.innerHTML += `
         <div class="card fade-in">
           <h3>${p.name}</h3>
@@ -242,6 +277,7 @@ async function cargarProductos() {
           <p><strong>Subcategoría:</strong> ${p.subcategory}</p>
           <p><strong>Stock:</strong> ${p.stock}</p>
           <p><strong>Destacado:</strong> ${p.featured ? "✅" : "❌"}</p>
+          <div><strong>Imágenes principales:</strong><br/>${imagenesHtml}</div>
           <div>${variantesHtml}</div>
           <button onclick="editarProducto('${p._id}')">✏️ Editar</button>
           <button onclick="eliminarProducto('${p._id}')">🗑️ Eliminar</button>
@@ -270,8 +306,18 @@ window.editarProducto = async (id) => {
 
     variantes = [...producto.variants];
     renderizarVariantes();
-    editandoId = id;
+    imagenesPrincipales = producto.mainImages || [];
 
+    const previewContenedor = document.getElementById("previewImagenesPrincipales");
+    previewContenedor.innerHTML = "";
+    imagenesPrincipales.forEach(img => {
+      const el = document.createElement("img");
+      el.src = img.url;
+      el.width = 100;
+      previewContenedor.appendChild(el);
+    });
+
+    editandoId = id;
     mostrarMensaje(message, "✏️ Editando producto", "info");
   } catch (err) {
     console.error("❌", err);
