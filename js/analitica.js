@@ -8,31 +8,23 @@ if (!token) {
 }
 
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
+const API_RESUMEN = `${API_BASE}/stats/resumen`;
 const API_PRODUCTS = `${API_BASE}/products`;
-const API_ORDERS = `${API_BASE}/orders`;
-const API_VISITS = `${API_BASE}/stats/contador`;
 
 document.addEventListener("DOMContentLoaded", loadStatistics);
 
 /**
- * 📊 Cargar estadísticas generales
+ * 📊 Cargar estadísticas generales desde el backend
  */
 async function loadStatistics() {
   try {
-    const [products, orders, visits] = await Promise.all([
-      fetchData(API_PRODUCTS),
-      fetchData(API_ORDERS, true),
-      fetchData(API_VISITS, true)
+    const [resumen, productos] = await Promise.all([
+      fetchData(API_RESUMEN, true),
+      fetchData(API_PRODUCTS)
     ]);
 
-    if (!Array.isArray(products) || !Array.isArray(orders)) {
-      throw new Error("❌ Respuesta inesperada");
-    }
-
-    renderProductStats(products);
-    renderTopCategories(products);
-    renderVisitStats(visits);
-    renderSalesStats(orders);
+    renderResumen(resumen);
+    renderTopCategorias(productos);
 
   } catch (err) {
     console.error("❌ Error cargando estadísticas:", err);
@@ -41,7 +33,7 @@ async function loadStatistics() {
 }
 
 /**
- * 🌐 Fetch con o sin token
+ * 🌐 Realiza fetch con o sin autorización
  */
 async function fetchData(url, auth = false) {
   const res = await fetch(url, {
@@ -49,49 +41,57 @@ async function fetchData(url, auth = false) {
   });
 
   if (!res.ok) throw new Error(`❌ Error al obtener: ${url}`);
-
   const data = await res.json();
   if (!data) throw new Error(`❌ Respuesta vacía desde: ${url}`);
-
   return data;
 }
 
-function renderProductStats(products) {
-  setText("totalProductos", products.length);
-  setText("promosActivas", products.filter(p => p.featured).length);
+/**
+ * 📥 Renderiza resumen general (ventas, visitas, pedidos, etc)
+ */
+function renderResumen(data) {
+  setText("totalProductos", data.totalProductos);
+  setText("promosActivas", data.productosDestacados);
+  setText("visitas", data.totalVisitas);
+  setText("ventasTotales", `$${data.ventasTotales}`);
+  setText("pedidosTotales", data.pedidosTotales);
+  setText("pedidosHoy", data.pedidosHoy);
 }
 
-function renderTopCategories(products) {
-  const counter = {};
+/**
+ * 📦 Muestra productos agrupados por categoría
+ */
+function renderTopCategorias(productos) {
+  const categorias = {};
 
-  for (const p of products) {
+  productos.forEach(p => {
     const cat = p.category || "Sin categoría";
-    counter[cat] = (counter[cat] || 0) + 1;
-  }
+    categorias[cat] = (categorias[cat] || 0) + 1;
+  });
 
-  const sorted = Object.entries(counter).sort((a, b) => b[1] - a[1]);
-  const list = document.getElementById("topCategorias");
-  list.innerHTML = "";
+  const lista = document.getElementById("topCategorias");
+  lista.innerHTML = "";
 
-  for (const [cat, count] of sorted) {
+  const ordenado = Object.entries(categorias).sort((a, b) => b[1] - a[1]);
+
+  for (const [cat, cantidad] of ordenado) {
     const li = document.createElement("li");
-    li.textContent = `📁 ${cat}: ${count}`;
-    list.appendChild(li);
+    li.textContent = `📁 ${cat}: ${cantidad}`;
+    lista.appendChild(li);
   }
 }
 
-function renderVisitStats(visitasData) {
-  const total = visitasData.total || visitasData.length || 0;
-  setText("visitas", total);
-}
-
-function renderSalesStats(orders) {
-  const enviados = orders.filter(p => p.estado === "enviado");
-  const total = enviados.reduce((sum, p) => sum + parseFloat(p.total || 0), 0);
-  setText("ventasTotales", total.toFixed(2));
-}
-
+/**
+ * 🧾 Helper para asignar valores al DOM
+ */
 function setText(id, value) {
   const el = document.getElementById(id);
   if (el) el.textContent = value;
+}
+
+/**
+ * 🔙 Volver al panel
+ */
+function goBack() {
+  window.location.href = "panel.html";
 }
