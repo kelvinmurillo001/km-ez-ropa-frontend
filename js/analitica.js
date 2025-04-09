@@ -11,6 +11,9 @@ const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
 const API_RESUMEN = `${API_BASE}/stats/resumen`;
 const API_PRODUCTS = `${API_BASE}/products`;
 
+let estadisticasResumen = null;
+let productosGlobal = [];
+
 document.addEventListener("DOMContentLoaded", loadStatistics);
 
 /**
@@ -22,6 +25,9 @@ async function loadStatistics() {
       fetchData(API_RESUMEN, true),
       fetchData(API_PRODUCTS)
     ]);
+
+    estadisticasResumen = resumen;
+    productosGlobal = productos;
 
     renderResumen(resumen);
     renderTopCategorias(productos);
@@ -95,3 +101,47 @@ function setText(id, value) {
 function goBack() {
   window.location.href = "panel.html";
 }
+
+/**
+ * 📤 Exportar estadísticas a CSV
+ */
+function exportarEstadisticas() {
+  if (!estadisticasResumen || productosGlobal.length === 0) {
+    alert("❌ Datos aún no cargados.");
+    return;
+  }
+
+  const fecha = new Date().toLocaleString();
+  const resumen = estadisticasResumen;
+
+  let csv = `📊 Estadísticas de KM & EZ ROPA\nFecha: ${fecha}\n\n`;
+  csv += "Resumen General\n";
+  csv += `Ventas Totales,${resumen.ventasTotales}\n`;
+  csv += `Pedidos Totales,${resumen.pedidosTotales}\n`;
+  csv += `Pedidos del Día,${resumen.pedidosHoy}\n`;
+  csv += `Total Productos,${resumen.totalProductos}\n`;
+  csv += `Promociones Activas,${resumen.productosDestacados}\n`;
+  csv += `Visitas al Sitio,${resumen.totalVisitas}\n\n`;
+
+  csv += "Top Categorías\n";
+  const categorias = {};
+  productosGlobal.forEach(p => {
+    const cat = p.category || "Sin categoría";
+    categorias[cat] = (categorias[cat] || 0) + 1;
+  });
+
+  for (const [cat, count] of Object.entries(categorias)) {
+    csv += `${cat},${count}\n`;
+  }
+
+  // Crear y descargar archivo CSV
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `estadisticas_km-ez-ropa_${Date.now()}.csv`;
+  link.click();
+}
+
+// Exponer la función al global
+window.exportarEstadisticas = exportarEstadisticas;

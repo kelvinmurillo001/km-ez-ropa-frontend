@@ -16,7 +16,7 @@
 
   <!-- 🧭 Encabezado -->
   <header class="text-center mt-2 mb-2" role="banner">
-    <h1>📊 Dashboard de Analítica</h1>
+    <h1>📊 Panel de Analítica</h1>
     <p>Resumen de actividad en la tienda KM & EZ ROPA</p>
   </header>
 
@@ -24,27 +24,34 @@
     <section aria-labelledby="tituloResumen" class="panel-analitico mt-2" aria-live="polite">
       <h2 id="tituloResumen" class="mb-1">📋 Resumen General</h2>
       <ul>
-        <li><strong>Total de productos:</strong> <span id="totalProductos">-</span></li>
-        <li><strong>Productos destacados:</strong> <span id="promosActivas">-</span></li>
-        <li><strong>Visitas al sitio:</strong> <span id="visitas">-</span></li>
-        <li><strong>Ventas totales:</strong> <span id="ventasTotales">$0.00</span></li>
-        <li><strong>Pedidos totales:</strong> <span id="pedidosTotales">-</span></li>
-        <li><strong>Pedidos del día:</strong> <span id="pedidosHoy">-</span></li>
+        <li><strong>🛒 Ventas totales:</strong> $<span id="ventasTotales">0.00</span></li>
+        <li><strong>📦 Pedidos totales:</strong> <span id="pedidosTotales">-</span></li>
+        <li><strong>📅 Pedidos del día:</strong> <span id="pedidosHoy">-</span></li>
+        <li><strong>📁 Total productos:</strong> <span id="totalProductos">-</span></li>
+        <li><strong>🎯 Promos activas:</strong> <span id="promosActivas">-</span></li>
+        <li><strong>👁️ Visitas al sitio:</strong> <span id="visitas">-</span></li>
       </ul>
 
-      <h3 class="mt-2">📦 Productos por Categoría</h3>
+      <h3 class="mt-2">📂 Top Categorías</h3>
       <ul id="topCategorias" class="mt-1">
-        <!-- Render dinámico desde JS -->
+        <!-- Rellenado por analitica.js -->
       </ul>
+
+      <!-- 📤 Botón para exportar CSV -->
+      <div class="text-center mt-3">
+        <button type="button" onclick="exportarEstadisticas()" class="btn-secundario">
+          📤 Exportar Estadísticas (CSV)
+        </button>
+      </div>
     </section>
 
     <!-- 🔙 Navegación -->
-    <section class="text-center mt-3" role="navigation" aria-label="Navegación de retorno">
-      <button type="button" onclick="goBack()" class="btn" aria-label="Volver al panel">🔙 Volver al Panel</button>
+    <section class="text-center mt-3" role="navigation" aria-label="Volver">
+      <button type="button" onclick="goBack()" class="btn">🔙 Volver al Panel</button>
     </section>
   </main>
 
-  <!-- 🚫 No JS -->
+  <!-- 🚫 JS Fallback -->
   <noscript>
     <p style="text-align:center; color:red;">⚠️ Esta página requiere JavaScript habilitado.</p>
   </noscript>
