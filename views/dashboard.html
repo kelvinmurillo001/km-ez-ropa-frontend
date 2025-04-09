@@ -22,20 +22,22 @@
     .metricas .card, .analitica-extra {
       animation: fadeIn 0.6s ease-in;
     }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
   </style>
-</head>
-<body onload="verificarToken()">
 
-  <!-- 🧠 Dashboard principal -->
+  <!-- ✅ Módulo con lógica JS unificada -->
+  <script type="module" src="/js/dashboard.js" defer></script>
+</head>
+<body>
+
+  <!-- 🧠 Panel principal -->
   <main class="dashboard-container" role="main" aria-label="Panel de métricas">
     <h1 class="text-center">📊 Panel de Analítica</h1>
 
-    <!-- 📈 Métricas clave -->
+    <!-- 📈 Métricas -->
     <section class="metricas grid-responsive" aria-label="Resumen de métricas">
       <div class="card" role="region" aria-labelledby="ventas">
         <h3 id="ventas">🛒 Ventas</h3>
@@ -55,15 +57,15 @@
       </div>
     </section>
 
-    <!-- 🔝 Categorías -->
+    <!-- 📁 Categorías más frecuentes -->
     <section class="analitica-extra mt-3" aria-label="Categorías más populares">
       <h2 class="text-center">📁 Top Categorías</h2>
       <ul id="topCategorias" class="listado-categorias mt-2" aria-live="polite">
-        <!-- Renderizado dinámicamente por dashboard.js -->
+        <!-- Se llena con JS -->
       </ul>
     </section>
 
-    <!-- 📤 Botón para exportar -->
+    <!-- 📤 Botón de exportar -->
     <div class="text-center mt-3">
       <button type="button" onclick="exportarEstadisticas()" class="btn-secundario">
         📤 Exportar Estadísticas (CSV)
@@ -76,16 +78,13 @@
     </div>
   </main>
 
-  <!-- ❌ Sin JS -->
+  <!-- ❌ JS Fallback -->
   <noscript>
-    <p style="text-align:center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+    <p style="text-align:center; color: red;">⚠️ Esta página requiere JavaScript habilitado para funcionar correctamente.</p>
   </noscript>
 
-  <!-- 📜 Scripts -->
-  <script src="/js/login.js"></script>
-  <script src="/js/dashboard.js"></script>
+  <!-- 🌗 Tema oscuro -->
   <script>
-    // 🌙 Activar modo oscuro si se guarda en localStorage
     if (localStorage.getItem("modoOscuro") === "true") {
       document.body.classList.add("modo-oscuro");
     }

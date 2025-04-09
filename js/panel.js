@@ -1,25 +1,23 @@
 "use strict";
 import { verificarSesion, logout } from "./admin-utils.js";
 
-/**
- * ✅ Verificación de acceso al panel de administración
- * - Comprueba token y rol "admin"
- * - Redirige a login en caso de error o acceso no autorizado
- */
 document.addEventListener("DOMContentLoaded", () => {
-  const token = verificarSesion(); // Esto valida token + rol
+  const token = verificarSesion();
 
-  if (token) {
-    try {
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      console.log("✅ Acceso autorizado como administrador:", payload.username || payload.email);
-    } catch (err) {
-      console.error("❌ Error decodificando token:", err);
-    }
+  const btn = document.getElementById("modoToggle");
+  const isDark = localStorage.getItem("modoOscuro") === "true";
+
+  if (isDark) {
+    document.body.classList.add("modo-oscuro");
+    btn.textContent = "☀️ Modo Claro";
   }
+
+  btn?.addEventListener("click", () => {
+    document.body.classList.toggle("modo-oscuro");
+    const oscuro = document.body.classList.contains("modo-oscuro");
+    localStorage.setItem("modoOscuro", oscuro);
+    btn.textContent = oscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+  });
 });
 
-/**
- * 🔒 Logout manual (expuesto para botón)
- */
 window.logout = logout;

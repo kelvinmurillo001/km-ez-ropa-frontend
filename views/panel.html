@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Panel de Control | KM & EZ ROPA</title>
 
-  <!-- 🔐 SEO y seguridad -->
+  <!-- 🔐 SEO y Seguridad -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="author" content="KM & EZ ROPA" />
   <meta name="description" content="Accede al panel administrativo de KM & EZ ROPA para gestionar tu tienda." />
@@ -17,17 +17,17 @@
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- ✅ Scripts como módulo -->
+  <!-- ✅ Módulo JS (corregido) -->
   <script type="module" src="/js/panel.js" defer></script>
 </head>
 <body>
 
-  <!-- ☀️🌙 Botón de tema -->
+  <!-- ☀️🌙 Modo Oscuro -->
   <div style="position: absolute; top: 15px; right: 15px;">
     <button id="modoToggle" class="btn btn-sm" aria-label="Alternar modo oscuro">🌙 Modo Oscuro</button>
   </div>
 
-  <!-- 🧭 Panel principal -->
+  <!-- 🧠 Contenedor Principal -->
   <main class="panel-container fade-in" role="main" aria-label="Panel de administración">
     <!-- 🧾 Encabezado -->
     <header class="header-panel">
@@ -37,8 +37,8 @@
       </button>
     </header>
 
-    <!-- 📋 Menú de navegación -->
-    <nav class="menu-panel" aria-label="Navegación del panel" role="navigation">
+    <!-- 🧭 Navegación -->
+    <nav class="menu-panel" role="navigation" aria-label="Navegación del panel">
       <ul class="panel-links">
         <li><a href="admin.html" class="btn-panel-link">📦 Productos</a></li>
         <li><a href="categorias.html" class="btn-panel-link">📁 Categorías</a></li>
@@ -50,12 +50,12 @@
     </nav>
   </main>
 
-  <!-- 🚫 JS deshabilitado -->
+  <!-- 🚫 JS Fallback -->
   <noscript>
     <p style="color: red; text-align: center;">⚠️ Esta página requiere JavaScript habilitado para funcionar correctamente.</p>
   </noscript>
 
-  <!-- 🌗 Script de tema -->
+  <!-- 🌙 Script de Modo Oscuro (respaldo) -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const btn = document.getElementById("modoToggle");
@@ -74,7 +74,7 @@
       });
     });
 
-    // Backup logout (en caso de error en el módulo)
+    // 🧼 Fallback logout
     function logout() {
       localStorage.removeItem("token");
       window.location.href = "login.html";

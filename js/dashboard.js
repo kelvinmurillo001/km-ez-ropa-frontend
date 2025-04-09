@@ -1,144 +1,68 @@
 "use strict";
+import { verificarSesion } from "./admin-utils.js";
 
-const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
-const API_RESUMEN = `${API_BASE}/stats/resumen`;
-const API_PRODUCTS = `${API_BASE}/products`;
-
-// 🔐 Validación de sesión
-const token = localStorage.getItem("token");
-if (!token || !esTokenValido(token)) {
-  alert("⚠️ No autorizado. Inicia sesión.");
-  window.location.href = "login.html";
-}
-
-function esTokenValido(token) {
-  return typeof token === "string" && token.split(".").length === 3;
-}
-
-let datosResumen = null;
-let productosGlobal = [];
+const token = verificarSesion();
+const API_ORDERS = "https://km-ez-ropa-backend.onrender.com/api/orders";
 
 document.addEventListener("DOMContentLoaded", cargarDashboard);
 
-/**
- * ▶️ Inicia el dashboard
- */
 async function cargarDashboard() {
   try {
-    const [resumen, productos] = await Promise.all([
-      fetchData(API_RESUMEN, true),
-      fetchData(API_PRODUCTS)
-    ]);
-
-    datosResumen = resumen;
-    productosGlobal = productos;
-
-    renderResumen(resumen);
-    renderTopCategorias(productos);
+    const pedidos = await obtenerPedidos();
+    const resumen = contarPedidos(pedidos);
+    renderizarMétricas(resumen);
   } catch (err) {
-    console.error("❌ Error cargando dashboard:", err);
-    alert("❌ No se pudo cargar el dashboard");
+    console.error("❌ Error cargando métricas:", err);
+    alert("❌ No se pudieron cargar los datos del dashboard.");
   }
 }
 
-/**
- * 🌐 Fetch API con token opcional
- */
-async function fetchData(url, auth = false) {
-  const res = await fetch(url, {
-    headers: auth ? { Authorization: `Bearer ${token}` } : {}
+async function obtenerPedidos() {
+  const res = await fetch(API_ORDERS, {
+    headers: { Authorization: `Bearer ${token}` }
   });
 
-  if (!res.ok) throw new Error(`❌ Error al obtener: ${url}`);
+  if (!res.ok) throw new Error("Error al obtener pedidos");
   const data = await res.json();
-  if (!data) throw new Error("❌ Respuesta vacía");
+  if (!Array.isArray(data)) throw new Error("Formato de pedidos inválido");
   return data;
 }
 
-/**
- * 📊 Renderiza las métricas principales
- */
-function renderResumen(data) {
-  setText("ventasTotales", `$${data.ventasTotales}`);
-  setText("visitasTotales", data.totalVisitas);
-  setText("totalProductos", data.totalProductos);
-  setText("promosActivas", data.productosDestacados);
-}
+function contarPedidos(pedidos) {
+  const hoy = new Date().setHours(0, 0, 0, 0);
 
-/**
- * 📁 Muestra categorías ordenadas
- */
-function renderTopCategorias(productos) {
-  const categorias = {};
-  productos.forEach(p => {
-    const cat = p.category || "Sin categoría";
-    categorias[cat] = (categorias[cat] || 0) + 1;
+  const resumen = {
+    pendiente: 0,
+    en_proceso: 0,
+    enviado: 0,
+    cancelado: 0,
+    hoy: 0,
+    total: pedidos.length
+  };
+
+  pedidos.forEach(p => {
+    const estado = (p.estado || "pendiente").toLowerCase();
+    if (resumen[estado] !== undefined) resumen[estado]++;
+
+    const fecha = new Date(p.createdAt).setHours(0, 0, 0, 0);
+    if (!isNaN(fecha) && fecha === hoy) resumen.hoy++;
   });
 
-  const lista = document.getElementById("topCategorias");
-  lista.innerHTML = "";
+  return resumen;
+}
 
-  const ordenadas = Object.entries(categorias).sort((a, b) => b[1] - a[1]);
+function renderizarMétricas(datos) {
+  const ids = {
+    total: datos.total,
+    pendientes: datos.pendiente,
+    en_proceso: datos.en_proceso,
+    enviado: datos.enviado,
+    cancelado: datos.cancelado,
+    hoy: datos.hoy
+  };
 
-  ordenadas.forEach(([cat, count]) => {
-    const li = document.createElement("li");
-    li.textContent = `📁 ${cat}: ${count}`;
-    lista.appendChild(li);
+  Object.entries(ids).forEach(([id, valor]) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = valor;
   });
 }
-
-/**
- * 🧾 Asigna texto a un span por ID
- */
-function setText(id, value) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = value;
-}
-
-/**
- * 📤 Exportar CSV
- */
-function exportarEstadisticas() {
-  if (!datosResumen) {
-    alert("❌ Aún no se cargan los datos.");
-    return;
-  }
-
-  const now = new Date().toLocaleString();
-  const resumen = datosResumen;
-
-  let csv = `📊 Estadísticas KM & EZ ROPA\nFecha: ${now}\n\nResumen General\n`;
-  csv += `Ventas Totales,${resumen.ventasTotales}\n`;
-  csv += `Pedidos Totales,${resumen.pedidosTotales}\n`;
-  csv += `Pedidos del Día,${resumen.pedidosHoy}\n`;
-  csv += `Total Productos,${resumen.totalProductos}\n`;
-  csv += `Promociones Activas,${resumen.productosDestacados}\n`;
-  csv += `Visitas al Sitio,${resumen.totalVisitas}\n\n`;
-
-  csv += "Top Categorías\n";
-  const categorias = {};
-  productosGlobal.forEach(p => {
-    const cat = p.category || "Sin categoría";
-    categorias[cat] = (categorias[cat] || 0) + 1;
-  });
-
-  for (const [cat, count] of Object.entries(categorias)) {
-    csv += `${cat},${count}\n`;
-  }
-
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `dashboard_km-ez-ropa_${Date.now()}.csv`;
-  link.click();
-}
-
-/**
- * 🔙 Regresar al panel principal
- */
-function goBack() {
-  window.location.href = "panel.html";
-}
-
-window.exportarEstadisticas = exportarEstadisticas;

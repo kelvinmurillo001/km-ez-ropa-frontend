@@ -1,23 +1,25 @@
 "use strict";
 
-// 🔐 Verificación de sesión
-const token = localStorage.getItem("token");
-if (!token || typeof token !== "string" || token.length < 10) {
-  alert("⚠️ No autorizado. Inicia sesión.");
-  window.location.href = "login.html";
-}
+// ✅ Importar utilidades comunes del admin
+import { verificarSesion, goBack } from "./admin-utils.js";
+
+// 🔐 Validar sesión y obtener token (redirige si no es válido)
+const token = verificarSesion();
 
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
 const API_RESUMEN = `${API_BASE}/stats/resumen`;
 const API_PRODUCTS = `${API_BASE}/products`;
 
+// 🔄 Variables globales para exportación
 let estadisticasResumen = null;
 let productosGlobal = [];
 
-document.addEventListener("DOMContentLoaded", loadStatistics);
+document.addEventListener("DOMContentLoaded", () => {
+  loadStatistics();
+});
 
 /**
- * 📊 Cargar estadísticas generales desde el backend
+ * 📊 Cargar estadísticas desde el backend
  */
 async function loadStatistics() {
   try {
@@ -36,13 +38,13 @@ async function loadStatistics() {
     renderResumen(resumen);
     renderTopCategorias(productos);
   } catch (err) {
-    console.error("❌ Error cargando estadísticas:", err);
+    console.error("❌ Error al cargar estadísticas:", err);
     alert("❌ No se pudieron cargar las estadísticas.");
   }
 }
 
 /**
- * 🌐 Realiza fetch con o sin autorización
+ * 🌐 Fetch con o sin token
  */
 async function fetchData(url, auth = false) {
   const res = await fetch(url, {
@@ -57,7 +59,7 @@ async function fetchData(url, auth = false) {
 }
 
 /**
- * 🧾 Mostrar resumen general en el DOM
+ * 🧾 Renderizar resumen general en el DOM
  */
 function renderResumen(data) {
   setText("totalProductos", data.totalProductos);
@@ -69,7 +71,7 @@ function renderResumen(data) {
 }
 
 /**
- * 📦 Mostrar categorías más utilizadas
+ * 📁 Renderizar categorías por cantidad
  */
 function renderTopCategorias(productos) {
   const categorias = {};
@@ -82,17 +84,17 @@ function renderTopCategorias(productos) {
   const lista = document.getElementById("topCategorias");
   lista.innerHTML = "";
 
-  const ordenado = Object.entries(categorias).sort((a, b) => b[1] - a[1]);
-
-  for (const [cat, cantidad] of ordenado) {
-    const li = document.createElement("li");
-    li.textContent = `📁 ${cat}: ${cantidad}`;
-    lista.appendChild(li);
-  }
+  Object.entries(categorias)
+    .sort((a, b) => b[1] - a[1])
+    .forEach(([cat, count]) => {
+      const li = document.createElement("li");
+      li.textContent = `📁 ${cat}: ${count}`;
+      lista.appendChild(li);
+    });
 }
 
 /**
- * 🧾 Utilidad para asignar valores a elementos del DOM
+ * 🔡 Utilidad para insertar texto en un elemento
  */
 function setText(id, value) {
   const el = document.getElementById(id);
@@ -100,14 +102,7 @@ function setText(id, value) {
 }
 
 /**
- * 🔙 Volver al panel principal
- */
-function goBack() {
-  window.location.href = "panel.html";
-}
-
-/**
- * 📤 Exportar las estadísticas actuales a un archivo CSV
+ * 📤 Exportar estadísticas como archivo CSV
  */
 function exportarEstadisticas() {
   if (!estadisticasResumen || productosGlobal.length === 0) {
@@ -134,11 +129,10 @@ function exportarEstadisticas() {
     categorias[cat] = (categorias[cat] || 0) + 1;
   });
 
-  for (const [cat, count] of Object.entries(categorias)) {
+  Object.entries(categorias).forEach(([cat, count]) => {
     csv += `${cat},${count}\n`;
-  }
+  });
 
-  // 🧾 Descargar archivo CSV
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
@@ -147,6 +141,6 @@ function exportarEstadisticas() {
   link.click();
 }
 
-// ⬆️ Hacer accesible desde el botón del HTML
+// 🧾 Exponer funciones necesarias al scope global (para los botones)
 window.exportarEstadisticas = exportarEstadisticas;
 window.goBack = goBack;
