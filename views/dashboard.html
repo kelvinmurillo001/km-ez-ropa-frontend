@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard | KM & EZ ROPA</title>
 
-  <!-- 🔐 Protección SEO -->
+  <!-- 🔐 SEO -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="author" content="KM & EZ ROPA" />
   <meta name="description" content="Panel analítico con métricas de ventas, visitas y productos." />
@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- 💡 Animación opcional -->
+  <!-- 💡 Animaciones -->
   <style>
     .metricas .card, .analitica-extra {
       animation: fadeIn 0.6s ease-in;
@@ -28,62 +28,74 @@
     }
   </style>
 
-  <!-- ✅ Módulo con lógica JS unificada -->
+  <!-- ✅ Script unificado -->
   <script type="module" src="/js/dashboard.js" defer></script>
 </head>
 <body>
 
-  <!-- 🧠 Panel principal -->
-  <main class="dashboard-container" role="main" aria-label="Panel de métricas">
+  <main class="dashboard-container" role="main">
     <h1 class="text-center">📊 Panel de Analítica</h1>
 
     <!-- 📈 Métricas -->
     <section class="metricas grid-responsive" aria-label="Resumen de métricas">
-      <div class="card" role="region" aria-labelledby="ventas">
-        <h3 id="ventas">🛒 Ventas</h3>
+      <div class="card" role="region">
+        <h3>🛒 Ventas Totales</h3>
         <p>$ <span id="ventasTotales" aria-live="polite">0</span></p>
       </div>
-      <div class="card" role="region" aria-labelledby="visitas">
-        <h3 id="visitas">👥 Visitas</h3>
+      <div class="card" role="region">
+        <h3>👥 Visitas</h3>
         <p><span id="visitasTotales" aria-live="polite">0</span></p>
       </div>
-      <div class="card" role="region" aria-labelledby="productos">
-        <h3 id="productos">📦 Productos</h3>
+      <div class="card" role="region">
+        <h3>📦 Productos</h3>
         <p><span id="totalProductos" aria-live="polite">0</span></p>
       </div>
-      <div class="card" role="region" aria-labelledby="promos">
-        <h3 id="promos">🎯 Promos activas</h3>
+      <div class="card" role="region">
+        <h3>🎯 Promos Activas</h3>
         <p><span id="promosActivas" aria-live="polite">0</span></p>
       </div>
     </section>
 
-    <!-- 📁 Categorías más frecuentes -->
-    <section class="analitica-extra mt-3" aria-label="Categorías más populares">
-      <h2 class="text-center">📁 Top Categorías</h2>
-      <ul id="topCategorias" class="listado-categorias mt-2" aria-live="polite">
-        <!-- Se llena con JS -->
+    <!-- 📋 Resumen de pedidos -->
+    <section class="analitica-extra mt-3">
+      <h2 class="text-center">🧾 Estado de Pedidos</h2>
+      <ul class="listado-categorias mt-2">
+        <li><strong>Totales:</strong> <span id="total">-</span></li>
+        <li><strong>Pendientes:</strong> <span id="pendientes">-</span></li>
+        <li><strong>En Proceso:</strong> <span id="en_proceso">-</span></li>
+        <li><strong>Enviados:</strong> <span id="enviado">-</span></li>
+        <li><strong>Cancelados:</strong> <span id="cancelado">-</span></li>
+        <li><strong>Pedidos del Día:</strong> <span id="hoy">-</span></li>
       </ul>
     </section>
 
-    <!-- 📤 Botón de exportar -->
+    <!-- 📁 Categorías más usadas -->
+    <section class="analitica-extra mt-3">
+      <h2 class="text-center">📁 Top Categorías</h2>
+      <ul id="topCategorias" class="listado-categorias mt-2" aria-live="polite">
+        <!-- Render dinámico desde dashboard.js -->
+      </ul>
+    </section>
+
+    <!-- 📤 Exportar -->
     <div class="text-center mt-3">
       <button type="button" onclick="exportarEstadisticas()" class="btn-secundario">
         📤 Exportar Estadísticas (CSV)
       </button>
     </div>
 
-    <!-- 🔙 Navegación -->
+    <!-- 🔙 Volver -->
     <div class="text-center mt-3">
       <button type="button" onclick="goBack()" class="btn">🔙 Volver al Panel</button>
     </div>
   </main>
 
-  <!-- ❌ JS Fallback -->
+  <!-- ❌ Fallback sin JS -->
   <noscript>
-    <p style="text-align:center; color: red;">⚠️ Esta página requiere JavaScript habilitado para funcionar correctamente.</p>
+    <p style="text-align:center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
 
-  <!-- 🌗 Tema oscuro -->
+  <!-- 🌗 Modo oscuro -->
   <script>
     if (localStorage.getItem("modoOscuro") === "true") {
       document.body.classList.add("modo-oscuro");
