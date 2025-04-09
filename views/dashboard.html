@@ -58,10 +58,22 @@
     <!-- 🔝 Categorías -->
     <section class="analitica-extra mt-3" aria-label="Categorías más populares">
       <h2 class="text-center">📁 Top Categorías</h2>
-      <ul id="topCategorias" aria-live="polite">
-        <!-- Renderizado dinámicamente por analitica.js -->
+      <ul id="topCategorias" class="listado-categorias mt-2" aria-live="polite">
+        <!-- Renderizado dinámicamente por dashboard.js -->
       </ul>
     </section>
+
+    <!-- 📤 Botón para exportar -->
+    <div class="text-center mt-3">
+      <button type="button" onclick="exportarEstadisticas()" class="btn-secundario">
+        📤 Exportar Estadísticas (CSV)
+      </button>
+    </div>
+
+    <!-- 🔙 Navegación -->
+    <div class="text-center mt-3">
+      <button type="button" onclick="goBack()" class="btn">🔙 Volver al Panel</button>
+    </div>
   </main>
 
   <!-- ❌ Sin JS -->
@@ -69,9 +81,9 @@
     <p style="text-align:center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
 
-  <!-- ✅ Scripts -->
+  <!-- 📜 Scripts -->
   <script src="/js/login.js"></script>
-  <script src="/js/analitica.js"></script>
+  <script src="/js/dashboard.js"></script>
   <script>
     // 🌙 Activar modo oscuro si se guarda en localStorage
     if (localStorage.getItem("modoOscuro") === "true") {

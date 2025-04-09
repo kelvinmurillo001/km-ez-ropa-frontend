@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Panel de Control | KM & EZ ROPA</title>
 
-  <!-- 🔐 SEO básico -->
+  <!-- 🔐 SEO y seguridad -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="author" content="KM & EZ ROPA" />
   <meta name="description" content="Accede al panel administrativo de KM & EZ ROPA para gestionar tu tienda." />
@@ -17,18 +17,19 @@
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- ✅ Importar módulo JS corregido -->
-  <script type="module" src="/js/panel.js"></script>
+  <!-- ✅ Scripts como módulo -->
+  <script type="module" src="/js/panel.js" defer></script>
 </head>
 <body>
 
-  <!-- ☀️🌙 Botón modo claro/oscuro -->
+  <!-- ☀️🌙 Botón de tema -->
   <div style="position: absolute; top: 15px; right: 15px;">
-    <button id="modoToggle" class="btn btn-sm">🌙 Modo Oscuro</button>
+    <button id="modoToggle" class="btn btn-sm" aria-label="Alternar modo oscuro">🌙 Modo Oscuro</button>
   </div>
 
+  <!-- 🧭 Panel principal -->
   <main class="panel-container fade-in" role="main" aria-label="Panel de administración">
-    <!-- 🧭 Header -->
+    <!-- 🧾 Encabezado -->
     <header class="header-panel">
       <h1>🛠️ Panel de Administración</h1>
       <button type="button" onclick="logout()" class="btn btn-danger" aria-label="Cerrar sesión de administrador">
@@ -36,7 +37,7 @@
       </button>
     </header>
 
-    <!-- 📋 Menú principal -->
+    <!-- 📋 Menú de navegación -->
     <nav class="menu-panel" aria-label="Navegación del panel" role="navigation">
       <ul class="panel-links">
         <li><a href="admin.html" class="btn-panel-link">📦 Productos</a></li>
@@ -49,12 +50,12 @@
     </nav>
   </main>
 
-  <!-- 🚫 Sin JavaScript -->
+  <!-- 🚫 JS deshabilitado -->
   <noscript>
-    <p style="color: red; text-align: center;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+    <p style="color: red; text-align: center;">⚠️ Esta página requiere JavaScript habilitado para funcionar correctamente.</p>
   </noscript>
 
-  <!-- 🌗 Script para modo oscuro -->
+  <!-- 🌗 Script de tema -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const btn = document.getElementById("modoToggle");
@@ -73,11 +74,11 @@
       });
     });
 
+    // Backup logout (en caso de error en el módulo)
     function logout() {
       localStorage.removeItem("token");
       window.location.href = "login.html";
     }
   </script>
-
 </body>
 </html>

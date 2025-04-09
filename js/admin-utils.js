@@ -1,14 +1,15 @@
 "use strict";
 
 /**
- * 🔐 Verificar token de sesión
- * - Redirige al login si no hay token o si es inválido
- * - Retorna el token si es válido
+ * 🔐 Verificar token de sesión y rol admin
+ * - Redirige a login si el token no existe o no es válido
+ * - Solo permite acceso a usuarios con rol "admin"
+ * @returns {string|null} token válido o null si no autorizado
  */
 export function verificarSesion() {
   const token = localStorage.getItem("token");
 
-  if (!token || typeof token !== "string" || token.length < 10) {
+  if (!esTokenValido(token)) {
     alert("⚠️ No autorizado. Inicia sesión.");
     window.location.href = "login.html";
     return null;
@@ -16,7 +17,7 @@ export function verificarSesion() {
 
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
-    if (!payload || payload.role !== "admin") {
+    if (payload?.role !== "admin") {
       alert("⛔ Acceso denegado. Solo administradores.");
       localStorage.removeItem("token");
       window.location.href = "login.html";
@@ -25,8 +26,8 @@ export function verificarSesion() {
 
     return token;
   } catch (err) {
-    console.error("❌ Token malformado:", err);
-    alert("⚠️ Sesión inválida. Vuelve a iniciar sesión.");
+    console.error("❌ Token inválido:", err);
+    alert("⚠️ Token corrupto. Inicia sesión nuevamente.");
     localStorage.removeItem("token");
     window.location.href = "login.html";
     return null;
@@ -34,10 +35,19 @@ export function verificarSesion() {
 }
 
 /**
- * 💬 Mostrar mensaje de estado (éxito, error, advertencia, info)
- * @param {HTMLElement} elElemento DOM donde se muestra el mensaje
+ * 🔍 Valida estructura básica del JWT
+ * @param {string} token 
+ * @returns {boolean}
+ */
+export function esTokenValido(token) {
+  return token && typeof token === "string" && token.split(".").length === 3;
+}
+
+/**
+ * 💬 Mostrar mensaje informativo temporal
+ * @param {HTMLElement} elElemento Elemento HTML donde mostrar el mensaje
  * @param {string} mensaje Texto del mensaje
- * @param {string} tipo success | error | warning | info
+ * @param {string} tipo Tipo: success | error | warning | info
  */
 export function mostrarMensaje(elElemento, mensaje, tipo = "info") {
   const colores = {
@@ -54,11 +64,11 @@ export function mostrarMensaje(elElemento, mensaje, tipo = "info") {
   elElemento.style.backgroundColor = bg;
   elElemento.style.color = color;
 
-  setTimeout(() => elElemento.classList.add("oculto"), 3000);
+  setTimeout(() => elElemento.classList.add("oculto"), 4000);
 }
 
 /**
- * 📅 Verifica si la fecha actual está dentro del rango de promoción
+ * 📅 Verifica si hoy está dentro del rango de una promoción
  * @param {string} start Fecha inicio (YYYY-MM-DD)
  * @param {string} end Fecha fin (YYYY-MM-DD)
  * @returns {boolean}
@@ -69,7 +79,7 @@ export function isDateInRange(start, end) {
 }
 
 /**
- * 🔐 Cerrar sesión
+ * 🔐 Cierra sesión y redirige
  */
 export function logout() {
   localStorage.removeItem("token");
@@ -77,7 +87,7 @@ export function logout() {
 }
 
 /**
- * 🔙 Volver al panel principal
+ * 🔙 Navega al panel principal
  */
 export function goBack() {
   window.location.href = "panel.html";
