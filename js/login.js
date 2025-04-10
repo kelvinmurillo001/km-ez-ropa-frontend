@@ -18,39 +18,24 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🔐 Login on submit
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    await handleLogin(usernameInput.value, passwordInput.value, error, form.querySelector("button"));
+
+    const user = usernameInput.value.trim();
+    const pass = passwordInput.value.trim();
+
+    if (!user || !pass) {
+      return showError("⚠️ Debes completar ambos campos", error);
+    }
+
+    console.log("📤 Enviando al backend:", { username: user, password: pass });
+
+    await handleLogin(user, pass, error, form.querySelector("button"));
   });
 });
-
-/**
- * 🛂 Verifica token en páginas protegidas
- */
-function verificarToken() {
-  const token = localStorage.getItem("token");
-
-  if (!token || token.split('.').length !== 3) {
-    alert("⚠️ No autorizado. Inicia sesión primero.");
-    return logout();
-  }
-
-  const payload = parseJwt(token);
-  if (!payload || payload.role !== "admin") {
-    alert("⛔ Acceso restringido. Solo administradores.");
-    return logout();
-  }
-}
 
 /**
  * 🔓 Maneja el login completo
  */
 async function handleLogin(username, password, errorEl, button) {
-  const user = username.trim();
-  const pass = password.trim();
-
-  if (!user || !pass) {
-    return showError("⚠️ Debes completar ambos campos", errorEl);
-  }
-
   button.disabled = true;
   button.textContent = "Entrando...";
 
@@ -58,13 +43,14 @@ async function handleLogin(username, password, errorEl, button) {
     const res = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: user, password: pass })
+      body: JSON.stringify({ username, password })
     });
 
     const data = await res.json();
 
     if (res.ok && data.token) {
       const payload = parseJwt(data.token);
+
       if (payload?.role !== "admin") {
         return showError("⛔ Solo los administradores pueden ingresar", errorEl);
       }
