@@ -36,7 +36,7 @@ const token = localStorage.getItem("token");
 // 📦 VARIABLES GLOBALES
 let variantes = [];
 let editandoId = null;
-let imagenesPrincipales = []; // ✅ NUEVO
+let imagenesPrincipales = [];
 
 // 📚 CATEGORÍAS Y SUBCATEGORÍAS
 const categorias = {
@@ -80,8 +80,18 @@ document.getElementById("categoriaSelect").addEventListener("change", () => {
   categorias[cat]?.forEach(sub => subSelect.appendChild(new Option(sub, sub)));
 });
 
+// ✅ VALIDACIÓN DE IMAGEN
+function esImagenValida(file) {
+  const tiposPermitidos = ["image/jpeg", "image/png", "image/webp"];
+  return tiposPermitidos.includes(file.type);
+}
+
 // ✅ SUBIR IMAGEN A BACKEND
 async function uploadToBackend(file) {
+  if (!esImagenValida(file)) {
+    throw new Error("⚠️ Solo se permiten imágenes JPG, PNG o WEBP");
+  }
+
   const formData = new FormData();
   formData.append("image", file);
 
@@ -115,7 +125,7 @@ document.getElementById("imagenesPrincipales").addEventListener("change", async 
       previewContenedor.appendChild(img);
     } catch (err) {
       console.error("❌ Error subiendo imagen principal:", err);
-      mostrarMensaje(message, "❌ Error subiendo imagen principal", "error");
+      mostrarMensaje(message, err.message || "❌ Error subiendo imagen", "error");
     }
   }
 });
@@ -138,11 +148,11 @@ document.getElementById("addVariante").addEventListener("click", async () => {
     mostrarMensaje(message, "✅ Variante agregada", "success");
   } catch (err) {
     console.error(err);
-    mostrarMensaje(message, "❌ Error subiendo imagen de variante", "error");
+    mostrarMensaje(message, err.message || "❌ Error subiendo imagen", "error");
   }
 });
 
-// ✅ LIMPIAR CAMPOS DE VARIANTE
+// ✅ LIMPIAR CAMPOS VARIANTE
 function limpiarCamposVariante() {
   document.getElementById("talla").value = "";
   document.getElementById("color").value = "";
@@ -172,7 +182,7 @@ window.eliminarVariante = (i) => {
   renderizarVariantes();
 };
 
-// ✅ GUARDAR / ACTUALIZAR PRODUCTO
+// ✅ GUARDAR PRODUCTO
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const btn = form.querySelector("button[type=submit]");
@@ -216,7 +226,7 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-// ✅ RECOGER DATOS DEL FORMULARIO
+// ✅ DATOS DEL FORMULARIO
 function obtenerDatosFormulario() {
   const nombre = document.getElementById("nombre").value.trim();
   const precio = parseFloat(document.getElementById("precio").value);
@@ -247,18 +257,18 @@ function obtenerDatosFormulario() {
     subcategory: subcategoria,
     stock,
     featured: destacado,
-    variants,
+    variants: variantes,
     mainImages: imagenesPrincipales
   };
 }
 
-// ✅ RESETEAR BOTÓN
+// ✅ BOTÓN NORMAL
 function resetBoton(btn) {
   btn.disabled = false;
   btn.textContent = "📦 Guardar Producto";
 }
 
-// ✅ CARGAR PRODUCTOS EXISTENTES
+// ✅ CARGAR PRODUCTOS
 async function cargarProductos() {
   try {
     const res = await fetch(API_BASE);
