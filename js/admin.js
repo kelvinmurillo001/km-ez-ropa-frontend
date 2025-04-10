@@ -115,7 +115,7 @@ document.getElementById("imagenesPrincipales").addEventListener("change", async 
   for (const file of files) {
     try {
       const { url, public_id } = await uploadToBackend(file);
-      imagenesPrincipales.push({ url, cloudinaryId: public_id }); // 👈 importante
+      imagenesPrincipales.push({ url, cloudinaryId: public_id });
       const img = document.createElement("img");
       img.src = url;
       img.width = 100;
@@ -159,7 +159,7 @@ function limpiarCamposVariante() {
   preview.innerHTML = "";
 }
 
-// ✅ RENDER VARIANTES
+// ✅ RENDERIZAR VARIANTES
 function renderizarVariantes() {
   const contenedor = document.getElementById("listaVariantes");
   contenedor.innerHTML = "";
@@ -175,6 +175,7 @@ function renderizarVariantes() {
   });
 }
 
+// ✅ ELIMINAR VARIANTE
 window.eliminarVariante = (i) => {
   variantes.splice(i, 1);
   renderizarVariantes();
@@ -189,8 +190,6 @@ form.addEventListener("submit", async (e) => {
 
   const payload = obtenerDatosFormulario();
   if (!payload) return resetBoton(btn);
-
-  console.log("📦 Enviando:", payload); // 👈 útil para debug
 
   const method = editandoId ? "PUT" : "POST";
   const url = editandoId ? `${API_BASE}/${editandoId}` : API_BASE;
@@ -257,7 +256,7 @@ function obtenerDatosFormulario() {
     subcategory: subcategoria,
     stock,
     featured: destacado,
-    variants,
+    variants: variantes, // ✅ aquí se usaba `variants` incorrectamente
     mainImages: imagenesPrincipales
   };
 }
