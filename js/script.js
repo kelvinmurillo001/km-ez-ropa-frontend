@@ -81,9 +81,21 @@ function mostrarProductos(lista) {
   }
 
   lista.forEach(p => {
-    const { _id, name, image, price, category, subcategory, stock, featured, talla, colores } = p;
+    const {
+      _id,
+      name,
+      images = [],
+      price,
+      category,
+      subcategory,
+      stock,
+      featured,
+      talla,
+      colores
+    } = p;
+
     const agotado = stock <= 0;
-    const imgSrc = image || "/assets/logo.jpg";
+    const imgSrc = images?.[0]?.url || "/assets/logo.jpg";
 
     const card = document.createElement("div");
     card.className = "card fade-in";
@@ -101,7 +113,7 @@ function mostrarProductos(lista) {
         id: _id,
         nombre: name,
         precio: price,
-        imagen: image,
+        imagen: imgSrc,
         talla: talla || "",
         colores: colores || ""
       })})'>🛒 Agregar al carrito</button>
