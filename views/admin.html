@@ -51,18 +51,30 @@
       <!-- 🖼️ Imágenes principales -->
       <fieldset>
         <legend>🖼️ Imágenes del Producto</legend>
-        <input type="file" id="imagenesPrincipales" name="imagenesPrincipales" accept="image/*" multiple aria-label="Seleccionar imágenes principales" />
+        <input 
+          type="file" 
+          id="imagenesPrincipales" 
+          name="imagenesPrincipales" 
+          accept="image/*" 
+          multiple 
+          aria-label="Seleccionar imágenes principales" 
+        />
         <div id="previewImagenesPrincipales" class="image-preview" aria-live="polite"></div>
       </fieldset>
 
-      <!-- 🧩 Variantes (talla + color + imagen) -->
+      <!-- 🧩 Variantes -->
       <fieldset>
         <legend>🧩 Variantes</legend>
         <div class="form-row">
           <input type="text" id="talla" placeholder="Talla (Ej: S, M, L)" autocomplete="off" />
           <input type="text" id="color" placeholder="Color (Ej: rojo, azul)" autocomplete="off" />
         </div>
-        <input type="file" id="imagen" accept="image/*" aria-label="Subir imagen de variante" />
+        <input 
+          type="file" 
+          id="imagen" 
+          accept="image/*" 
+          aria-label="Subir imagen de variante" 
+        />
         <button type="button" id="addVariante" class="btn-secundario" aria-label="Agregar variante">➕ Agregar Variante</button>
         <div class="image-preview" id="previewImagen" aria-live="polite"></div>
       </fieldset>
@@ -79,7 +91,7 @@
         </div>
       </fieldset>
 
-      <!-- 💾 Guardar producto -->
+      <!-- 💾 Guardar -->
       <button type="submit" class="btn-guardar" aria-label="Guardar producto">💾 Guardar Producto</button>
     </form>
 

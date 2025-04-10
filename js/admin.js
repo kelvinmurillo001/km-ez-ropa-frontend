@@ -5,7 +5,7 @@
   const token = localStorage.getItem("token");
   if (!token || typeof token !== "string" || token.length < 10) {
     alert("⚠️ No autorizado. Inicia sesión.");
-    window.location.href = "login.html";
+    return (window.location.href = "login.html");
   }
 
   try {
@@ -13,7 +13,7 @@
     if (!payload || payload.role !== "admin") {
       alert("⛔ Acceso denegado. Solo administradores.");
       localStorage.removeItem("token");
-      window.location.href = "login.html";
+      return (window.location.href = "login.html");
     }
   } catch (err) {
     console.error("❌ Token malformado:", err);
@@ -33,10 +33,10 @@ const message = document.getElementById("message");
 const preview = document.getElementById("previewImagen");
 const token = localStorage.getItem("token");
 
-// 📦 VARIABLES
+// 📦 VARIABLES GLOBALES
 let variantes = [];
 let editandoId = null;
-let imagenesPrincipales = []; // ✅ Imágenes principales del producto
+let imagenesPrincipales = []; // ✅ NUEVO
 
 // 📚 CATEGORÍAS Y SUBCATEGORÍAS
 const categorias = {
@@ -63,7 +63,7 @@ function mostrarMensaje(el, mensaje, tipo = "info") {
   setTimeout(() => el.classList.add("oculto"), 3000);
 }
 
-// ✅ CARGAR CATEGORÍAS EN SELECT
+// ✅ CARGAR CATEGORÍAS
 function cargarCategorias() {
   const catSelect = document.getElementById("categoriaSelect");
   catSelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
@@ -72,7 +72,7 @@ function cargarCategorias() {
   });
 }
 
-// ✅ SUBCATEGORÍAS SEGÚN CATEGORÍA
+// ✅ CAMBIO DE CATEGORÍA = CARGAR SUBCATEGORÍAS
 document.getElementById("categoriaSelect").addEventListener("change", () => {
   const cat = document.getElementById("categoriaSelect").value;
   const subSelect = document.getElementById("subcategoriaSelect");
@@ -120,7 +120,7 @@ document.getElementById("imagenesPrincipales").addEventListener("change", async 
   }
 });
 
-// ✅ AÑADIR VARIANTE (Talla + Color + Imagen)
+// ✅ AÑADIR VARIANTE
 document.getElementById("addVariante").addEventListener("click", async () => {
   const talla = document.getElementById("talla").value.trim();
   const color = document.getElementById("color").value.trim();
@@ -142,7 +142,7 @@ document.getElementById("addVariante").addEventListener("click", async () => {
   }
 });
 
-// ✅ LIMPIAR CAMPOS VARIANTE
+// ✅ LIMPIAR CAMPOS DE VARIANTE
 function limpiarCamposVariante() {
   document.getElementById("talla").value = "";
   document.getElementById("color").value = "";
@@ -150,7 +150,7 @@ function limpiarCamposVariante() {
   preview.innerHTML = "";
 }
 
-// ✅ RENDERIZAR VARIANTES EN HTML
+// ✅ MOSTRAR VARIANTES EN HTML
 function renderizarVariantes() {
   const contenedor = document.getElementById("listaVariantes");
   contenedor.innerHTML = "";
@@ -172,7 +172,7 @@ window.eliminarVariante = (i) => {
   renderizarVariantes();
 };
 
-// ✅ GUARDAR O ACTUALIZAR PRODUCTO
+// ✅ GUARDAR / ACTUALIZAR PRODUCTO
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const btn = form.querySelector("button[type=submit]");
@@ -252,13 +252,13 @@ function obtenerDatosFormulario() {
   };
 }
 
-// ✅ RESTAURAR BOTÓN GUARDAR
+// ✅ RESETEAR BOTÓN
 function resetBoton(btn) {
   btn.disabled = false;
   btn.textContent = "📦 Guardar Producto";
 }
 
-// ✅ CARGAR PRODUCTOS REGISTRADOS
+// ✅ CARGAR PRODUCTOS EXISTENTES
 async function cargarProductos() {
   try {
     const res = await fetch(API_BASE);
@@ -273,7 +273,7 @@ async function cargarProductos() {
           <img src="${v.imageUrl}" width="80" />
         </div>`).join("") || "Sin variantes";
 
-      const imagenesHtml = p.mainImages?.map(img => `<img src="${img.url}" width="80" />`).join("") || "";
+      const imagenesHtml = p.images?.map(img => `<img src="${img.url}" width="80" />`).join("") || "";
 
       lista.innerHTML += `
         <div class="card fade-in">
@@ -311,7 +311,7 @@ window.editarProducto = async (id) => {
     document.getElementById("featured").checked = producto.featured;
 
     variantes = [...producto.variants];
-    imagenesPrincipales = producto.mainImages || [];
+    imagenesPrincipales = producto.images || [];
     renderizarVariantes();
 
     const previewContenedor = document.getElementById("previewImagenesPrincipales");
@@ -353,6 +353,6 @@ window.eliminarProducto = async (id) => {
   }
 };
 
-// ▶️ INICIAR APP
+// ▶️ INICIAR
 cargarCategorias();
 cargarProductos();
