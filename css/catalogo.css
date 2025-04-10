@@ -249,3 +249,22 @@ body.modo-oscuro .cart-actions button:hover {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* ✅ NUEVO: Galería de imágenes pequeñas */
+.galeria-imagenes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+.galeria-img {
+  width: 48px;
+  height: auto;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.galeria-img:hover {
+  transform: scale(1.1);
+}

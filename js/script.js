@@ -30,7 +30,6 @@ async function cargarProductos() {
     });
     document.getElementById("subcategoria")?.addEventListener("change", aplicarFiltros);
     document.getElementById("orden")?.addEventListener("change", aplicarFiltros);
-
   } catch (error) {
     console.error("❌ Error al cargar productos:", error);
     document.getElementById("catalogo").innerHTML =
@@ -95,14 +94,19 @@ function mostrarProductos(lista) {
     } = p;
 
     const agotado = stock <= 0;
-    const imgSrc = images?.[0]?.url || "/assets/logo.jpg";
+    const primeraImagen = images?.[0]?.url || "/assets/logo.jpg";
+
+    const miniGaleria = images.map(img => `
+      <img src="${img.url}" alt="${name}" class="galeria-img zoomable" onclick="ampliarImagen('${img.url}')" />
+    `).join("");
 
     const card = document.createElement("div");
     card.className = "card fade-in";
     card.innerHTML = `
-      <div class="imagen-catalogo" onclick="ampliarImagen('${imgSrc}')">
-        <img src="${imgSrc}" alt="${name}" class="zoomable" />
+      <div class="imagen-catalogo" onclick="ampliarImagen('${primeraImagen}')">
+        <img src="${primeraImagen}" alt="${name}" class="zoomable" />
       </div>
+      <div class="galeria-imagenes">${miniGaleria}</div>
       <h3>${name}</h3>
       ${featured ? `<span class="destacado-badge">⭐ Destacado</span>` : ""}
       <p><strong>Precio:</strong> $${price}</p>
@@ -113,7 +117,7 @@ function mostrarProductos(lista) {
         id: _id,
         nombre: name,
         precio: price,
-        imagen: imgSrc,
+        imagen: primeraImagen,
         talla: talla || "",
         colores: colores || ""
       })})'>🛒 Agregar al carrito</button>
