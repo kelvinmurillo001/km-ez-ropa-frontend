@@ -21,6 +21,12 @@
   transform: scale(0.98);
 }
 
+/* 🔲 Foco accesible para teclado */
+.btn:focus-visible {
+  outline: 3px solid #ff9800;
+  outline-offset: 2px;
+}
+
 .btn-danger {
   background-color: #e53935;
 }
@@ -163,4 +169,14 @@ body.modo-oscuro .btn-danger {
 
 body.modo-oscuro .btn-danger:hover {
   background-color: #e53935;
+}
+
+body.modo-oscuro .btn-secundario {
+  background-color: #ff9800;
+  color: #fff;
+}
+
+body.modo-oscuro .badge {
+  background-color: #ffa726;
+  color: #111;
 }
