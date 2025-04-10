@@ -1,6 +1,6 @@
 "use strict";
 
-// ✅ VERIFICAR SESIÓN
+// ✅ VERIFICAR SESIÓN ADMIN
 (function () {
   const token = localStorage.getItem("token");
   if (!token || typeof token !== "string" || token.length < 10) {
@@ -23,21 +23,22 @@
   }
 })();
 
-// 🌐 Endpoints
+// 🌐 ENDPOINTS API
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api/products";
 const API_UPLOAD = "https://km-ez-ropa-backend.onrender.com/api/uploads";
 
-// 📌 DOM
+// 📌 ELEMENTOS DEL DOM
 const form = document.getElementById("productoForm");
 const message = document.getElementById("message");
 const preview = document.getElementById("previewImagen");
 const token = localStorage.getItem("token");
 
+// 📦 VARIABLES
 let variantes = [];
 let editandoId = null;
-let imagenesPrincipales = []; // ✅ NUEVO: array para múltiples imágenes principales
+let imagenesPrincipales = []; // ✅ Imágenes principales del producto
 
-// 📚 Categorías predefinidas
+// 📚 CATEGORÍAS Y SUBCATEGORÍAS
 const categorias = {
   Hombre: ["Camisas", "Pantalones", "Chaquetas", "Ropa interior"],
   Mujer: ["Vestidos", "Blusas", "Leggins", "Ropa interior"],
@@ -46,7 +47,7 @@ const categorias = {
   Bebé: ["Mamelucos", "Bodies", "Pijamas"]
 };
 
-// 🔁 Mostrar mensaje con estilo
+// ✅ MENSAJE EMERGENTE
 function mostrarMensaje(el, mensaje, tipo = "info") {
   const colores = {
     success: { bg: "#e8f5e9", color: "#2e7d32" },
@@ -62,7 +63,7 @@ function mostrarMensaje(el, mensaje, tipo = "info") {
   setTimeout(() => el.classList.add("oculto"), 3000);
 }
 
-// 📂 Cargar categorías y subcategorías
+// ✅ CARGAR CATEGORÍAS EN SELECT
 function cargarCategorias() {
   const catSelect = document.getElementById("categoriaSelect");
   catSelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
@@ -71,6 +72,7 @@ function cargarCategorias() {
   });
 }
 
+// ✅ SUBCATEGORÍAS SEGÚN CATEGORÍA
 document.getElementById("categoriaSelect").addEventListener("change", () => {
   const cat = document.getElementById("categoriaSelect").value;
   const subSelect = document.getElementById("subcategoriaSelect");
@@ -78,7 +80,7 @@ document.getElementById("categoriaSelect").addEventListener("change", () => {
   categorias[cat]?.forEach(sub => subSelect.appendChild(new Option(sub, sub)));
 });
 
-// 📤 Subida de imagen a backend (Cloudinary)
+// ✅ SUBIR IMAGEN A BACKEND
 async function uploadToBackend(file) {
   const formData = new FormData();
   formData.append("image", file);
@@ -93,7 +95,7 @@ async function uploadToBackend(file) {
   return await res.json();
 }
 
-// 📤 Imagen PRINCIPAL del producto (varias)
+// ✅ SUBIR IMÁGENES PRINCIPALES
 document.getElementById("imagenesPrincipales").addEventListener("change", async (e) => {
   const files = Array.from(e.target.files);
   const previewContenedor = document.getElementById("previewImagenesPrincipales");
@@ -103,7 +105,7 @@ document.getElementById("imagenesPrincipales").addEventListener("change", async 
   for (const file of files) {
     try {
       const { url, public_id } = await uploadToBackend(file);
-      imagenesPrincipales.push({ url, public_id });
+      imagenesPrincipales.push({ url, cloudinaryId: public_id });
 
       const img = document.createElement("img");
       img.src = url;
@@ -112,13 +114,13 @@ document.getElementById("imagenesPrincipales").addEventListener("change", async 
       img.classList.add("fade-in");
       previewContenedor.appendChild(img);
     } catch (err) {
-      console.error("❌ Error al subir imagen principal:", err);
+      console.error("❌ Error subiendo imagen principal:", err);
       mostrarMensaje(message, "❌ Error subiendo imagen principal", "error");
     }
   }
 });
 
-// ➕ Agregar variante
+// ✅ AÑADIR VARIANTE (Talla + Color + Imagen)
 document.getElementById("addVariante").addEventListener("click", async () => {
   const talla = document.getElementById("talla").value.trim();
   const color = document.getElementById("color").value.trim();
@@ -136,10 +138,11 @@ document.getElementById("addVariante").addEventListener("click", async () => {
     mostrarMensaje(message, "✅ Variante agregada", "success");
   } catch (err) {
     console.error(err);
-    mostrarMensaje(message, "❌ Error subiendo imagen", "error");
+    mostrarMensaje(message, "❌ Error subiendo imagen de variante", "error");
   }
 });
 
+// ✅ LIMPIAR CAMPOS VARIANTE
 function limpiarCamposVariante() {
   document.getElementById("talla").value = "";
   document.getElementById("color").value = "";
@@ -147,6 +150,7 @@ function limpiarCamposVariante() {
   preview.innerHTML = "";
 }
 
+// ✅ RENDERIZAR VARIANTES EN HTML
 function renderizarVariantes() {
   const contenedor = document.getElementById("listaVariantes");
   contenedor.innerHTML = "";
@@ -162,12 +166,13 @@ function renderizarVariantes() {
   });
 }
 
+// ✅ ELIMINAR VARIANTE
 window.eliminarVariante = (i) => {
   variantes.splice(i, 1);
   renderizarVariantes();
 };
 
-// 💾 Guardar producto
+// ✅ GUARDAR O ACTUALIZAR PRODUCTO
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const btn = form.querySelector("button[type=submit]");
@@ -211,7 +216,7 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-// 📝 Obtener datos del formulario
+// ✅ RECOGER DATOS DEL FORMULARIO
 function obtenerDatosFormulario() {
   const nombre = document.getElementById("nombre").value.trim();
   const precio = parseFloat(document.getElementById("precio").value);
@@ -243,16 +248,17 @@ function obtenerDatosFormulario() {
     stock,
     featured: destacado,
     variants,
-    mainImages: imagenesPrincipales // ✅ NUEVO
+    mainImages: imagenesPrincipales
   };
 }
 
+// ✅ RESTAURAR BOTÓN GUARDAR
 function resetBoton(btn) {
   btn.disabled = false;
   btn.textContent = "📦 Guardar Producto";
 }
 
-// 📋 Cargar productos
+// ✅ CARGAR PRODUCTOS REGISTRADOS
 async function cargarProductos() {
   try {
     const res = await fetch(API_BASE);
@@ -289,7 +295,7 @@ async function cargarProductos() {
   }
 }
 
-// ✏️ Editar producto
+// ✅ EDITAR PRODUCTO
 window.editarProducto = async (id) => {
   try {
     const res = await fetch(API_BASE);
@@ -305,8 +311,8 @@ window.editarProducto = async (id) => {
     document.getElementById("featured").checked = producto.featured;
 
     variantes = [...producto.variants];
-    renderizarVariantes();
     imagenesPrincipales = producto.mainImages || [];
+    renderizarVariantes();
 
     const previewContenedor = document.getElementById("previewImagenesPrincipales");
     previewContenedor.innerHTML = "";
@@ -325,7 +331,7 @@ window.editarProducto = async (id) => {
   }
 };
 
-// 🗑️ Eliminar producto
+// ✅ ELIMINAR PRODUCTO
 window.eliminarProducto = async (id) => {
   if (!confirm("¿Eliminar producto?")) return;
 
@@ -347,6 +353,6 @@ window.eliminarProducto = async (id) => {
   }
 };
 
-// ▶️ Iniciar
+// ▶️ INICIAR APP
 cargarCategorias();
 cargarProductos();
