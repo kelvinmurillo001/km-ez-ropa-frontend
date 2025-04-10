@@ -72,7 +72,7 @@ function cargarCategorias() {
   });
 }
 
-// ✅ CAMBIO DE CATEGORÍA = CARGAR SUBCATEGORÍAS
+// ✅ CAMBIO DE CATEGORÍA = SUBCATEGORÍAS
 document.getElementById("categoriaSelect").addEventListener("change", () => {
   const cat = document.getElementById("categoriaSelect").value;
   const subSelect = document.getElementById("subcategoriaSelect");
@@ -115,8 +115,7 @@ document.getElementById("imagenesPrincipales").addEventListener("change", async 
   for (const file of files) {
     try {
       const { url, public_id } = await uploadToBackend(file);
-      imagenesPrincipales.push({ url, cloudinaryId: public_id });
-
+      imagenesPrincipales.push({ url, cloudinaryId: public_id }); // 👈 importante
       const img = document.createElement("img");
       img.src = url;
       img.width = 100;
@@ -160,7 +159,7 @@ function limpiarCamposVariante() {
   preview.innerHTML = "";
 }
 
-// ✅ MOSTRAR VARIANTES EN HTML
+// ✅ RENDER VARIANTES
 function renderizarVariantes() {
   const contenedor = document.getElementById("listaVariantes");
   contenedor.innerHTML = "";
@@ -176,7 +175,6 @@ function renderizarVariantes() {
   });
 }
 
-// ✅ ELIMINAR VARIANTE
 window.eliminarVariante = (i) => {
   variantes.splice(i, 1);
   renderizarVariantes();
@@ -191,6 +189,8 @@ form.addEventListener("submit", async (e) => {
 
   const payload = obtenerDatosFormulario();
   if (!payload) return resetBoton(btn);
+
+  console.log("📦 Enviando:", payload); // 👈 útil para debug
 
   const method = editandoId ? "PUT" : "POST";
   const url = editandoId ? `${API_BASE}/${editandoId}` : API_BASE;
@@ -257,12 +257,12 @@ function obtenerDatosFormulario() {
     subcategory: subcategoria,
     stock,
     featured: destacado,
-    variants: variantes,
+    variants,
     mainImages: imagenesPrincipales
   };
 }
 
-// ✅ BOTÓN NORMAL
+// ✅ RESET BOTÓN
 function resetBoton(btn) {
   btn.disabled = false;
   btn.textContent = "📦 Guardar Producto";
