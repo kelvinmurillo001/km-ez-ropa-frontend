@@ -96,18 +96,15 @@ function mostrarProductos(lista) {
     const agotado = stock <= 0;
     const primeraImagen = images?.[0]?.url || "/assets/logo.jpg";
 
-    const miniGaleria = images.map(img => `
-      <img src="${img.url}" alt="${name}" class="galeria-img zoomable" onclick="ampliarImagen('${img.url}')" />
-    `).join("");
-
     const card = document.createElement("div");
     card.className = "card fade-in";
     card.innerHTML = `
-      <div class="imagen-catalogo" onclick="ampliarImagen('${primeraImagen}')">
-        <img src="${primeraImagen}" alt="${name}" class="zoomable" />
-      </div>
-      <div class="galeria-imagenes">${miniGaleria}</div>
-      <h3>${name}</h3>
+      <a href="detalle.html?id=${_id}">
+        <div class="imagen-catalogo">
+          <img src="${primeraImagen}" alt="${name}" class="zoomable" />
+        </div>
+        <h3>${name}</h3>
+      </a>
       ${featured ? `<span class="destacado-badge">⭐ Destacado</span>` : ""}
       <p><strong>Precio:</strong> $${price}</p>
       <p><strong>Categoría:</strong> ${category}</p>
