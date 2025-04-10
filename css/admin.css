@@ -260,3 +260,7 @@ body.modo-oscuro .card {
     transform: translateY(0);
   }
 }
+.card img,
+.variante-card img {
+  object-fit: contain;
+}

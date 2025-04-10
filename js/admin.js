@@ -23,22 +23,22 @@
   }
 })();
 
-// 🌐 ENDPOINTS API
+// 🌐 ENDPOINTS
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api/products";
 const API_UPLOAD = "https://km-ez-ropa-backend.onrender.com/api/uploads";
 
-// 📌 ELEMENTOS DEL DOM
+// 📌 ELEMENTOS
 const form = document.getElementById("productoForm");
 const message = document.getElementById("message");
 const preview = document.getElementById("previewImagen");
 const token = localStorage.getItem("token");
 
-// 📦 VARIABLES GLOBALES
+// 📦 VARIABLES
 let variantes = [];
 let editandoId = null;
 let imagenesPrincipales = [];
 
-// 📚 CATEGORÍAS Y SUBCATEGORÍAS
+// 📚 CATEGORÍAS
 const categorias = {
   Hombre: ["Camisas", "Pantalones", "Chaquetas", "Ropa interior"],
   Mujer: ["Vestidos", "Blusas", "Leggins", "Ropa interior"],
@@ -47,7 +47,7 @@ const categorias = {
   Bebé: ["Mamelucos", "Bodies", "Pijamas"]
 };
 
-// ✅ MENSAJE EMERGENTE
+// ✅ MENSAJE
 function mostrarMensaje(el, mensaje, tipo = "info") {
   const colores = {
     success: { bg: "#e8f5e9", color: "#2e7d32" },
@@ -72,7 +72,6 @@ function cargarCategorias() {
   });
 }
 
-// ✅ CAMBIO DE CATEGORÍA = SUBCATEGORÍAS
 document.getElementById("categoriaSelect").addEventListener("change", () => {
   const cat = document.getElementById("categoriaSelect").value;
   const subSelect = document.getElementById("subcategoriaSelect");
@@ -80,16 +79,16 @@ document.getElementById("categoriaSelect").addEventListener("change", () => {
   categorias[cat]?.forEach(sub => subSelect.appendChild(new Option(sub, sub)));
 });
 
-// ✅ VALIDACIÓN DE IMAGEN
+// ✅ VALIDACIÓN IMAGEN
 function esImagenValida(file) {
   const tiposPermitidos = ["image/jpeg", "image/png", "image/webp"];
   return tiposPermitidos.includes(file.type);
 }
 
-// ✅ SUBIR IMAGEN A BACKEND
+// ✅ SUBIR A BACKEND
 async function uploadToBackend(file) {
   if (!esImagenValida(file)) {
-    throw new Error("⚠️ Solo se permiten imágenes JPG, PNG o WEBP");
+    throw new Error("⚠️ Solo JPG, PNG o WEBP");
   }
 
   const formData = new FormData();
@@ -101,7 +100,7 @@ async function uploadToBackend(file) {
     body: formData
   });
 
-  if (!res.ok) throw new Error("❌ Error al subir imagen");
+  if (!res.ok) throw new Error("❌ Error subiendo imagen");
   return await res.json();
 }
 
@@ -112,10 +111,16 @@ document.getElementById("imagenesPrincipales").addEventListener("change", async 
   previewContenedor.innerHTML = "";
   imagenesPrincipales = [];
 
+  if (files.length > 4) {
+    mostrarMensaje(message, "⚠️ Máximo 4 imágenes principales permitidas", "warning");
+    return;
+  }
+
   for (const file of files) {
     try {
       const { url, public_id } = await uploadToBackend(file);
       imagenesPrincipales.push({ url, cloudinaryId: public_id });
+
       const img = document.createElement("img");
       img.src = url;
       img.width = 100;
@@ -123,8 +128,8 @@ document.getElementById("imagenesPrincipales").addEventListener("change", async 
       img.classList.add("fade-in");
       previewContenedor.appendChild(img);
     } catch (err) {
-      console.error("❌ Error subiendo imagen principal:", err);
-      mostrarMensaje(message, err.message || "❌ Error subiendo imagen", "error");
+      console.error("❌", err);
+      mostrarMensaje(message, err.message, "error");
     }
   }
 });
@@ -147,11 +152,10 @@ document.getElementById("addVariante").addEventListener("click", async () => {
     mostrarMensaje(message, "✅ Variante agregada", "success");
   } catch (err) {
     console.error(err);
-    mostrarMensaje(message, err.message || "❌ Error subiendo imagen", "error");
+    mostrarMensaje(message, "❌ Error al subir imagen de variante", "error");
   }
 });
 
-// ✅ LIMPIAR CAMPOS VARIANTE
 function limpiarCamposVariante() {
   document.getElementById("talla").value = "";
   document.getElementById("color").value = "";
@@ -159,7 +163,6 @@ function limpiarCamposVariante() {
   preview.innerHTML = "";
 }
 
-// ✅ RENDERIZAR VARIANTES
 function renderizarVariantes() {
   const contenedor = document.getElementById("listaVariantes");
   contenedor.innerHTML = "";
@@ -175,7 +178,6 @@ function renderizarVariantes() {
   });
 }
 
-// ✅ ELIMINAR VARIANTE
 window.eliminarVariante = (i) => {
   variantes.splice(i, 1);
   renderizarVariantes();
@@ -240,12 +242,12 @@ function obtenerDatosFormulario() {
   }
 
   if (imagenesPrincipales.length === 0) {
-    mostrarMensaje(message, "⚠️ Sube al menos una imagen principal", "warning");
+    mostrarMensaje(message, "⚠️ Sube al menos 1 imagen principal", "warning");
     return null;
   }
 
-  if (variantes.length === 0) {
-    mostrarMensaje(message, "⚠️ Agrega al menos una variante", "warning");
+  if (imagenesPrincipales.length > 4) {
+    mostrarMensaje(message, "⚠️ Solo se permiten hasta 4 imágenes principales", "warning");
     return null;
   }
 
@@ -256,7 +258,7 @@ function obtenerDatosFormulario() {
     subcategory: subcategoria,
     stock,
     featured: destacado,
-    variants: variantes, // ✅ aquí se usaba `variants` incorrectamente
+    variants: variantes,
     mainImages: imagenesPrincipales
   };
 }
@@ -304,7 +306,7 @@ async function cargarProductos() {
   }
 }
 
-// ✅ EDITAR PRODUCTO
+// ✅ EDITAR / ELIMINAR PRODUCTO
 window.editarProducto = async (id) => {
   try {
     const res = await fetch(API_BASE);
@@ -340,7 +342,6 @@ window.editarProducto = async (id) => {
   }
 };
 
-// ✅ ELIMINAR PRODUCTO
 window.eliminarProducto = async (id) => {
   if (!confirm("¿Eliminar producto?")) return;
 
@@ -362,6 +363,6 @@ window.eliminarProducto = async (id) => {
   }
 };
 
-// ▶️ INICIAR
+// ▶️ INICIO
 cargarCategorias();
 cargarProductos();

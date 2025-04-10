@@ -51,20 +51,22 @@
       <!-- 🖼️ Imágenes principales -->
       <fieldset>
         <legend>🖼️ Imágenes del Producto</legend>
+        <p class="nota">⚠️ Debes subir al menos 1 imagen y máximo 4.</p>
         <input 
           type="file" 
           id="imagenesPrincipales" 
           name="imagenesPrincipales" 
           accept="image/*" 
           multiple 
-          aria-label="Seleccionar imágenes principales" 
+          aria-label="Seleccionar imágenes principales"
+          data-max="4"
         />
         <div id="previewImagenesPrincipales" class="image-preview" aria-live="polite"></div>
       </fieldset>
 
       <!-- 🧩 Variantes -->
       <fieldset>
-        <legend>🧩 Variantes</legend>
+        <legend>🧩 Variantes <span class="opcional">(opcional)</span></legend>
         <div class="form-row">
           <input type="text" id="talla" placeholder="Talla (Ej: S, M, L)" autocomplete="off" />
           <input type="text" id="color" placeholder="Color (Ej: rojo, azul)" autocomplete="off" />
