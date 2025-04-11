@@ -22,7 +22,8 @@ function saveCart(cart) {
 // ➕ Agregar al carrito
 function addToCart(product) {
   const cart = getCart();
-  const index = cart.findIndex(p => p.id === product.id);
+  const key = `${product.id}_${product.talla || ""}_${product.color || ""}`;
+  const index = cart.findIndex(p => `${p.id}_${p.talla || ""}_${p.color || ""}` === key);
 
   if (index !== -1) {
     cart[index].cantidad += 1;
@@ -79,7 +80,9 @@ async function guardarPedido(nombre, nota, origen = "whatsapp") {
     items: cart.map(p => ({
       nombre: p.nombre || p.name,
       cantidad: p.cantidad,
-      precio: p.precio || p.price
+      precio: p.precio || p.price,
+      talla: p.talla || "",
+      color: p.color || p.colores || ""
     }))
   };
 
@@ -91,7 +94,6 @@ async function guardarPedido(nombre, nota, origen = "whatsapp") {
     });
 
     const result = await res.json();
-
     if (!res.ok) {
       alert("❌ Error guardando pedido: " + (result.message || "Desconocido"));
       return false;
@@ -131,7 +133,7 @@ async function sendCartToWhatsApp(nombre, nota) {
   setTimeout(() => window.location.href = "index.html", 2000);
 }
 
-// 🔢 Actualizar contador
+// 🔢 Actualizar contador del carrito
 function updateCartWidget() {
   const count = getCart().reduce((sum, item) => sum + item.cantidad, 0);
   const badge = document.querySelector("#cart-widget-count");
@@ -156,6 +158,8 @@ function renderCartItems() {
     const precio = item.precio || item.price || 0;
     const imagen = item.imagen || item.image || "/assets/logo.jpg";
 
+    const idKey = `${item.id}_${item.talla || ""}_${item.color || ""}`;
+
     const div = document.createElement("div");
     div.className = "cart-item fade-in";
     div.innerHTML = `
@@ -166,10 +170,10 @@ function renderCartItems() {
         ${item.talla ? `<p><strong>Talla:</strong> ${item.talla}</p>` : ""}
         ${(item.color || item.colores) ? `<p><strong>Color:</strong> ${item.color || item.colores}</p>` : ""}
         <div class="cart-actions">
-          <button onclick="changeQuantity('${item.id}', -1)">➖</button>
+          <button onclick="changeQuantity('${idKey}', -1)">➖</button>
           <span>${item.cantidad}</span>
-          <button onclick="changeQuantity('${item.id}', 1)">➕</button>
-          <button onclick="removeFromCart('${item.id}')">🗑️</button>
+          <button onclick="changeQuantity('${idKey}', 1)">➕</button>
+          <button onclick="removeFromCart('${idKey}')">🗑️</button>
         </div>
       </div>
     `;

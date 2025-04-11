@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tu Carrito | KM & EZ ROPA</title>
 
-  <!-- ✅ SEO -->
+  <!-- SEO -->
   <meta name="description" content="Revisa y finaliza tu pedido con KM & EZ ROPA. Consulta por WhatsApp y recibe tu ropa a domicilio.">
   <meta name="keywords" content="carrito, pedidos, ropa, km ez, moda, whatsapp, ecommerce, comprar ropa">
   <meta name="author" content="KM & EZ ROPA">
   <meta name="robots" content="index, follow">
 
-  <!-- 🌐 Open Graph / Twitter -->
+  <!-- Open Graph -->
   <meta property="og:title" content="Tu Carrito | KM & EZ ROPA">
   <meta property="og:description" content="Revisa y finaliza tu pedido con KM & EZ ROPA. Consulta por WhatsApp y recibe tu ropa a domicilio.">
   <meta property="og:image" content="https://km-ez-ropa-backend.onrender.com/assets/logo.jpg">
@@ -22,7 +22,7 @@
   <meta name="twitter:description" content="Consulta tus productos seleccionados y realiza tu pedido fácilmente.">
   <meta name="twitter:image" content="https://km-ez-ropa-backend.onrender.com/assets/logo.jpg">
 
-  <!-- 🔖 Favicon -->
+  <!-- Favicon -->
   <link rel="icon" href="/assets/logo.jpg" type="image/jpeg">
 
   <!-- Estilos -->
@@ -35,23 +35,28 @@
 </head>
 <body>
 
-  <main class="catalogo-container fade-in" role="main" aria-label="Contenido principal del carrito">
-    <h1 class="text-center carrito-titulo">🛍️ Tu Carrito</h1>
+  <!-- Volver al catálogo -->
+  <nav>
+    <a href="index.html" class="btn-volver">⬅️ Volver al catálogo</a>
+  </nav>
 
-    <!-- Productos del carrito -->
+  <main class="catalogo-container fade-in" role="main" aria-label="Contenido principal del carrito">
+    <header>
+      <h1 class="text-center carrito-titulo">🛍️ Tu Carrito</h1>
+    </header>
+
+    <!-- 🧾 Productos en carrito -->
     <section id="cart-items" class="carrito-items" aria-live="polite">
-      <!-- Render dinámico con JS -->
+      <!-- Renderizado dinámico vía JS -->
     </section>
 
-    <!-- Formulario de pedido -->
+    <!-- 📝 Formulario -->
     <section class="carrito-formulario fade-in" role="form" aria-label="Formulario para enviar pedido">
       <h3>Total estimado: <span id="cart-total">$0.00</span></h3>
       <p id="total-unidades">Total unidades: 0</p>
 
-      <label for="clienteNombre" class="sr-only">Nombre del cliente</label>
       <input type="text" id="clienteNombre" placeholder="Tu nombre" required aria-label="Tu nombre" />
 
-      <label for="nota" class="sr-only">Nota adicional</label>
       <textarea id="nota" placeholder="Nota adicional (opcional)" rows="2" aria-label="Nota adicional"></textarea>
 
       <div class="botones-finales">
@@ -63,9 +68,9 @@
     </section>
   </main>
 
-  <!-- Modal de imagen -->
+  <!-- 🔍 Modal imagen -->
   <div id="imageModal" class="modal-zoom oculto fade-in" onclick="cerrarModalImagen()">
-    <span class="modal-close">✖️</span>
+    <span class="modal-close" title="Cerrar vista">✖️</span>
     <img id="modalImage" src="" alt="Vista ampliada del producto" />
   </div>
 
@@ -76,7 +81,7 @@
       if (typeof renderCartItems === "function") renderCartItems();
       if (typeof updateCartWidget === "function") updateCartWidget();
 
-      // Restaurar modo oscuro
+      // Modo oscuro persistente
       if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
       }
@@ -84,10 +89,11 @@
 
     function enviarDesdeCarrito() {
       const nombre = document.getElementById("clienteNombre").value.trim();
-      const nota = document.getElementById("nota").value;
+      const nota = document.getElementById("nota").value.trim();
 
       if (!nombre) {
-        alert("⚠️ Debes ingresar tu nombre para realizar el pedido.");
+        alert("⚠️ Por favor, escribe tu nombre para continuar.");
+        document.getElementById("clienteNombre").focus();
         return;
       }
 
@@ -104,6 +110,7 @@
       localStorage.removeItem("km_ez_cart");
       if (typeof renderCartItems === "function") renderCartItems();
       if (typeof updateCartWidget === "function") updateCartWidget();
+
       document.getElementById("cart-total").textContent = "$0.00";
       document.getElementById("total-unidades").textContent = "Total unidades: 0";
     }
