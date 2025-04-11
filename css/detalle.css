@@ -1,4 +1,4 @@
-/* 📦 Contenedor general */
+/* 🎯 Contenedor principal */
 .detalle-container {
   max-width: 1200px;
   margin: auto;
@@ -9,172 +9,137 @@
   font-family: 'Segoe UI', sans-serif;
 }
 
-/* 📄 Tarjeta principal */
+/* 🧱 Estructura general */
 .detalle-card {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 2rem;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: center;
 }
 
-/* 🧾 Info del producto */
-.detalle-info {
-  text-align: center;
+.detalle-galeria {
+  flex: 1 1 400px;
+  max-width: 500px;
 }
+
+.detalle-galeria img {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease;
+  cursor: zoom-in;
+}
+
+.detalle-miniaturas {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.detalle-miniaturas img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+.detalle-miniaturas img.activa {
+  border-color: #f57c00;
+}
+
+/* 📝 Info */
+.detalle-info {
+  flex: 1 1 300px;
+  max-width: 500px;
+}
+
 .detalle-info h1 {
   font-size: 28px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   color: #222;
 }
 .detalle-info p {
-  margin: 4px 0;
-  color: #444;
+  font-size: 16px;
+  margin: 0.3rem 0;
+  color: #333;
 }
 
-/* 🖼️ Galería */
-.detalle-galeria {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-}
-.galeria-principal {
-  width: 300px;
-  height: 360px;
-  object-fit: cover;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease;
-}
-.galeria-principal:hover {
-  transform: scale(1.03);
-  cursor: zoom-in;
-}
-.galeria-miniaturas {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.galeria-miniaturas img {
-  width: 60px;
-  height: 60px;
-  border-radius: 6px;
-  object-fit: cover;
-  border: 2px solid transparent;
-  cursor: pointer;
-  transition: border 0.3s;
-}
-.galeria-miniaturas img.active,
-.galeria-miniaturas img:hover {
-  border-color: darkorange;
+/* 📏 Tallas */
+.tallas {
+  margin-top: 1.2rem;
 }
 
-/* 🧩 Variantes visuales */
-.variantes-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: center;
-  margin-top: 1rem;
-}
-.variante {
-  border: 1px solid #ddd;
-  padding: 1rem;
-  border-radius: 10px;
-  background-color: #fdfdfd;
-  text-align: center;
-  width: 160px;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
-}
-.variante img {
-  width: 100%;
-  border-radius: 8px;
+.tallas strong {
+  display: block;
   margin-bottom: 6px;
+  color: #555;
 }
 
-/* ✅ Tallas */
-.selector-tallas {
+.tallas-lista {
   display: flex;
-  flex-wrap: wrap;
   gap: 10px;
-  justify-content: center;
-  margin: 1rem 0;
+  flex-wrap: wrap;
 }
-.selector-tallas button {
+
+.talla-btn {
   padding: 8px 16px;
   border: 1px solid #ccc;
-  background: #fff;
   border-radius: 6px;
-  font-weight: bold;
+  background: #fafafa;
   cursor: pointer;
+  font-weight: 500;
   transition: all 0.3s ease;
 }
-.selector-tallas button:hover {
-  background-color: #f3f3f3;
+.talla-btn:hover {
+  background-color: #f1f1f1;
 }
-.selector-tallas .active {
-  background-color: darkorange;
-  color: white;
-  border-color: darkorange;
-}
-
-/* 📏 Guía de Tallas */
-.guia-tallas-btn {
-  margin: 10px auto;
-  display: block;
-  background-color: #444;
-  color: white;
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-.guia-tallas-btn:hover {
-  background-color: #222;
+.talla-btn.activa {
+  background-color: #f57c00;
+  color: #fff;
+  border-color: #f57c00;
 }
 
-/* 🔍 Modal Guía */
-.modal-tallas {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0,0,0,0.8);
-  z-index: 9999;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.modal-contenido {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  max-width: 90%;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-}
-.cerrar-modal {
-  position: absolute;
-  top: 12px;
-  right: 16px;
-  font-size: 22px;
-  cursor: pointer;
-  color: #999;
-}
-.tabla-tallas {
-  width: 100%;
-  border-collapse: collapse;
+/* 🎨 Variantes */
+.variante-color {
   margin-top: 1rem;
 }
-.tabla-tallas th,
-.tabla-tallas td {
-  border: 1px solid #ccc;
-  padding: 8px;
-  text-align: center;
+.variante-color strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #555;
 }
-.tabla-tallas th {
-  background-color: #f5f5f5;
+.variante-color span {
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 4px 4px 0 0;
+  background-color: #eee;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* 🛒 Botón */
+.btn-comprar {
+  display: inline-block;
+  margin-top: 1.5rem;
+  background-color: darkorange;
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+.btn-comprar:hover {
+  background-color: #cc7000;
 }
 
 /* ❌ Error */
@@ -182,16 +147,55 @@
   color: red;
   font-weight: bold;
   text-align: center;
+  margin-top: 20px;
+}
+
+/* 🔍 Zoom modal */
+.modal-img {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+.modal-img img {
+  max-width: 90%;
+  max-height: 80vh;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+.modal-img .cerrar {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+}
+
+/* ✨ Fade */
+.fade-in {
+  animation: fadeIn 0.4s ease-in;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* 📱 Responsive */
 @media (max-width: 768px) {
-  .galeria-principal {
-    width: 100%;
-    height: auto;
+  .detalle-card {
+    flex-direction: column;
+    align-items: center;
   }
-  .galeria-miniaturas img {
-    width: 50px;
-    height: 50px;
+
+  .detalle-info, .detalle-galeria {
+    max-width: 100%;
+  }
+
+  .tallas-lista {
+    justify-content: center;
   }
 }
