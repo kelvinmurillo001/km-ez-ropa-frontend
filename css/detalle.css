@@ -1,0 +1,80 @@
+/* 🌟 Estilo general del detalle */
+#detalleProducto {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.97);
+    border-radius: 12px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease;
+    color: #222;
+  }
+  body.modo-oscuro #detalleProducto {
+    background-color: #1e1e1e;
+    color: #eee;
+  }
+  
+  /* 🖼️ Imagen principal */
+  .image-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin: 1rem 0;
+  }
+  .image-preview img {
+    max-width: 200px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+  }
+  .image-preview img:hover {
+    transform: scale(1.05);
+  }
+  
+  /* 🎨 Variantes */
+  .variantes-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 1rem;
+  }
+  .variante-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 10px;
+    width: 160px;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+  .variante-card img {
+    max-width: 100%;
+    border-radius: 6px;
+  }
+  .variante-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+  }
+  body.modo-oscuro .variante-card {
+    background-color: #2a2a2a;
+    border-color: #444;
+  }
+  
+  /* 🏷️ Badge destacado */
+  .destacado-badge {
+    background-color: gold;
+    color: #222;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 12px;
+  }
+  
+  /* 🔁 Animaciones */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  

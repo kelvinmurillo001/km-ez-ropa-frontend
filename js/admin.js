@@ -60,7 +60,7 @@ function mostrarMensaje(el, mensaje, tipo = "info") {
   el.classList.remove("oculto");
   el.style.backgroundColor = bg;
   el.style.color = color;
-  setTimeout(() => el.classList.add("oculto"), 3000);
+  setTimeout(() => el.classList.add("oculto"), 3500);
 }
 
 // ✅ CARGAR CATEGORÍAS
@@ -104,33 +104,31 @@ async function uploadToBackend(file) {
   return await res.json();
 }
 
-// ✅ SUBIR IMÁGENES PRINCIPALES
+// ✅ SUBIR IMAGEN PRINCIPAL
 document.getElementById("imagenesPrincipales").addEventListener("change", async (e) => {
   const files = Array.from(e.target.files);
   const previewContenedor = document.getElementById("previewImagenesPrincipales");
   previewContenedor.innerHTML = "";
   imagenesPrincipales = [];
 
-  if (files.length > 4) {
-    mostrarMensaje(message, "⚠️ Máximo 4 imágenes principales permitidas", "warning");
+  if (files.length !== 1) {
+    mostrarMensaje(message, "⚠️ Solo se permite 1 imagen principal", "warning");
     return;
   }
 
-  for (const file of files) {
-    try {
-      const { url, public_id } = await uploadToBackend(file);
-      imagenesPrincipales.push({ url, cloudinaryId: public_id });
+  try {
+    const { url, public_id } = await uploadToBackend(files[0]);
+    imagenesPrincipales.push({ url, cloudinaryId: public_id });
 
-      const img = document.createElement("img");
-      img.src = url;
-      img.width = 100;
-      img.alt = "Imagen principal";
-      img.classList.add("fade-in");
-      previewContenedor.appendChild(img);
-    } catch (err) {
-      console.error("❌", err);
-      mostrarMensaje(message, err.message, "error");
-    }
+    const img = document.createElement("img");
+    img.src = url;
+    img.width = 100;
+    img.alt = "Imagen principal";
+    img.classList.add("fade-in");
+    previewContenedor.appendChild(img);
+  } catch (err) {
+    console.error("❌", err);
+    mostrarMensaje(message, err.message, "error");
   }
 });
 
@@ -139,6 +137,10 @@ document.getElementById("addVariante").addEventListener("click", async () => {
   const talla = document.getElementById("talla").value.trim();
   const color = document.getElementById("color").value.trim();
   const imagen = document.getElementById("imagen").files[0];
+
+  if (variantes.length >= 4) {
+    return mostrarMensaje(message, "⚠️ Solo puedes agregar hasta 4 variantes", "warning");
+  }
 
   if (!talla || !color || !imagen) {
     return mostrarMensaje(message, "⚠️ Completa talla, color e imagen", "warning");
@@ -227,7 +229,7 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-// ✅ DATOS DEL FORMULARIO
+// ✅ OBTENER DATOS DEL FORMULARIO
 function obtenerDatosFormulario() {
   const nombre = document.getElementById("nombre").value.trim();
   const precio = parseFloat(document.getElementById("precio").value);
@@ -241,13 +243,8 @@ function obtenerDatosFormulario() {
     return null;
   }
 
-  if (imagenesPrincipales.length === 0) {
-    mostrarMensaje(message, "⚠️ Sube al menos 1 imagen principal", "warning");
-    return null;
-  }
-
-  if (imagenesPrincipales.length > 4) {
-    mostrarMensaje(message, "⚠️ Solo se permiten hasta 4 imágenes principales", "warning");
+  if (imagenesPrincipales.length !== 1) {
+    mostrarMensaje(message, "⚠️ Debes subir exactamente 1 imagen principal", "warning");
     return null;
   }
 
@@ -294,7 +291,7 @@ async function cargarProductos() {
           <p><strong>Subcategoría:</strong> ${p.subcategory}</p>
           <p><strong>Stock:</strong> ${p.stock}</p>
           <p><strong>Destacado:</strong> ${p.featured ? "✅" : "❌"}</p>
-          <div><strong>Imágenes principales:</strong><br/>${imagenesHtml}</div>
+          <div><strong>Imagen principal:</strong><br/>${imagenesHtml}</div>
           <div>${variantesHtml}</div>
           <button onclick="editarProducto('${p._id}')">✏️ Editar</button>
           <button onclick="eliminarProducto('${p._id}')">🗑️ Eliminar</button>
@@ -306,7 +303,7 @@ async function cargarProductos() {
   }
 }
 
-// ✅ EDITAR / ELIMINAR PRODUCTO
+// ✅ EDITAR PRODUCTO
 window.editarProducto = async (id) => {
   try {
     const res = await fetch(API_BASE);

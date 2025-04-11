@@ -99,7 +99,7 @@ function mostrarProductos(lista) {
     const card = document.createElement("div");
     card.className = "card fade-in";
     card.innerHTML = `
-      <a href="detalle.html?id=${_id}">
+      <a href="detalle.html?id=${encodeURIComponent(_id)}" class="enlace-producto">
         <div class="imagen-catalogo">
           <img src="${primeraImagen}" alt="${name}" class="zoomable" />
         </div>
