@@ -5,16 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Detalle del Producto | KM & EZ ROPA</title>
 
+  <!-- ✅ Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/detalle.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
+
+  <!-- 📦 Script -->
   <script src="/js/detalle.js" defer></script>
 </head>
 <body>
+
+  <!-- 🔙 Volver -->
   <a href="index.html" class="btn-volver">⬅️ Volver al catálogo</a>
 
+  <!-- 📦 Detalle del producto -->
   <main class="detalle-container fade-in">
     <div id="detalleProducto" class="detalle-card"></div>
   </main>
+
+  <!-- 🌗 Modo oscuro persistente -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("modoOscuro") === "true") {
+        document.body.classList.add("modo-oscuro");
+      }
+    });
+  </script>
 </body>
 </html>

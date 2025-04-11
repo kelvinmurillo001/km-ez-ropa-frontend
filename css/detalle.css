@@ -1,3 +1,4 @@
+/* 📦 Contenedor general */
 .detalle-container {
   max-width: 1200px;
   margin: auto;
@@ -8,6 +9,7 @@
   font-family: 'Segoe UI', sans-serif;
 }
 
+/* 📄 Tarjeta principal */
 .detalle-card {
   display: flex;
   flex-direction: column;
@@ -15,61 +17,181 @@
   align-items: center;
 }
 
+/* 🧾 Info del producto */
 .detalle-info {
   text-align: center;
 }
-
 .detalle-info h1 {
   font-size: 28px;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   color: #222;
 }
-
-.detalle-imagen-principal {
-  text-align: center;
+.detalle-info p {
+  margin: 4px 0;
+  color: #444;
 }
 
-.detalle-imagen-principal img {
-  width: 250px;
-  height: auto;
-  border-radius: 12px;
+/* 🖼️ Galería */
+.detalle-galeria {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+.galeria-principal {
+  width: 300px;
+  height: 360px;
   object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   transition: transform 0.3s ease;
 }
-
-.zoom-img:hover {
-  transform: scale(1.05);
+.galeria-principal:hover {
+  transform: scale(1.03);
   cursor: zoom-in;
 }
-
-.detalle-variantes {
-  width: 100%;
+.galeria-miniaturas {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.galeria-miniaturas img {
+  width: 60px;
+  height: 60px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border 0.3s;
+}
+.galeria-miniaturas img.active,
+.galeria-miniaturas img:hover {
+  border-color: darkorange;
 }
 
+/* 🧩 Variantes visuales */
 .variantes-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
   margin-top: 1rem;
 }
-
 .variante {
-  background: #f9f9f9;
+  border: 1px solid #ddd;
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: 10px;
+  background-color: #fdfdfd;
   text-align: center;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+  width: 160px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
 }
-
 .variante img {
   width: 100%;
   border-radius: 8px;
-  margin-bottom: 0.5rem;
-  transition: transform 0.3s ease;
+  margin-bottom: 6px;
 }
 
+/* ✅ Tallas */
+.selector-tallas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin: 1rem 0;
+}
+.selector-tallas button {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.selector-tallas button:hover {
+  background-color: #f3f3f3;
+}
+.selector-tallas .active {
+  background-color: darkorange;
+  color: white;
+  border-color: darkorange;
+}
+
+/* 📏 Guía de Tallas */
+.guia-tallas-btn {
+  margin: 10px auto;
+  display: block;
+  background-color: #444;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.guia-tallas-btn:hover {
+  background-color: #222;
+}
+
+/* 🔍 Modal Guía */
+.modal-tallas {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0,0,0,0.8);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-contenido {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+.cerrar-modal {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 22px;
+  cursor: pointer;
+  color: #999;
+}
+.tabla-tallas {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+.tabla-tallas th,
+.tabla-tallas td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+.tabla-tallas th {
+  background-color: #f5f5f5;
+}
+
+/* ❌ Error */
 .error {
   color: red;
   font-weight: bold;
   text-align: center;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .galeria-principal {
+    width: 100%;
+    height: auto;
+  }
+  .galeria-miniaturas img {
+    width: 50px;
+    height: 50px;
+  }
 }
