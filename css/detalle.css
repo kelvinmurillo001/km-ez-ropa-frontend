@@ -32,6 +32,7 @@
   max-height: 400px;
   overflow-y: auto;
   padding-right: 5px;
+  scrollbar-width: thin;
 }
 
 .detalle-galeria-thumbs img {
@@ -51,6 +52,7 @@
 
 .detalle-imagen-principal {
   max-width: 400px;
+  position: relative;
 }
 
 .detalle-imagen-principal img {
@@ -103,6 +105,7 @@
   background-color: #fafafa;
   transition: all 0.3s;
   font-weight: 500;
+  font-size: 14px;
 }
 
 .talla-opcion:hover {
@@ -163,7 +166,7 @@
 
 /* Guía de tallas */
 .guia-info {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   border-top: 1px solid #eee;
   padding-top: 1rem;
   font-size: 14px;
@@ -190,6 +193,7 @@
   text-align: center;
 }
 
+/* Responsive */
 @media (max-width: 768px) {
   .detalle-grid {
     flex-direction: column;

@@ -28,6 +28,12 @@ function renderizarProducto(p) {
   const imagenes = p.images || [];
   const primeraImagen = imagenes[0]?.url || "";
 
+  const iconoTalla = p.tallaTipo === "bebé"
+    ? "👶"
+    : p.tallaTipo === "niño"
+    ? "🧒"
+    : "👕";
+
   contenedor.innerHTML = `
     <div class="detalle-grid">
       <div class="detalle-galeria">
@@ -46,6 +52,7 @@ function renderizarProducto(p) {
         <p><strong>Precio:</strong> $${p.price}</p>
         <p><strong>Categoría:</strong> ${p.category}</p>
         <p><strong>Subcategoría:</strong> ${p.subcategory}</p>
+        ${p.tallaTipo ? `<p><strong>Tipo de talla:</strong> ${iconoTalla} ${capitalizar(p.tallaTipo)}</p>` : ""}
         <p><strong>Stock general:</strong> ${p.stock}</p>
 
         <div class="guia-tallas">
@@ -87,7 +94,6 @@ function renderizarProducto(p) {
 
 function cambiarImagen(url, thumb) {
   document.getElementById("imagenPrincipal").src = url;
-
   document.querySelectorAll(".detalle-galeria-thumbs img").forEach(img =>
     img.classList.remove("active")
   );
@@ -118,4 +124,8 @@ function agregarAlCarrito(productId) {
 
 function mostrarError(msg) {
   contenedor.innerHTML = `<p class="error fade-in">${msg}</p>`;
+}
+
+function capitalizar(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
