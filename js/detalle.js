@@ -25,7 +25,10 @@ async function cargarDetalle() {
 
 function renderizarProducto(p) {
   const tallasDisponibles = [...new Set(p.variants?.map(v => v.talla?.toUpperCase()))];
-  const imagenes = p.images || [];
+  const imagenes = [
+    ...(p.images || []),
+    ...(p.variants?.map(v => ({ url: v.imageUrl })) || [])
+  ];
   const primeraImagen = imagenes[0]?.url || "";
 
   const iconoTalla = p.tallaTipo === "bebé"
@@ -58,8 +61,8 @@ function renderizarProducto(p) {
         <div class="guia-tallas">
           <p><strong>Selecciona Talla:</strong></p>
           <div class="tallas-disponibles">
-            ${tallasDisponibles.length > 0 ? tallasDisponibles.map(talla => `
-              <div class="talla-opcion" onclick="seleccionarTalla(this)">${talla}</div>
+            ${tallasDisponibles.length > 0 ? tallasDisponibles.map((talla, i) => `
+              <div class="talla-opcion ${i === 0 ? 'selected' : ''}" onclick="seleccionarTalla(this)">${talla}</div>
             `).join("") : "<span>No hay tallas disponibles</span>"}
           </div>
         </div>

@@ -7,6 +7,12 @@
   border-radius: 12px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
   font-family: 'Segoe UI', sans-serif;
+  color: #333;
+}
+
+body.modo-oscuro .detalle-container {
+  background: #1e1e1e;
+  color: #eee;
 }
 
 /* Grid de imagen + info */
@@ -79,10 +85,18 @@
   color: #222;
 }
 
+body.modo-oscuro .detalle-info h1 {
+  color: #fff;
+}
+
 .detalle-info p {
   margin: 6px 0;
   font-size: 15px;
   color: #444;
+}
+
+body.modo-oscuro .detalle-info p {
+  color: #ccc;
 }
 
 /* Tallas */
@@ -117,6 +131,17 @@
   background-color: #fff3e0;
 }
 
+body.modo-oscuro .talla-opcion {
+  background-color: #333;
+  border-color: #555;
+  color: #eee;
+}
+
+body.modo-oscuro .talla-opcion.selected {
+  background-color: #442e00;
+  border-color: orange;
+}
+
 /* Cantidad */
 .contador {
   margin-top: 1rem;
@@ -137,6 +162,15 @@
 
 .contador button:hover {
   background: #ccc;
+}
+
+body.modo-oscuro .contador button {
+  background: #555;
+  color: #fff;
+}
+
+body.modo-oscuro .contador button:hover {
+  background: #777;
 }
 
 .contador span {
@@ -173,6 +207,11 @@
   color: #555;
 }
 
+body.modo-oscuro .guia-info {
+  color: #bbb;
+  border-color: #444;
+}
+
 .guia-info table {
   width: 100%;
   border-collapse: collapse;
@@ -184,6 +223,11 @@
   padding: 6px 10px;
   border: 1px solid #ccc;
   text-align: center;
+}
+
+body.modo-oscuro .guia-info th,
+body.modo-oscuro .guia-info td {
+  border-color: #555;
 }
 
 /* Mensajes */
@@ -212,4 +256,34 @@
     width: 50px;
     height: 50px;
   }
+}
+/* Botón volver al catálogo */
+.btn-volver {
+  display: inline-block;
+  margin-bottom: 1rem;
+  padding: 8px 16px;
+  background-color: #f5f5f5;
+  color: #333;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  border: 1px solid #ddd;
+  transition: all 0.3s ease;
+}
+
+.btn-volver:hover {
+  background-color: #e0e0e0;
+  color: #000;
+  text-decoration: none;
+}
+
+body.modo-oscuro .btn-volver {
+  background-color: #333;
+  color: #eee;
+  border-color: #555;
+}
+
+body.modo-oscuro .btn-volver:hover {
+  background-color: #444;
+  color: #fff;
 }
