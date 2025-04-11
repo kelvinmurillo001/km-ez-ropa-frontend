@@ -61,9 +61,15 @@ function renderizarProducto(p) {
         <div class="guia-tallas">
           <p><strong>Selecciona Talla:</strong></p>
           <div class="tallas-disponibles">
-            ${tallasDisponibles.length > 0 ? tallasDisponibles.map((talla, i) => `
-              <div class="talla-opcion ${i === 0 ? 'selected' : ''}" onclick="seleccionarTalla(this)">${talla}</div>
-            `).join("") : "<span>No hay tallas disponibles</span>"}
+            ${
+              tallasDisponibles.length > 0
+                ? tallasDisponibles.map((talla, i) => `
+                    <div class="talla-opcion ${i === 0 ? 'selected' : ''}" onclick="seleccionarTalla(this)">
+                      ${talla}
+                    </div>
+                  `).join("")
+                : "<span>No hay tallas disponibles</span>"
+            }
           </div>
         </div>
 
@@ -73,7 +79,9 @@ function renderizarProducto(p) {
           <button onclick="ajustarCantidad(1)">+</button>
         </div>
 
-        <button class="btn-comprar" onclick="agregarAlCarrito('${p._id}')">🛒 Añadir al carrito</button>
+        <button class="btn-comprar" onclick="agregarAlCarrito('${p._id}', '${p.name}', '${p.price}', '${primeraImagen}')">
+          🛒 Añadir al carrito
+        </button>
 
         <div class="guia-info">
           <h4>📏 Guía de Tallas</h4>
@@ -117,12 +125,29 @@ function ajustarCantidad(delta) {
   cantidadElem.textContent = cantidad;
 }
 
-function agregarAlCarrito(productId) {
-  const talla = document.querySelector(".talla-opcion.selected")?.textContent || "Sin talla";
+function agregarAlCarrito(productId, nombre, precio, imagen) {
+  const talla = document.querySelector(".talla-opcion.selected")?.textContent || "";
   const cantidad = parseInt(document.getElementById("cantidad").textContent);
 
-  alert(`✅ Producto agregado\nID: ${productId}\nTalla: ${talla}\nCantidad: ${cantidad}`);
-  // Aquí puedes usar localStorage o una API para guardar el carrito
+  if (!talla) {
+    alert("⚠️ Debes seleccionar una talla.");
+    return;
+  }
+
+  const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+  carrito.push({
+    id: productId,
+    nombre,
+    precio,
+    imagen,
+    talla,
+    cantidad,
+    agregado: new Date().toISOString()
+  });
+
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+  alert("✅ Producto añadido al carrito correctamente.");
 }
 
 function mostrarError(msg) {
