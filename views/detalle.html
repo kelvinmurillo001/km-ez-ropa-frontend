@@ -10,26 +10,20 @@
   <link rel="stylesheet" href="/css/detalle.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
 
-  <!-- 📦 Script -->
+  <!-- ✅ Script -->
   <script src="/js/detalle.js" defer></script>
 </head>
 <body>
 
   <!-- 🔙 Volver -->
-  <a href="index.html" class="btn-volver">⬅️ Volver al catálogo</a>
+  <nav>
+    <a href="index.html" class="btn-volver">⬅️ Volver al catálogo</a>
+  </nav>
 
-  <!-- 📦 Detalle del producto -->
+  <!-- 🛍️ Contenedor principal -->
   <main class="detalle-container fade-in">
-    <div id="detalleProducto" class="detalle-card"></div>
+    <div id="detalleProducto" class="detalle-grid"></div>
   </main>
 
-  <!-- 🌗 Modo oscuro persistente -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      if (localStorage.getItem("modoOscuro") === "true") {
-        document.body.classList.add("modo-oscuro");
-      }
-    });
-  </script>
 </body>
 </html>

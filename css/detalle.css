@@ -1,63 +1,74 @@
-/* 🎯 Contenedor principal */
+/* Contenedor principal */
 .detalle-container {
   max-width: 1200px;
   margin: auto;
   padding: 2rem;
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
   font-family: 'Segoe UI', sans-serif;
 }
 
-/* 🧱 Estructura general */
-.detalle-card {
+/* Grid de imagen + info */
+.detalle-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
-  align-items: flex-start;
   justify-content: center;
 }
 
+/* Galería de imágenes */
 .detalle-galeria {
-  flex: 1 1 400px;
-  max-width: 500px;
-}
-
-.detalle-galeria img {
-  width: 100%;
-  max-height: 400px;
-  object-fit: cover;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  transition: transform 0.3s ease;
-  cursor: zoom-in;
-}
-
-.detalle-miniaturas {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 12px;
-  margin-top: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
 }
 
-.detalle-miniaturas img {
-  width: 70px;
-  height: 70px;
+.detalle-galeria-thumbs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.detalle-galeria-thumbs img {
+  width: 60px;
+  height: 60px;
   object-fit: cover;
   border: 2px solid transparent;
   border-radius: 8px;
   cursor: pointer;
-  transition: border-color 0.3s ease;
-}
-.detalle-miniaturas img.activa {
-  border-color: #f57c00;
+  transition: border-color 0.3s;
 }
 
-/* 📝 Info */
+.detalle-galeria-thumbs img:hover,
+.detalle-galeria-thumbs img.active {
+  border-color: darkorange;
+}
+
+.detalle-imagen-principal {
+  max-width: 400px;
+}
+
+.detalle-imagen-principal img {
+  width: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.detalle-imagen-principal img:hover {
+  transform: scale(1.04);
+  cursor: zoom-in;
+}
+
+/* Info producto */
 .detalle-info {
-  flex: 1 1 300px;
-  max-width: 500px;
+  flex: 1;
+  min-width: 300px;
 }
 
 .detalle-info h1 {
@@ -65,137 +76,136 @@
   margin-bottom: 1rem;
   color: #222;
 }
+
 .detalle-info p {
-  font-size: 16px;
-  margin: 0.3rem 0;
-  color: #333;
+  margin: 6px 0;
+  font-size: 15px;
+  color: #444;
 }
 
-/* 📏 Tallas */
-.tallas {
-  margin-top: 1.2rem;
+/* Tallas */
+.guia-tallas {
+  margin-top: 20px;
 }
 
-.tallas strong {
-  display: block;
-  margin-bottom: 6px;
-  color: #555;
-}
-
-.tallas-lista {
+.tallas-disponibles {
   display: flex;
-  gap: 10px;
   flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0;
 }
 
-.talla-btn {
-  padding: 8px 16px;
+.talla-opcion {
   border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #fafafa;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-.talla-btn:hover {
-  background-color: #f1f1f1;
-}
-.talla-btn.activa {
-  background-color: #f57c00;
-  color: #fff;
-  border-color: #f57c00;
-}
-
-/* 🎨 Variantes */
-.variante-color {
-  margin-top: 1rem;
-}
-.variante-color strong {
-  display: block;
-  margin-bottom: 6px;
-  color: #555;
-}
-.variante-color span {
-  display: inline-block;
   padding: 6px 12px;
-  margin: 4px 4px 0 0;
-  background-color: #eee;
   border-radius: 6px;
-  font-size: 14px;
+  cursor: pointer;
+  background-color: #fafafa;
+  transition: all 0.3s;
+  font-weight: 500;
 }
 
-/* 🛒 Botón */
+.talla-opcion:hover {
+  background-color: #eee;
+}
+
+.talla-opcion.selected {
+  border-color: darkorange;
+  background-color: #fff3e0;
+}
+
+/* Cantidad */
+.contador {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.contador button {
+  background: #ddd;
+  border: none;
+  padding: 6px 12px;
+  font-size: 18px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.contador button:hover {
+  background: #ccc;
+}
+
+.contador span {
+  font-weight: bold;
+  font-size: 18px;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Agregar al carrito */
 .btn-comprar {
-  display: inline-block;
   margin-top: 1.5rem;
-  background-color: darkorange;
-  color: white;
   padding: 12px 24px;
+  background-color: darkorange;
+  color: #fff;
   font-size: 16px;
+  border: none;
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  border: none;
   transition: background-color 0.3s ease;
 }
+
 .btn-comprar:hover {
   background-color: #cc7000;
 }
 
-/* ❌ Error */
+/* Guía de tallas */
+.guia-info {
+  margin-top: 1rem;
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+  font-size: 14px;
+  color: #555;
+}
+
+.guia-info table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+}
+
+.guia-info th,
+.guia-info td {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+/* Mensajes */
 .error {
   color: red;
   font-weight: bold;
   text-align: center;
-  margin-top: 20px;
 }
 
-/* 🔍 Zoom modal */
-.modal-img {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-.modal-img img {
-  max-width: 90%;
-  max-height: 80vh;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-}
-.modal-img .cerrar {
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  font-size: 30px;
-  color: white;
-  cursor: pointer;
-}
-
-/* ✨ Fade */
-.fade-in {
-  animation: fadeIn 0.4s ease-in;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* 📱 Responsive */
 @media (max-width: 768px) {
-  .detalle-card {
+  .detalle-grid {
     flex-direction: column;
     align-items: center;
   }
 
-  .detalle-info, .detalle-galeria {
-    max-width: 100%;
+  .detalle-galeria-thumbs {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-height: unset;
+    overflow: visible;
   }
 
-  .tallas-lista {
-    justify-content: center;
+  .detalle-galeria-thumbs img {
+    width: 50px;
+    height: 50px;
   }
 }

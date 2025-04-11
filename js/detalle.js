@@ -14,7 +14,6 @@ async function cargarDetalle() {
     const res = await fetch(API_BASE);
     const productos = await res.json();
     const producto = productos.find(p => p._id === id);
-
     if (!producto) return mostrarError("❌ Producto no encontrado");
 
     renderizarProducto(producto);
@@ -25,95 +24,98 @@ async function cargarDetalle() {
 }
 
 function renderizarProducto(p) {
-  const tallasUnicas = [...new Set(p.variants.map(v => v.talla.toUpperCase()))];
-
-  const miniaturas = p.images.map((img, i) => `
-    <img src="${img.url}" alt="Vista ${i + 1}" class="${i === 0 ? "active" : ""}" onclick="cambiarImagen('${img.url}', this)" />
-  `).join("");
-
-  const tallasHtml = tallasUnicas.length
-    ? tallasUnicas.map(t => `<button onclick="seleccionarTalla(this)">${t}</button>`).join("")
-    : "<p>No hay tallas disponibles</p>";
-
-  const variantesHtml = p.variants?.length
-    ? p.variants.map(v => `
-        <div class="variante">
-          <img src="${v.imageUrl}" alt="${v.color}" />
-          <p><strong>Talla:</strong> ${v.talla}</p>
-          <p><strong>Color:</strong> ${v.color}</p>
-          <p><strong>Stock:</strong> ${v.stock}</p>
-        </div>`).join("")
-    : "<p>Este producto no tiene variantes.</p>";
+  const tallasDisponibles = [...new Set(p.variants?.map(v => v.talla?.toUpperCase()))];
+  const imagenes = p.images || [];
+  const primeraImagen = imagenes[0]?.url || "";
 
   contenedor.innerHTML = `
-    <div class="detalle-info">
-      <h1>${p.name}</h1>
-      <p><strong>Precio:</strong> $${p.price}</p>
-      <p><strong>Categoría:</strong> ${p.category}</p>
-      <p><strong>Subcategoría:</strong> ${p.subcategory}</p>
-      <p><strong>Stock general:</strong> ${p.stock}</p>
-    </div>
+    <div class="detalle-grid">
+      <div class="detalle-galeria">
+        <div class="detalle-galeria-thumbs">
+          ${imagenes.map((img, i) => `
+            <img src="${img.url}" class="${i === 0 ? 'active' : ''}" onclick="cambiarImagen('${img.url}', this)" />
+          `).join("")}
+        </div>
+        <div class="detalle-imagen-principal">
+          <img id="imagenPrincipal" src="${primeraImagen}" alt="${p.name}" />
+        </div>
+      </div>
 
-    <div class="detalle-galeria">
-      <img src="${p.images[0]?.url}" alt="Principal" class="galeria-principal" id="imagenPrincipal" />
-      <div class="galeria-miniaturas">${miniaturas}</div>
-    </div>
+      <div class="detalle-info">
+        <h1>${p.name}</h1>
+        <p><strong>Precio:</strong> $${p.price}</p>
+        <p><strong>Categoría:</strong> ${p.category}</p>
+        <p><strong>Subcategoría:</strong> ${p.subcategory}</p>
+        <p><strong>Stock general:</strong> ${p.stock}</p>
 
-    <div class="selector-tallas">${tallasHtml}</div>
+        <div class="guia-tallas">
+          <p><strong>Selecciona Talla:</strong></p>
+          <div class="tallas-disponibles">
+            ${tallasDisponibles.length > 0 ? tallasDisponibles.map(talla => `
+              <div class="talla-opcion" onclick="seleccionarTalla(this)">${talla}</div>
+            `).join("") : "<span>No hay tallas disponibles</span>"}
+          </div>
+        </div>
 
-    <button class="guia-tallas-btn" onclick="mostrarGuiaTallas()">📏 Guía de Tallas</button>
+        <div class="contador">
+          <button onclick="ajustarCantidad(-1)">-</button>
+          <span id="cantidad">1</span>
+          <button onclick="ajustarCantidad(1)">+</button>
+        </div>
 
-    <div class="detalle-variantes">
-      <h3>🧩 Variantes</h3>
-      <div class="variantes-grid">${variantesHtml}</div>
-    </div>
+        <button class="btn-comprar" onclick="agregarAlCarrito('${p._id}')">🛒 Añadir al carrito</button>
 
-    <!-- 🧵 Modal Guía -->
-    <div id="modalTallas" class="modal-tallas" style="display: none;">
-      <div class="modal-contenido">
-        <span class="cerrar-modal" onclick="cerrarGuiaTallas()">✖</span>
-        <h2>📐 Guía de Tallas</h2>
-        <table class="tabla-tallas">
-          <thead>
-            <tr><th>Talla</th><th>Busto</th><th>Cintura</th><th>Cadera</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>XS</td><td>76-80 cm</td><td>60-64 cm</td><td>84-88 cm</td></tr>
-            <tr><td>S</td><td>81-85 cm</td><td>65-69 cm</td><td>89-93 cm</td></tr>
-            <tr><td>M</td><td>86-90 cm</td><td>70-74 cm</td><td>94-98 cm</td></tr>
-            <tr><td>L</td><td>91-96 cm</td><td>75-80 cm</td><td>99-104 cm</td></tr>
-            <tr><td>XL</td><td>97-102 cm</td><td>81-86 cm</td><td>105-110 cm</td></tr>
-          </tbody>
-        </table>
+        <div class="guia-info">
+          <h4>📏 Guía de Tallas</h4>
+          <table>
+            <thead>
+              <tr><th>Talla</th><th>Busto</th><th>Cintura</th><th>Cadera</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>XS</td><td>76-80 cm</td><td>60-64 cm</td><td>84-88 cm</td></tr>
+              <tr><td>S</td><td>81-85 cm</td><td>65-69 cm</td><td>89-93 cm</td></tr>
+              <tr><td>M</td><td>86-90 cm</td><td>70-74 cm</td><td>94-98 cm</td></tr>
+              <tr><td>L</td><td>91-96 cm</td><td>75-80 cm</td><td>99-104 cm</td></tr>
+              <tr><td>XL</td><td>97-102 cm</td><td>81-86 cm</td><td>105-110 cm</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   `;
 }
 
-/* 🔁 Cambiar imagen */
-window.cambiarImagen = (src, miniatura) => {
-  const imagenPrincipal = document.getElementById("imagenPrincipal");
-  imagenPrincipal.src = src;
+function cambiarImagen(url, thumb) {
+  document.getElementById("imagenPrincipal").src = url;
 
-  document.querySelectorAll(".galeria-miniaturas img").forEach(img => img.classList.remove("active"));
-  miniatura.classList.add("active");
-};
+  document.querySelectorAll(".detalle-galeria-thumbs img").forEach(img =>
+    img.classList.remove("active")
+  );
+  thumb.classList.add("active");
+}
 
-/* 🟧 Seleccionar talla */
-window.seleccionarTalla = (btn) => {
-  document.querySelectorAll(".selector-tallas button").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-};
+function seleccionarTalla(elem) {
+  document.querySelectorAll(".talla-opcion").forEach(btn =>
+    btn.classList.remove("selected")
+  );
+  elem.classList.add("selected");
+}
 
-/* 📏 Mostrar/Cerrar guía */
-window.mostrarGuiaTallas = () => {
-  document.getElementById("modalTallas").style.display = "flex";
-};
-window.cerrarGuiaTallas = () => {
-  document.getElementById("modalTallas").style.display = "none";
-};
+function ajustarCantidad(delta) {
+  const cantidadElem = document.getElementById("cantidad");
+  let cantidad = parseInt(cantidadElem.textContent);
+  cantidad = Math.max(1, cantidad + delta);
+  cantidadElem.textContent = cantidad;
+}
 
-/* ❌ Error */
+function agregarAlCarrito(productId) {
+  const talla = document.querySelector(".talla-opcion.selected")?.textContent || "Sin talla";
+  const cantidad = parseInt(document.getElementById("cantidad").textContent);
+
+  alert(`✅ Producto agregado\nID: ${productId}\nTalla: ${talla}\nCantidad: ${cantidad}`);
+  // Aquí puedes usar localStorage o una API para guardar el carrito
+}
+
 function mostrarError(msg) {
   contenedor.innerHTML = `<p class="error fade-in">${msg}</p>`;
 }

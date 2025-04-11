@@ -235,10 +235,11 @@ function obtenerDatosFormulario() {
   const precio = parseFloat(document.getElementById("precio").value);
   const categoria = document.getElementById("categoriaSelect").value;
   const subcategoria = document.getElementById("subcategoriaSelect").value;
+  const tallaTipo = document.getElementById("tallaTipo").value;
   const stock = parseInt(document.getElementById("stock").value) || 0;
   const destacado = document.getElementById("featured")?.checked || false;
 
-  if (!nombre || isNaN(precio) || !categoria || !subcategoria) {
+  if (!nombre || isNaN(precio) || !categoria || !subcategoria || !tallaTipo) {
     mostrarMensaje(message, "⚠️ Completa todos los campos obligatorios", "warning");
     return null;
   }
@@ -253,6 +254,7 @@ function obtenerDatosFormulario() {
     price: precio,
     category: categoria,
     subcategory: subcategoria,
+    tallaTipo,
     stock,
     featured: destacado,
     variants: variantes,
@@ -289,6 +291,7 @@ async function cargarProductos() {
           <p><strong>Precio:</strong> $${p.price}</p>
           <p><strong>Categoría:</strong> ${p.category}</p>
           <p><strong>Subcategoría:</strong> ${p.subcategory}</p>
+          <p><strong>Talla Tipo:</strong> ${p.tallaTipo || "No especificado"}</p>
           <p><strong>Stock:</strong> ${p.stock}</p>
           <p><strong>Destacado:</strong> ${p.featured ? "✅" : "❌"}</p>
           <div><strong>Imagen principal:</strong><br/>${imagenesHtml}</div>
@@ -315,6 +318,7 @@ window.editarProducto = async (id) => {
     document.getElementById("precio").value = producto.price;
     document.getElementById("categoriaSelect").value = producto.category;
     document.getElementById("subcategoriaSelect").value = producto.subcategory;
+    document.getElementById("tallaTipo").value = producto.tallaTipo || "adulto";
     document.getElementById("stock").value = producto.stock;
     document.getElementById("featured").checked = producto.featured;
 
