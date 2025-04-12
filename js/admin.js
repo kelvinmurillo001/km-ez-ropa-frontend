@@ -122,12 +122,20 @@ document.getElementById("imagenesPrincipales").addEventListener("change", async 
   }
 
   try {
+    const talla = document.getElementById("mainTalla").value.trim();
+    const color = document.getElementById("mainColor").value.trim();
+
+    if (!talla || !color) {
+      mostrarMensaje(message, "⚠️ Debes ingresar talla y color para la imagen principal", "warning");
+      return;
+    }
+
     const { url, public_id } = await uploadToBackend(files[0]);
     imagenesPrincipales.push({
       url,
       cloudinaryId: public_id,
-      talla: document.getElementById("mainTalla")?.value.trim() || "",
-      color: document.getElementById("mainColor")?.value.trim() || ""
+      talla,
+      color
     });
 
     const img = document.createElement("img");
@@ -190,44 +198,6 @@ window.eliminarVariante = (i) => {
   renderizarVariantes();
 };
 
-function obtenerDatosFormulario() {
-  const nombre = document.getElementById("nombre").value.trim();
-  const precio = parseFloat(document.getElementById("precio").value);
-  const categoria = document.getElementById("categoriaSelect").value;
-  const subcategoria = document.getElementById("subcategoriaSelect").value;
-  const tallaTipo = document.getElementById("tallaTipoSelect").value;
-  const stock = parseInt(document.getElementById("stock").value) || 0;
-  const destacado = document.getElementById("featured")?.checked || false;
-
-  if (!nombre || isNaN(precio) || !categoria || !subcategoria || !tallaTipo) {
-    mostrarMensaje(message, "⚠️ Completa todos los campos obligatorios", "warning");
-    return null;
-  }
-
-  if (imagenesPrincipales.length !== 1) {
-    mostrarMensaje(message, "⚠️ Debes subir 1 imagen principal", "warning");
-    return null;
-  }
-
-  return {
-    name: nombre,
-    price: precio,
-    category: categoria,
-    subcategory: subcategoria,
-    tallaTipo,
-    stock,
-    featured: destacado,
-    variants: variantes,
-    images: imagenesPrincipales,
-    createdBy: "admin"
-  };
-}
-
-function resetBoton(btn) {
-  btn.disabled = false;
-  btn.textContent = "📦 Guardar Producto";
-}
-
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const btn = form.querySelector("button[type=submit]");
@@ -272,7 +242,92 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-window.editarProducto = async function (id) {
+function obtenerDatosFormulario() {
+  const nombre = document.getElementById("nombre").value.trim();
+  const precio = parseFloat(document.getElementById("precio").value);
+  const categoria = document.getElementById("categoriaSelect").value;
+  const subcategoria = document.getElementById("subcategoriaSelect").value;
+  const tallaTipo = document.getElementById("tallaTipoSelect").value;
+  const stock = parseInt(document.getElementById("stock").value) || 0;
+  const destacado = document.getElementById("featured")?.checked || false;
+
+  if (!nombre || isNaN(precio) || !categoria || !subcategoria || !tallaTipo) {
+    mostrarMensaje(message, "⚠️ Completa todos los campos obligatorios", "warning");
+    return null;
+  }
+
+  if (imagenesPrincipales.length !== 1) {
+    mostrarMensaje(message, "⚠️ Debes subir 1 imagen principal", "warning");
+    return null;
+  }
+
+  return {
+    name: nombre,
+    price: precio,
+    category: categoria,
+    subcategory: subcategoria,
+    tallaTipo,
+    stock,
+    featured: destacado,
+    variants: variantes,
+    images: imagenesPrincipales.map(img => ({
+      url: img.url,
+      cloudinaryId: img.cloudinaryId || "",
+      talla: img.talla || "",
+      color: img.color || ""
+    })),
+    createdBy: "admin"
+  };
+}
+
+function resetBoton(btn) {
+  btn.disabled = false;
+  btn.textContent = "📦 Guardar Producto";
+}
+
+async function cargarProductos() {
+  try {
+    const res = await fetch(API_BASE);
+    const productos = await res.json();
+    const lista = document.getElementById("listaProductos");
+    lista.innerHTML = "";
+
+    productos.forEach(p => {
+      const variantesHtml = p.variants?.map(v => `
+        <div><p>${v.talla} - ${v.color}</p><img src="${v.imageUrl}" width="80" /></div>
+      `).join("") || "Sin variantes";
+
+      const imagenesHtml = p.images?.map(img => `
+        <div style="margin-bottom: 6px;">
+          <img src="${img.url}" width="80" />
+          ${(img.talla || img.color) ? `<p><strong>${img.talla || ""} - ${img.color || ""}</strong></p>` : ""}
+        </div>
+      `).join("") || "";
+
+      lista.innerHTML += `
+        <div class="card fade-in">
+          <h3>${p.name}</h3>
+          <p><strong>Precio:</strong> $${p.price}</p>
+          <p><strong>Categoría:</strong> ${p.category}</p>
+          <p><strong>Subcategoría:</strong> ${p.subcategory}</p>
+          <p><strong>Tipo de talla:</strong> ${p.tallaTipo}</p>
+          <p><strong>Stock:</strong> ${p.stock}</p>
+          <p><strong>Destacado:</strong> ${p.featured ? "✅" : "❌"}</p>
+          <div><strong>Imagen principal:</strong><br>${imagenesHtml}</div>
+          <div>${variantesHtml}</div>
+          <button onclick="editarProducto('${p._id}')">✏️ Editar</button>
+          <button onclick="eliminarProducto('${p._id}')">🗑️ Eliminar</button>
+        </div>
+      `;
+    });
+  } catch (err) {
+    console.error("❌ Error al cargar productos:", err);
+  }
+}
+
+window.cargarProductos = cargarProductos;
+
+window.editarProducto = async (id) => {
   try {
     const res = await fetch(API_BASE);
     const productos = await res.json();
