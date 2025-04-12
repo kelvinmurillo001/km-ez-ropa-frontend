@@ -123,7 +123,12 @@ document.getElementById("imagenesPrincipales").addEventListener("change", async 
 
   try {
     const { url, public_id } = await uploadToBackend(files[0]);
-    imagenesPrincipales.push({ url, cloudinaryId: public_id });
+    imagenesPrincipales.push({
+      url,
+      cloudinaryId: public_id,
+      talla: document.getElementById("mainTalla")?.value.trim() || "",
+      color: document.getElementById("mainColor")?.value.trim() || ""
+    });
 
     const img = document.createElement("img");
     img.src = url;
@@ -213,12 +218,7 @@ function obtenerDatosFormulario() {
     stock,
     featured: destacado,
     variants: variantes,
-    images: imagenesPrincipales.map(img => ({
-      url: img.url,
-      cloudinaryId: img.cloudinaryId || img.public_id || "",
-      talla: variantes[0]?.talla || "",
-      color: variantes[0]?.color || ""
-    })),
+    images: imagenesPrincipales,
     createdBy: "admin"
   };
 }
@@ -228,47 +228,51 @@ function resetBoton(btn) {
   btn.textContent = "📦 Guardar Producto";
 }
 
-async function cargarProductos() {
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = form.querySelector("button[type=submit]");
+  btn.disabled = true;
+  btn.textContent = "⏳ Guardando...";
+
+  const payload = obtenerDatosFormulario();
+  if (!payload) return resetBoton(btn);
+
+  const method = editandoId ? "PUT" : "POST";
+  const url = editandoId ? `${API_BASE}/${editandoId}` : API_BASE;
+
   try {
-    const res = await fetch(API_BASE);
-    const productos = await res.json();
-    const lista = document.getElementById("listaProductos");
-    lista.innerHTML = "";
-
-    productos.forEach(p => {
-      const variantesHtml = p.variants?.map(v => `
-        <div><p>${v.talla} - ${v.color}</p><img src="${v.imageUrl}" width="80" /></div>
-      `).join("") || "Sin variantes";
-
-      const imagenesHtml = p.images?.map(img => `
-        <div style="margin-bottom: 6px;">
-          <img src="${img.url}" width="80" />
-          ${img.talla || img.color ? `<p><strong>${img.talla || ""} - ${img.color || ""}</strong></p>` : ""}
-        </div>
-      `).join("") || "";
-
-      lista.innerHTML += `
-        <div class="card fade-in">
-          <h3>${p.name}</h3>
-          <p><strong>Precio:</strong> $${p.price}</p>
-          <p><strong>Categoría:</strong> ${p.category}</p>
-          <p><strong>Subcategoría:</strong> ${p.subcategory}</p>
-          <p><strong>Tipo de talla:</strong> ${p.tallaTipo}</p>
-          <p><strong>Stock:</strong> ${p.stock}</p>
-          <p><strong>Destacado:</strong> ${p.featured ? "✅" : "❌"}</p>
-          <div><strong>Imagen principal:</strong><br>${imagenesHtml}</div>
-          <div>${variantesHtml}</div>
-          <button onclick="editarProducto('${p._id}')">✏️ Editar</button>
-          <button onclick="eliminarProducto('${p._id}')">🗑️ Eliminar</button>
-        </div>
-      `;
+    const res = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(payload)
     });
-  } catch (err) {
-    console.error("❌ Error al cargar productos:", err);
-  }
-}
 
-window.editarProducto = async (id) => {
+    const data = await res.json();
+
+    if (res.ok) {
+      mostrarMensaje(message, editandoId ? "✅ Producto actualizado" : "✅ Producto guardado", "success");
+      form.reset();
+      variantes = [];
+      imagenesPrincipales = [];
+      editandoId = null;
+      renderizarVariantes();
+      cargarProductos();
+    } else {
+      console.error("❌ Error del backend:", data);
+      mostrarMensaje(message, `❌ ${data.message || data.errors?.[0]?.msg || "Error al guardar producto"}`, "error");
+    }
+  } catch (err) {
+    console.error("❌ Error de red:", err);
+    mostrarMensaje(message, "❌ No se pudo conectar al servidor", "error");
+  } finally {
+    resetBoton(btn);
+  }
+});
+
+window.editarProducto = async function (id) {
   try {
     const res = await fetch(API_BASE);
     const productos = await res.json();
