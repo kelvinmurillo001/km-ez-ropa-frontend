@@ -122,20 +122,15 @@ document.getElementById("imagenesPrincipales").addEventListener("change", async 
   }
 
   try {
-    const talla = document.getElementById("mainTalla").value.trim();
-    const color = document.getElementById("mainColor").value.trim();
-
-    if (!talla || !color) {
-      mostrarMensaje(message, "⚠️ Debes ingresar talla y color para la imagen principal", "warning");
-      return;
-    }
-
     const { url, public_id } = await uploadToBackend(files[0]);
+    const mainTalla = document.getElementById("mainTalla").value.trim();
+    const mainColor = document.getElementById("mainColor").value.trim();
+
     imagenesPrincipales.push({
       url,
       cloudinaryId: public_id,
-      talla,
-      color
+      talla: mainTalla,
+      color: mainColor
     });
 
     const img = document.createElement("img");
@@ -198,50 +193,6 @@ window.eliminarVariante = (i) => {
   renderizarVariantes();
 };
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const btn = form.querySelector("button[type=submit]");
-  btn.disabled = true;
-  btn.textContent = "⏳ Guardando...";
-
-  const payload = obtenerDatosFormulario();
-  if (!payload) return resetBoton(btn);
-
-  const method = editandoId ? "PUT" : "POST";
-  const url = editandoId ? `${API_BASE}/${editandoId}` : API_BASE;
-
-  try {
-    const res = await fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      mostrarMensaje(message, editandoId ? "✅ Producto actualizado" : "✅ Producto guardado", "success");
-      form.reset();
-      variantes = [];
-      imagenesPrincipales = [];
-      editandoId = null;
-      renderizarVariantes();
-      cargarProductos();
-    } else {
-      console.error("❌ Error del backend:", data);
-      mostrarMensaje(message, `❌ ${data.message || data.errors?.[0]?.msg || "Error al guardar producto"}`, "error");
-    }
-  } catch (err) {
-    console.error("❌ Error de red:", err);
-    mostrarMensaje(message, "❌ No se pudo conectar al servidor", "error");
-  } finally {
-    resetBoton(btn);
-  }
-});
-
 function obtenerDatosFormulario() {
   const nombre = document.getElementById("nombre").value.trim();
   const precio = parseFloat(document.getElementById("precio").value);
@@ -250,8 +201,10 @@ function obtenerDatosFormulario() {
   const tallaTipo = document.getElementById("tallaTipoSelect").value;
   const stock = parseInt(document.getElementById("stock").value) || 0;
   const destacado = document.getElementById("featured")?.checked || false;
+  const mainTalla = document.getElementById("mainTalla").value.trim();
+  const mainColor = document.getElementById("mainColor").value.trim();
 
-  if (!nombre || isNaN(precio) || !categoria || !subcategoria || !tallaTipo) {
+  if (!nombre || isNaN(precio) || !categoria || !subcategory || !tallaTipo) {
     mostrarMensaje(message, "⚠️ Completa todos los campos obligatorios", "warning");
     return null;
   }
@@ -260,6 +213,9 @@ function obtenerDatosFormulario() {
     mostrarMensaje(message, "⚠️ Debes subir 1 imagen principal", "warning");
     return null;
   }
+
+  imagenesPrincipales[0].talla = mainTalla;
+  imagenesPrincipales[0].color = mainColor;
 
   return {
     name: nombre,
@@ -270,12 +226,7 @@ function obtenerDatosFormulario() {
     stock,
     featured: destacado,
     variants: variantes,
-    images: imagenesPrincipales.map(img => ({
-      url: img.url,
-      cloudinaryId: img.cloudinaryId || "",
-      talla: img.talla || "",
-      color: img.color || ""
-    })),
+    images: imagenesPrincipales,
     createdBy: "admin"
   };
 }
@@ -300,7 +251,7 @@ async function cargarProductos() {
       const imagenesHtml = p.images?.map(img => `
         <div style="margin-bottom: 6px;">
           <img src="${img.url}" width="80" />
-          ${(img.talla || img.color) ? `<p><strong>${img.talla || ""} - ${img.color || ""}</strong></p>` : ""}
+          ${img.talla || img.color ? `<p><strong>${img.talla || ""} - ${img.color || ""}</strong></p>` : ""}
         </div>
       `).join("") || "";
 
@@ -324,8 +275,6 @@ async function cargarProductos() {
     console.error("❌ Error al cargar productos:", err);
   }
 }
-
-window.cargarProductos = cargarProductos;
 
 window.editarProducto = async (id) => {
   try {

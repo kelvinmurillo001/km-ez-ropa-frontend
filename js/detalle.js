@@ -12,12 +12,10 @@ async function cargarDetalle() {
   if (!id) return mostrarError("❌ ID del producto no proporcionado.");
 
   try {
-    const res = await fetch(`${API_BASE}`); // 🚨 Mejor si existe endpoint `/products/:id`
+    const res = await fetch(`${API_BASE}/${id}`);
     if (!res.ok) throw new Error("Respuesta no válida del servidor");
 
-    const productos = await res.json();
-    const producto = productos.find(p => p._id === id);
-
+    const producto = await res.json();
     if (!producto) return mostrarError("❌ Producto no encontrado.");
 
     renderizarProducto(producto);
@@ -29,12 +27,23 @@ async function cargarDetalle() {
 
 function renderizarProducto(p) {
   const imagenes = [
-    ...(p.images || []),
-    ...(p.variants?.map(v => ({ url: v.imageUrl })) || [])
+    ...(p.images?.map(img => ({
+      url: img.url,
+      talla: img.talla || "",
+      color: img.color || ""
+    })) || []),
+    ...(p.variants?.map(v => ({
+      url: v.imageUrl,
+      talla: v.talla,
+      color: v.color
+    })) || [])
   ];
 
   const primeraImagen = imagenes[0]?.url || "/assets/logo.jpg";
-  const tallas = [...new Set(p.variants?.map(v => v.talla?.toUpperCase()))];
+
+  const tallasUnicas = [
+    ...new Set(imagenes.map(i => i.talla?.toUpperCase()).filter(Boolean))
+  ];
 
   const iconoTalla = {
     bebé: "👶",
@@ -71,12 +80,12 @@ function renderizarProducto(p) {
           <p><strong>Selecciona Talla:</strong></p>
           <div class="tallas-disponibles">
             ${
-              tallas.length
-                ? tallas.map((t, i) => `
-                  <div class="talla-opcion ${i === 0 ? "selected" : ""}" onclick="seleccionarTalla(this)">
-                    ${t}
-                  </div>
-                `).join("")
+              tallasUnicas.length
+                ? tallasUnicas.map((t, i) => `
+                    <div class="talla-opcion ${i === 0 ? "selected" : ""}" onclick="seleccionarTalla(this)">
+                      ${t}
+                    </div>
+                  `).join("")
                 : "<span>No hay tallas disponibles</span>"
             }
           </div>

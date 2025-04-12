@@ -62,6 +62,7 @@
       <div class="botones-finales">
         <button type="button" onclick="enviarDesdeCarrito()" class="btn-whatsapp">📲 Consultar por WhatsApp</button>
         <button type="button" onclick="vaciarCarrito()" class="btn-vaciar">🗑 Vaciar Carrito</button>
+        <a href="index.html" class="btn-secundario">🛒 Seguir comprando</a>
       </div>
 
       <p id="confirmacion" class="confirmacion oculto" role="status" aria-live="assertive" tabindex="-1">
@@ -102,7 +103,9 @@
 
       if (typeof sendCartToWhatsApp === "function") {
         sendCartToWhatsApp(nombre, nota);
+        confirm.textContent = "✅ ¡Pedido enviado correctamente por WhatsApp!";
         confirm.classList.remove("oculto");
+        confirm.classList.add("fade-in");
         confirm.focus();
       }
     }

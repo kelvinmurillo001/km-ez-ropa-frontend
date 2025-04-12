@@ -68,11 +68,6 @@
     <label for="categoria" class="visually-hidden">Filtrar por categoría</label>
     <select id="categoria" aria-label="Filtrar por categoría">
       <option value="todas">Categoría: Todas</option>
-      <option value="Hombre">Hombre</option>
-      <option value="Mujer">Mujer</option>
-      <option value="Niño">Niño</option>
-      <option value="Niña">Niña</option>
-      <option value="Bebé">Bebé</option>
     </select>
 
     <label for="subcategoria" class="visually-hidden">Filtrar por subcategoría</label>
@@ -129,5 +124,26 @@
   <!-- ✅ Scripts -->
   <script src="/js/cart.js" defer></script>
   <script src="/js/script.js" defer></script>
+
+  <!-- 🌗 Modo Oscuro persistente -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const btnToggle = document.getElementById("modoToggle");
+      const body = document.body;
+
+      const activar = localStorage.getItem("modoOscuro") === "true";
+      if (activar) {
+        body.classList.add("modo-oscuro");
+        btnToggle.textContent = "☀️ Modo Claro";
+      }
+
+      btnToggle?.addEventListener("click", () => {
+        body.classList.toggle("modo-oscuro");
+        const activo = body.classList.contains("modo-oscuro");
+        localStorage.setItem("modoOscuro", activo);
+        btnToggle.textContent = activo ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+      });
+    });
+  </script>
 </body>
 </html>
