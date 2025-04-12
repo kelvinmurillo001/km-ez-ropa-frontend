@@ -265,7 +265,7 @@ function obtenerDatosFormulario() {
     stock,
     featured: destacado,
     variants: variantes,
-    images: imagenesPrincipales.map(img => ({
+    mainImages: imagenesPrincipales.map(img => ({
       url: img.url,
       cloudinaryId: img.cloudinaryId || img.public_id || ""
     })),
