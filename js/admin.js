@@ -61,8 +61,10 @@ function mostrarMensaje(el, mensaje, tipo = "info") {
 async function cargarCategorias() {
   const catSelect = document.getElementById("categoriaSelect");
   const subcatSelect = document.getElementById("subcategoriaSelect");
+
   catSelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
   subcatSelect.innerHTML = `<option value="">Selecciona una subcategoría</option>`;
+  subcatSelect.disabled = true;
 
   try {
     const res = await fetch(API_CATEGORIAS);
@@ -78,6 +80,7 @@ async function cargarCategorias() {
       const selected = e.target.selectedOptions[0];
       const subcats = JSON.parse(selected.dataset.subcats || "[]");
       subcatSelect.innerHTML = `<option value="">Selecciona una subcategoría</option>`;
+      subcatSelect.disabled = subcats.length === 0;
       subcats.forEach(sub => subcatSelect.appendChild(new Option(sub, sub)));
     });
   } catch (err) {
@@ -235,6 +238,14 @@ function obtenerDatosFormulario() {
   const stock = parseInt(document.getElementById("stock").value) || 0;
   const destacado = document.getElementById("featured")?.checked || false;
 
+  const catExiste = [...document.getElementById("categoriaSelect").options]
+    .some(opt => opt.value === categoria);
+
+  if (!catExiste) {
+    mostrarMensaje(message, "⚠️ La categoría seleccionada ya no existe", "error");
+    return null;
+  }
+
   if (!nombre || isNaN(precio) || !categoria || !subcategoria || !tallaTipo) {
     mostrarMensaje(message, "⚠️ Completa todos los campos obligatorios", "warning");
     return null;
@@ -308,6 +319,12 @@ window.editarProducto = async (id) => {
     const productos = await res.json();
     const producto = productos.find(p => p._id === id);
     if (!producto) return mostrarMensaje(message, "❌ Producto no encontrado", "error");
+
+    const catSelect = document.getElementById("categoriaSelect");
+    const catExiste = [...catSelect.options].some(opt => opt.value === producto.category);
+    if (!catExiste) {
+      mostrarMensaje(message, `⚠️ La categoría "${producto.category}" ya no existe`, "warning");
+    }
 
     document.getElementById("nombre").value = producto.name;
     document.getElementById("precio").value = producto.price;
