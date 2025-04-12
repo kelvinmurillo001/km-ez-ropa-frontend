@@ -41,7 +41,7 @@ const contadorVariantes = document.getElementById("contadorVariantes");
 
 let variantes = [];
 let editandoId = null;
-let imagenPrincipal = null;
+let imagenesPrincipales = [];
 
 function mostrarMensaje(el, mensaje, tipo = "info") {
   const colores = {
@@ -111,31 +111,19 @@ async function uploadToBackend(file) {
 }
 
 document.getElementById("imagenesPrincipales").addEventListener("change", async (e) => {
-  const file = e.target.files[0];
+  const files = Array.from(e.target.files);
   const previewContenedor = document.getElementById("previewImagenesPrincipales");
   previewContenedor.innerHTML = "";
-  imagenPrincipal = null;
+  imagenesPrincipales = [];
 
-  if (!file) return;
+  if (files.length !== 1) {
+    mostrarMensaje(message, "⚠️ Solo se permite 1 imagen principal", "warning");
+    return;
+  }
 
   try {
-    const { url, public_id } = await uploadToBackend(file);
-
-    // Pide talla y color para imagen principal
-    const talla = prompt("🔠 Ingresa la talla de la imagen principal:");
-    const color = prompt("🎨 Ingresa el color de la imagen principal:");
-
-    if (!talla || !color) {
-      mostrarMensaje(message, "⚠️ Debes ingresar talla y color", "warning");
-      return;
-    }
-
-    imagenPrincipal = {
-      url,
-      cloudinaryId: public_id,
-      talla: talla.trim(),
-      color: color.trim()
-    };
+    const { url, public_id } = await uploadToBackend(files[0]);
+    imagenesPrincipales.push({ url, cloudinaryId: public_id });
 
     const img = document.createElement("img");
     img.src = url;
@@ -197,50 +185,6 @@ window.eliminarVariante = (i) => {
   renderizarVariantes();
 };
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const btn = form.querySelector("button[type=submit]");
-  btn.disabled = true;
-  btn.textContent = "⏳ Guardando...";
-
-  const payload = obtenerDatosFormulario();
-  if (!payload) return resetBoton(btn);
-
-  const method = editandoId ? "PUT" : "POST";
-  const url = editandoId ? `${API_BASE}/${editandoId}` : API_BASE;
-
-  try {
-    const res = await fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      mostrarMensaje(message, editandoId ? "✅ Producto actualizado" : "✅ Producto guardado", "success");
-      form.reset();
-      variantes = [];
-      imagenPrincipal = null;
-      editandoId = null;
-      renderizarVariantes();
-      cargarProductos();
-    } else {
-      console.error("❌ Error del backend:", data);
-      mostrarMensaje(message, `❌ ${data.message || data.errors?.[0]?.msg || "Error al guardar producto"}`, "error");
-    }
-  } catch (err) {
-    console.error("❌ Error de red:", err);
-    mostrarMensaje(message, "❌ No se pudo conectar al servidor", "error");
-  } finally {
-    resetBoton(btn);
-  }
-});
-
 function obtenerDatosFormulario() {
   const nombre = document.getElementById("nombre").value.trim();
   const precio = parseFloat(document.getElementById("precio").value);
@@ -255,8 +199,8 @@ function obtenerDatosFormulario() {
     return null;
   }
 
-  if (!imagenPrincipal) {
-    mostrarMensaje(message, "⚠️ Debes subir 1 imagen principal con talla y color", "warning");
+  if (imagenesPrincipales.length !== 1) {
+    mostrarMensaje(message, "⚠️ Debes subir 1 imagen principal", "warning");
     return null;
   }
 
@@ -269,14 +213,12 @@ function obtenerDatosFormulario() {
     stock,
     featured: destacado,
     variants: variantes,
-    images: [
-      {
-        url: imagenPrincipal.url,
-        cloudinaryId: imagenPrincipal.cloudinaryId,
-        talla: imagenPrincipal.talla,
-        color: imagenPrincipal.color
-      }
-    ],
+    images: imagenesPrincipales.map(img => ({
+      url: img.url,
+      cloudinaryId: img.cloudinaryId || img.public_id || "",
+      talla: variantes[0]?.talla || "",
+      color: variantes[0]?.color || ""
+    })),
     createdBy: "admin"
   };
 }
@@ -298,7 +240,12 @@ async function cargarProductos() {
         <div><p>${v.talla} - ${v.color}</p><img src="${v.imageUrl}" width="80" /></div>
       `).join("") || "Sin variantes";
 
-      const imagenesHtml = p.images?.map(img => `<img src="${img.url}" width="80" />`).join("") || "";
+      const imagenesHtml = p.images?.map(img => `
+        <div style="margin-bottom: 6px;">
+          <img src="${img.url}" width="80" />
+          ${img.talla || img.color ? `<p><strong>${img.talla || ""} - ${img.color || ""}</strong></p>` : ""}
+        </div>
+      `).join("") || "";
 
       lista.innerHTML += `
         <div class="card fade-in">
@@ -320,6 +267,47 @@ async function cargarProductos() {
     console.error("❌ Error al cargar productos:", err);
   }
 }
+
+window.editarProducto = async (id) => {
+  try {
+    const res = await fetch(API_BASE);
+    const productos = await res.json();
+    const producto = productos.find(p => p._id === id);
+    if (!producto) return mostrarMensaje(message, "❌ Producto no encontrado", "error");
+
+    document.getElementById("nombre").value = producto.name;
+    document.getElementById("precio").value = producto.price;
+    document.getElementById("categoriaSelect").value = producto.category;
+    document.getElementById("tallaTipoSelect").value = producto.tallaTipo || "";
+    document.getElementById("stock").value = producto.stock;
+    document.getElementById("featured").checked = producto.featured;
+
+    const evt = new Event("change");
+    document.getElementById("categoriaSelect").dispatchEvent(evt);
+    setTimeout(() => {
+      document.getElementById("subcategoriaSelect").value = producto.subcategory;
+    }, 100);
+
+    variantes = [...producto.variants];
+    imagenesPrincipales = producto.images || [];
+    renderizarVariantes();
+
+    const previewContenedor = document.getElementById("previewImagenesPrincipales");
+    previewContenedor.innerHTML = "";
+    imagenesPrincipales.forEach(img => {
+      const el = document.createElement("img");
+      el.src = img.url;
+      el.width = 100;
+      previewContenedor.appendChild(el);
+    });
+
+    editandoId = id;
+    mostrarMensaje(message, "✏️ Editando producto", "info");
+  } catch (err) {
+    console.error("❌", err);
+    mostrarMensaje(message, "❌ Error cargando producto", "error");
+  }
+};
 
 window.eliminarProducto = async (id) => {
   if (!confirm("¿Eliminar producto?")) return;
