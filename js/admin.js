@@ -55,7 +55,7 @@ function mostrarMensaje(el, mensaje, tipo = "info") {
   setTimeout(() => el.classList.add("oculto"), 3500);
 }
 
-// ✅ CARGAR CATEGORÍAS DINÁMICAS
+// ✅ CARGAR CATEGORÍAS
 async function cargarCategorias() {
   const catSelect = document.getElementById("categoriaSelect");
   const subcatSelect = document.getElementById("subcategoriaSelect");
@@ -227,7 +227,7 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-// ✅ OBTENER DATOS DEL FORMULARIO
+// ✅ OBTENER DATOS FORMULARIO (CORREGIDO)
 function obtenerDatosFormulario() {
   const nombre = document.getElementById("nombre").value.trim();
   const precio = parseFloat(document.getElementById("precio").value);
@@ -256,7 +256,11 @@ function obtenerDatosFormulario() {
     stock,
     featured: destacado,
     variants: variantes,
-    mainImages: imagenesPrincipales
+    images: imagenesPrincipales.map(img => ({
+      url: img.url,
+      cloudinaryId: img.cloudinaryId || img.public_id || ""
+    })),
+    createdBy: "admin"
   };
 }
 
