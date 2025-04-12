@@ -2,28 +2,49 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Detalle del Producto | KM & EZ ROPA</title>
 
-  <!-- ✅ Estilos -->
+  <!-- 🛡️ SEO -->
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="KM & EZ ROPA" />
+  <meta name="description" content="Consulta todos los detalles del producto en KM & EZ ROPA: precios, imágenes, tallas y más." />
+
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/detalle.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
 
-  <!-- ✅ Script -->
+  <!-- 🧠 Script -->
   <script src="/js/detalle.js" defer></script>
 </head>
 <body>
 
-  <!-- 🔙 Volver -->
-  <nav role="navigation" aria-label="Volver al catálogo">
+  <!-- 🌙 Modo oscuro persistente -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("modoOscuro") === "true") {
+        document.body.classList.add("modo-oscuro");
+      }
+    });
+  </script>
+
+  <!-- 🔙 Navegación -->
+  <nav role="navigation" aria-label="Volver al catálogo de productos">
     <a href="index.html" class="btn-volver">⬅️ Volver al catálogo</a>
   </nav>
 
-  <!-- 🛍️ Contenedor principal -->
-  <main class="detalle-container fade-in" role="main" aria-label="Detalle del producto">
-    <div id="detalleProducto" class="detalle-grid" aria-live="polite"></div>
+  <!-- 🛍️ Detalle del producto -->
+  <main class="detalle-container fade-in" role="main" aria-label="Detalle del producto seleccionado">
+    <div id="detalleProducto" class="detalle-grid" aria-live="polite">
+      <!-- Renderizado por detalle.js -->
+    </div>
   </main>
+
+  <!-- 🚫 Fallback sin JavaScript -->
+  <noscript>
+    <p style="color: red; text-align: center;">⚠️ Esta página requiere JavaScript habilitado para mostrar el contenido del producto.</p>
+  </noscript>
 
 </body>
 </html>

@@ -26,6 +26,7 @@
 // 🌐 ENDPOINTS
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api/products";
 const API_UPLOAD = "https://km-ez-ropa-backend.onrender.com/api/uploads";
+const API_CATEGORIES = "https://km-ez-ropa-backend.onrender.com/api/categories";
 
 // 📌 ELEMENTOS
 const form = document.getElementById("productoForm");
@@ -37,15 +38,6 @@ const token = localStorage.getItem("token");
 let variantes = [];
 let editandoId = null;
 let imagenesPrincipales = [];
-
-// 📚 CATEGORÍAS
-const categorias = {
-  Hombre: ["Camisas", "Pantalones", "Chaquetas", "Ropa interior"],
-  Mujer: ["Vestidos", "Blusas", "Leggins", "Ropa interior"],
-  Niño: ["Camisetas", "Shorts", "Abrigos"],
-  Niña: ["Faldas", "Vestidos", "Chaquetas"],
-  Bebé: ["Mamelucos", "Bodies", "Pijamas"]
-};
 
 // ✅ MENSAJE
 function mostrarMensaje(el, mensaje, tipo = "info") {
@@ -63,21 +55,45 @@ function mostrarMensaje(el, mensaje, tipo = "info") {
   setTimeout(() => el.classList.add("oculto"), 3500);
 }
 
-// ✅ CARGAR CATEGORÍAS
-function cargarCategorias() {
+// ✅ CARGAR CATEGORÍAS DESDE BACKEND
+async function cargarCategorias() {
   const catSelect = document.getElementById("categoriaSelect");
-  catSelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
-  Object.keys(categorias).forEach(cat => {
-    catSelect.appendChild(new Option(cat, cat));
-  });
-}
-
-document.getElementById("categoriaSelect").addEventListener("change", () => {
-  const cat = document.getElementById("categoriaSelect").value;
   const subSelect = document.getElementById("subcategoriaSelect");
+  catSelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
   subSelect.innerHTML = `<option value="">Selecciona una subcategoría</option>`;
-  categorias[cat]?.forEach(sub => subSelect.appendChild(new Option(sub, sub)));
-});
+
+  try {
+    const res = await fetch(API_CATEGORIES);
+    const data = await res.json();
+
+    if (!Array.isArray(data)) throw new Error("⚠️ Error de formato en categorías");
+
+    data.forEach(cat => {
+      const option = document.createElement("option");
+      option.value = cat.name;
+      option.textContent = cat.name;
+      option.dataset.subcategories = JSON.stringify(cat.subcategories || []);
+      catSelect.appendChild(option);
+    });
+
+    catSelect.addEventListener("change", () => {
+      const selected = catSelect.options[catSelect.selectedIndex];
+      const subcats = JSON.parse(selected.dataset.subcategories || "[]");
+
+      subSelect.innerHTML = `<option value="">Selecciona una subcategoría</option>`;
+      subcats.forEach(sub => {
+        const opt = document.createElement("option");
+        opt.value = sub;
+        opt.textContent = sub;
+        subSelect.appendChild(opt);
+      });
+    });
+
+  } catch (err) {
+    console.error("❌ Error al cargar categorías:", err);
+    mostrarMensaje(message, "❌ Error cargando categorías", "error");
+  }
+}
 
 // ✅ VALIDACIÓN IMAGEN
 function esImagenValida(file) {
@@ -87,9 +103,7 @@ function esImagenValida(file) {
 
 // ✅ SUBIR A BACKEND
 async function uploadToBackend(file) {
-  if (!esImagenValida(file)) {
-    throw new Error("⚠️ Solo JPG, PNG o WEBP");
-  }
+  if (!esImagenValida(file)) throw new Error("⚠️ Solo JPG, PNG o WEBP");
 
   const formData = new FormData();
   formData.append("image", file);
@@ -229,7 +243,6 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-// ✅ OBTENER DATOS DEL FORMULARIO
 function obtenerDatosFormulario() {
   const nombre = document.getElementById("nombre").value.trim();
   const precio = parseFloat(document.getElementById("precio").value);
@@ -262,13 +275,12 @@ function obtenerDatosFormulario() {
   };
 }
 
-// ✅ RESET BOTÓN
 function resetBoton(btn) {
   btn.disabled = false;
   btn.textContent = "📦 Guardar Producto";
 }
 
-// ✅ CARGAR PRODUCTOS
+// ✅ CARGAR PRODUCTOS (igual que antes)
 async function cargarProductos() {
   try {
     const res = await fetch(API_BASE);
@@ -306,7 +318,7 @@ async function cargarProductos() {
   }
 }
 
-// ✅ EDITAR PRODUCTO
+// ✅ EDITAR PRODUCTO (igual que antes)
 window.editarProducto = async (id) => {
   try {
     const res = await fetch(API_BASE);
@@ -317,7 +329,14 @@ window.editarProducto = async (id) => {
     document.getElementById("nombre").value = producto.name;
     document.getElementById("precio").value = producto.price;
     document.getElementById("categoriaSelect").value = producto.category;
-    document.getElementById("subcategoriaSelect").value = producto.subcategory;
+
+    const event = new Event("change");
+    document.getElementById("categoriaSelect").dispatchEvent(event);
+
+    setTimeout(() => {
+      document.getElementById("subcategoriaSelect").value = producto.subcategory;
+    }, 100);
+
     document.getElementById("tallaTipoSelect").value = producto.tallaTipo || "";
     document.getElementById("stock").value = producto.stock;
     document.getElementById("featured").checked = producto.featured;

@@ -8,81 +8,93 @@ document.addEventListener("DOMContentLoaded", cargarDetalle);
 async function cargarDetalle() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
-  if (!id) return mostrarError("❌ ID no proporcionado");
+
+  if (!id) return mostrarError("❌ ID del producto no proporcionado.");
 
   try {
-    const res = await fetch(API_BASE);
+    const res = await fetch(`${API_BASE}`); // 🚨 Mejor si existe endpoint `/products/:id`
+    if (!res.ok) throw new Error("Respuesta no válida del servidor");
+
     const productos = await res.json();
     const producto = productos.find(p => p._id === id);
-    if (!producto) return mostrarError("❌ Producto no encontrado");
+
+    if (!producto) return mostrarError("❌ Producto no encontrado.");
 
     renderizarProducto(producto);
   } catch (error) {
-    console.error("❌ Error:", error);
-    mostrarError("❌ Error al cargar detalle");
+    console.error("❌ Error al cargar detalle:", error);
+    mostrarError("❌ Ocurrió un error al cargar el producto.");
   }
 }
 
 function renderizarProducto(p) {
-  const tallasDisponibles = [...new Set(p.variants?.map(v => v.talla?.toUpperCase()))];
   const imagenes = [
     ...(p.images || []),
     ...(p.variants?.map(v => ({ url: v.imageUrl })) || [])
   ];
-  const primeraImagen = imagenes[0]?.url || "";
 
-  const iconoTalla = p.tallaTipo === "bebé"
-    ? "👶"
-    : p.tallaTipo === "niño"
-    ? "🧒"
-    : "👕";
+  const primeraImagen = imagenes[0]?.url || "/assets/logo.jpg";
+  const tallas = [...new Set(p.variants?.map(v => v.talla?.toUpperCase()))];
+
+  const iconoTalla = {
+    bebé: "👶",
+    niño: "🧒",
+    niña: "👧",
+    adulto: "👕"
+  }[p.tallaTipo?.toLowerCase()] || "👕";
 
   contenedor.innerHTML = `
     <div class="detalle-grid">
+      <!-- 🖼 Galería -->
       <div class="detalle-galeria">
         <div class="detalle-galeria-thumbs">
           ${imagenes.map((img, i) => `
-            <img src="${img.url}" class="${i === 0 ? 'active' : ''}" onclick="cambiarImagen('${img.url}', this)" />
+            <img src="${img.url}" alt="Miniatura ${i + 1}" class="${i === 0 ? "active" : ""}" onclick="cambiarImagen('${img.url}', this)" />
           `).join("")}
         </div>
         <div class="detalle-imagen-principal">
-          <img id="imagenPrincipal" src="${primeraImagen}" alt="${p.name}" />
+          <img id="imagenPrincipal" src="${primeraImagen}" alt="Imagen principal de ${p.name}" />
         </div>
       </div>
 
+      <!-- 📋 Información -->
       <div class="detalle-info">
         <h1>${p.name}</h1>
-        <p><strong>Precio:</strong> $${p.price}</p>
+        <p><strong>Precio:</strong> $${p.price.toFixed(2)}</p>
         <p><strong>Categoría:</strong> ${p.category}</p>
-        <p><strong>Subcategoría:</strong> ${p.subcategory}</p>
+        <p><strong>Subcategoría:</strong> ${p.subcategory || "N/A"}</p>
         ${p.tallaTipo ? `<p><strong>Tipo de talla:</strong> ${iconoTalla} ${capitalizar(p.tallaTipo)}</p>` : ""}
-        <p><strong>Stock general:</strong> ${p.stock}</p>
+        <p><strong>Stock general:</strong> ${p.stock ?? "N/A"}</p>
 
+        <!-- 👕 Tallas -->
         <div class="guia-tallas">
           <p><strong>Selecciona Talla:</strong></p>
           <div class="tallas-disponibles">
             ${
-              tallasDisponibles.length > 0
-                ? tallasDisponibles.map((talla, i) => `
-                    <div class="talla-opcion ${i === 0 ? 'selected' : ''}" onclick="seleccionarTalla(this)">
-                      ${talla}
-                    </div>
-                  `).join("")
+              tallas.length
+                ? tallas.map((t, i) => `
+                  <div class="talla-opcion ${i === 0 ? "selected" : ""}" onclick="seleccionarTalla(this)">
+                    ${t}
+                  </div>
+                `).join("")
                 : "<span>No hay tallas disponibles</span>"
             }
           </div>
         </div>
 
+        <!-- ➕ Cantidad -->
         <div class="contador">
-          <button onclick="ajustarCantidad(-1)">-</button>
+          <button onclick="ajustarCantidad(-1)" aria-label="Disminuir cantidad">-</button>
           <span id="cantidad">1</span>
-          <button onclick="ajustarCantidad(1)">+</button>
+          <button onclick="ajustarCantidad(1)" aria-label="Aumentar cantidad">+</button>
         </div>
 
+        <!-- 🛒 Agregar -->
         <button class="btn-comprar" onclick="agregarAlCarrito('${p._id}', '${p.name}', '${p.price}', '${primeraImagen}')">
           🛒 Añadir al carrito
         </button>
 
+        <!-- 📏 Guía de tallas -->
         <div class="guia-info">
           <h4>📏 Guía de Tallas</h4>
           <table>
@@ -103,14 +115,18 @@ function renderizarProducto(p) {
   `;
 }
 
+// 🖼 Cambiar imagen activa
 function cambiarImagen(url, thumb) {
-  document.getElementById("imagenPrincipal").src = url;
+  const principal = document.getElementById("imagenPrincipal");
+  principal.src = url;
+
   document.querySelectorAll(".detalle-galeria-thumbs img").forEach(img =>
     img.classList.remove("active")
   );
   thumb.classList.add("active");
 }
 
+// ✅ Seleccionar talla
 function seleccionarTalla(elem) {
   document.querySelectorAll(".talla-opcion").forEach(btn =>
     btn.classList.remove("selected")
@@ -118,6 +134,7 @@ function seleccionarTalla(elem) {
   elem.classList.add("selected");
 }
 
+// 🔢 Ajustar cantidad
 function ajustarCantidad(delta) {
   const cantidadElem = document.getElementById("cantidad");
   let cantidad = parseInt(cantidadElem.textContent);
@@ -125,19 +142,17 @@ function ajustarCantidad(delta) {
   cantidadElem.textContent = cantidad;
 }
 
-function agregarAlCarrito(productId, nombre, precio, imagen) {
-  const talla = document.querySelector(".talla-opcion.selected")?.textContent || "";
+// 🛒 Añadir al carrito
+function agregarAlCarrito(id, nombre, precio, imagen) {
+  const talla = document.querySelector(".talla-opcion.selected")?.textContent;
   const cantidad = parseInt(document.getElementById("cantidad").textContent);
 
-  if (!talla) {
-    alert("⚠️ Debes seleccionar una talla.");
-    return;
-  }
+  if (!talla) return alert("⚠️ Por favor, selecciona una talla.");
 
-  const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+  const carrito = JSON.parse(localStorage.getItem("carrito") || "[]");
 
   carrito.push({
-    id: productId,
+    id,
     nombre,
     precio,
     imagen,
@@ -147,13 +162,17 @@ function agregarAlCarrito(productId, nombre, precio, imagen) {
   });
 
   localStorage.setItem("carrito", JSON.stringify(carrito));
-  alert("✅ Producto añadido al carrito correctamente.");
+  alert("✅ Producto añadido al carrito.");
 }
 
+// ⚠️ Mostrar error
 function mostrarError(msg) {
   contenedor.innerHTML = `<p class="error fade-in">${msg}</p>`;
 }
 
+// 🔤 Capitalizar texto
 function capitalizar(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+  return typeof str === "string"
+    ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+    : str;
 }

@@ -5,39 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Panel de Control | KM & EZ ROPA</title>
 
-  <!-- 🔐 SEO y Seguridad -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="author" content="KM & EZ ROPA" />
   <meta name="description" content="Accede al panel administrativo de KM & EZ ROPA para gestionar tu tienda." />
 
-  <!-- ✅ Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/panel.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- ✅ Módulo JS (corregido) -->
   <script type="module" src="/js/panel.js" defer></script>
 </head>
 <body>
 
-  <!-- ☀️🌙 Modo Oscuro -->
   <div style="position: absolute; top: 15px; right: 15px;">
     <button id="modoToggle" class="btn btn-sm" aria-label="Alternar modo oscuro">🌙 Modo Oscuro</button>
   </div>
 
-  <!-- 🧠 Contenedor Principal -->
   <main class="panel-container fade-in" role="main" aria-label="Panel de administración">
-    <!-- 🧾 Encabezado -->
     <header class="header-panel">
       <h1>🛠️ Panel de Administración</h1>
-      <button type="button" onclick="logout()" class="btn btn-danger" aria-label="Cerrar sesión de administrador">
-        🔓 Cerrar sesión
-      </button>
+      <button type="button" onclick="logout()" class="btn btn-danger">🔓 Cerrar sesión</button>
     </header>
 
-    <!-- 🧭 Navegación -->
     <nav class="menu-panel" role="navigation" aria-label="Navegación del panel">
       <ul class="panel-links">
         <li><a href="admin.html" class="btn-panel-link">📦 Productos</a></li>
@@ -48,14 +39,41 @@
         <li><a href="index.html" class="btn-panel-link">🏠 Ir al Catálogo</a></li>
       </ul>
     </nav>
+
+    <!-- 🎯 Formulario de creación de producto -->
+    <section class="formulario-crear-producto mt-3">
+      <h2>➕ Crear nuevo producto</h2>
+      <form id="formProducto" class="form-block" autocomplete="off">
+        <input type="text" id="nombre" placeholder="Nombre del producto" required />
+        <input type="number" id="precio" placeholder="Precio" step="0.01" required />
+
+        <!-- Categorías dinámicas -->
+        <select id="categoriaProducto" required>
+          <option value="">Categoría</option>
+        </select>
+
+        <select id="subcategoriaProducto" required>
+          <option value="">Subcategoría</option>
+        </select>
+
+        <input type="number" id="stock" placeholder="Stock inicial" required />
+        <select id="tallaTipo" required>
+          <option value="">Tipo de Talla</option>
+          <option value="numérico">Numérico</option>
+          <option value="letras">Letras</option>
+        </select>
+
+        <button type="submit" class="btn">💾 Crear producto</button>
+      </form>
+
+      <div id="mensajeProducto" class="admin-message mt-2"></div>
+    </section>
   </main>
 
-  <!-- 🚫 JS Fallback -->
   <noscript>
     <p style="color: red; text-align: center;">⚠️ Esta página requiere JavaScript habilitado para funcionar correctamente.</p>
   </noscript>
 
-  <!-- 🌙 Script de Modo Oscuro (respaldo) -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const btn = document.getElementById("modoToggle");
@@ -74,7 +92,6 @@
       });
     });
 
-    // 🧼 Fallback logout
     function logout() {
       localStorage.removeItem("token");
       window.location.href = "login.html";
