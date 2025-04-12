@@ -1,3 +1,17 @@
+/* 🌐 Variables de color */
+:root {
+  --clr-light-bg: rgba(255, 255, 255, 0.95);
+  --clr-dark-bg: rgba(25, 25, 25, 0.95);
+  --clr-light-card: #f4f4f4;
+  --clr-dark-card: #262626;
+  --clr-border: #ccc;
+  --clr-dark-border: #444;
+  --clr-success: #2e7d32;
+  --clr-error: #b71c1c;
+  --clr-warning: #f57c00;
+  --clr-info: #0277bd;
+}
+
 /* 🎨 Fondo general */
 body {
   background: url("../assets/logo.jpg") no-repeat center center fixed;
@@ -27,13 +41,13 @@ body.modo-oscuro {
   max-width: 780px;
   margin: 3rem auto;
   padding: 2rem;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: var(--clr-light-bg);
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   animation: fadeIn 0.5s ease;
 }
 body.modo-oscuro .admin-container {
-  background-color: rgba(25, 25, 25, 0.95);
+  background-color: var(--clr-dark-bg);
 }
 
 /* 🧾 Títulos */
@@ -46,7 +60,7 @@ h1, h2, h3, legend {
 
 /* 🧾 Fieldsets */
 fieldset {
-  border: 1px solid #ccc;
+  border: 1px solid var(--clr-border);
   padding: 1.2rem;
   margin-bottom: 1.5rem;
   border-radius: 10px;
@@ -59,7 +73,7 @@ legend {
   color: #555;
 }
 body.modo-oscuro fieldset {
-  border-color: #444;
+  border-color: var(--clr-dark-border);
   background-color: rgba(35, 35, 35, 0.9);
 }
 
@@ -77,19 +91,19 @@ input, select, textarea {
   font-size: 1rem;
   border-radius: 8px;
   border: 1px solid #ccc;
-  box-sizing: border-box;
   background: #fff;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
 }
 input:focus, select:focus, textarea:focus {
   border-color: #0077cc;
+  outline: none;
 }
 body.modo-oscuro input,
 body.modo-oscuro select,
 body.modo-oscuro textarea {
   background-color: #2c2c2c;
   color: #f0f0f0;
-  border-color: #555;
+  border-color: var(--clr-dark-border);
 }
 
 /* 🧱 Fila de campos */
@@ -107,6 +121,7 @@ body.modo-oscuro textarea {
   margin-top: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  object-fit: contain;
 }
 
 /* 🔘 Botones */
@@ -144,12 +159,7 @@ body.modo-oscuro textarea {
   color: white;
   padding: 12px 20px;
   border-radius: 10px;
-  font-weight: bold;
-  font-size: 16px;
-  border: none;
-  cursor: pointer;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
 }
 .btn-exportar:hover {
   background-color: #2980b9;
@@ -157,7 +167,6 @@ body.modo-oscuro textarea {
 }
 body.modo-oscuro .btn-exportar {
   background-color: #2980b9;
-  color: #fff;
 }
 body.modo-oscuro .btn-exportar:hover {
   background-color: #2471a3;
@@ -183,10 +192,8 @@ body.modo-oscuro .btn-exportar:hover {
   text-align: center;
   font-weight: bold;
   margin-top: 10px;
-  color: var(--color-success, green);
-}
-.admin-message.error {
-  color: var(--color-error, red);
+  padding: 10px;
+  border-radius: 6px;
 }
 
 /* 📋 Variantes */
@@ -197,7 +204,7 @@ body.modo-oscuro .btn-exportar:hover {
   margin-top: 10px;
 }
 .variante-card {
-  border: 1px solid #ddd;
+  border: 1px solid var(--clr-border);
   padding: 10px;
   border-radius: 10px;
   background-color: #fdfdfd;
@@ -228,7 +235,7 @@ body.modo-oscuro .btn-exportar:hover {
 }
 body.modo-oscuro .variante-card {
   background-color: #2a2a2a;
-  border-color: #444;
+  border-color: var(--clr-dark-border);
   color: white;
 }
 
@@ -240,10 +247,10 @@ body.modo-oscuro .variante-card {
   gap: 20px;
 }
 .card {
-  border: 1px solid #ccc;
+  border: 1px solid var(--clr-border);
   padding: 1rem;
   border-radius: 10px;
-  background-color: #f4f4f4;
+  background-color: var(--clr-light-card);
   transition: all 0.3s ease;
 }
 .card:hover {
@@ -259,8 +266,8 @@ body.modo-oscuro .variante-card {
   cursor: pointer;
 }
 body.modo-oscuro .card {
-  background-color: #262626;
-  border-color: #444;
+  background-color: var(--clr-dark-card);
+  border-color: var(--clr-dark-border);
   color: white;
 }
 
@@ -279,10 +286,6 @@ body.modo-oscuro .card {
     opacity: 1;
     transform: translateY(0);
   }
-}
-.card img,
-.variante-card img {
-  object-fit: contain;
 }
 
 /* 📱 Responsive */

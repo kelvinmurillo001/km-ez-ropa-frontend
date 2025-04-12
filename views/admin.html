@@ -29,6 +29,7 @@
     </nav>
 
     <h1>🛍️ Administrar Productos</h1>
+    <p class="admin-info">👤 Usuario actual: <span id="admin-username">admin</span></p>
 
     <!-- 📝 Formulario producto -->
     <form id="productoForm" autocomplete="off" aria-label="Formulario para crear producto">
@@ -37,8 +38,8 @@
       <fieldset>
         <legend>📦 Información del Producto</legend>
         <div class="form-row">
-          <input type="text" id="nombre" placeholder="Nombre del producto" required />
-          <input type="number" id="precio" placeholder="Precio ($)" step="0.01" required />
+          <input type="text" id="nombre" placeholder="Nombre del producto" required minlength="2" maxlength="100" />
+          <input type="number" id="precio" placeholder="Precio ($)" step="0.01" required min="0.01" />
         </div>
         <input type="text" id="descripcion" placeholder="Descripción (opcional)" />
 
@@ -62,14 +63,16 @@
       <!-- 🖼️ Imagen principal -->
       <fieldset>
         <legend>🖼️ Imagen Principal</legend>
-        <p class="nota">⚠️ Solo se permite <strong>1 imagen</strong> principal (JPG, PNG o WEBP).</p>
+        <p id="descImagen" class="nota">⚠️ Solo se permite <strong>1 imagen</strong> principal (JPG, PNG o WEBP).</p>
         <input 
           type="file" 
           id="imagenesPrincipales" 
-          accept="image/*" 
+          accept=".jpg,.jpeg,.png,.webp"
+          aria-describedby="descImagen"
           aria-label="Subir imagen principal"
         />
         <div id="previewImagenesPrincipales" class="image-preview" aria-live="polite"></div>
+        <div id="uploadStatus" class="admin-message oculto" aria-live="polite">📤 Subiendo imagen...</div>
       </fieldset>
 
       <!-- 🧩 Variantes -->
@@ -80,7 +83,7 @@
           <input type="text" id="talla" placeholder="Talla (Ej: S, M, L)" />
           <input type="text" id="color" placeholder="Color (Ej: rojo, azul)" />
         </div>
-        <input type="file" id="imagen" accept="image/*" aria-label="Subir imagen de variante" />
+        <input type="file" id="imagen" accept=".jpg,.jpeg,.png,.webp" aria-label="Subir imagen de variante" />
         <button type="button" id="addVariante" class="btn-secundario">➕ Agregar Variante</button>
         <div id="previewImagen" class="image-preview" aria-live="polite"></div>
       </fieldset>
@@ -98,16 +101,17 @@
       </fieldset>
 
       <!-- 💾 Botón Guardar -->
-      <button type="submit" class="btn-guardar">💾 Guardar Producto</button>
+      <button type="submit" class="btn-guardar" id="btnGuardar">💾 Guardar Producto</button>
     </form>
 
     <!-- 🧩 Variantes Agregadas -->
     <section aria-label="Variantes añadidas">
       <h3>📸 Variantes añadidas</h3>
-      <div id="listaVariantes" class="variantes-container"></div>
+      <div id="listaVariantes" class="variantes-container" role="region" aria-live="polite"></div>
     </section>
 
     <!-- 📢 Mensaje de estado -->
+    <div id="editandoProducto" class="admin-message oculto" role="alert" aria-live="polite">✏️ Estás editando un producto existente</div>
     <div id="message" class="admin-message" role="alert" aria-live="polite"></div>
 
     <hr />
@@ -115,16 +119,31 @@
     <!-- 📋 Lista de productos -->
     <section aria-label="Lista de productos">
       <h2>📦 Productos Registrados</h2>
-      <div id="listaProductos" class="product-list"></div>
+      <div id="listaProductos" class="product-list" role="region" aria-live="polite"></div>
     </section>
   </main>
 
   <!-- 🌗 Modo oscuro persistente -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+      const btnToggle = document.getElementById("modoToggle");
+      const token = localStorage.getItem("token");
+      if (token) {
+        const userData = JSON.parse(atob(token.split('.')[1]));
+        document.getElementById("admin-username").textContent = userData.username;
+      }
+
       if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
+        btnToggle && (btnToggle.textContent = "☀️ Modo Claro");
       }
+
+      btnToggle?.addEventListener("click", () => {
+        document.body.classList.toggle("modo-oscuro");
+        const oscuro = document.body.classList.contains("modo-oscuro");
+        localStorage.setItem("modoOscuro", oscuro);
+        btnToggle.textContent = oscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+      });
     });
   </script>
 </body>

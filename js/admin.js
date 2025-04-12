@@ -1,11 +1,12 @@
 "use strict";
 
-// ✅ VERIFICAR SESIÓN ADMIN
-(function () {
+// ✅ SESIÓN ADMIN REUTILIZABLE
+function verificarAdmin() {
   const token = localStorage.getItem("token");
   if (!token || typeof token !== "string" || token.length < 10) {
     alert("⚠️ No autorizado. Inicia sesión.");
-    return (window.location.href = "login.html");
+    window.location.href = "login.html";
+    return null;
   }
 
   try {
@@ -13,15 +14,21 @@
     if (!payload || payload.role !== "admin") {
       alert("⛔ Acceso denegado. Solo administradores.");
       localStorage.removeItem("token");
-      return (window.location.href = "login.html");
+      window.location.href = "login.html";
+      return null;
     }
+    return token;
   } catch (err) {
     console.error("❌ Token malformado:", err);
     alert("⚠️ Sesión inválida. Vuelve a iniciar sesión.");
     localStorage.removeItem("token");
     window.location.href = "login.html";
+    return null;
   }
-})();
+}
+
+const token = verificarAdmin();
+if (!token) throw new Error("Sesión no autorizada.");
 
 // 🌐 ENDPOINTS
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api/products";
@@ -32,7 +39,7 @@ const API_CATEGORIAS = "https://km-ez-ropa-backend.onrender.com/api/categories";
 const form = document.getElementById("productoForm");
 const message = document.getElementById("message");
 const preview = document.getElementById("previewImagen");
-const token = localStorage.getItem("token");
+const contadorVariantes = document.getElementById("contadorVariantes");
 
 // 📦 VARIABLES
 let variantes = [];
@@ -90,7 +97,7 @@ function esImagenValida(file) {
   return tiposPermitidos.includes(file.type);
 }
 
-// ✅ SUBIR A BACKEND
+// ✅ SUBIR IMAGEN AL BACKEND
 async function uploadToBackend(file) {
   if (!esImagenValida(file)) throw new Error("⚠️ Solo JPG, PNG o WEBP");
 
@@ -141,7 +148,7 @@ document.getElementById("addVariante").addEventListener("click", async () => {
   const color = document.getElementById("color").value.trim();
   const imagen = document.getElementById("imagen").files[0];
 
-  if (variantes.length >= 4) return mostrarMensaje(message, "⚠️ Solo puedes agregar hasta 4 variantes", "warning");
+  if (variantes.length >= 4) return mostrarMensaje(message, "⚠️ Máximo 4 variantes", "warning");
   if (!talla || !color || !imagen) return mostrarMensaje(message, "⚠️ Completa talla, color e imagen", "warning");
 
   try {
@@ -176,6 +183,7 @@ function renderizarVariantes() {
       </div>
     `;
   });
+  if (contadorVariantes) contadorVariantes.textContent = `${variantes.length}/4 variantes`;
 }
 
 window.eliminarVariante = (i) => {
@@ -183,7 +191,7 @@ window.eliminarVariante = (i) => {
   renderizarVariantes();
 };
 
-// ✅ GUARDAR PRODUCTO
+// ✅ FORMULARIO: GUARDAR PRODUCTO
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const btn = form.querySelector("button[type=submit]");
@@ -217,17 +225,18 @@ form.addEventListener("submit", async (e) => {
       renderizarVariantes();
       cargarProductos();
     } else {
-      mostrarMensaje(message, `❌ ${data.message || "Error al guardar"}`, "error");
+      console.error("❌ Error del backend:", data);
+      mostrarMensaje(message, `❌ ${data.message || "Error al guardar producto"}`, "error");
     }
   } catch (err) {
-    console.error("❌", err);
-    mostrarMensaje(message, "❌ Error del servidor", "error");
+    console.error("❌ Error de red:", err);
+    mostrarMensaje(message, "❌ No se pudo conectar al servidor", "error");
   } finally {
     resetBoton(btn);
   }
 });
 
-// ✅ OBTENER DATOS FORMULARIO (CORREGIDO)
+// ✅ OBTENER DATOS FORMULARIO
 function obtenerDatosFormulario() {
   const nombre = document.getElementById("nombre").value.trim();
   const precio = parseFloat(document.getElementById("precio").value);
@@ -243,7 +252,7 @@ function obtenerDatosFormulario() {
   }
 
   if (imagenesPrincipales.length !== 1) {
-    mostrarMensaje(message, "⚠️ Debes subir exactamente 1 imagen principal", "warning");
+    mostrarMensaje(message, "⚠️ Debes subir 1 imagen principal", "warning");
     return null;
   }
 
@@ -279,10 +288,8 @@ async function cargarProductos() {
 
     productos.forEach(p => {
       const variantesHtml = p.variants?.map(v => `
-        <div>
-          <p>${v.talla} - ${v.color}</p>
-          <img src="${v.imageUrl}" width="80" />
-        </div>`).join("") || "Sin variantes";
+        <div><p>${v.talla} - ${v.color}</p><img src="${v.imageUrl}" width="80" /></div>
+      `).join("") || "Sin variantes";
 
       const imagenesHtml = p.images?.map(img => `<img src="${img.url}" width="80" />`).join("") || "";
 
@@ -292,10 +299,10 @@ async function cargarProductos() {
           <p><strong>Precio:</strong> $${p.price}</p>
           <p><strong>Categoría:</strong> ${p.category}</p>
           <p><strong>Subcategoría:</strong> ${p.subcategory}</p>
-          <p><strong>Tipo de talla:</strong> ${p.tallaTipo || "N/A"}</p>
+          <p><strong>Tipo de talla:</strong> ${p.tallaTipo}</p>
           <p><strong>Stock:</strong> ${p.stock}</p>
           <p><strong>Destacado:</strong> ${p.featured ? "✅" : "❌"}</p>
-          <div><strong>Imagen principal:</strong><br/>${imagenesHtml}</div>
+          <div><strong>Imagen principal:</strong><br>${imagenesHtml}</div>
           <div>${variantesHtml}</div>
           <button onclick="editarProducto('${p._id}')">✏️ Editar</button>
           <button onclick="eliminarProducto('${p._id}')">🗑️ Eliminar</button>
