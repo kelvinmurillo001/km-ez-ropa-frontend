@@ -19,6 +19,9 @@ async function cargarProductos() {
 
     if (!Array.isArray(productos)) throw new Error("Formato de productos inválido");
 
+    const catalogo = document.getElementById("catalogo");
+    if (!catalogo) return;
+
     aplicarFiltros();
     cargarSubcategoriasUnicas();
     cargarPromocionActiva();
@@ -32,14 +35,19 @@ async function cargarProductos() {
     document.getElementById("orden")?.addEventListener("change", aplicarFiltros);
   } catch (error) {
     console.error("❌ Error al cargar productos:", error);
-    document.getElementById("catalogo").innerHTML =
-      "<p class='mensaje-error'>❌ Error al cargar productos</p>";
+    const catalogo = document.getElementById("catalogo");
+    if (catalogo) {
+      catalogo.innerHTML = "<p class='mensaje-error'>❌ Error al cargar productos</p>";
+    }
   }
 }
 
 /* 🔍 Filtros personalizados */
 function aplicarFiltros() {
-  const termino = document.getElementById("busqueda")?.value.toLowerCase() || "";
+  const termino = (document.getElementById("busqueda")?.value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^\w\s]/gi, "");
   const categoria = document.getElementById("categoria")?.value || "todas";
   const subcategoria = document.getElementById("subcategoria")?.value || "todas";
   const orden = document.getElementById("orden")?.value || "reciente";
@@ -99,9 +107,14 @@ function mostrarProductos(lista) {
     const card = document.createElement("div");
     card.className = "card fade-in";
     card.innerHTML = `
-      <a href="detalle.html?id=${encodeURIComponent(_id)}" class="enlace-producto">
+      <a href="detalle.html?id=${encodeURIComponent(_id)}" class="enlace-producto" aria-label="Ver detalles de ${name}">
         <div class="imagen-catalogo">
-          <img src="${primeraImagen}" alt="${name}" class="zoomable" />
+          <img 
+            src="${primeraImagen}" 
+            alt="${name}" 
+            class="zoomable" 
+            loading="lazy"
+            onerror="this.src='/assets/logo.jpg'" />
         </div>
         <h3>${name}</h3>
       </a>
@@ -110,14 +123,17 @@ function mostrarProductos(lista) {
       <p><strong>Categoría:</strong> ${category}</p>
       <p><strong>Subcategoría:</strong> ${subcategory || "N/A"}</p>
       <p><strong>Stock:</strong> ${agotado ? "❌ Agotado" : stock}</p>
-      <button ${agotado ? "disabled" : ""} onclick='addToCart(${JSON.stringify({
-        id: _id,
-        nombre: name,
-        precio: price,
-        imagen: primeraImagen,
-        talla: talla || "",
-        colores: colores || ""
-      })})'>🛒 Agregar al carrito</button>
+      <button 
+        ${agotado ? "disabled" : ""} 
+        aria-label="Agregar ${name} al carrito"
+        onclick='addToCart(${JSON.stringify({
+          id: _id,
+          nombre: name,
+          precio: price,
+          imagen: primeraImagen,
+          talla: talla || "",
+          colores: colores || ""
+        })})'>🛒 Agregar al carrito</button>
     `;
     contenedor.appendChild(card);
   });
