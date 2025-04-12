@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- ✅ Scripts -->
+  <!-- ✅ Scripts (login primero, luego lógica de página) -->
   <script src="/js/login.js" defer></script>
   <script src="/js/categorias.js" defer></script>
 </head>
@@ -51,9 +51,9 @@
       <button type="button" onclick="logout()" class="btn-danger" aria-label="Cerrar sesión">🚪 Cerrar sesión</button>
     </section>
 
-    <!-- 📦 Lista dinámica -->
+    <!-- 📦 Lista dinámica de categorías -->
     <section class="lista-categorias mt-3" id="listaCategorias" aria-label="Listado de categorías existentes">
-      <!-- Renderizado por JS -->
+      <!-- Renderizado dinámicamente por JS -->
     </section>
   </main>
 
@@ -62,17 +62,19 @@
     <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
 
-  <!-- 🌙 Modo oscuro automático -->
+  <!-- 🌙 Modo oscuro + token -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
       }
 
+      // ✅ Añadir verificación solo si existe la función
       if (typeof verificarToken === "function") {
         verificarToken();
       } else {
-        console.warn("⚠️ Función de verificación no encontrada");
+        // ❌ Este era tu error en consola
+        console.warn("⚠️ verificarToken() no está definida. Asegúrate de que login.js esté bien cargado.");
       }
     });
   </script>

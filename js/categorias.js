@@ -229,3 +229,6 @@ window.deleteSubcategory = async (id, sub) => {
 
 // ▶️ Init
 loadCategories();
+
+// ✅ Exponer función para que HTML pueda ejecutarla
+window.verificarToken = verificarSesion;
