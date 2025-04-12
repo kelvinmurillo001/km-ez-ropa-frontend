@@ -19,11 +19,16 @@ function saveCart(cart) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
 
+// 🔑 Generar clave única por producto + talla + color
+function generateKey(product) {
+  return `${product.id}_${product.talla || ""}_${product.color || ""}`;
+}
+
 // ➕ Agregar al carrito
 function addToCart(product) {
   const cart = getCart();
-  const key = `${product.id}_${product.talla || ""}_${product.color || ""}`;
-  const index = cart.findIndex(p => `${p.id}_${p.talla || ""}_${p.color || ""}` === key);
+  const key = generateKey(product);
+  const index = cart.findIndex(p => generateKey(p) === key);
 
   if (index !== -1) {
     cart[index].cantidad += 1;
@@ -35,19 +40,19 @@ function addToCart(product) {
   updateCartWidget();
 }
 
-// ❌ Eliminar producto
-function removeFromCart(id) {
-  const updated = getCart().filter(item => item.id !== id);
+// ❌ Eliminar producto por clave
+function removeFromCart(key) {
+  const updated = getCart().filter(item => generateKey(item) !== key);
   saveCart(updated);
   renderCartItems();
   updateCartWidget();
 }
 
 // 🔁 Cambiar cantidad
-function changeQuantity(id, delta) {
+function changeQuantity(key, delta) {
   const updated = getCart()
     .map(item => {
-      if (item.id === id) item.cantidad += delta;
+      if (generateKey(item) === key) item.cantidad += delta;
       return item;
     })
     .filter(item => item.cantidad > 0);
@@ -158,7 +163,7 @@ function renderCartItems() {
     const precio = item.precio || item.price || 0;
     const imagen = item.imagen || item.image || "/assets/logo.jpg";
 
-    const idKey = `${item.id}_${item.talla || ""}_${item.color || ""}`;
+    const idKey = generateKey(item);
 
     const div = document.createElement("div");
     div.className = "cart-item fade-in";

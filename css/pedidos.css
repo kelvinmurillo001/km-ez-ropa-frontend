@@ -45,7 +45,12 @@ body.modo-oscuro .pedidos-container {
   font-weight: 600;
   transition: background-color 0.25s ease;
 }
+.acciones-botones button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
+/* 🔘 Botones */
 .btn-exportar {
   background-color: #388e3c;
   color: white;
@@ -54,11 +59,13 @@ body.modo-oscuro .pedidos-container {
   background-color: #2e7d32;
 }
 
-.btn-volver {
+.btn-volver,
+.btn-secundario {
   background-color: #616161;
   color: white;
 }
-.btn-volver:hover {
+.btn-volver:hover,
+.btn-secundario:hover {
   background-color: #424242;
 }
 
@@ -83,13 +90,11 @@ body.modo-oscuro .pedidos-container {
   font-size: 18px;
   font-weight: 600;
 }
-
 .pedido-card p {
   margin: 6px 0;
   font-size: 15px;
   color: #444;
 }
-
 .pedido-card ul {
   margin: 10px 0;
   padding-left: 20px;
@@ -98,36 +103,10 @@ body.modo-oscuro .pedidos-container {
   margin: 4px 0;
   font-size: 14px;
 }
-
 .pedido-card .fecha {
   color: #777;
   font-size: 13px;
   margin-top: 8px;
-}
-
-/* 🎨 Badges de Estado */
-.badge-estado {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 13px;
-  display: inline-block;
-  font-weight: bold;
-}
-.badge-pendiente {
-  background: #ffcdd2;
-  color: #b71c1c;
-}
-.badge-en_proceso {
-  background: #bbdefb;
-  color: #0d47a1;
-}
-.badge-enviado {
-  background: #c8e6c9;
-  color: #1b5e20;
-}
-.badge-cancelado {
-  background: #eeeeee;
-  color: #424242;
 }
 
 /* ✏️ Select para editar estado */
@@ -162,6 +141,31 @@ body.modo-oscuro .estado-select {
   background-color: #1565c0;
 }
 
+/* 🎨 Badges de Estado */
+.badge-estado {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  display: inline-block;
+  font-weight: bold;
+}
+.badge-pendiente {
+  background: #ffcdd2;
+  color: #b71c1c;
+}
+.badge-en_proceso {
+  background: #bbdefb;
+  color: #0d47a1;
+}
+.badge-enviado {
+  background: #c8e6c9;
+  color: #1b5e20;
+}
+.badge-cancelado {
+  background: #eeeeee;
+  color: #424242;
+}
+
 /* 🌙 Dark Mode Enhancements */
 body.modo-oscuro .pedido-card {
   background-color: #1e1e1e;
@@ -173,7 +177,7 @@ body.modo-oscuro .pedido-card .fecha {
   color: #ccc;
 }
 
-/* ✅ Animación */
+/* ✅ Animaciones */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -183,6 +187,9 @@ body.modo-oscuro .pedido-card .fecha {
     opacity: 1;
     transform: translateY(0);
   }
+}
+.fade-in-delayed {
+  animation: fadeIn 0.6s ease-in-out 0.2s forwards;
 }
 
 /* 📱 Responsive */

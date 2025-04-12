@@ -27,18 +27,19 @@
     </div>
   </header>
 
-  <main class="pedidos-container fade-in" role="main" aria-label="Sección de pedidos">
-
+  <!-- 🔧 Contenido principal -->
+  <main class="pedidos-container fade-in" role="main" aria-label="Gestión de pedidos">
+    
     <!-- 🔘 Barra de acciones -->
-    <section class="acciones-barra" role="navigation" aria-label="Controles de pedidos">
+    <section class="acciones-barra" role="region" aria-label="Controles de pedidos">
       <div class="acciones-botones">
-        <button type="button" class="btn btn-secundario" onclick="exportarPedidos()" aria-label="Exportar pedidos">📄 Exportar</button>
-        <button type="button" class="btn" onclick="regresarAlPanel()" aria-label="Volver al panel">⬅️ Panel</button>
+        <button type="button" class="btn btn-secundario" onclick="exportarPedidos()" aria-label="Exportar lista de pedidos">📄 Exportar</button>
+        <button type="button" class="btn" onclick="regresarAlPanel()" aria-label="Volver al panel de administración">⬅️ Panel</button>
       </div>
 
       <div class="filtros-pedidos">
         <label for="filtroEstado" class="sr-only">Filtrar por estado</label>
-        <select id="filtroEstado" onchange="filtrarPedidos()" aria-label="Filtrar por estado">
+        <select id="filtroEstado" onchange="filtrarPedidos()" aria-label="Filtrar pedidos por estado">
           <option value="todos">📋 Todos</option>
           <option value="pendiente">⏳ Pendiente</option>
           <option value="en_proceso">⚙️ En proceso</option>
@@ -49,40 +50,43 @@
     </section>
 
     <!-- 📋 Contenedor de pedidos -->
-    <section id="pedidos-container" aria-live="polite" aria-label="Lista de pedidos">
-      <!-- Renderizado dinámico por JS -->
+    <section id="pedidos-container" aria-live="polite" aria-label="Listado de pedidos">
+      <!-- Render dinámico desde orders.js -->
     </section>
+
   </main>
+
+  <!-- 🚫 Fallback JS -->
+  <noscript>
+    <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+  </noscript>
 
   <!-- ✅ Scripts -->
   <script src="/js/login.js"></script>
   <script src="/js/orders.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      if (typeof verificarToken === "function") {
-        verificarToken();
-      } else {
-        console.warn("⚠️ Función verificarToken no encontrada.");
+      try {
+        if (typeof verificarToken === "function") verificarToken();
+        if (typeof cargarPedidos === "function") cargarPedidos();
+      } catch (err) {
+        console.warn("⚠️ Error inicializando scripts:", err);
       }
 
-      if (typeof cargarPedidos === "function") {
-        cargarPedidos();
-      } else {
-        console.error("❌ cargarPedidos() no está definido.");
-      }
-
-      // 🌙 Modo oscuro
+      // 🌙 Modo oscuro persistente
       const toggleBtn = document.getElementById("modoToggle");
-      if (localStorage.getItem("modoOscuro") === "true") {
+      const isDark = localStorage.getItem("modoOscuro") === "true";
+
+      if (isDark) {
         document.body.classList.add("modo-oscuro");
-        if (toggleBtn) toggleBtn.textContent = "☀️ Modo Claro";
+        toggleBtn.textContent = "☀️ Modo Claro";
       }
 
       toggleBtn?.addEventListener("click", () => {
         document.body.classList.toggle("modo-oscuro");
-        const isDark = document.body.classList.contains("modo-oscuro");
-        localStorage.setItem("modoOscuro", isDark);
-        toggleBtn.textContent = isDark ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+        const oscuro = document.body.classList.contains("modo-oscuro");
+        localStorage.setItem("modoOscuro", oscuro);
+        toggleBtn.textContent = oscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
       });
     });
   </script>

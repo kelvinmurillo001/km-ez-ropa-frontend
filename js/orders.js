@@ -5,7 +5,7 @@ const API_ORDERS = "https://km-ez-ropa-backend.onrender.com/api/orders";
 const container = document.getElementById("pedidos-container");
 const token = localStorage.getItem("token");
 
-if (!token) {
+if (!token || token.length < 10) {
   alert("⚠️ No autorizado. Inicia sesión primero.");
   window.location.href = "login.html";
 }
@@ -14,8 +14,10 @@ let pedidosPrevios = 0;
 let todosLosPedidos = [];
 
 // ▶️ Inicializar
-cargarPedidos();
-setInterval(monitorearPedidos, 10000);
+document.addEventListener("DOMContentLoaded", () => {
+  cargarPedidos();
+  setInterval(monitorearPedidos, 10000); // cada 10s
+});
 
 /**
  * 📥 Obtener y mostrar pedidos
@@ -30,20 +32,20 @@ async function cargarPedidos() {
     pedidosPrevios = pedidos.length;
     renderPedidos(pedidos);
   } catch (err) {
-    console.error("❌", err);
+    console.error("❌ Error al cargar:", err);
     container.innerHTML = "❌ No se pudieron cargar los pedidos.";
   }
 }
 
 /**
- * 🌐 Obtener pedidos desde el backend
+ * 🌐 Obtener pedidos desde backend
  */
 async function fetchPedidos() {
   const res = await fetch(API_ORDERS, {
     headers: { Authorization: `Bearer ${token}` }
   });
 
-  if (!res.ok) throw new Error("Error al obtener pedidos");
+  if (!res.ok) throw new Error("❌ Error al obtener pedidos");
 
   const data = await res.json();
   if (!Array.isArray(data)) throw new Error("❌ Respuesta inválida");
@@ -52,21 +54,18 @@ async function fetchPedidos() {
 }
 
 /**
- * 🧾 Renderizar pedidos en pantalla
+ * 🧾 Renderizar pedidos
  */
 function renderPedidos(pedidos) {
   container.innerHTML = pedidos.length
     ? ""
-    : "<p>No hay pedidos para mostrar.</p>";
+    : "<p>No hay pedidos registrados.</p>";
 
-  pedidos.forEach(pedido => {
-    const card = crearCardPedido(pedido);
-    container.appendChild(card);
-  });
+  pedidos.forEach(p => container.appendChild(crearCardPedido(p)));
 }
 
 /**
- * 🧱 Crear HTML de cada pedido
+ * 🧱 Crear tarjeta de pedido
  */
 function crearCardPedido(p) {
   const card = document.createElement("div");
@@ -83,13 +82,12 @@ function crearCardPedido(p) {
     <p><strong>Nota:</strong> ${p.nota || "—"}</p>
     <p class="fecha">📅 ${new Date(p.createdAt).toLocaleString()}</p>
 
-    <label>Estado:</label>
-    <select class="estado-select" data-id="${p._id}">
-      ${["pendiente", "en_proceso", "enviado", "cancelado"].map(estado => `
-        <option value="${estado}" ${p.estado === estado ? "selected" : ""}>
-          ${estadoIcono(estado)} ${estado.charAt(0).toUpperCase() + estado.slice(1).replace("_", " ")}
-        </option>
-      `).join("")}
+    <label for="estado-${p._id}">Estado:</label>
+    <select id="estado-${p._id}" class="estado-select" data-id="${p._id}">
+      ${["pendiente", "en_proceso", "enviado", "cancelado"].map(e => `
+        <option value="${e}" ${p.estado === e ? "selected" : ""}>
+          ${estadoIcono(e)} ${formatearEstado(e)}
+        </option>`).join("")}
     </select>
 
     <button onclick="actualizarEstado('${p._id}', getEstadoSeleccionado('${p._id}'))">
@@ -101,28 +99,21 @@ function crearCardPedido(p) {
 }
 
 /**
- * 🔄 Obtener estado seleccionado del select
+ * 🔠 Formatea texto del estado
+ */
+function formatearEstado(str) {
+  return str.replace("_", " ").replace(/^\w/, l => l.toUpperCase());
+}
+
+/**
+ * 🔄 Obtener estado actual
  */
 function getEstadoSeleccionado(id) {
-  const select = document.querySelector(`select[data-id="${id}"]`);
-  return select?.value || "pendiente";
+  return document.querySelector(`#estado-${id}`)?.value || "pendiente";
 }
 
 /**
- * ✏️ Iconos por estado
- */
-function estadoIcono(estado) {
-  const iconos = {
-    pendiente: "⏳",
-    en_proceso: "⚙️",
-    enviado: "📦",
-    cancelado: "❌"
-  };
-  return iconos[estado] || "";
-}
-
-/**
- * ✅ Actualizar estado del pedido
+ * ✅ Actualizar estado de pedido
  */
 async function actualizarEstado(id, estado) {
   try {
@@ -135,14 +126,13 @@ async function actualizarEstado(id, estado) {
       body: JSON.stringify({ estado })
     });
 
-    const result = await res.json();
+    const data = await res.json();
     if (res.ok) {
       alert("✅ Estado actualizado");
       cargarPedidos();
     } else {
-      alert("❌ " + (result.message || "No se pudo actualizar"));
+      alert("❌ " + (data.message || "No se pudo actualizar"));
     }
-
   } catch (err) {
     console.error("❌", err);
     alert("❌ Error al conectar con el servidor");
@@ -150,7 +140,20 @@ async function actualizarEstado(id, estado) {
 }
 
 /**
- * 🔍 Filtrar por estado
+ * 🛠️ Icono de estado
+ */
+function estadoIcono(estado) {
+  const iconos = {
+    pendiente: "⏳",
+    en_proceso: "⚙️",
+    enviado: "📦",
+    cancelado: "❌"
+  };
+  return iconos[estado] || "";
+}
+
+/**
+ * 🔍 Filtrar visualización por estado
  */
 function filtrarPedidos() {
   const filtro = document.getElementById("filtroEstado")?.value || "todos";
@@ -161,19 +164,19 @@ function filtrarPedidos() {
 }
 
 /**
- * 📤 Exportar pedidos a TXT
+ * 📤 Exportar pedidos
  */
 function exportarPedidos() {
   const contenido = todosLosPedidos.map(p => {
     const items = p.items.map(i => `- ${i.nombre} x${i.cantidad}`).join("\n");
     return `Cliente: ${p.nombreCliente}
 Total: $${p.total}
-Estado: ${p.estado}
+Estado: ${formatearEstado(p.estado)}
 Fecha: ${new Date(p.createdAt).toLocaleString()}
-Items:
-${items}
+Nota: ${p.nota || "N/A"}
+Items:\n${items}
 ==============================`;
-  }).join("\n");
+  }).join("\n\n");
 
   const blob = new Blob([contenido], { type: "text/plain" });
   const link = document.createElement("a");
@@ -183,14 +186,13 @@ ${items}
 }
 
 /**
- * 🔔 Monitorear nuevos pedidos
+ * 🔔 Sonido si hay nuevos pedidos
  */
 async function monitorearPedidos() {
   try {
     const nuevos = await fetchPedidos();
     if (nuevos.length > pedidosPrevios) {
-      const sonido = new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1152-pristine.mp3");
-      sonido.play();
+      new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1152-pristine.mp3").play();
     }
     pedidosPrevios = nuevos.length;
   } catch (err) {
