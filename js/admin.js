@@ -30,23 +30,19 @@ function verificarAdmin() {
 const token = verificarAdmin();
 if (!token) throw new Error("Sesión no autorizada.");
 
-// 🌐 ENDPOINTS
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api/products";
 const API_UPLOAD = "https://km-ez-ropa-backend.onrender.com/api/uploads";
 const API_CATEGORIAS = "https://km-ez-ropa-backend.onrender.com/api/categories";
 
-// 📌 ELEMENTOS
 const form = document.getElementById("productoForm");
 const message = document.getElementById("message");
 const preview = document.getElementById("previewImagen");
 const contadorVariantes = document.getElementById("contadorVariantes");
 
-// 📦 VARIABLES
 let variantes = [];
 let editandoId = null;
 let imagenesPrincipales = [];
 
-// ✅ MENSAJE
 function mostrarMensaje(el, mensaje, tipo = "info") {
   const colores = {
     success: { bg: "#e8f5e9", color: "#2e7d32" },
@@ -62,7 +58,6 @@ function mostrarMensaje(el, mensaje, tipo = "info") {
   setTimeout(() => el.classList.add("oculto"), 3500);
 }
 
-// ✅ CARGAR CATEGORÍAS
 async function cargarCategorias() {
   const catSelect = document.getElementById("categoriaSelect");
   const subcatSelect = document.getElementById("subcategoriaSelect");
@@ -91,13 +86,11 @@ async function cargarCategorias() {
   }
 }
 
-// ✅ VALIDACIÓN IMAGEN
 function esImagenValida(file) {
   const tiposPermitidos = ["image/jpeg", "image/png", "image/webp"];
   return tiposPermitidos.includes(file.type);
 }
 
-// ✅ SUBIR IMAGEN AL BACKEND
 async function uploadToBackend(file) {
   if (!esImagenValida(file)) throw new Error("⚠️ Solo JPG, PNG o WEBP");
 
@@ -114,7 +107,6 @@ async function uploadToBackend(file) {
   return await res.json();
 }
 
-// ✅ SUBIR IMAGEN PRINCIPAL
 document.getElementById("imagenesPrincipales").addEventListener("change", async (e) => {
   const files = Array.from(e.target.files);
   const previewContenedor = document.getElementById("previewImagenesPrincipales");
@@ -142,7 +134,6 @@ document.getElementById("imagenesPrincipales").addEventListener("change", async 
   }
 });
 
-// ✅ AÑADIR VARIANTE
 document.getElementById("addVariante").addEventListener("click", async () => {
   const talla = document.getElementById("talla").value.trim();
   const color = document.getElementById("color").value.trim();
@@ -191,7 +182,6 @@ window.eliminarVariante = (i) => {
   renderizarVariantes();
 };
 
-// ✅ FORMULARIO: GUARDAR PRODUCTO
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const btn = form.querySelector("button[type=submit]");
@@ -226,7 +216,7 @@ form.addEventListener("submit", async (e) => {
       cargarProductos();
     } else {
       console.error("❌ Error del backend:", data);
-      mostrarMensaje(message, `❌ ${data.message || "Error al guardar producto"}`, "error");
+      mostrarMensaje(message, `❌ ${data.message || data.errors?.[0]?.msg || "Error al guardar producto"}`, "error");
     }
   } catch (err) {
     console.error("❌ Error de red:", err);
@@ -236,7 +226,6 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-// ✅ OBTENER DATOS FORMULARIO
 function obtenerDatosFormulario() {
   const nombre = document.getElementById("nombre").value.trim();
   const precio = parseFloat(document.getElementById("precio").value);
@@ -265,7 +254,7 @@ function obtenerDatosFormulario() {
     stock,
     featured: destacado,
     variants: variantes,
-    mainImages: imagenesPrincipales.map(img => ({
+    images: imagenesPrincipales.map(img => ({
       url: img.url,
       cloudinaryId: img.cloudinaryId || img.public_id || ""
     })),
@@ -278,7 +267,6 @@ function resetBoton(btn) {
   btn.textContent = "📦 Guardar Producto";
 }
 
-// ✅ CARGAR PRODUCTOS
 async function cargarProductos() {
   try {
     const res = await fetch(API_BASE);
@@ -314,7 +302,6 @@ async function cargarProductos() {
   }
 }
 
-// ✅ EDITAR PRODUCTO
 window.editarProducto = async (id) => {
   try {
     const res = await fetch(API_BASE);
@@ -356,7 +343,6 @@ window.editarProducto = async (id) => {
   }
 };
 
-// ✅ ELIMINAR PRODUCTO
 window.eliminarProducto = async (id) => {
   if (!confirm("¿Eliminar producto?")) return;
 
