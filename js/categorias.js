@@ -1,6 +1,6 @@
 "use strict";
 
-// Utilidades reubicadas dentro de este script para compatibilidad
+// Puedes mover esto a admin-utils.js si lo estás usando globalmente.
 function verificarSesion() {
   const token = localStorage.getItem("token");
   if (!token || typeof token !== "string" || token.length < 10) {
@@ -68,9 +68,7 @@ const categorySelect = document.getElementById("categorySelect");
 const categoryList = document.getElementById("listaCategorias");
 const message = document.getElementById("message");
 
-/**
- * ▶️ Cargar categorías
- */
+// ▶️ Cargar categorías
 async function loadCategories() {
   try {
     const res = await fetch(API);
@@ -83,6 +81,7 @@ async function loadCategories() {
   }
 }
 
+// Renderizar opciones de categoría en <select>
 function renderCategorySelect(categorias) {
   categorySelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
   categorias.forEach(cat => {
@@ -93,6 +92,7 @@ function renderCategorySelect(categorias) {
   });
 }
 
+// Renderizar tarjetas de categoría + subcategorías
 function renderCategoryCards(categorias) {
   categoryList.innerHTML = "";
   categorias.forEach(cat => {
@@ -117,7 +117,7 @@ function renderCategoryCards(categorias) {
   });
 }
 
-// ➕ Crear categoría
+// ➕ Crear nueva categoría
 categoryForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const name = categoryNameInput.value.trim();
@@ -142,12 +142,12 @@ categoryForm?.addEventListener("submit", async (e) => {
     } else {
       mostrarMensaje(message, `❌ ${data.message || "Error al crear categoría"}`, "error");
     }
-  } catch {
+  } catch (err) {
     mostrarMensaje(message, "❌ Error de red al crear categoría", "error");
   }
 });
 
-// ➕ Subcategoría
+// ➕ Agregar subcategoría
 document.getElementById("subcategoryForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const categoryId = categorySelect.value;
@@ -227,8 +227,8 @@ window.deleteSubcategory = async (id, sub) => {
   }
 };
 
-// ▶️ Init
+// ▶️ Init automático
 loadCategories();
 
-// ✅ Exponer función para que HTML pueda ejecutarla
+// ✅ Exponer para verificación externa
 window.verificarToken = verificarSesion;

@@ -1,9 +1,9 @@
 "use strict";
 
 /**
- * 🔐 Verificar token de sesión y rol admin
- * - Redirige a login si el token no existe o no es válido
- * - Solo permite acceso a usuarios con rol "admin"
+ * 🔐 Verifica si el token de sesión es válido y pertenece a un administrador.
+ * - Redirige a login si el token no existe o no es válido.
+ * - Solo permite acceso a usuarios con rol "admin".
  * @returns {string|null} token válido o null si no autorizado
  */
 export function verificarSesion() {
@@ -17,7 +17,8 @@ export function verificarSesion() {
 
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
-    if (payload?.role !== "admin") {
+
+    if (!payload || payload.role !== "admin") {
       alert("⛔ Acceso denegado. Solo administradores.");
       localStorage.removeItem("token");
       window.location.href = "login.html";
@@ -35,19 +36,19 @@ export function verificarSesion() {
 }
 
 /**
- * 🔍 Valida estructura básica del JWT
+ * 🧪 Valida la estructura básica de un JWT.
  * @param {string} token 
  * @returns {boolean}
  */
 export function esTokenValido(token) {
-  return token && typeof token === "string" && token.split(".").length === 3;
+  return typeof token === "string" && token.split(".").length === 3;
 }
 
 /**
- * 💬 Mostrar mensaje informativo temporal
- * @param {HTMLElement} elElemento Elemento HTML donde mostrar el mensaje
- * @param {string} mensaje Texto del mensaje
- * @param {string} tipo Tipo: success | error | warning | info
+ * 💬 Muestra un mensaje visual temporal en el elemento indicado.
+ * @param {HTMLElement} elElemento Elemento HTML donde se mostrará el mensaje.
+ * @param {string} mensaje Texto del mensaje a mostrar.
+ * @param {string} tipo Tipo del mensaje: success | error | warning | info.
  */
 export function mostrarMensaje(elElemento, mensaje, tipo = "info") {
   const colores = {
@@ -64,14 +65,16 @@ export function mostrarMensaje(elElemento, mensaje, tipo = "info") {
   elElemento.style.backgroundColor = bg;
   elElemento.style.color = color;
 
-  setTimeout(() => elElemento.classList.add("oculto"), 4000);
+  setTimeout(() => {
+    elElemento.classList.add("oculto");
+  }, 4000);
 }
 
 /**
- * 📅 Verifica si hoy está dentro del rango de una promoción
- * @param {string} start Fecha inicio (YYYY-MM-DD)
- * @param {string} end Fecha fin (YYYY-MM-DD)
- * @returns {boolean}
+ * 📅 Verifica si la fecha actual está dentro del rango dado (inclusive).
+ * @param {string} start Fecha de inicio (YYYY-MM-DD)
+ * @param {string} end Fecha de fin (YYYY-MM-DD)
+ * @returns {boolean} Verdadero si la fecha actual está en el rango.
  */
 export function isDateInRange(start, end) {
   const today = new Date().toISOString().split("T")[0];
@@ -79,7 +82,7 @@ export function isDateInRange(start, end) {
 }
 
 /**
- * 🔐 Cierra sesión y redirige
+ * 🔐 Cierra sesión del usuario y redirige al login.
  */
 export function logout() {
   localStorage.removeItem("token");
@@ -87,7 +90,7 @@ export function logout() {
 }
 
 /**
- * 🔙 Navega al panel principal
+ * 🔙 Redirige al panel de administración principal.
  */
 export function goBack() {
   window.location.href = "panel.html";

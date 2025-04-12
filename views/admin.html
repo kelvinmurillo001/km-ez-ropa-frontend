@@ -17,36 +17,39 @@
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- 📦 Script -->
+  <!-- 📜 Script principal -->
   <script src="/js/admin.js" defer></script>
 </head>
 <body>
 
   <main class="admin-container fade-in" role="main" aria-label="Gestión de productos">
-
     <!-- 🔙 Navegación -->
-    <nav role="navigation" aria-label="Volver al panel">
+    <nav aria-label="Volver al panel" role="navigation">
       <a class="btn-volver" href="panel.html">⬅️ Volver al Panel</a>
     </nav>
 
     <h1>🛍️ Administrar Productos</h1>
 
-    <!-- 📝 Formulario de Producto -->
-    <form id="productoForm" autocomplete="off" aria-label="Formulario de creación de producto">
+    <!-- 📝 Formulario producto -->
+    <form id="productoForm" autocomplete="off" aria-label="Formulario para crear producto">
 
-      <!-- 📦 Información Básica -->
+      <!-- 📦 Información básica -->
       <fieldset>
         <legend>📦 Información del Producto</legend>
         <div class="form-row">
-          <input type="text" id="nombre" name="name" placeholder="Nombre del producto" required />
-          <input type="number" id="precio" name="price" placeholder="Precio ($)" step="0.01" required />
+          <input type="text" id="nombre" placeholder="Nombre del producto" required />
+          <input type="number" id="precio" placeholder="Precio ($)" step="0.01" required />
         </div>
-        <input type="text" id="descripcion" name="description" placeholder="Descripción del producto" />
+        <input type="text" id="descripcion" placeholder="Descripción (opcional)" />
 
         <div class="form-row">
-          <select id="categoriaSelect" name="category" required aria-label="Categoría"></select>
-          <select id="subcategoriaSelect" name="subcategory" required aria-label="Subcategoría"></select>
-          <select id="tallaTipoSelect" name="tallaTipo" required aria-label="Tipo de Talla">
+          <select id="categoriaSelect" required aria-label="Selecciona una categoría">
+            <option value="">Cargando categorías...</option>
+          </select>
+          <select id="subcategoriaSelect" required aria-label="Selecciona una subcategoría">
+            <option value="">Selecciona una subcategoría</option>
+          </select>
+          <select id="tallaTipoSelect" required aria-label="Tipo de Talla">
             <option value="">Tipo de talla</option>
             <option value="adulto">Adulto</option>
             <option value="niño">Niño</option>
@@ -56,74 +59,67 @@
         </div>
       </fieldset>
 
-      <!-- 🖼️ Imagen Principal -->
+      <!-- 🖼️ Imagen principal -->
       <fieldset>
-        <legend>🖼️ Imagen Principal del Producto</legend>
-        <p class="nota">⚠️ Debes subir <strong>exactamente 1 imagen principal</strong> en formato JPG, PNG o WEBP.</p>
+        <legend>🖼️ Imagen Principal</legend>
+        <p class="nota">⚠️ Solo se permite <strong>1 imagen</strong> principal (JPG, PNG o WEBP).</p>
         <input 
           type="file" 
           id="imagenesPrincipales" 
-          name="imagenesPrincipales" 
-          accept="image/*"
-          aria-label="Seleccionar imagen principal"
+          accept="image/*" 
+          aria-label="Subir imagen principal"
         />
         <div id="previewImagenesPrincipales" class="image-preview" aria-live="polite"></div>
       </fieldset>
 
       <!-- 🧩 Variantes -->
       <fieldset>
-        <legend>🧩 Variantes <span class="opcional">(opcional)</span></legend>
-        <p class="nota">Puedes agregar hasta <strong>4 variantes</strong> con talla, color e imagen.</p>
+        <legend>🧩 Variantes (opcional)</legend>
+        <p class="nota">Máximo 4 variantes (talla, color e imagen cada una).</p>
         <div class="form-row">
-          <input type="text" id="talla" placeholder="Talla (Ej: S, M, L)" autocomplete="off" />
-          <input type="text" id="color" placeholder="Color (Ej: rojo, azul)" autocomplete="off" />
+          <input type="text" id="talla" placeholder="Talla (Ej: S, M, L)" />
+          <input type="text" id="color" placeholder="Color (Ej: rojo, azul)" />
         </div>
-        <input 
-          type="file" 
-          id="imagen" 
-          accept="image/*" 
-          aria-label="Subir imagen de variante" 
-        />
-        <button type="button" id="addVariante" class="btn-secundario" aria-label="Agregar variante">➕ Agregar Variante</button>
-        <div class="image-preview" id="previewImagen" aria-live="polite"></div>
+        <input type="file" id="imagen" accept="image/*" aria-label="Subir imagen de variante" />
+        <button type="button" id="addVariante" class="btn-secundario">➕ Agregar Variante</button>
+        <div id="previewImagen" class="image-preview" aria-live="polite"></div>
       </fieldset>
 
-      <!-- 📊 Inventario -->
+      <!-- 📦 Inventario -->
       <fieldset>
-        <legend>📊 Inventario</legend>
+        <legend>📦 Inventario</legend>
         <div class="form-row">
-          <input type="number" id="stock" name="stock" placeholder="Stock disponible" min="0" required />
+          <input type="number" id="stock" placeholder="Stock disponible" min="0" required />
           <div>
-            <input type="checkbox" id="featured" name="featured" />
+            <input type="checkbox" id="featured" />
             <label for="featured">Producto destacado ⭐</label>
           </div>
         </div>
       </fieldset>
 
       <!-- 💾 Botón Guardar -->
-      <button type="submit" class="btn-guardar" aria-label="Guardar producto">💾 Guardar Producto</button>
+      <button type="submit" class="btn-guardar">💾 Guardar Producto</button>
     </form>
 
-    <!-- ✅ Vista de Variantes -->
-    <section aria-label="Variantes añadidas" aria-labelledby="tituloVariantes">
-      <h3 id="tituloVariantes">📸 Variantes añadidas</h3>
+    <!-- 🧩 Variantes Agregadas -->
+    <section aria-label="Variantes añadidas">
+      <h3>📸 Variantes añadidas</h3>
       <div id="listaVariantes" class="variantes-container"></div>
     </section>
 
-    <!-- 📢 Estado -->
+    <!-- 📢 Mensaje de estado -->
     <div id="message" class="admin-message" role="alert" aria-live="polite"></div>
 
     <hr />
 
-    <!-- 📋 Lista de Productos -->
-    <section aria-label="Lista de productos registrados" aria-labelledby="tituloProductos">
-      <h2 id="tituloProductos">📦 Productos Registrados</h2>
-      <div class="product-list" id="listaProductos"></div>
+    <!-- 📋 Lista de productos -->
+    <section aria-label="Lista de productos">
+      <h2>📦 Productos Registrados</h2>
+      <div id="listaProductos" class="product-list"></div>
     </section>
-
   </main>
 
-  <!-- 🌗 Tema Oscuro -->
+  <!-- 🌗 Modo oscuro persistente -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("modoOscuro") === "true") {

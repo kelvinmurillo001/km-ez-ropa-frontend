@@ -26,7 +26,7 @@
 // 🌐 ENDPOINTS
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api/products";
 const API_UPLOAD = "https://km-ez-ropa-backend.onrender.com/api/uploads";
-const API_CATEGORIES = "https://km-ez-ropa-backend.onrender.com/api/categories";
+const API_CATEGORIAS = "https://km-ez-ropa-backend.onrender.com/api/categories";
 
 // 📌 ELEMENTOS
 const form = document.getElementById("productoForm");
@@ -55,43 +55,32 @@ function mostrarMensaje(el, mensaje, tipo = "info") {
   setTimeout(() => el.classList.add("oculto"), 3500);
 }
 
-// ✅ CARGAR CATEGORÍAS DESDE BACKEND
+// ✅ CARGAR CATEGORÍAS DINÁMICAS
 async function cargarCategorias() {
   const catSelect = document.getElementById("categoriaSelect");
-  const subSelect = document.getElementById("subcategoriaSelect");
+  const subcatSelect = document.getElementById("subcategoriaSelect");
   catSelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
-  subSelect.innerHTML = `<option value="">Selecciona una subcategoría</option>`;
+  subcatSelect.innerHTML = `<option value="">Selecciona una subcategoría</option>`;
 
   try {
-    const res = await fetch(API_CATEGORIES);
+    const res = await fetch(API_CATEGORIAS);
     const data = await res.json();
 
-    if (!Array.isArray(data)) throw new Error("⚠️ Error de formato en categorías");
-
     data.forEach(cat => {
-      const option = document.createElement("option");
-      option.value = cat.name;
-      option.textContent = cat.name;
-      option.dataset.subcategories = JSON.stringify(cat.subcategories || []);
-      catSelect.appendChild(option);
+      const opt = new Option(cat.name, cat.name);
+      opt.dataset.subcats = JSON.stringify(cat.subcategories || []);
+      catSelect.appendChild(opt);
     });
 
-    catSelect.addEventListener("change", () => {
-      const selected = catSelect.options[catSelect.selectedIndex];
-      const subcats = JSON.parse(selected.dataset.subcategories || "[]");
-
-      subSelect.innerHTML = `<option value="">Selecciona una subcategoría</option>`;
-      subcats.forEach(sub => {
-        const opt = document.createElement("option");
-        opt.value = sub;
-        opt.textContent = sub;
-        subSelect.appendChild(opt);
-      });
+    catSelect.addEventListener("change", e => {
+      const selected = e.target.selectedOptions[0];
+      const subcats = JSON.parse(selected.dataset.subcats || "[]");
+      subcatSelect.innerHTML = `<option value="">Selecciona una subcategoría</option>`;
+      subcats.forEach(sub => subcatSelect.appendChild(new Option(sub, sub)));
     });
-
   } catch (err) {
-    console.error("❌ Error al cargar categorías:", err);
-    mostrarMensaje(message, "❌ Error cargando categorías", "error");
+    console.error("❌ Error cargando categorías:", err);
+    mostrarMensaje(message, "❌ No se pudieron cargar las categorías", "error");
   }
 }
 
@@ -152,13 +141,8 @@ document.getElementById("addVariante").addEventListener("click", async () => {
   const color = document.getElementById("color").value.trim();
   const imagen = document.getElementById("imagen").files[0];
 
-  if (variantes.length >= 4) {
-    return mostrarMensaje(message, "⚠️ Solo puedes agregar hasta 4 variantes", "warning");
-  }
-
-  if (!talla || !color || !imagen) {
-    return mostrarMensaje(message, "⚠️ Completa talla, color e imagen", "warning");
-  }
+  if (variantes.length >= 4) return mostrarMensaje(message, "⚠️ Solo puedes agregar hasta 4 variantes", "warning");
+  if (!talla || !color || !imagen) return mostrarMensaje(message, "⚠️ Completa talla, color e imagen", "warning");
 
   try {
     const { url, public_id } = await uploadToBackend(imagen);
@@ -243,6 +227,7 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
+// ✅ OBTENER DATOS DEL FORMULARIO
 function obtenerDatosFormulario() {
   const nombre = document.getElementById("nombre").value.trim();
   const precio = parseFloat(document.getElementById("precio").value);
@@ -280,7 +265,7 @@ function resetBoton(btn) {
   btn.textContent = "📦 Guardar Producto";
 }
 
-// ✅ CARGAR PRODUCTOS (igual que antes)
+// ✅ CARGAR PRODUCTOS
 async function cargarProductos() {
   try {
     const res = await fetch(API_BASE);
@@ -318,7 +303,7 @@ async function cargarProductos() {
   }
 }
 
-// ✅ EDITAR PRODUCTO (igual que antes)
+// ✅ EDITAR PRODUCTO
 window.editarProducto = async (id) => {
   try {
     const res = await fetch(API_BASE);
@@ -329,17 +314,15 @@ window.editarProducto = async (id) => {
     document.getElementById("nombre").value = producto.name;
     document.getElementById("precio").value = producto.price;
     document.getElementById("categoriaSelect").value = producto.category;
-
-    const event = new Event("change");
-    document.getElementById("categoriaSelect").dispatchEvent(event);
-
-    setTimeout(() => {
-      document.getElementById("subcategoriaSelect").value = producto.subcategory;
-    }, 100);
-
     document.getElementById("tallaTipoSelect").value = producto.tallaTipo || "";
     document.getElementById("stock").value = producto.stock;
     document.getElementById("featured").checked = producto.featured;
+
+    const evt = new Event("change");
+    document.getElementById("categoriaSelect").dispatchEvent(evt);
+    setTimeout(() => {
+      document.getElementById("subcategoriaSelect").value = producto.subcategory;
+    }, 100);
 
     variantes = [...producto.variants];
     imagenesPrincipales = producto.images || [];
