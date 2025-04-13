@@ -1,0 +1,86 @@
+.checkout-container {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  body.modo-oscuro .checkout-container {
+    background-color: #1e1e1e;
+    color: #eee;
+  }
+  
+  .form-checkout input,
+  .form-checkout textarea {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+  }
+  
+  .form-checkout textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+  
+  .acciones-finales {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 1rem;
+  }
+  
+  .btn-finalizar,
+  .btn-whatsapp,
+  .btn-volver {
+    padding: 12px 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .btn-finalizar {
+    background: darkorange;
+    color: white;
+  }
+  
+  .btn-whatsapp {
+    background: #25d366;
+    color: white;
+  }
+  
+  .btn-volver {
+    background: #eee;
+  }
+  
+  .mensaje-final {
+    margin-top: 20px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    color: green;
+  }
+  
+  body.modo-oscuro .btn-volver {
+    background: #444;
+    color: #fff;
+  }
+  
+  body.modo-oscuro input,
+  body.modo-oscuro textarea {
+    background: #2a2a2a;
+    color: white;
+    border-color: #555;
+  }
+  
+  .resumen-carrito .item {
+    padding: 6px 0;
+    border-bottom: 1px solid #ddd;
+  }
+  

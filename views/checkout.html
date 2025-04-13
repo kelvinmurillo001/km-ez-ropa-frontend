@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Finalizar Compra | KM & EZ ROPA</title>
+
+  <meta name="description" content="Confirma tu pedido en KM & EZ ROPA: dirección, contacto, nota y envío por WhatsApp."/>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/checkout.css" />
+  <script src="/js/cart.js" defer></script>
+  <script src="/js/checkout.js" defer></script>
+</head>
+<body class="checkout-page fade-in">
+
+  <main class="checkout-container">
+    <h1>🧾 Finalizar Pedido</h1>
+
+    <!-- Formulario -->
+    <form id="checkoutForm" class="form-checkout">
+      <input type="text" id="nombre" placeholder="Tu nombre completo" required />
+      <input type="tel" id="telefono" placeholder="Teléfono de contacto" required />
+      <input type="text" id="direccion" placeholder="Dirección de entrega" required />
+      <textarea id="nota" placeholder="Nota adicional (opcional)"></textarea>
+
+      <h3>Resumen del pedido</h3>
+      <div id="resumen-pedido" class="resumen-carrito"></div>
+
+      <div class="acciones-finales">
+        <button type="submit" class="btn-finalizar">✅ Confirmar Pedido</button>
+        <button type="button" class="btn-whatsapp" onclick="enviarWhatsApp()">📲 Consultar por WhatsApp</button>
+        <a href="carrito.html" class="btn-volver">⬅️ Volver al carrito</a>
+      </div>
+    </form>
+
+    <div id="mensajeFinal" class="mensaje-final oculto"></div>
+  </main>
+
+  <noscript>
+    <p style="color: red; text-align: center;">⚠️ Esta página requiere JavaScript para finalizar la compra.</p>
+  </noscript>
+</body>
+</html>

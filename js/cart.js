@@ -19,12 +19,12 @@ function saveCart(cart) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
 
-// 🔑 Generar clave única por producto + talla + color
+// 🔑 Clave única: id + talla + color
 function generateKey(product) {
   return `${product.id}_${product.talla || ""}_${product.color || ""}`;
 }
 
-// ➕ Agregar al carrito
+// ➕ Agregar producto
 function addToCart(product) {
   const cart = getCart();
   const key = generateKey(product);
@@ -40,7 +40,7 @@ function addToCart(product) {
   updateCartWidget();
 }
 
-// ❌ Eliminar producto por clave
+// ❌ Eliminar producto
 function removeFromCart(key) {
   const updated = getCart().filter(item => generateKey(item) !== key);
   saveCart(updated);
@@ -62,18 +62,18 @@ function changeQuantity(key, delta) {
   updateCartWidget();
 }
 
-// 🧮 Calcular total
+// 🧮 Total $
 function calculateTotal() {
   return getCart()
     .reduce((sum, item) => sum + ((parseFloat(item.precio || item.price) || 0) * item.cantidad), 0)
     .toFixed(2);
 }
 
-// 💾 Guardar pedido en backend
-async function guardarPedido(nombre, nota, origen = "whatsapp") {
+// 💾 Enviar pedido al backend
+async function guardarPedido(nombre, nota = "", origen = "whatsapp") {
   const cart = getCart();
   if (!nombre || cart.length === 0) {
-    alert("⚠️ Ingresa tu nombre y productos");
+    alert("⚠️ Ingresa tu nombre y agrega productos al carrito.");
     return false;
   }
 
@@ -99,8 +99,9 @@ async function guardarPedido(nombre, nota, origen = "whatsapp") {
     });
 
     const result = await res.json();
+
     if (!res.ok) {
-      alert("❌ Error guardando pedido: " + (result.message || "Desconocido"));
+      alert("❌ Error al guardar pedido: " + (result.message || "Desconocido"));
       return false;
     }
 
@@ -111,13 +112,13 @@ async function guardarPedido(nombre, nota, origen = "whatsapp") {
   }
 }
 
-// 📲 Enviar pedido por WhatsApp
-async function sendCartToWhatsApp(nombre, nota) {
+// 📲 WhatsApp opcional
+async function sendCartToWhatsApp(nombre, nota = "") {
   const cart = getCart();
   if (!nombre) return alert("⚠️ Ingresa tu nombre");
   if (cart.length === 0) return alert("🛒 El carrito está vacío");
 
-  const ok = await guardarPedido(nombre, nota);
+  const ok = await guardarPedido(nombre, nota, "whatsapp");
   if (!ok) return;
 
   let msg = `👋 Hola! Me interesa consultar por estos productos:\n\n`;
@@ -128,24 +129,24 @@ async function sendCartToWhatsApp(nombre, nota) {
     msg += `\n`;
   });
 
-  msg += `\n💰 Total estimado: $${calculateTotal()}\n👤 Cliente: ${nombre}\n`;
+  msg += `\n💰 Total: $${calculateTotal()}\n👤 Cliente: ${nombre}\n`;
   if (nota) msg += `📌 Nota: ${nota}\n`;
 
   const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
   window.open(whatsappURL, "_blank");
 
   localStorage.removeItem(CART_KEY);
-  setTimeout(() => window.location.href = "index.html", 2000);
+  setTimeout(() => window.location.href = "index.html", 2500);
 }
 
-// 🔢 Actualizar contador del carrito
+// 🛒 Widget contador
 function updateCartWidget() {
   const count = getCart().reduce((sum, item) => sum + item.cantidad, 0);
   const badge = document.querySelector("#cart-widget-count");
   if (badge) badge.textContent = count;
 }
 
-// 🖼️ Renderizar carrito
+// 🖼️ Mostrar productos en carrito
 function renderCartItems() {
   const cart = getCart();
   const contenedor = document.querySelector("#cart-items");
@@ -163,7 +164,7 @@ function renderCartItems() {
     const precio = item.precio || item.price || 0;
     const imagen = item.imagen || item.image || "/assets/logo.jpg";
 
-    const idKey = generateKey(item);
+    const key = generateKey(item);
 
     const div = document.createElement("div");
     div.className = "cart-item fade-in";
@@ -175,10 +176,10 @@ function renderCartItems() {
         ${item.talla ? `<p><strong>Talla:</strong> ${item.talla}</p>` : ""}
         ${(item.color || item.colores) ? `<p><strong>Color:</strong> ${item.color || item.colores}</p>` : ""}
         <div class="cart-actions">
-          <button onclick="changeQuantity('${idKey}', -1)">➖</button>
+          <button onclick="changeQuantity('${key}', -1)">➖</button>
           <span>${item.cantidad}</span>
-          <button onclick="changeQuantity('${idKey}', 1)">➕</button>
-          <button onclick="removeFromCart('${idKey}')">🗑️</button>
+          <button onclick="changeQuantity('${key}', 1)">➕</button>
+          <button onclick="removeFromCart('${key}')">🗑️</button>
         </div>
       </div>
     `;
@@ -189,7 +190,7 @@ function renderCartItems() {
   if (unidadesEl) unidadesEl.textContent = `Total unidades: ${unidades}`;
 }
 
-// 🖼️ Imagen en modal
+// 🖼️ Modal imagen
 function abrirModalImagen(src) {
   const modal = document.getElementById("imageModal");
   const img = document.getElementById("modalImage");
