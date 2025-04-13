@@ -15,12 +15,13 @@ document.addEventListener("DOMContentLoaded", () => {
 async function cargarProductos() {
   try {
     const res = await fetch(`${API_BASE}/products`);
-    productos = await res.json();
+    if (!res.ok) throw new Error(`Error ${res.status} al obtener productos`);
 
+    productos = await res.json();
     if (!Array.isArray(productos)) throw new Error("Formato de productos inválido");
 
     const catalogo = document.getElementById("catalogo");
-    if (!catalogo) return;
+    if (!catalogo) throw new Error("Elemento #catalogo no encontrado en el DOM");
 
     aplicarFiltros();
     cargarSubcategoriasUnicas();
@@ -33,6 +34,7 @@ async function cargarProductos() {
     });
     document.getElementById("subcategoria")?.addEventListener("change", aplicarFiltros);
     document.getElementById("orden")?.addEventListener("change", aplicarFiltros);
+
   } catch (error) {
     console.error("❌ Error al cargar productos:", error);
     const catalogo = document.getElementById("catalogo");
@@ -83,7 +85,11 @@ function mostrarProductos(lista) {
   contenedor.innerHTML = "";
 
   if (!lista.length) {
-    contenedor.innerHTML = "<p class='mensaje-error fade-in'>😕 No hay productos que coincidan.</p>";
+    contenedor.innerHTML = `
+      <div class="fade-in mensaje-error">
+        <h3>😕 Sin resultados</h3>
+        <p>Intenta ajustar los filtros o la búsqueda.</p>
+      </div>`;
     return;
   }
 

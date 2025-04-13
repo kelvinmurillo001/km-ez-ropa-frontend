@@ -9,34 +9,47 @@ async function cargarDetalle() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
 
-  if (!id) return mostrarError("❌ ID del producto no proporcionado.");
+  if (!id || id.length < 10) {
+    return mostrarError("❌ ID del producto no proporcionado o inválido.");
+  }
 
   try {
     const res = await fetch(`${API_BASE}/${id}`);
-    if (!res.ok) throw new Error("Respuesta no válida del servidor");
+
+    if (res.status === 404) {
+      return mostrarError("🚫 Producto no encontrado o fue eliminado.");
+    }
+
+    if (!res.ok) {
+      throw new Error(`Error del servidor: ${res.status}`);
+    }
 
     const producto = await res.json();
-    if (!producto || !producto._id) return mostrarError("❌ Producto no encontrado.");
+
+    if (!producto || !producto._id) {
+      return mostrarError("❌ Producto no encontrado.");
+    }
 
     renderizarProducto(producto);
+
   } catch (error) {
     console.error("❌ Error al cargar detalle:", error);
-    mostrarError("❌ Ocurrió un error al cargar el producto.");
+    mostrarError("❌ Ocurrió un error inesperado al cargar el producto.");
   }
 }
 
 function renderizarProducto(p) {
   const imagenes = [
-    ...(p.images?.map(img => ({
+    ...(Array.isArray(p.images) ? p.images.map(img => ({
       url: img.url,
       talla: img.talla || "",
       color: img.color || ""
-    })) || []),
-    ...(p.variants?.map(v => ({
+    })) : []),
+    ...(Array.isArray(p.variants) ? p.variants.map(v => ({
       url: v.imageUrl,
       talla: v.talla || "",
       color: v.color || ""
-    })) || [])
+    })) : [])
   ];
 
   const primeraImagen = imagenes[0]?.url || "/assets/logo.jpg";
@@ -64,13 +77,12 @@ function renderizarProducto(p) {
           `).join("")}
         </div>
         <div class="detalle-imagen-principal">
-          <img id="imagenPrincipal" src="${primeraImagen}" alt="Imagen principal de ${p.name}" />
+          <img id="imagenPrincipal" src="${primeraImagen}" alt="Imagen principal de ${p.name}" onerror="this.src='/assets/logo.jpg'" />
           ${(primeraTalla || primerColor) ? `
             <div class="imagen-info">
               ${primeraTalla ? `<p><strong>Talla:</strong> ${primeraTalla}</p>` : ""}
               ${primerColor ? `<p><strong>Color:</strong> ${primerColor}</p>` : ""}
-            </div>
-          ` : ""}
+            </div>` : ""}
         </div>
       </div>
 
@@ -78,8 +90,8 @@ function renderizarProducto(p) {
       <div class="detalle-info">
         <h1>${p.name}</h1>
         <p><strong>Precio:</strong> $${p.price.toFixed(2)}</p>
-        <p><strong>Categoría:</strong> ${p.category}</p>
-        <p><strong>Subcategoría:</strong> ${p.subcategory || "N/A"}</p>
+        <p><strong>Categoría:</strong> ${capitalizar(p.category)}</p>
+        <p><strong>Subcategoría:</strong> ${capitalizar(p.subcategory || "N/A")}</p>
         ${p.tallaTipo ? `<p><strong>Tipo de talla:</strong> ${iconoTalla} ${capitalizar(p.tallaTipo)}</p>` : ""}
         <p><strong>Stock general:</strong> ${p.stock ?? "N/A"}</p>
 
@@ -136,6 +148,7 @@ function renderizarProducto(p) {
 function cambiarImagen(url, thumb) {
   const principal = document.getElementById("imagenPrincipal");
   principal.src = url;
+
   document.querySelectorAll(".detalle-galeria-thumbs img").forEach(img =>
     img.classList.remove("active")
   );
