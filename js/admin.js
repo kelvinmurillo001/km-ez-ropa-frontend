@@ -204,7 +204,8 @@ function obtenerDatosFormulario() {
   const mainTalla = document.getElementById("mainTalla").value.trim();
   const mainColor = document.getElementById("mainColor").value.trim();
 
-  if (!nombre || isNaN(precio) || !categoria || !subcategory || !tallaTipo) {
+  // ✅ Validación corregida (subcategoria bien escrita)
+  if (!nombre || isNaN(precio) || !categoria || !subcategoria || !tallaTipo) {
     mostrarMensaje(message, "⚠️ Completa todos los campos obligatorios", "warning");
     return null;
   }
@@ -220,7 +221,7 @@ function obtenerDatosFormulario() {
   return {
     name: nombre,
     price: precio,
-    category: categoria,
+    category,
     subcategory: subcategoria,
     tallaTipo,
     stock,
@@ -231,9 +232,51 @@ function obtenerDatosFormulario() {
   };
 }
 
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const data = obtenerDatosFormulario();
+  if (!data) return;
+
+  const url = editandoId ? `${API_BASE}/${editandoId}` : API_BASE;
+  const method = editandoId ? "PUT" : "POST";
+  const boton = document.getElementById("btnGuardar");
+  boton.disabled = true;
+  boton.textContent = "⏳ Guardando...";
+
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message || "Error al guardar");
+    }
+
+    mostrarMensaje(message, "✅ Producto guardado", "success");
+    form.reset();
+    variantes = [];
+    imagenesPrincipales = [];
+    renderizarVariantes();
+    cargarProductos();
+    editandoId = null;
+    document.getElementById("previewImagenesPrincipales").innerHTML = "";
+  } catch (err) {
+    console.error("❌", err);
+    mostrarMensaje(message, err.message, "error");
+  } finally {
+    resetBoton(boton);
+  }
+});
+
 function resetBoton(btn) {
   btn.disabled = false;
-  btn.textContent = "📦 Guardar Producto";
+  btn.textContent = "💾 Guardar Producto";
 }
 
 async function cargarProductos() {
