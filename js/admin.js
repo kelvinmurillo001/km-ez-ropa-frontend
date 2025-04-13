@@ -204,8 +204,7 @@ function obtenerDatosFormulario() {
   const mainTalla = document.getElementById("mainTalla").value.trim();
   const mainColor = document.getElementById("mainColor").value.trim();
 
-  // ✅ Validación corregida (subcategoria bien escrita)
-  if (!nombre || isNaN(precio) || !categoria || !subcategoria || !tallaTipo)    {
+  if (!nombre || isNaN(precio) || !categoria || !subcategoria || !tallaTipo) {
     mostrarMensaje(message, "⚠️ Completa todos los campos obligatorios", "warning");
     return null;
   }
@@ -221,7 +220,7 @@ function obtenerDatosFormulario() {
   return {
     name: nombre,
     price: precio,
-    category,
+    category: categoria,
     subcategory: subcategoria,
     tallaTipo,
     stock,
