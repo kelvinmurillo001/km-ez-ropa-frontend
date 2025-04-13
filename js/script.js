@@ -18,6 +18,8 @@ async function cargarProductos() {
     if (!res.ok) throw new Error(`Error ${res.status} al obtener productos`);
 
     productos = await res.json();
+    console.log("✅ Productos recibidos:", productos); // Debug
+
     if (!Array.isArray(productos)) throw new Error("Formato de productos inválido");
 
     const catalogo = document.getElementById("catalogo");
@@ -27,6 +29,7 @@ async function cargarProductos() {
     cargarSubcategoriasUnicas();
     cargarPromocionActiva();
 
+    // Listeners
     document.getElementById("busqueda")?.addEventListener("input", aplicarFiltros);
     document.getElementById("categoria")?.addEventListener("change", () => {
       cargarSubcategoriasUnicas();
@@ -56,14 +59,20 @@ function aplicarFiltros() {
   const orden = document.getElementById("orden")?.value || "reciente";
 
   let filtrados = productos.filter(p => {
-    const valido =
-      p.name && typeof p.name === "string" &&
+    const tieneCamposValidos = (
+      typeof p.name === "string" &&
       typeof p.price === "number" &&
       Array.isArray(p.images) &&
-      p.images.length > 0;
+      p.images.length > 0 &&
+      typeof p.images[0].url === "string"
+    );
+
+    if (!tieneCamposValidos) {
+      console.warn("⚠️ Producto ignorado (campos inválidos):", p);
+      return false;
+    }
 
     return (
-      valido &&
       (categoria === "todas" || p.category?.toLowerCase() === categoria) &&
       (subcategoria === "todas" || p.subcategory?.toLowerCase() === subcategoria) &&
       (!termino || p.name.toLowerCase().includes(termino))
@@ -183,18 +192,6 @@ async function cargarPromocionActiva() {
 function isFechaEnRango(start, end) {
   const hoy = new Date().toISOString().split("T")[0];
   return (!start || start <= hoy) && (!end || end >= hoy);
-}
-
-/* 🖼️ Modal para ampliar imagen */
-function ampliarImagen(url) {
-  const modal = document.createElement("div");
-  modal.className = "modal-img fade-in";
-  modal.innerHTML = `
-    <div class="overlay" onclick="this.parentElement.remove()"></div>
-    <img src="${url}" alt="Vista ampliada" />
-    <span class="cerrar" onclick="this.parentElement.remove()">✖</span>
-  `;
-  document.body.appendChild(modal);
 }
 
 /* 🌙 Modo oscuro */
