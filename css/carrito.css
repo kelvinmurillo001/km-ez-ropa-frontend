@@ -39,8 +39,8 @@ body.modo-oscuro .carrito-formulario {
   background-color: #fff;
   transition: border 0.3s;
 }
-.carrito-formulario input:focus,
-.carrito-formulario textarea:focus {
+.carrito-formulario input:focus-visible,
+.carrito-formulario textarea:focus-visible {
   border-color: #1976d2;
   outline: none;
 }
@@ -62,9 +62,11 @@ body.modo-oscuro .carrito-formulario textarea {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-.btn-whatsapp:hover {
+.btn-whatsapp:hover,
+.btn-whatsapp:focus-visible {
   background-color: #1ebc57;
   transform: scale(1.05);
+  outline: none;
 }
 
 /* 🗑️ Botón vaciar */
@@ -78,8 +80,10 @@ body.modo-oscuro .carrito-formulario textarea {
   cursor: pointer;
   transition: background-color 0.3s;
 }
-.btn-vaciar:hover {
+.btn-vaciar:hover,
+.btn-vaciar:focus-visible {
   background-color: #c62828;
+  outline: none;
 }
 
 /* 🛍️ Productos en carrito */
@@ -118,6 +122,7 @@ body.modo-oscuro .cart-item {
   border-radius: 8px;
   flex-shrink: 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: zoom-in;
 }
 
 .cart-info {
@@ -146,9 +151,11 @@ body.modo-oscuro .cart-item {
   cursor: pointer;
   transition: background 0.2s ease;
 }
-.cart-actions button:hover {
+.cart-actions button:hover,
+.cart-actions button:focus-visible {
   background-color: darkorange;
   color: white;
+  outline: none;
 }
 .cart-actions span {
   min-width: 24px;
@@ -215,6 +222,12 @@ body.modo-oscuro #total-unidades {
   cursor: pointer;
   font-weight: bold;
   z-index: 10000;
+  transition: color 0.2s;
+}
+.modal-close:hover,
+.modal-close:focus-visible {
+  color: #ffeb3b;
+  outline: none;
 }
 body.modo-oscuro .modal-close {
   color: #ffeb3b;

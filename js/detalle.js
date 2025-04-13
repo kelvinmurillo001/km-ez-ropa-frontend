@@ -32,9 +32,17 @@ async function cargarDetalle() {
 // 🎨 Renderizar producto
 function renderizarProducto(p) {
   const imagenes = [
-    ...(Array.isArray(p.images) ? p.images.map(img => ({ url: img.url, talla: img.talla, color: img.color })) : []),
-    ...(Array.isArray(p.variants) ? p.variants.map(v => ({ url: v.imageUrl, talla: v.talla, color: v.color })) : [])
-  ];
+    ...(Array.isArray(p.images) ? p.images.map(img => ({
+      url: img?.url,
+      talla: img?.talla,
+      color: img?.color
+    })) : []),
+    ...(Array.isArray(p.variants) ? p.variants.map(v => ({
+      url: v?.imageUrl,
+      talla: v?.talla,
+      color: v?.color
+    })) : [])
+  ].filter(img => img.url); // eliminar nulos
 
   const primeraImagen = imagenes[0]?.url || "/assets/logo.jpg";
   const primeraTalla = imagenes[0]?.talla || "";
@@ -68,8 +76,8 @@ function renderizarProducto(p) {
       </div>
 
       <div class="detalle-info">
-        <h1>${p.name}</h1>
-        <p><strong>Precio:</strong> $${p.price.toFixed(2)}</p>
+        <h1>${p.name || "Producto sin nombre"}</h1>
+        <p><strong>Precio:</strong> $${parseFloat(p.price || 0).toFixed(2)}</p>
         <p><strong>Categoría:</strong> ${capitalizar(p.category)}</p>
         <p><strong>Subcategoría:</strong> ${capitalizar(p.subcategory || "N/A")}</p>
         ${p.tallaTipo ? `<p><strong>Tipo de talla:</strong> ${iconoTalla} ${capitalizar(p.tallaTipo)}</p>` : ""}
@@ -148,7 +156,7 @@ function agregarAlCarrito(id, nombre, precio, imagen) {
   if (index !== -1) {
     carrito[index].cantidad += cantidad;
   } else {
-    carrito.push({ id, nombre, precio, imagen, talla, cantidad, agregado: new Date().toISOString() });
+    carrito.push({ id, nombre, precio: parseFloat(precio), imagen, talla, cantidad, agregado: new Date().toISOString() });
   }
 
   localStorage.setItem("carrito", JSON.stringify(carrito));

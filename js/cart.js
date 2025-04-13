@@ -83,9 +83,9 @@ async function guardarPedido(nombre, nota = "", origen = "whatsapp") {
     origen,
     total: calculateTotal(),
     items: cart.map(p => ({
-      nombre: p.nombre || p.name,
+      nombre: p.nombre || p.name || "Producto",
       cantidad: p.cantidad,
-      precio: p.precio || p.price,
+      precio: p.precio || p.price || 0,
       talla: p.talla || "",
       color: p.color || p.colores || ""
     }))
@@ -169,7 +169,7 @@ function renderCartItems() {
     const div = document.createElement("div");
     div.className = "cart-item fade-in";
     div.innerHTML = `
-      <img src="${imagen}" alt="${nombre}" onclick="abrirModalImagen('${imagen}')" />
+      <img src="${imagen}" alt="${nombre}" onclick="abrirModalImagen('${imagen}')" onerror="this.src='/assets/logo.jpg'" />
       <div class="cart-info">
         <h4>${nombre}</h4>
         <p><strong>Precio:</strong> $${precio} x ${item.cantidad}</p>
