@@ -37,7 +37,6 @@ function mostrarMensaje(elemento, mensaje, tipo = "info") {
   };
 
   const { bg, color } = colores[tipo] || colores.info;
-
   elemento.textContent = mensaje;
   elemento.classList.remove("oculto");
   elemento.style.backgroundColor = bg;
@@ -55,14 +54,14 @@ function goBack() {
   location.href = "panel.html";
 }
 
-// ✅ Inicia sesión
+// ✅ Token y Headers
 const token = verificarSesion();
 const headers = {
   "Content-Type": "application/json",
   Authorization: `Bearer ${token}`
 };
 
-// 📍 API y elementos del DOM
+// 📍 DOM
 const API = "https://km-ez-ropa-backend.onrender.com/api/categories";
 const message = document.getElementById("message");
 const categoryForm = document.getElementById("formCategoria");
@@ -71,6 +70,11 @@ const categoryNameInput = document.getElementById("nombreCategoria");
 const subcategoryNameInput = document.getElementById("nuevaSubcategoria");
 const categorySelect = document.getElementById("categorySelect");
 const categoryList = document.getElementById("listaCategorias");
+
+// 🎨 Colores predeterminados para categoría
+const coloresCategorias = [
+  "blue", "orange", "red", "green", "purple", "teal"
+];
 
 // 🔃 Cargar categorías
 async function loadCategories() {
@@ -85,7 +89,7 @@ async function loadCategories() {
   }
 }
 
-// 🔽 Rellenar select de categorías
+// 🔽 Rellenar el <select> con categorías
 function renderCategorySelect(data) {
   categorySelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
   data.forEach(cat => {
@@ -99,20 +103,25 @@ function renderCategorySelect(data) {
 // 📋 Renderizar tarjetas
 function renderCategoryCards(data) {
   categoryList.innerHTML = "";
-  data.forEach(cat => {
+
+  data.forEach((cat, index) => {
+    const color = coloresCategorias[index % coloresCategorias.length]; // Rota colores
+
     const card = document.createElement("div");
     card.className = "categoria-card fade-in";
+    card.setAttribute("data-color", color);
 
     const subcats = (cat.subcategories || []).map(sub => `
       <li>
         ${sub}
-        <button onclick="deleteSubcategory('${cat._id}', '${sub}')" class="btn btn-xs">❌</button>
-      </li>`).join("");
+        <button onclick="deleteSubcategory('${cat._id}', '${sub}')" title="Eliminar">❌</button>
+      </li>
+    `).join("");
 
     card.innerHTML = `
       <div class="cat-header">
         <strong>${cat.name}</strong>
-        <button onclick="deleteCategory('${cat._id}')" class="btn btn-sm danger">🗑</button>
+        <button onclick="deleteCategory('${cat._id}')" class="btn btn-sm danger" title="Eliminar categoría">🗑</button>
       </div>
       <ul class="subcategoria-list">${subcats}</ul>
     `;
@@ -125,7 +134,6 @@ function renderCategoryCards(data) {
 categoryForm?.addEventListener("submit", async e => {
   e.preventDefault();
   const name = categoryNameInput.value.trim();
-
   if (!name) return mostrarMensaje(message, "⚠️ Escribe un nombre", "warning");
 
   try {
@@ -144,7 +152,7 @@ categoryForm?.addEventListener("submit", async e => {
     } else {
       mostrarMensaje(message, `❌ ${data.message || "Error al crear categoría"}`, "error");
     }
-  } catch (err) {
+  } catch {
     mostrarMensaje(message, "❌ Error de red al crear categoría", "error");
   }
 });
@@ -175,7 +183,7 @@ subcategoryForm?.addEventListener("submit", async e => {
     } else {
       mostrarMensaje(message, `❌ ${data.message || "No se pudo agregar"}`, "error");
     }
-  } catch (err) {
+  } catch {
     mostrarMensaje(message, "❌ Error al agregar subcategoría", "error");
   }
 });
@@ -226,5 +234,5 @@ window.deleteSubcategory = async (id, subcategory) => {
 // ▶️ Init
 loadCategories();
 
-// 🔓 Exponer globalmente para fallback
+// 🌐 Exponer para el HTML
 window.verificarToken = verificarSesion;
