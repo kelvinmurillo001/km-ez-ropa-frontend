@@ -5,6 +5,7 @@ const contenedor = document.getElementById("detalleProducto");
 
 document.addEventListener("DOMContentLoaded", cargarDetalle);
 
+// 🔍 Cargar detalle de producto
 async function cargarDetalle() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
@@ -28,6 +29,7 @@ async function cargarDetalle() {
   }
 }
 
+// 🎨 Renderizar producto
 function renderizarProducto(p) {
   const imagenes = [
     ...(Array.isArray(p.images) ? p.images.map(img => ({ url: img.url, talla: img.talla, color: img.color })) : []),
@@ -76,15 +78,11 @@ function renderizarProducto(p) {
         <div class="guia-tallas">
           <p><strong>Selecciona Talla:</strong></p>
           <div class="tallas-disponibles">
-            ${
-              tallasUnicas.length
-                ? tallasUnicas.map((t, i) => `
-                    <div class="talla-opcion ${i === 0 ? "selected" : ""}" onclick="seleccionarTalla(this)" tabindex="0">
-                      ${t}
-                    </div>
-                  `).join("")
-                : "<span>No hay tallas disponibles</span>"
-            }
+            ${tallasUnicas.length
+              ? tallasUnicas.map((t, i) => `
+                <div class="talla-opcion ${i === 0 ? "selected" : ""}" onclick="seleccionarTalla(this)" tabindex="0">${t}</div>
+              `).join("")
+              : "<span>No hay tallas disponibles</span>"}
           </div>
         </div>
 
@@ -116,6 +114,7 @@ function renderizarProducto(p) {
   `;
 }
 
+// 🖼 Cambiar imagen
 function cambiarImagen(url, thumb) {
   const principal = document.getElementById("imagenPrincipal");
   principal.src = url;
@@ -123,11 +122,13 @@ function cambiarImagen(url, thumb) {
   thumb.classList.add("active");
 }
 
+// 👕 Seleccionar talla
 function seleccionarTalla(elem) {
   document.querySelectorAll(".talla-opcion").forEach(btn => btn.classList.remove("selected"));
   elem.classList.add("selected");
 }
 
+// 🔢 Ajustar cantidad
 function ajustarCantidad(delta) {
   const cantidadElem = document.getElementById("cantidad");
   let cantidad = parseInt(cantidadElem.textContent);
@@ -135,6 +136,7 @@ function ajustarCantidad(delta) {
   cantidadElem.textContent = cantidad;
 }
 
+// 🛒 Añadir al carrito
 function agregarAlCarrito(id, nombre, precio, imagen) {
   const talla = document.querySelector(".talla-opcion.selected")?.textContent;
   const cantidad = parseInt(document.getElementById("cantidad").textContent);
@@ -153,10 +155,12 @@ function agregarAlCarrito(id, nombre, precio, imagen) {
   alert("✅ Producto añadido al carrito.");
 }
 
+// ❌ Mostrar error
 function mostrarError(msg) {
   contenedor.innerHTML = `<p class="error fade-in">${msg}</p>`;
 }
 
+// 🔤 Capitalizar
 function capitalizar(str) {
   return typeof str === "string" ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : str;
 }
