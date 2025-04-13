@@ -9,7 +9,6 @@
   font-family: 'Segoe UI', sans-serif;
   color: #333;
 }
-
 body.modo-oscuro .detalle-container {
   background: #1e1e1e;
   color: #eee;
@@ -23,7 +22,7 @@ body.modo-oscuro .detalle-container {
   justify-content: center;
 }
 
-/* 📸 Galería de imágenes */
+/* 📸 Galería */
 .detalle-galeria {
   display: flex;
   flex-direction: column;
@@ -50,7 +49,6 @@ body.modo-oscuro .detalle-container {
   cursor: pointer;
   transition: border-color 0.3s;
 }
-
 .detalle-galeria-thumbs img:hover,
 .detalle-galeria-thumbs img.active {
   border-color: darkorange;
@@ -60,57 +58,49 @@ body.modo-oscuro .detalle-container {
   max-width: 400px;
   position: relative;
 }
-
 .detalle-imagen-principal img {
   width: 100%;
   border-radius: 12px;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
-
 .detalle-imagen-principal img:hover {
   transform: scale(1.04);
   cursor: zoom-in;
 }
 
-/* ℹ️ Info del producto */
+/* ℹ️ Info */
 .detalle-info {
   flex: 1;
   min-width: 300px;
 }
-
 .detalle-info h1 {
   font-size: 28px;
   margin-bottom: 1rem;
   color: #222;
 }
-
 body.modo-oscuro .detalle-info h1 {
   color: #fff;
 }
-
 .detalle-info p {
   margin: 6px 0;
   font-size: 15px;
   color: #444;
 }
-
 body.modo-oscuro .detalle-info p {
   color: #ccc;
 }
 
-/* 👕 Tallas disponibles */
+/* 👕 Tallas */
 .guia-tallas {
   margin-top: 20px;
 }
-
 .tallas-disponibles {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   margin: 10px 0;
 }
-
 .talla-opcion {
   border: 1px solid #ccc;
   padding: 6px 12px;
@@ -121,35 +111,30 @@ body.modo-oscuro .detalle-info p {
   font-weight: 500;
   font-size: 14px;
 }
-
 .talla-opcion:hover {
   background-color: #eee;
 }
-
 .talla-opcion.selected {
   border-color: darkorange;
   background-color: #fff3e0;
 }
-
 body.modo-oscuro .talla-opcion {
   background-color: #333;
   border-color: #555;
   color: #eee;
 }
-
 body.modo-oscuro .talla-opcion.selected {
   background-color: #442e00;
   border-color: orange;
 }
 
-/* ➕ Selector de cantidad */
+/* ➕ Cantidad */
 .contador {
   margin-top: 1rem;
   display: flex;
   align-items: center;
   gap: 10px;
 }
-
 .contador button {
   background: #ddd;
   border: none;
@@ -159,20 +144,16 @@ body.modo-oscuro .talla-opcion.selected {
   cursor: pointer;
   transition: background 0.3s;
 }
-
 .contador button:hover {
   background: #ccc;
 }
-
 body.modo-oscuro .contador button {
   background: #555;
   color: #fff;
 }
-
 body.modo-oscuro .contador button:hover {
   background: #777;
 }
-
 .contador span {
   font-weight: bold;
   font-size: 18px;
@@ -180,7 +161,7 @@ body.modo-oscuro .contador button:hover {
   text-align: center;
 }
 
-/* 🛒 Botón de compra */
+/* 🛒 Botón */
 .btn-comprar {
   margin-top: 1.5rem;
   padding: 12px 24px;
@@ -193,12 +174,11 @@ body.modo-oscuro .contador button:hover {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
 .btn-comprar:hover {
   background-color: #cc7000;
 }
 
-/* 📏 Tabla guía de tallas */
+/* 📏 Guía tallas */
 .guia-info {
   margin-top: 1.5rem;
   border-top: 1px solid #eee;
@@ -206,31 +186,27 @@ body.modo-oscuro .contador button:hover {
   font-size: 14px;
   color: #555;
 }
-
 body.modo-oscuro .guia-info {
   color: #bbb;
   border-color: #444;
 }
-
 .guia-info table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 0.5rem;
 }
-
 .guia-info th,
 .guia-info td {
   padding: 6px 10px;
   border: 1px solid #ccc;
   text-align: center;
 }
-
 body.modo-oscuro .guia-info th,
 body.modo-oscuro .guia-info td {
   border-color: #555;
 }
 
-/* ❌ Mensajes de error */
+/* ❌ Error */
 .error {
   color: red;
   font-weight: bold;
@@ -243,7 +219,6 @@ body.modo-oscuro .guia-info td {
     flex-direction: column;
     align-items: center;
   }
-
   .detalle-galeria-thumbs {
     flex-direction: row;
     flex-wrap: wrap;
@@ -251,14 +226,13 @@ body.modo-oscuro .guia-info td {
     max-height: unset;
     overflow: visible;
   }
-
   .detalle-galeria-thumbs img {
     width: 50px;
     height: 50px;
   }
 }
 
-/* 🔙 Botón volver */
+/* 🔙 Volver */
 .btn-volver {
   display: inline-block;
   margin-bottom: 1rem;
@@ -271,19 +245,15 @@ body.modo-oscuro .guia-info td {
   border: 1px solid #ddd;
   transition: all 0.3s ease;
 }
-
 .btn-volver:hover {
   background-color: #e0e0e0;
   color: #000;
-  text-decoration: none;
 }
-
 body.modo-oscuro .btn-volver {
   background-color: #333;
   color: #eee;
   border-color: #555;
 }
-
 body.modo-oscuro .btn-volver:hover {
   background-color: #444;
   color: #fff;
