@@ -11,25 +11,24 @@ document.addEventListener("DOMContentLoaded", () => {
   inicializarBotones();
 });
 
-/* 📦 Carga inicial de productos */
+/* 📦 Cargar productos */
 async function cargarProductos() {
   try {
     const res = await fetch(`${API_BASE}/products`);
     if (!res.ok) throw new Error(`Error ${res.status} al obtener productos`);
 
     productos = await res.json();
-    console.log("✅ Productos recibidos:", productos); // Debug
+    console.log("✅ Productos recibidos:", productos);
 
-    if (!Array.isArray(productos)) throw new Error("Formato de productos inválido");
+    if (!Array.isArray(productos)) throw new Error("Formato inválido en productos");
 
     const catalogo = document.getElementById("catalogo");
-    if (!catalogo) throw new Error("Elemento #catalogo no encontrado en el DOM");
+    if (!catalogo) throw new Error("Elemento #catalogo no encontrado");
 
     aplicarFiltros();
     cargarSubcategoriasUnicas();
     cargarPromocionActiva();
 
-    // Listeners
     document.getElementById("busqueda")?.addEventListener("input", aplicarFiltros);
     document.getElementById("categoria")?.addEventListener("change", () => {
       cargarSubcategoriasUnicas();
@@ -37,38 +36,33 @@ async function cargarProductos() {
     });
     document.getElementById("subcategoria")?.addEventListener("change", aplicarFiltros);
     document.getElementById("orden")?.addEventListener("change", aplicarFiltros);
-
   } catch (error) {
     console.error("❌ Error al cargar productos:", error);
     const catalogo = document.getElementById("catalogo");
     if (catalogo) {
-      catalogo.innerHTML = "<p class='mensaje-error'>❌ Error al cargar productos</p>";
+      catalogo.innerHTML = "<p class='mensaje-error'>❌ No se pudieron cargar los productos.</p>";
     }
   }
 }
 
-/* 🔍 Aplicar filtros */
+/* 🔍 Filtros */
 function aplicarFiltros() {
   const termino = (document.getElementById("busqueda")?.value || "")
-    .trim()
-    .toLowerCase()
-    .replace(/[^\w\s]/gi, "");
+    .trim().toLowerCase().replace(/[^\w\s]/gi, "");
 
   const categoria = (document.getElementById("categoria")?.value || "todas").toLowerCase();
   const subcategoria = (document.getElementById("subcategoria")?.value || "todas").toLowerCase();
   const orden = document.getElementById("orden")?.value || "reciente";
 
   let filtrados = productos.filter(p => {
-    const tieneCamposValidos = (
-      typeof p.name === "string" &&
-      typeof p.price === "number" &&
-      Array.isArray(p.images) &&
-      p.images.length > 0 &&
-      typeof p.images[0].url === "string"
-    );
+    const valido = typeof p.name === "string" &&
+                   typeof p.price === "number" &&
+                   Array.isArray(p.images) &&
+                   p.images.length > 0 &&
+                   typeof p.images[0]?.url === "string";
 
-    if (!tieneCamposValidos) {
-      console.warn("⚠️ Producto ignorado (campos inválidos):", p);
+    if (!valido) {
+      console.warn("⚠️ Producto omitido por estructura inválida:", p);
       return false;
     }
 
@@ -80,16 +74,23 @@ function aplicarFiltros() {
   });
 
   switch (orden) {
-    case "precioAsc": filtrados.sort((a, b) => a.price - b.price); break;
-    case "precioDesc": filtrados.sort((a, b) => b.price - a.price); break;
-    case "destacados": filtrados = filtrados.filter(p => p.featured); break;
-    default: filtrados.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    case "precioAsc":
+      filtrados.sort((a, b) => a.price - b.price);
+      break;
+    case "precioDesc":
+      filtrados.sort((a, b) => b.price - a.price);
+      break;
+    case "destacados":
+      filtrados = filtrados.filter(p => p.featured);
+      break;
+    default:
+      filtrados.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }
 
   mostrarProductos(filtrados);
 }
 
-/* 🖼️ Renderizar productos */
+/* 🖼️ Renderizado */
 function mostrarProductos(lista) {
   const contenedor = document.getElementById("catalogo");
   contenedor.innerHTML = "";
@@ -98,7 +99,7 @@ function mostrarProductos(lista) {
     contenedor.innerHTML = `
       <div class="fade-in mensaje-error">
         <h3>😕 Sin resultados</h3>
-        <p>Intenta ajustar los filtros o la búsqueda.</p>
+        <p>Intenta cambiar los filtros o escribir otro término.</p>
       </div>`;
     return;
   }
@@ -111,9 +112,7 @@ function mostrarProductos(lista) {
     } = p;
 
     const agotado = !stock || stock <= 0;
-    const imagen = images?.[0]?.url || "/assets/logo.jpg";
-
-    const btnDisabled = agotado ? "disabled" : "";
+    const imagen = images[0]?.url || "/assets/logo.jpg";
     const encoded = encodeURIComponent(_id);
 
     const card = document.createElement("div");
@@ -138,10 +137,11 @@ function mostrarProductos(lista) {
       <p><strong>Subcategoría:</strong> ${subcategory}</p>
       <p><strong>Stock:</strong> ${agotado ? "❌ Agotado" : stock}</p>
 
-      <button ${btnDisabled} onclick='addToCart(${JSON.stringify({
+      <button ${agotado ? "disabled" : ""} onclick='addToCart(${JSON.stringify({
         id: _id, nombre: name, precio: price, imagen, talla: talla || "", color: colores || ""
       })})' aria-label="Agregar ${name} al carrito">🛒 Agregar al carrito</button>
     `;
+
     contenedor.appendChild(card);
   });
 }
@@ -167,7 +167,7 @@ function cargarSubcategoriasUnicas() {
   });
 }
 
-/* 📣 Cargar promoción activa */
+/* 📣 Promoción activa */
 async function cargarPromocionActiva() {
   try {
     const res = await fetch(API_PROMO);
@@ -188,13 +188,13 @@ async function cargarPromocionActiva() {
   }
 }
 
-/* 📅 Validar fecha de promoción */
+/* 📅 Fecha válida */
 function isFechaEnRango(start, end) {
   const hoy = new Date().toISOString().split("T")[0];
   return (!start || start <= hoy) && (!end || end >= hoy);
 }
 
-/* 🌙 Modo oscuro */
+/* 🌗 Modo oscuro */
 function restaurarModoOscuro() {
   const oscuro = localStorage.getItem("modoOscuro") === "true";
   if (oscuro) {
@@ -204,7 +204,7 @@ function restaurarModoOscuro() {
   }
 }
 
-/* ☀️ Alternar modo claro/oscuro */
+/* ☀️ Botones */
 function inicializarBotones() {
   const toggleBtn = document.getElementById("modoToggle");
   toggleBtn?.addEventListener("click", () => {
