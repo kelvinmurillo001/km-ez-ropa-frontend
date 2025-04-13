@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   inicializarBotones();
 });
 
-/* 📦 Carga inicial de productos y promociones */
+/* 📦 Carga inicial de productos */
 async function cargarProductos() {
   try {
     const res = await fetch(`${API_BASE}/products`);
@@ -23,10 +23,12 @@ async function cargarProductos() {
     const catalogo = document.getElementById("catalogo");
     if (!catalogo) throw new Error("Elemento #catalogo no encontrado en el DOM");
 
+    // Filtros y UI
     aplicarFiltros();
     cargarSubcategoriasUnicas();
     cargarPromocionActiva();
 
+    // Listeners
     document.getElementById("busqueda")?.addEventListener("input", aplicarFiltros);
     document.getElementById("categoria")?.addEventListener("change", () => {
       cargarSubcategoriasUnicas();
@@ -44,42 +46,43 @@ async function cargarProductos() {
   }
 }
 
-/* 🔍 Filtros personalizados */
+/* 🔍 Aplicar filtros */
 function aplicarFiltros() {
   const termino = (document.getElementById("busqueda")?.value || "")
     .trim()
     .toLowerCase()
     .replace(/[^\w\s]/gi, "");
+
   const categoria = document.getElementById("categoria")?.value || "todas";
   const subcategoria = document.getElementById("subcategoria")?.value || "todas";
   const orden = document.getElementById("orden")?.value || "reciente";
 
   let filtrados = productos.filter(p => {
+    const valido =
+      p.name && typeof p.name === "string" &&
+      typeof p.price === "number" &&
+      Array.isArray(p.images) &&
+      p.images.length > 0;
+
     return (
+      valido &&
       (categoria === "todas" || p.category?.toLowerCase() === categoria.toLowerCase()) &&
       (subcategoria === "todas" || p.subcategory?.toLowerCase() === subcategoria.toLowerCase()) &&
-      (!termino || p.name?.toLowerCase().includes(termino))
+      (!termino || p.name.toLowerCase().includes(termino))
     );
   });
 
   switch (orden) {
-    case "precioAsc":
-      filtrados.sort((a, b) => a.price - b.price);
-      break;
-    case "precioDesc":
-      filtrados.sort((a, b) => b.price - a.price);
-      break;
-    case "destacados":
-      filtrados = filtrados.filter(p => p.featured);
-      break;
-    default:
-      filtrados.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    case "precioAsc": filtrados.sort((a, b) => a.price - b.price); break;
+    case "precioDesc": filtrados.sort((a, b) => b.price - a.price); break;
+    case "destacados": filtrados = filtrados.filter(p => p.featured); break;
+    default: filtrados.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }
 
   mostrarProductos(filtrados);
 }
 
-/* 🖼️ Mostrar productos en DOM */
+/* 🖼️ Renderizar productos */
 function mostrarProductos(lista) {
   const contenedor = document.getElementById("catalogo");
   contenedor.innerHTML = "";
@@ -95,28 +98,25 @@ function mostrarProductos(lista) {
 
   lista.forEach(p => {
     const {
-      _id,
-      name,
-      images = [],
-      price,
-      category,
-      subcategory,
-      stock,
-      featured,
-      talla,
-      colores
+      _id, name, price, stock,
+      images = [], category = "N/A",
+      subcategory = "N/A", featured, talla, colores
     } = p;
 
-    const agotado = stock <= 0;
-    const primeraImagen = images?.[0]?.url || "/assets/logo.jpg";
+    const agotado = !stock || stock <= 0;
+    const imagen = images?.[0]?.url || "/assets/logo.jpg";
+
+    const btnDisabled = agotado ? "disabled" : "";
+    const encoded = encodeURIComponent(_id);
 
     const card = document.createElement("div");
     card.className = "card fade-in";
+
     card.innerHTML = `
-      <a href="detalle.html?id=${encodeURIComponent(_id)}" class="enlace-producto" aria-label="Ver detalles de ${name}">
+      <a href="detalle.html?id=${encoded}" class="enlace-producto" aria-label="Ver detalles de ${name}">
         <div class="imagen-catalogo">
           <img 
-            src="${primeraImagen}" 
+            src="${imagen}" 
             alt="${name}" 
             class="zoomable" 
             loading="lazy"
@@ -124,22 +124,16 @@ function mostrarProductos(lista) {
         </div>
         <h3>${name}</h3>
       </a>
+
       ${featured ? `<span class="destacado-badge">⭐ Destacado</span>` : ""}
-      <p><strong>Precio:</strong> $${price}</p>
+      <p><strong>Precio:</strong> $${price.toFixed(2)}</p>
       <p><strong>Categoría:</strong> ${category}</p>
-      <p><strong>Subcategoría:</strong> ${subcategory || "N/A"}</p>
+      <p><strong>Subcategoría:</strong> ${subcategory}</p>
       <p><strong>Stock:</strong> ${agotado ? "❌ Agotado" : stock}</p>
-      <button 
-        ${agotado ? "disabled" : ""} 
-        aria-label="Agregar ${name} al carrito"
-        onclick='addToCart(${JSON.stringify({
-          id: _id,
-          nombre: name,
-          precio: price,
-          imagen: primeraImagen,
-          talla: talla || "",
-          colores: colores || ""
-        })})'>🛒 Agregar al carrito</button>
+
+      <button ${btnDisabled} onclick='addToCart(${JSON.stringify({
+        id: _id, nombre: name, precio: price, imagen, talla: talla || "", color: colores || ""
+      })})' aria-label="Agregar ${name} al carrito">🛒 Agregar al carrito</button>
     `;
     contenedor.appendChild(card);
   });
@@ -152,8 +146,8 @@ function cargarSubcategoriasUnicas() {
   const subcategorias = new Set();
 
   productos.forEach(p => {
-    if (categoria === "todas" || p.category === categoria) {
-      if (p.subcategory) subcategorias.add(p.subcategory);
+    if ((categoria === "todas" || p.category === categoria) && p.subcategory) {
+      subcategorias.add(p.subcategory);
     }
   });
 
@@ -166,7 +160,7 @@ function cargarSubcategoriasUnicas() {
   });
 }
 
-/* 📣 Mostrar promoción activa */
+/* 📣 Cargar promoción activa */
 async function cargarPromocionActiva() {
   try {
     const res = await fetch(API_PROMO);
@@ -187,13 +181,13 @@ async function cargarPromocionActiva() {
   }
 }
 
-/* 📅 Validar si hoy está en rango */
+/* 📅 Validar fecha de promoción */
 function isFechaEnRango(start, end) {
   const hoy = new Date().toISOString().split("T")[0];
   return (!start || start <= hoy) && (!end || end >= hoy);
 }
 
-/* 🔍 Imagen en modal */
+/* 🖼️ Modal para ampliar imagen */
 function ampliarImagen(url) {
   const modal = document.createElement("div");
   modal.className = "modal-img fade-in";
@@ -205,7 +199,7 @@ function ampliarImagen(url) {
   document.body.appendChild(modal);
 }
 
-/* 🌙 Restaurar modo oscuro */
+/* 🌙 Modo oscuro */
 function restaurarModoOscuro() {
   const oscuro = localStorage.getItem("modoOscuro") === "true";
   if (oscuro) {
@@ -215,7 +209,7 @@ function restaurarModoOscuro() {
   }
 }
 
-/* 🌘 Alternar tema */
+/* ☀️ Alternar modo claro/oscuro */
 function inicializarBotones() {
   const toggleBtn = document.getElementById("modoToggle");
   toggleBtn?.addEventListener("click", () => {
