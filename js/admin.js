@@ -205,7 +205,7 @@ function obtenerDatosFormulario() {
   const mainColor = document.getElementById("mainColor").value.trim();
 
   // ✅ Validación corregida (subcategoria bien escrita)
-  if (!nombre || isNaN(precio) || !categoria || !subcategoria || !tallaTipo) {
+  if (!nombre || isNaN(precio) || !categoria || !subcategoria || !tallaTipo)    {
     mostrarMensaje(message, "⚠️ Completa todos los campos obligatorios", "warning");
     return null;
   }
