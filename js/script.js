@@ -23,12 +23,10 @@ async function cargarProductos() {
     const catalogo = document.getElementById("catalogo");
     if (!catalogo) throw new Error("Elemento #catalogo no encontrado en el DOM");
 
-    // Filtros y UI
     aplicarFiltros();
     cargarSubcategoriasUnicas();
     cargarPromocionActiva();
 
-    // Listeners
     document.getElementById("busqueda")?.addEventListener("input", aplicarFiltros);
     document.getElementById("categoria")?.addEventListener("change", () => {
       cargarSubcategoriasUnicas();
@@ -53,8 +51,8 @@ function aplicarFiltros() {
     .toLowerCase()
     .replace(/[^\w\s]/gi, "");
 
-  const categoria = document.getElementById("categoria")?.value || "todas";
-  const subcategoria = document.getElementById("subcategoria")?.value || "todas";
+  const categoria = (document.getElementById("categoria")?.value || "todas").toLowerCase();
+  const subcategoria = (document.getElementById("subcategoria")?.value || "todas").toLowerCase();
   const orden = document.getElementById("orden")?.value || "reciente";
 
   let filtrados = productos.filter(p => {
@@ -66,8 +64,8 @@ function aplicarFiltros() {
 
     return (
       valido &&
-      (categoria === "todas" || p.category?.toLowerCase() === categoria.toLowerCase()) &&
-      (subcategoria === "todas" || p.subcategory?.toLowerCase() === subcategoria.toLowerCase()) &&
+      (categoria === "todas" || p.category?.toLowerCase() === categoria) &&
+      (subcategoria === "todas" || p.subcategory?.toLowerCase() === subcategoria) &&
       (!termino || p.name.toLowerCase().includes(termino))
     );
   });
@@ -141,12 +139,12 @@ function mostrarProductos(lista) {
 
 /* 📂 Subcategorías dinámicas */
 function cargarSubcategoriasUnicas() {
-  const categoria = document.getElementById("categoria")?.value || "todas";
+  const categoria = (document.getElementById("categoria")?.value || "todas").toLowerCase();
   const subSelect = document.getElementById("subcategoria");
   const subcategorias = new Set();
 
   productos.forEach(p => {
-    if ((categoria === "todas" || p.category === categoria) && p.subcategory) {
+    if ((categoria === "todas" || p.category?.toLowerCase() === categoria) && p.subcategory) {
       subcategorias.add(p.subcategory);
     }
   });
