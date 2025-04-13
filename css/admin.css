@@ -1,9 +1,9 @@
-/* 🌐 Variables de color */
+/* 🌈 Variables globales */
 :root {
-  --clr-light-bg: rgba(255, 255, 255, 0.95);
-  --clr-dark-bg: rgba(25, 25, 25, 0.95);
-  --clr-light-card: #f4f4f4;
-  --clr-dark-card: #262626;
+  --clr-light-bg: #ffffffee;
+  --clr-dark-bg: #1a1a1aee;
+  --clr-light-card: #f9f9f9;
+  --clr-dark-card: #2a2a2a;
   --clr-border: #ccc;
   --clr-dark-border: #444;
   --clr-success: #2e7d32;
@@ -12,38 +12,35 @@
   --clr-info: #0277bd;
 }
 
-/* 🎨 Fondo general */
+/* 🎨 Fondo con overlay oscuro */
 body {
   background: url("../assets/logo.jpg") no-repeat center center fixed;
   background-size: cover;
+  color: #2b2b2b;
   font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 0;
-  color: #2b2b2b;
   position: relative;
 }
-
 body::before {
   content: "";
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(15, 15, 15, 0.85);
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.85);
   z-index: -1;
 }
-
 body.modo-oscuro {
-  color: #eee;
+  color: #f0f0f0;
 }
 
-/* 📦 Contenedor principal */
+/* 🧱 Contenedor principal */
 .admin-container {
-  max-width: 780px;
+  max-width: 800px;
   margin: 3rem auto;
   padding: 2rem;
   background-color: var(--clr-light-bg);
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   animation: fadeIn 0.5s ease;
 }
 body.modo-oscuro .admin-container {
@@ -53,120 +50,77 @@ body.modo-oscuro .admin-container {
 /* 🧾 Títulos */
 h1, h2, h3, legend {
   text-align: center;
-  margin-bottom: 1rem;
-  font-weight: 600;
   color: inherit;
-}
-
-/* 🧾 Fieldsets */
-fieldset {
-  border: 1px solid var(--clr-border);
-  padding: 1.2rem;
-  margin-bottom: 1.5rem;
-  border-radius: 10px;
-  background-color: rgba(250, 250, 250, 0.9);
-}
-legend {
-  padding: 0 1rem;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #555;
-}
-body.modo-oscuro fieldset {
-  border-color: var(--clr-dark-border);
-  background-color: rgba(35, 35, 35, 0.9);
+  font-weight: 600;
+  margin-bottom: 1rem;
 }
 
 /* 📝 Formulario */
 form {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1rem;
 }
 
-/* 🧩 Inputs y Selects */
+/* 📥 Inputs / Selects / Textarea */
 input, select, textarea {
   width: 100%;
   padding: 12px;
   font-size: 1rem;
+  border: 1px solid var(--clr-border);
   border-radius: 8px;
-  border: 1px solid #ccc;
   background: #fff;
-  transition: all 0.2s;
+  transition: border-color 0.3s ease;
 }
 input:focus, select:focus, textarea:focus {
-  border-color: #0077cc;
   outline: none;
+  border-color: #0077cc;
 }
 body.modo-oscuro input,
 body.modo-oscuro select,
 body.modo-oscuro textarea {
-  background-color: #2c2c2c;
-  color: #f0f0f0;
+  background-color: #2d2d2d;
   border-color: var(--clr-dark-border);
+  color: #eee;
 }
 
-/* 🧱 Fila de campos */
-.form-row {
-  display: flex;
-  gap: 1rem;
-}
-.form-row > * {
-  flex: 1;
-}
-
-/* 🖼️ Vista previa de imagen */
-.image-preview img {
-  max-width: 100%;
-  margin-top: 10px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  object-fit: contain;
-}
-
-/* 🔘 Botones */
-.btn, .btn-guardar, .btn-secundario, .btn-exportar {
+/* 🧩 Botones base */
+.btn {
   padding: 12px;
   font-size: 16px;
+  font-weight: bold;
   border-radius: 8px;
   border: none;
-  font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-/* Guardar */
+/* 🎯 Variantes de botones */
 .btn-guardar {
   background-color: #2c3e50;
   color: white;
 }
 .btn-guardar:hover {
-  background-color: #1a252f;
+  background-color: #1b2c3a;
 }
 
-/* Secundario */
 .btn-secundario {
   background-color: #e67e22;
-  color: white;
+  color: #fff;
 }
 .btn-secundario:hover {
-  background-color: #ca6b14;
+  background-color: #cf6e17;
 }
 
-/* Exportar */
 .btn-exportar {
   background-color: #3498db;
-  color: white;
+  color: #fff;
   padding: 12px 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 .btn-exportar:hover {
   background-color: #2980b9;
   transform: translateY(-2px);
-}
-body.modo-oscuro .btn-exportar {
-  background-color: #2980b9;
 }
 body.modo-oscuro .btn-exportar:hover {
   background-color: #2471a3;
@@ -174,20 +128,19 @@ body.modo-oscuro .btn-exportar:hover {
 
 /* 🔙 Botón volver */
 .btn-volver {
-  display: inline-block;
-  margin-bottom: 15px;
+  margin-bottom: 1rem;
   background-color: #444;
   color: white;
   padding: 8px 14px;
   border-radius: 6px;
-  text-decoration: none;
-  font-weight: bold;
+  display: inline-block;
+  font-weight: 600;
 }
 .btn-volver:hover {
   background-color: #222;
 }
 
-/* ✅ Mensajes */
+/* 🧾 Mensajes dinámicos */
 .admin-message {
   text-align: center;
   font-weight: bold;
@@ -196,33 +149,50 @@ body.modo-oscuro .btn-exportar:hover {
   border-radius: 6px;
 }
 
-/* 📋 Variantes */
+/* 📂 Tarjetas de categoría o producto */
+.card, .categoria-card {
+  background-color: var(--clr-light-card);
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--clr-border);
+  transition: all 0.3s ease;
+}
+.card:hover,
+.categoria-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+body.modo-oscuro .card,
+body.modo-oscuro .categoria-card {
+  background-color: var(--clr-dark-card);
+  border-color: var(--clr-dark-border);
+  color: white;
+}
+
+/* 🧩 Variantes */
 .variantes-container {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: 10px;
 }
 .variante-card {
+  background: #f9f9f9;
   border: 1px solid var(--clr-border);
-  padding: 10px;
+  padding: 12px;
   border-radius: 10px;
-  background-color: #fdfdfd;
-  width: 160px;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease;
+  width: 160px;
 }
 .variante-card:hover {
-  transform: scale(1.02);
+  transform: scale(1.03);
 }
 .variante-card img {
-  max-width: 100%;
+  width: 100%;
   border-radius: 6px;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 }
 .variante-card button {
-  background-color: #ff4d4d;
+  background: #ff4d4d;
   color: white;
   border: none;
   padding: 6px 10px;
@@ -231,61 +201,35 @@ body.modo-oscuro .btn-exportar:hover {
   cursor: pointer;
 }
 .variante-card button:hover {
-  background-color: #d93636;
+  background: #c0392b;
 }
 body.modo-oscuro .variante-card {
   background-color: #2a2a2a;
   border-color: var(--clr-dark-border);
-  color: white;
 }
 
-/* 🗂 Lista productos */
-.product-list {
-  margin-top: 2rem;
+/* 📂 Subcategorías */
+.subcategoria-list {
+  margin-top: 8px;
+  padding-left: 1rem;
+}
+.subcategoria-list li {
+  list-style: disc;
+  margin: 4px 0;
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-.card {
-  border: 1px solid var(--clr-border);
-  padding: 1rem;
-  border-radius: 10px;
-  background-color: var(--clr-light-card);
-  transition: all 0.3s ease;
-}
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-}
-.card img {
-  border-radius: 6px;
-  margin-top: 6px;
-  max-width: 100%;
-}
-.card button {
-  cursor: pointer;
-}
-body.modo-oscuro .card {
-  background-color: var(--clr-dark-card);
-  border-color: var(--clr-dark-border);
-  color: white;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* ✅ Ocultar elemento */
+/* ⛔ Elementos ocultos */
 .oculto {
   display: none !important;
 }
 
-/* ✨ Animaciones */
+/* ✨ Animación */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* 📱 Responsive */
@@ -294,11 +238,9 @@ body.modo-oscuro .card {
     margin: 1rem;
     padding: 1rem;
   }
-
   .form-row {
     flex-direction: column;
   }
-
   .variante-card {
     width: 100%;
   }

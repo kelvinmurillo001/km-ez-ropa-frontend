@@ -1,4 +1,4 @@
-/* Contenedor principal */
+/* 🎯 Contenedor principal */
 .detalle-container {
   max-width: 1200px;
   margin: auto;
@@ -15,7 +15,7 @@ body.modo-oscuro .detalle-container {
   color: #eee;
 }
 
-/* Grid de imagen + info */
+/* 🖼️ Grid de imagen + info */
 .detalle-grid {
   display: flex;
   flex-wrap: wrap;
@@ -23,7 +23,7 @@ body.modo-oscuro .detalle-container {
   justify-content: center;
 }
 
-/* Galería de imágenes */
+/* 📸 Galería de imágenes */
 .detalle-galeria {
   display: flex;
   flex-direction: column;
@@ -73,7 +73,7 @@ body.modo-oscuro .detalle-container {
   cursor: zoom-in;
 }
 
-/* Info producto */
+/* ℹ️ Info del producto */
 .detalle-info {
   flex: 1;
   min-width: 300px;
@@ -99,7 +99,7 @@ body.modo-oscuro .detalle-info p {
   color: #ccc;
 }
 
-/* Tallas */
+/* 👕 Tallas disponibles */
 .guia-tallas {
   margin-top: 20px;
 }
@@ -142,7 +142,7 @@ body.modo-oscuro .talla-opcion.selected {
   border-color: orange;
 }
 
-/* Cantidad */
+/* ➕ Selector de cantidad */
 .contador {
   margin-top: 1rem;
   display: flex;
@@ -180,7 +180,7 @@ body.modo-oscuro .contador button:hover {
   text-align: center;
 }
 
-/* Agregar al carrito */
+/* 🛒 Botón de compra */
 .btn-comprar {
   margin-top: 1.5rem;
   padding: 12px 24px;
@@ -198,7 +198,7 @@ body.modo-oscuro .contador button:hover {
   background-color: #cc7000;
 }
 
-/* Guía de tallas */
+/* 📏 Tabla guía de tallas */
 .guia-info {
   margin-top: 1.5rem;
   border-top: 1px solid #eee;
@@ -230,14 +230,14 @@ body.modo-oscuro .guia-info td {
   border-color: #555;
 }
 
-/* Mensajes */
+/* ❌ Mensajes de error */
 .error {
   color: red;
   font-weight: bold;
   text-align: center;
 }
 
-/* Responsive */
+/* 📱 Responsive */
 @media (max-width: 768px) {
   .detalle-grid {
     flex-direction: column;
@@ -257,7 +257,8 @@ body.modo-oscuro .guia-info td {
     height: 50px;
   }
 }
-/* Botón volver al catálogo */
+
+/* 🔙 Botón volver */
 .btn-volver {
   display: inline-block;
   margin-bottom: 1rem;

@@ -1,6 +1,6 @@
-/* 📱 Responsive Design */
+/* 📱 Diseño Responsive por Resolución */
 
-/* 🌐 Escritorio medio (≤ 1200px) */
+/* 🌐 Escritorio Medio (≤ 1200px) */
 @media (max-width: 1200px) {
   .container {
     padding: 20px;
@@ -11,7 +11,7 @@
   }
 }
 
-/* 💻 Tablet (≤ 992px) */
+/* 💻 Tablets (≤ 992px) */
 @media (max-width: 992px) {
   .hide-on-tablet {
     display: none !important;
@@ -34,6 +34,7 @@
   .top-buttons {
     flex-direction: column;
     gap: 10px;
+    align-items: center;
   }
 
   .filtros-container {
@@ -46,7 +47,7 @@
   }
 }
 
-/* 📱 Móviles (≤ 768px) */
+/* 📱 Teléfonos (≤ 768px) */
 @media (max-width: 768px) {
   .grid-responsive {
     display: grid;
@@ -95,6 +96,8 @@
 
   .cart-actions {
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
   }
 
   .modal-close {
@@ -102,9 +105,26 @@
     right: 16px;
     font-size: 26px;
   }
+
+  .tallas-disponibles {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .detalle-galeria-thumbs {
+    flex-direction: row;
+    justify-content: center;
+    gap: 8px;
+    overflow-x: auto;
+  }
+
+  .detalle-galeria-thumbs img {
+    width: 48px;
+    height: 48px;
+  }
 }
 
-/* 📲 Teléfonos pequeños (≤ 480px) */
+/* 📲 Teléfonos Pequeños (≤ 480px) */
 @media (max-width: 480px) {
   h1 {
     font-size: 1.4rem;
@@ -152,5 +172,23 @@
 
   .login-box {
     padding: 20px;
+  }
+
+  .detalle-info h1 {
+    font-size: 22px;
+  }
+
+  .detalle-info p {
+    font-size: 14px;
+  }
+
+  .contador button {
+    padding: 6px 10px;
+    font-size: 16px;
+  }
+
+  .btn-comprar {
+    font-size: 15px;
+    padding: 10px 20px;
   }
 }

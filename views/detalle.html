@@ -14,18 +14,34 @@
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/detalle.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
+  <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- 🧠 Script -->
+  <!-- 🧠 Script funcional -->
   <script src="/js/detalle.js" defer></script>
 </head>
 <body>
 
-  <!-- 🌙 Modo oscuro persistente -->
+  <!-- ☀️🌙 Alternar modo claro/oscuro -->
+  <div style="position: absolute; top: 15px; right: 15px;">
+    <button id="modoToggle" class="btn btn-sm" aria-label="Cambiar modo claro/oscuro">🌙 Modo Oscuro</button>
+  </div>
+
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      if (localStorage.getItem("modoOscuro") === "true") {
+      const btn = document.getElementById("modoToggle");
+      const isDark = localStorage.getItem("modoOscuro") === "true";
+
+      if (isDark) {
         document.body.classList.add("modo-oscuro");
+        btn.textContent = "☀️ Modo Claro";
       }
+
+      btn?.addEventListener("click", () => {
+        document.body.classList.toggle("modo-oscuro");
+        const oscuro = document.body.classList.contains("modo-oscuro");
+        localStorage.setItem("modoOscuro", oscuro);
+        btn.textContent = oscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+      });
     });
   </script>
 
@@ -37,11 +53,11 @@
   <!-- 🛍️ Detalle del producto -->
   <main class="detalle-container fade-in" role="main" aria-label="Detalle del producto seleccionado">
     <div id="detalleProducto" class="detalle-grid" aria-live="polite">
-      <!-- Renderizado por detalle.js -->
+      <!-- Render dinámico desde detalle.js -->
     </div>
   </main>
 
-  <!-- 🚫 Fallback sin JavaScript -->
+  <!-- 🛑 Fallback sin JavaScript -->
   <noscript>
     <p style="color: red; text-align: center;">⚠️ Esta página requiere JavaScript habilitado para mostrar el contenido del producto.</p>
   </noscript>

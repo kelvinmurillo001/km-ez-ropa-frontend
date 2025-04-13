@@ -1,11 +1,12 @@
 "use strict";
 
-// Puedes mover esto a admin-utils.js si lo estás usando globalmente.
+// ✅ Verifica si el usuario es admin
 function verificarSesion() {
   const token = localStorage.getItem("token");
+
   if (!token || typeof token !== "string" || token.length < 10) {
     alert("⚠️ No autorizado. Inicia sesión.");
-    window.location.href = "login.html";
+    location.href = "login.html";
     return null;
   }
 
@@ -14,7 +15,7 @@ function verificarSesion() {
     if (!payload || payload.role !== "admin") {
       alert("⛔ Acceso denegado. Solo administradores.");
       localStorage.removeItem("token");
-      window.location.href = "login.html";
+      location.href = "login.html";
       return null;
     }
     return token;
@@ -22,12 +23,12 @@ function verificarSesion() {
     console.error("❌ Token malformado:", err);
     alert("⚠️ Sesión inválida. Vuelve a iniciar sesión.");
     localStorage.removeItem("token");
-    window.location.href = "login.html";
+    location.href = "login.html";
     return null;
   }
 }
 
-function mostrarMensaje(elElemento, mensaje, tipo = "info") {
+function mostrarMensaje(elemento, mensaje, tipo = "info") {
   const colores = {
     success: { bg: "#e8f5e9", color: "#2e7d32" },
     error: { bg: "#ffebee", color: "#b71c1c" },
@@ -37,38 +38,41 @@ function mostrarMensaje(elElemento, mensaje, tipo = "info") {
 
   const { bg, color } = colores[tipo] || colores.info;
 
-  elElemento.textContent = mensaje;
-  elElemento.classList.remove("oculto");
-  elElemento.style.backgroundColor = bg;
-  elElemento.style.color = color;
+  elemento.textContent = mensaje;
+  elemento.classList.remove("oculto");
+  elemento.style.backgroundColor = bg;
+  elemento.style.color = color;
 
-  setTimeout(() => elElemento.classList.add("oculto"), 3000);
+  setTimeout(() => elemento.classList.add("oculto"), 3500);
 }
 
 function logout() {
   localStorage.removeItem("token");
-  window.location.href = "login.html";
+  location.href = "login.html";
 }
 
 function goBack() {
-  window.location.href = "panel.html";
+  location.href = "panel.html";
 }
 
-// ✅ Verificar sesión
+// ✅ Inicia sesión
 const token = verificarSesion();
+const headers = {
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${token}`
+};
 
-// 🌐 API
+// 📍 API y elementos del DOM
 const API = "https://km-ez-ropa-backend.onrender.com/api/categories";
-
-// 📌 DOM
+const message = document.getElementById("message");
 const categoryForm = document.getElementById("formCategoria");
+const subcategoryForm = document.getElementById("subcategoryForm");
 const categoryNameInput = document.getElementById("nombreCategoria");
 const subcategoryNameInput = document.getElementById("nuevaSubcategoria");
 const categorySelect = document.getElementById("categorySelect");
 const categoryList = document.getElementById("listaCategorias");
-const message = document.getElementById("message");
 
-// ▶️ Cargar categorías
+// 🔃 Cargar categorías
 async function loadCategories() {
   try {
     const res = await fetch(API);
@@ -76,26 +80,26 @@ async function loadCategories() {
     renderCategorySelect(data);
     renderCategoryCards(data);
   } catch (err) {
-    console.error("❌", err);
-    mostrarMensaje(message, "❌ Error al cargar categorías", "error");
+    console.error("❌ Error cargando categorías:", err);
+    mostrarMensaje(message, "❌ No se pudieron cargar las categorías", "error");
   }
 }
 
-// Renderizar opciones de categoría en <select>
-function renderCategorySelect(categorias) {
+// 🔽 Rellenar select de categorías
+function renderCategorySelect(data) {
   categorySelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
-  categorias.forEach(cat => {
-    const opt = document.createElement("option");
-    opt.value = cat._id;
-    opt.textContent = cat.name;
-    categorySelect.appendChild(opt);
+  data.forEach(cat => {
+    const option = document.createElement("option");
+    option.value = cat._id;
+    option.textContent = cat.name;
+    categorySelect.appendChild(option);
   });
 }
 
-// Renderizar tarjetas de categoría + subcategorías
-function renderCategoryCards(categorias) {
+// 📋 Renderizar tarjetas
+function renderCategoryCards(data) {
   categoryList.innerHTML = "";
-  categorias.forEach(cat => {
+  data.forEach(cat => {
     const card = document.createElement("div");
     card.className = "categoria-card fade-in";
 
@@ -108,7 +112,7 @@ function renderCategoryCards(categorias) {
     card.innerHTML = `
       <div class="cat-header">
         <strong>${cat.name}</strong>
-        <button class="btn btn-sm danger" onclick="deleteCategory('${cat._id}')">🗑</button>
+        <button onclick="deleteCategory('${cat._id}')" class="btn btn-sm danger">🗑</button>
       </div>
       <ul class="subcategoria-list">${subcats}</ul>
     `;
@@ -117,19 +121,17 @@ function renderCategoryCards(categorias) {
   });
 }
 
-// ➕ Crear nueva categoría
-categoryForm?.addEventListener("submit", async (e) => {
+// ➕ Crear categoría
+categoryForm?.addEventListener("submit", async e => {
   e.preventDefault();
   const name = categoryNameInput.value.trim();
-  if (!name) return mostrarMensaje(message, "⚠️ Nombre requerido", "warning");
+
+  if (!name) return mostrarMensaje(message, "⚠️ Escribe un nombre", "warning");
 
   try {
     const res = await fetch(API, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
+      headers,
       body: JSON.stringify({ name })
     });
 
@@ -148,23 +150,20 @@ categoryForm?.addEventListener("submit", async (e) => {
 });
 
 // ➕ Agregar subcategoría
-document.getElementById("subcategoryForm")?.addEventListener("submit", async (e) => {
+subcategoryForm?.addEventListener("submit", async e => {
   e.preventDefault();
   const categoryId = categorySelect.value;
-  const sub = subcategoryNameInput.value.trim();
+  const subcategory = subcategoryNameInput.value.trim();
 
-  if (!categoryId || !sub) {
+  if (!categoryId || !subcategory) {
     return mostrarMensaje(message, "⚠️ Completa todos los campos", "warning");
   }
 
   try {
     const res = await fetch(`${API}/${categoryId}/subcategories`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({ subcategory: sub })
+      headers,
+      body: JSON.stringify({ subcategory })
     });
 
     const data = await res.json();
@@ -174,46 +173,43 @@ document.getElementById("subcategoryForm")?.addEventListener("submit", async (e)
       subcategoryNameInput.value = "";
       loadCategories();
     } else {
-      mostrarMensaje(message, `❌ ${data.message || "Error al agregar subcategoría"}`, "error");
+      mostrarMensaje(message, `❌ ${data.message || "No se pudo agregar"}`, "error");
     }
-  } catch {
-    mostrarMensaje(message, "❌ Error de red al agregar subcategoría", "error");
+  } catch (err) {
+    mostrarMensaje(message, "❌ Error al agregar subcategoría", "error");
   }
 });
 
-// ❌ Eliminar categoría
-window.deleteCategory = async (id) => {
-  if (!confirm("¿Eliminar esta categoría?")) return;
+// 🗑 Eliminar categoría
+window.deleteCategory = async id => {
+  if (!confirm("¿Eliminar esta categoría completa?")) return;
 
   try {
     const res = await fetch(`${API}/${id}`, {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` }
+      headers
     });
 
     if (res.ok) {
       mostrarMensaje(message, "✅ Categoría eliminada", "success");
       loadCategories();
     } else {
-      mostrarMensaje(message, "❌ No se pudo eliminar", "error");
+      mostrarMensaje(message, "❌ No se pudo eliminar categoría", "error");
     }
   } catch {
     mostrarMensaje(message, "❌ Error eliminando categoría", "error");
   }
 };
 
-// ❌ Eliminar subcategoría
-window.deleteSubcategory = async (id, sub) => {
+// 🗑 Eliminar subcategoría
+window.deleteSubcategory = async (id, subcategory) => {
   if (!confirm("¿Eliminar esta subcategoría?")) return;
 
   try {
     const res = await fetch(`${API}/${id}/subcategories`, {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({ subcategory: sub })
+      headers,
+      body: JSON.stringify({ subcategory })
     });
 
     if (res.ok) {
@@ -227,8 +223,8 @@ window.deleteSubcategory = async (id, sub) => {
   }
 };
 
-// ▶️ Init automático
+// ▶️ Init
 loadCategories();
 
-// ✅ Exponer para verificación externa
+// 🔓 Exponer globalmente para fallback
 window.verificarToken = verificarSesion;

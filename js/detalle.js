@@ -16,7 +16,7 @@ async function cargarDetalle() {
     if (!res.ok) throw new Error("Respuesta no válida del servidor");
 
     const producto = await res.json();
-    if (!producto) return mostrarError("❌ Producto no encontrado.");
+    if (!producto || !producto._id) return mostrarError("❌ Producto no encontrado.");
 
     renderizarProducto(producto);
   } catch (error) {
@@ -34,16 +34,18 @@ function renderizarProducto(p) {
     })) || []),
     ...(p.variants?.map(v => ({
       url: v.imageUrl,
-      talla: v.talla,
-      color: v.color
+      talla: v.talla || "",
+      color: v.color || ""
     })) || [])
   ];
 
   const primeraImagen = imagenes[0]?.url || "/assets/logo.jpg";
+  const primeraTalla = imagenes[0]?.talla || "";
+  const primerColor = imagenes[0]?.color || "";
 
-  const tallasUnicas = [
-    ...new Set(imagenes.map(i => i.talla?.toUpperCase()).filter(Boolean))
-  ];
+  const tallasUnicas = [...new Set(
+    imagenes.map(i => i.talla?.toUpperCase()).filter(Boolean)
+  )];
 
   const iconoTalla = {
     bebé: "👶",
@@ -63,6 +65,12 @@ function renderizarProducto(p) {
         </div>
         <div class="detalle-imagen-principal">
           <img id="imagenPrincipal" src="${primeraImagen}" alt="Imagen principal de ${p.name}" />
+          ${(primeraTalla || primerColor) ? `
+            <div class="imagen-info">
+              ${primeraTalla ? `<p><strong>Talla:</strong> ${primeraTalla}</p>` : ""}
+              ${primerColor ? `<p><strong>Color:</strong> ${primerColor}</p>` : ""}
+            </div>
+          ` : ""}
         </div>
       </div>
 
@@ -128,7 +136,6 @@ function renderizarProducto(p) {
 function cambiarImagen(url, thumb) {
   const principal = document.getElementById("imagenPrincipal");
   principal.src = url;
-
   document.querySelectorAll(".detalle-galeria-thumbs img").forEach(img =>
     img.classList.remove("active")
   );

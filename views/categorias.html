@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- ✅ Scripts (login primero, luego lógica de página) -->
+  <!-- ✅ Scripts -->
   <script src="/js/login.js" defer></script>
   <script src="/js/categorias.js" defer></script>
 </head>
@@ -30,14 +30,14 @@
     <!-- 💬 Mensaje dinámico -->
     <div id="message" class="admin-message" role="alert" aria-live="polite"></div>
 
-    <!-- 📋 Crear categoría -->
-    <form id="formCategoria" class="form-block" autocomplete="off" aria-label="Formulario para crear categoría">
+    <!-- 📋 Crear nueva categoría -->
+    <form id="formCategoria" class="form-block" autocomplete="off" aria-label="Crear categoría">
       <input type="text" id="nombreCategoria" placeholder="Nombre de categoría" required aria-label="Nombre de categoría" />
       <button type="submit" class="btn" aria-label="Crear categoría">➕ Crear categoría</button>
     </form>
 
     <!-- ➕ Agregar subcategoría -->
-    <form id="subcategoryForm" class="form-block mt-2" autocomplete="off" aria-label="Formulario para agregar subcategoría">
+    <form id="subcategoryForm" class="form-block mt-2" autocomplete="off" aria-label="Agregar subcategoría">
       <select id="categorySelect" required aria-label="Selecciona una categoría">
         <option value="">Selecciona una categoría</option>
       </select>
@@ -45,36 +45,34 @@
       <button type="submit" class="btn" aria-label="Agregar subcategoría">➕ Agregar subcategoría</button>
     </form>
 
-    <!-- 🔙 Volver y cerrar sesión -->
-    <section class="mt-2" role="navigation" aria-label="Botones de navegación">
-      <button type="button" onclick="goBack()" class="btn-secondary" aria-label="Volver al panel">🔙 Volver al Panel</button>
+    <!-- 🔙 Navegación -->
+    <section class="mt-2" role="navigation" aria-label="Acciones">
+      <button type="button" onclick="goBack()" class="btn-secondary" aria-label="Volver al Panel">🔙 Volver al Panel</button>
       <button type="button" onclick="logout()" class="btn-danger" aria-label="Cerrar sesión">🚪 Cerrar sesión</button>
     </section>
 
-    <!-- 📦 Lista dinámica de categorías -->
-    <section class="lista-categorias mt-3" id="listaCategorias" aria-label="Listado de categorías existentes">
-      <!-- Renderizado dinámicamente por JS -->
+    <!-- 📦 Listado dinámico -->
+    <section class="lista-categorias mt-3" id="listaCategorias" aria-label="Lista de categorías">
+      <!-- Rellenado dinámicamente -->
     </section>
   </main>
 
-  <!-- 🚫 Sin JavaScript -->
+  <!-- 🚫 Fallback JS -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
 
-  <!-- 🌙 Modo oscuro + token -->
+  <!-- 🌙 Modo oscuro persistente + token -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
       }
 
-      // ✅ Añadir verificación solo si existe la función
       if (typeof verificarToken === "function") {
         verificarToken();
       } else {
-        // ❌ Este era tu error en consola
-        console.warn("⚠️ verificarToken() no está definida. Asegúrate de que login.js esté bien cargado.");
+        console.warn("⚠️ verificarToken() no está definida. Verifica que login.js esté correctamente enlazado.");
       }
     });
   </script>
