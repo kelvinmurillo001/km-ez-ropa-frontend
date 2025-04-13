@@ -1,188 +1,115 @@
-/* 📦 Contenedor Principal */
-.categorias-container {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 24px;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #ffffff;
-  color: #333;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-  animation: fadeIn 0.5s ease;
-}
-body.modo-oscuro .categorias-container {
-  background-color: #1e1e1e;
-  color: #eee;
-}
-
-/* 🧾 Título */
-.categorias-container h1 {
-  text-align: center;
-  margin-bottom: 24px;
-  font-size: 2rem;
-  font-weight: 600;
-  color: #222;
-}
-body.modo-oscuro .categorias-container h1 {
-  color: #f0f0f0;
-}
-
-/* 📝 Formulario Categoría */
-.form-categoria {
+/* 📦 Formularios en línea: crear y agregar subcategoría */
+.form-inline {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 12px;
-  background-color: #f7f7f7;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  margin-bottom: 24px;
-  animation: fadeIn 0.6s ease;
-}
-body.modo-oscuro .form-categoria {
-  background-color: #2a2a2a;
-  border: 1px solid #444;
+  margin-bottom: 20px;
 }
 
-.form-categoria input {
-  padding: 12px;
-  border: 1px solid #ccc;
+.form-inline input,
+.form-inline select {
+  padding: 10px 12px;
   border-radius: 6px;
-  font-size: 15px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  flex: 1;
+  min-width: 200px;
 }
-body.modo-oscuro .form-categoria input {
-  background-color: #1e1e1e;
+body.modo-oscuro .form-inline input,
+body.modo-oscuro .form-inline select {
+  background-color: #2c2c2c;
   color: #eee;
   border-color: #555;
 }
 
-.form-categoria .btn {
+.form-inline .btn {
+  padding: 10px 16px;
+  font-weight: bold;
+  font-size: 14px;
   background-color: #00796b;
-  color: #fff;
-  transition: background 0.3s ease;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
-.form-categoria .btn:hover {
+.form-inline .btn:hover {
   background-color: #004d40;
 }
 
-/* 🧩 Lista de Categorías */
-.lista-categorias {
-  margin-top: 20px;
+/* 🔷 Categoría visual con color e ícono opcional */
+.categoria-card {
+  border-left: 5px solid var(--cat-color, #aaa);
+  background: #f8f8f8;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.2rem;
+  animation: fadeIn 0.4s ease;
 }
-
-/* Item de categoría */
-.categoria-item {
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  padding: 16px;
-  border-radius: 10px;
-  margin-bottom: 16px;
-  transition: background 0.3s ease;
-}
-.categoria-item:hover {
-  background-color: #f0f0f0;
-}
-body.modo-oscuro .categoria-item {
+body.modo-oscuro .categoria-card {
   background-color: #2a2a2a;
-  border-color: #444;
+  border-color: var(--cat-color, #555);
 }
 
-.categoria-item strong {
-  font-size: 1.1rem;
+.categoria-card strong {
+  font-size: 1rem;
+  font-weight: 600;
   color: #333;
 }
-body.modo-oscuro .categoria-item strong {
+body.modo-oscuro .categoria-card strong {
   color: #fff;
 }
 
-/* Subcategorías */
-.subcategorias-list {
-  list-style: none;
-  padding-left: 16px;
-  margin-top: 10px;
-}
-.subcategorias-list li {
-  font-size: 14px;
-  margin-bottom: 6px;
+.cat-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 8px;
+}
+
+/* 📌 Subcategorías estilo etiqueta */
+.subcategoria-list {
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
-.subcategorias-list button {
-  background-color: transparent;
-  color: crimson;
+
+.subcategoria-list li {
+  background: #e0e0e0;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+body.modo-oscuro .subcategoria-list li {
+  background: #444;
+  color: #fff;
+}
+
+.subcategoria-list button {
+  background: transparent;
   border: none;
-  font-size: 13px;
+  color: crimson;
+  font-size: 15px;
   cursor: pointer;
+  padding: 0;
 }
-.subcategorias-list button:hover {
+.subcategoria-list button:hover {
   text-decoration: underline;
 }
-body.modo-oscuro .subcategorias-list li {
-  color: #ccc;
-}
 
-/* 🔘 Botón de categoría */
-.categoria-item button {
-  margin-top: 10px;
-  padding: 8px 14px;
-  font-size: 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  background-color: #455a64;
-  color: white;
-  border: none;
-  transition: background-color 0.3s ease;
+/* Colores por categoría (personalizables con data-attr o clases) */
+.categoria-card[data-color="blue"] {
+  --cat-color: #2196f3;
 }
-.categoria-item button:hover {
-  background-color: #263238;
+.categoria-card[data-color="orange"] {
+  --cat-color: #ff9800;
 }
-
-/* 📢 Mensajes */
-.admin-message {
-  text-align: center;
-  font-weight: bold;
-  margin-top: 14px;
-  padding: 10px;
-  border-radius: 6px;
-  font-size: 15px;
-}
-.admin-message.success {
-  color: #2e7d32;
-  background-color: #e8f5e9;
-}
-.admin-message.error {
-  color: #c62828;
-  background-color: #ffebee;
-}
-
-/* 🎞️ FadeIn Animación */
-.fade-in {
-  animation: fadeIn 0.5s ease-in-out;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* 📱 Responsive */
-@media (max-width: 600px) {
-  .form-categoria {
-    padding: 14px;
-  }
-
-  .categoria-item button {
-    width: 100%;
-    margin-top: 8px;
-  }
-
-  .categoria-item {
-    font-size: 14px;
-  }
-
-  .subcategorias-list li {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.categoria-card[data-color="red"] {
+  --cat-color: #f44336;
 }
