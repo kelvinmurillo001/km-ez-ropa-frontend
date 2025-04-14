@@ -6,12 +6,12 @@ const contenedor = document.getElementById("detalleProducto");
 
 document.addEventListener("DOMContentLoaded", () => {
   cargarDetalle();
-  actualizarContadorCarrito(); // Actualiza el ícono del carrito
+  actualizarContadorCarrito();
 });
 
-// 🔍 Cargar detalle del producto desde la API
 async function cargarDetalle() {
-  const id = new URLSearchParams(window.location.search).get("id");
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
 
   if (!id || !/^[a-f\d]{24}$/i.test(id)) {
     return mostrarError("❌ ID del producto no proporcionado o inválido.");
@@ -32,38 +32,26 @@ async function cargarDetalle() {
   }
 }
 
-// 🎨 Renderizar detalle visual del producto
 function renderizarProducto(p) {
   const imagenes = [
-    ...(p.images || []).map(img => ({
-      url: img?.url,
-      talla: img?.talla,
-      color: img?.color
-    })),
-    ...(p.variants || []).map(v => ({
-      url: v?.imageUrl,
-      talla: v?.talla,
-      color: v?.color
-    }))
+    ...(p.images || []).map(img => ({ url: img?.url, talla: img?.talla, color: img?.color })),
+    ...(p.variants || []).map(v => ({ url: v?.imageUrl, talla: v?.talla, color: v?.color }))
   ].filter(img => img.url);
 
   const primeraImagen = imagenes[0]?.url || "/assets/logo.jpg";
   const primeraTalla = imagenes[0]?.talla || "";
   const primerColor = imagenes[0]?.color || "";
-  const tallasUnicas = [...new Set(imagenes.map(i => i.talla?.toUpperCase()).filter(Boolean))];
 
-  const iconoTalla = {
-    bebé: "👶", niño: "🧒", niña: "👧", adulto: "👕"
-  }[p.tallaTipo?.toLowerCase()] || "👕";
+  const tallasUnicas = [...new Set(imagenes.map(i => i.talla?.toUpperCase()).filter(Boolean))];
+  const iconoTalla = { bebé: "👶", niño: "🧒", niña: "👧", adulto: "👕" }[p.tallaTipo?.toLowerCase()] || "👕";
 
   contenedor.innerHTML = `
     <div class="detalle-grid">
       <div class="detalle-galeria">
         <div class="detalle-galeria-thumbs">
           ${imagenes.map((img, i) => `
-            <img src="${img.url}" alt="Miniatura ${i + 1}" class="${i === 0 ? "active" : ""}" 
-              onclick="cambiarImagen('${img.url}', this)" 
-              onerror="this.src='/assets/logo.jpg'" />
+            <img src="${img.url}" alt="Miniatura ${i + 1}" class="${i === 0 ? "active" : ""}"
+              onclick="cambiarImagen('${img.url}', this)" onerror="this.src='/assets/logo.jpg'" />
           `).join("")}
         </div>
         <div class="detalle-imagen-principal">
@@ -109,7 +97,7 @@ function renderizarProducto(p) {
   `;
 }
 
-// 🖼 Cambiar imagen principal
+// Funciones auxiliares globales
 window.cambiarImagen = (url, thumb) => {
   const principal = document.getElementById("imagenPrincipal");
   principal.src = url;
@@ -117,13 +105,11 @@ window.cambiarImagen = (url, thumb) => {
   thumb.classList.add("active");
 };
 
-// 👕 Seleccionar talla
 window.seleccionarTalla = (elem) => {
   document.querySelectorAll(".talla-opcion").forEach(btn => btn.classList.remove("selected"));
   elem.classList.add("selected");
 };
 
-// 🔢 Ajustar cantidad
 window.ajustarCantidad = (delta) => {
   const cantidadElem = document.getElementById("cantidad");
   let cantidad = parseInt(cantidadElem.textContent);
@@ -131,7 +117,6 @@ window.ajustarCantidad = (delta) => {
   cantidadElem.textContent = cantidad;
 };
 
-// 🛒 Añadir al carrito
 window.agregarAlCarrito = (id, nombre, precio, imagen) => {
   const talla = document.querySelector(".talla-opcion.selected")?.textContent;
   const cantidad = parseInt(document.getElementById("cantidad").textContent);
@@ -154,7 +139,6 @@ window.agregarAlCarrito = (id, nombre, precio, imagen) => {
   }
 };
 
-// ⚠️ Mostrar error de carga
 function mostrarError(msg) {
   contenedor.innerHTML = `<p class="error fade-in">${msg}</p>`;
 }

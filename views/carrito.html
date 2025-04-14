@@ -34,9 +34,6 @@
   <link rel="stylesheet" href="/css/carrito.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
-  
-  
-  
 </head>
 <body>
 
@@ -53,7 +50,7 @@
 
     <!-- 🧾 Productos del carrito -->
     <section id="cart-items" class="carrito-items" aria-live="polite" aria-atomic="true">
-      <!-- Se cargan con JS -->
+      <!-- Cargado dinámicamente -->
     </section>
 
     <!-- 📝 Formulario de pedido -->
@@ -76,7 +73,7 @@
     </section>
   </main>
 
-  <!-- 🔍 Modal para imagen -->
+  <!-- 🔍 Modal de imagen -->
   <div id="imageModal" class="modal-zoom oculto fade-in" onclick="cerrarModalImagen()" role="dialog" aria-modal="true" aria-hidden="true">
     <span class="modal-close" title="Cerrar imagen ampliada">✖️</span>
     <img id="modalImage" src="" alt="Vista ampliada del producto" />
@@ -86,8 +83,8 @@
   <script src="/js/cart.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      if (typeof renderCartItems === "function") renderCartItems();
-      if (typeof updateCartWidget === "function") updateCartWidget();
+      renderCartItems?.();
+      updateCartWidget?.();
 
       if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
@@ -105,22 +102,19 @@
         return;
       }
 
-      if (typeof sendCartToWhatsApp === "function") {
-        sendCartToWhatsApp(nombre, nota);
-        confirm.textContent = "✅ ¡Pedido enviado correctamente por WhatsApp!";
-        confirm.classList.remove("oculto");
-        confirm.classList.add("fade-in");
-        confirm.setAttribute("aria-hidden", "false");
-        confirm.focus();
-      }
+      sendCartToWhatsApp?.(nombre, nota);
+      confirm.textContent = "✅ ¡Pedido enviado correctamente por WhatsApp!";
+      confirm.classList.remove("oculto");
+      confirm.classList.add("fade-in");
+      confirm.setAttribute("aria-hidden", "false");
+      confirm.focus();
     }
 
     function vaciarCarrito() {
       if (!confirm("¿Seguro que deseas vaciar el carrito?")) return;
       localStorage.removeItem("km_ez_cart");
-
-      if (typeof renderCartItems === "function") renderCartItems();
-      if (typeof updateCartWidget === "function") updateCartWidget();
+      renderCartItems?.();
+      updateCartWidget?.();
 
       document.getElementById("cart-total").textContent = "$0.00";
       document.getElementById("total-unidades").textContent = "Total unidades: 0";
