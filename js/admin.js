@@ -1,6 +1,6 @@
 "use strict";
 
-// ✅ SESIÓN ADMIN REUTILIZABLE
+// ✅ Verificar sesión de administrador
 function verificarAdmin() {
   const token = localStorage.getItem("token");
   if (!token || typeof token !== "string" || token.length < 10) {

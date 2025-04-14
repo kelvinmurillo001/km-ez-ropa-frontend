@@ -50,9 +50,9 @@ body.modo-oscuro .admin-container {
 /* 🧾 Títulos */
 h1, h2, h3, legend {
   text-align: center;
-  color: inherit;
   font-weight: 600;
   margin-bottom: 1rem;
+  color: inherit;
 }
 
 /* 📝 Formulario */
@@ -60,6 +60,11 @@ form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+.form-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 /* 📥 Inputs / Selects / Textarea */
@@ -106,7 +111,7 @@ body.modo-oscuro textarea {
 
 .btn-secundario {
   background-color: #e67e22;
-  color: #fff;
+  color: white;
 }
 .btn-secundario:hover {
   background-color: #cf6e17;
@@ -114,7 +119,7 @@ body.modo-oscuro textarea {
 
 .btn-exportar {
   background-color: #3498db;
-  color: #fff;
+  color: white;
   padding: 12px 20px;
   border-radius: 10px;
 }
@@ -149,7 +154,7 @@ body.modo-oscuro .btn-exportar:hover {
   border-radius: 6px;
 }
 
-/* 📂 Tarjetas de categoría o producto */
+/* 📂 Tarjetas de producto/categoría */
 .card, .categoria-card {
   background-color: var(--clr-light-card);
   padding: 1rem;
@@ -157,19 +162,17 @@ body.modo-oscuro .btn-exportar:hover {
   border: 1px solid var(--clr-border);
   transition: all 0.3s ease;
 }
-.card:hover,
-.categoria-card:hover {
+.card:hover, .categoria-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
-body.modo-oscuro .card,
-body.modo-oscuro .categoria-card {
+body.modo-oscuro .card, body.modo-oscuro .categoria-card {
   background-color: var(--clr-dark-card);
   border-color: var(--clr-dark-border);
   color: white;
 }
 
-/* 🧩 Variantes */
+/* 🧩 Variantes de producto */
 .variantes-container {
   display: flex;
   flex-wrap: wrap;
@@ -182,6 +185,7 @@ body.modo-oscuro .categoria-card {
   border-radius: 10px;
   text-align: center;
   width: 160px;
+  transition: transform 0.2s ease;
 }
 .variante-card:hover {
   transform: scale(1.03);

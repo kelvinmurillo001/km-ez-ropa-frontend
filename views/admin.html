@@ -136,21 +136,27 @@
       const btnToggle = document.getElementById("modoToggle");
       const token = localStorage.getItem("token");
       if (token) {
-        const userData = JSON.parse(atob(token.split('.')[1]));
-        document.getElementById("admin-username").textContent = userData.username;
+        try {
+          const userData = JSON.parse(atob(token.split('.')[1]));
+          document.getElementById("admin-username").textContent = userData.username || "admin";
+        } catch (e) {
+          console.warn("Token inválido:", e);
+        }
       }
 
       if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
-        btnToggle && (btnToggle.textContent = "☀️ Modo Claro");
+        if (btnToggle) btnToggle.textContent = "☀️ Modo Claro";
       }
 
-      btnToggle?.addEventListener("click", () => {
-        document.body.classList.toggle("modo-oscuro");
-        const oscuro = document.body.classList.contains("modo-oscuro");
-        localStorage.setItem("modoOscuro", oscuro);
-        btnToggle.textContent = oscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
-      });
+      if (btnToggle) {
+        btnToggle.addEventListener("click", () => {
+          document.body.classList.toggle("modo-oscuro");
+          const oscuro = document.body.classList.contains("modo-oscuro");
+          localStorage.setItem("modoOscuro", oscuro);
+          btnToggle.textContent = oscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+        });
+      }
     });
   </script>
 </body>
