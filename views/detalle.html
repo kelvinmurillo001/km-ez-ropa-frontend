@@ -5,27 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Detalle del Producto | KM & EZ ROPA</title>
 
-  <!-- SEO -->
-  <meta name="robots" content="index, follow" />
-  <meta name="author" content="KM & EZ ROPA" />
+  <!-- 🛡️ SEO -->
   <meta name="description" content="Consulta todos los detalles del producto en KM & EZ ROPA: precios, imágenes, tallas y más." />
+  <meta name="author" content="KM & EZ ROPA" />
+  <meta name="robots" content="index, follow" />
 
-  <!-- Favicon -->
+  <!-- 🖼️ Favicon -->
   <link rel="icon" href="https://km-ez-ropa-backend.onrender.com/assets/logo.jpg" type="image/jpeg" />
 
-  <!-- Estilos -->
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/detalle.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
-</head>
-<body>
 
-  <!-- Modo Oscuro/Claro -->
-  <div style="position: absolute; top: 15px; right: 15px;">
-    <button id="modoToggle" class="btn btn-sm" aria-label="Cambiar modo claro/oscuro">🌙 Modo Oscuro</button>
-  </div>
-
+  <!-- 🌗 Modo Oscuro -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const btn = document.getElementById("modoToggle");
@@ -33,7 +27,7 @@
 
       if (isDark) {
         document.body.classList.add("modo-oscuro");
-        btn.textContent = "☀️ Modo Claro";
+        if (btn) btn.textContent = "☀️ Modo Claro";
       }
 
       btn?.addEventListener("click", () => {
@@ -44,20 +38,27 @@
       });
     });
   </script>
+</head>
+<body>
 
-  <!-- Navegación -->
-  <nav role="navigation" aria-label="Volver al catálogo de productos">
-    <a href="index.html" class="btn-volver" aria-label="Volver al catálogo principal">⬅️ Volver al catálogo</a>
+  <!-- ☀️🌙 Modo claro / oscuro -->
+  <div style="position: absolute; top: 15px; right: 15px;">
+    <button id="modoToggle" class="btn btn-sm" aria-label="Cambiar modo claro/oscuro">🌙 Modo Oscuro</button>
+  </div>
+
+  <!-- 🔙 Navegación -->
+  <nav role="navigation" aria-label="Volver al catálogo">
+    <a href="index.html" class="btn-volver" aria-label="Volver al catálogo">⬅️ Volver al catálogo</a>
   </nav>
 
-  <!-- Detalle del producto -->
+  <!-- 🛍️ Contenedor dinámico -->
   <main class="detalle-container fade-in" role="main" aria-label="Detalle del producto seleccionado">
     <div id="detalleProducto" class="detalle-grid" aria-live="polite">
-      <!-- Se renderiza dinámicamente con JS -->
+      <!-- Render dinámico desde detalle.js -->
     </div>
   </main>
 
-  <!-- Widget del carrito (cargado dinámicamente) -->
+  <!-- 🛒 Widget de carrito cargado dinámicamente -->
   <div id="carrito-widget-container"></div>
   <script>
     fetch("carrito-widget.html")
@@ -67,15 +68,15 @@
       });
   </script>
 
-  <!-- Fallback sin JS -->
+  <!-- 🚫 Fallback sin JS -->
   <noscript>
     <p class="mensaje-error" style="text-align: center;">
       ⚠️ Esta página requiere JavaScript para mostrar el contenido del producto.
     </p>
   </noscript>
 
-  <!-- ✅ Scripts (usa módulo para que import funcione correctamente) -->
-  <script type="module" src="/js/detalle.js"></script>
-
+  <!-- 📦 Scripts funcionales -->
+  <script src="/js/utils.js" type="module"></script>
+  <script src="/js/detalle.js" type="module"></script>
 </body>
 </html>
