@@ -9,6 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
   cargarProductos();
   restaurarModoOscuro();
   inicializarBotones();
+
+  // Actualizar contador del carrito desde cart.js si existe
+  if (typeof updateCartWidget === "function") {
+    updateCartWidget();
+  }
 });
 
 /* 📦 Cargar productos */
@@ -18,8 +23,6 @@ async function cargarProductos() {
     if (!res.ok) throw new Error(`Error ${res.status} al obtener productos`);
 
     productos = await res.json();
-    console.log("✅ Productos recibidos:", productos);
-
     if (!Array.isArray(productos)) throw new Error("Formato inválido en productos");
 
     const catalogo = document.getElementById("catalogo");
@@ -118,6 +121,15 @@ function mostrarProductos(lista) {
     const card = document.createElement("div");
     card.className = "card fade-in";
 
+    const productoCart = {
+      id: _id,
+      nombre: name,
+      precio: price,
+      imagen,
+      talla: talla || "",
+      color: colores || ""
+    };
+
     card.innerHTML = `
       <a href="detalle.html?id=${encoded}" class="enlace-producto" aria-label="Ver detalles de ${name}">
         <div class="imagen-catalogo">
@@ -137,9 +149,9 @@ function mostrarProductos(lista) {
       <p><strong>Subcategoría:</strong> ${subcategory}</p>
       <p><strong>Stock:</strong> ${agotado ? "❌ Agotado" : stock}</p>
 
-      <button ${agotado ? "disabled" : ""} onclick='addToCart(${JSON.stringify({
-        id: _id, nombre: name, precio: price, imagen, talla: talla || "", color: colores || ""
-      })})' aria-label="Agregar ${name} al carrito">🛒 Agregar al carrito</button>
+      <button ${agotado ? "disabled" : ""} onclick='addToCart(${JSON.stringify(productoCart)})'>
+        🛒 Agregar al carrito
+      </button>
     `;
 
     contenedor.appendChild(card);

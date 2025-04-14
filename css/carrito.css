@@ -11,7 +11,7 @@ body.modo-oscuro .carrito-titulo {
   color: #ffffff;
 }
 
-/* 📝 Formulario de pedido */
+/* 📝 Formulario */
 .carrito-formulario {
   display: flex;
   flex-direction: column;
@@ -37,7 +37,7 @@ body.modo-oscuro .carrito-formulario {
   border-radius: 8px;
   border: 1px solid #ccc;
   background-color: #fff;
-  transition: border 0.3s;
+  transition: border 0.3s, background 0.3s;
 }
 .carrito-formulario input:focus-visible,
 .carrito-formulario textarea:focus-visible {
@@ -51,7 +51,7 @@ body.modo-oscuro .carrito-formulario textarea {
   border-color: #444;
 }
 
-/* ✅ Botón WhatsApp */
+/* ✅ Botones */
 .btn-whatsapp {
   background-color: #25d366;
   color: white;
@@ -69,7 +69,6 @@ body.modo-oscuro .carrito-formulario textarea {
   outline: none;
 }
 
-/* 🗑️ Botón vaciar */
 .btn-vaciar {
   background-color: #e53935;
   color: white;
@@ -86,7 +85,7 @@ body.modo-oscuro .carrito-formulario textarea {
   outline: none;
 }
 
-/* 🛍️ Productos en carrito */
+/* 🛍️ Productos */
 .carrito-items {
   display: flex;
   flex-direction: column;
@@ -134,7 +133,7 @@ body.modo-oscuro .cart-item {
   font-weight: 600;
 }
 
-/* ➕➖ Controles */
+/* ➕➖ Botones */
 .cart-actions {
   display: flex;
   gap: 8px;
@@ -149,13 +148,14 @@ body.modo-oscuro .cart-item {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s;
 }
 .cart-actions button:hover,
 .cart-actions button:focus-visible {
   background-color: darkorange;
   color: white;
   outline: none;
+  transform: scale(1.05);
 }
 .cart-actions span {
   min-width: 24px;
@@ -171,7 +171,7 @@ body.modo-oscuro .cart-actions button:hover {
   background-color: #555;
 }
 
-/* 🧾 Total y nota */
+/* 🧾 Totales */
 #total-unidades {
   margin-top: 8px;
   font-weight: 500;
@@ -185,14 +185,16 @@ body.modo-oscuro #total-unidades {
   font-weight: bold;
   color: #2e7d32;
   background-color: #e8f5e9;
-  padding: 10px 16px;
+  padding: 12px 18px;
   border-radius: 6px;
+  font-size: 15px;
 }
-.oculto {
-  display: none !important;
+body.modo-oscuro .confirmacion {
+  background-color: #2d4f2d;
+  color: #c8e6c9;
 }
 
-/* 🔍 Modal Zoom Imagen */
+/* 🔍 Modal Imagen */
 .modal-zoom {
   position: fixed;
   top: 0;
@@ -247,16 +249,14 @@ body.modo-oscuro .modal-close {
   .cart-actions {
     justify-content: center;
   }
+  .carrito-formulario {
+    margin: 20px 10px;
+    padding: 20px;
+  }
 }
 
-/* ✨ Animación entrada suave */
+/* ✨ Entrada suave */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

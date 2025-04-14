@@ -11,12 +11,14 @@
   <meta name="author" content="KM & EZ ROPA">
   <meta name="robots" content="index, follow">
 
-  <!-- 🧠 Open Graph -->
+  <!-- 🌐 Open Graph -->
   <meta property="og:title" content="Tu Carrito | KM & EZ ROPA">
   <meta property="og:description" content="Revisa y finaliza tu pedido con KM & EZ ROPA. Consulta por WhatsApp y recibe tu ropa a domicilio.">
   <meta property="og:image" content="https://km-ez-ropa-backend.onrender.com/assets/logo.jpg">
   <meta property="og:url" content="https://km-ez-ropa-frontend.onrender.com/carrito.html">
   <meta property="og:type" content="website">
+
+  <!-- 🐦 Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Tu Carrito | KM & EZ ROPA">
   <meta name="twitter:description" content="Consulta tus productos seleccionados y realiza tu pedido fácilmente.">
@@ -36,7 +38,7 @@
 <body>
 
   <!-- 🔙 Navegación -->
-  <nav role="navigation" aria-label="Volver al catálogo">
+  <nav role="navigation" aria-label="Volver al catálogo principal">
     <a href="index.html" class="btn-volver">⬅️ Volver al catálogo</a>
   </nav>
 
@@ -46,22 +48,22 @@
       <h1 class="text-center carrito-titulo">🛍️ Tu Carrito</h1>
     </header>
 
-    <!-- 🧾 Lista de productos -->
+    <!-- 🧾 Productos del carrito -->
     <section id="cart-items" class="carrito-items" aria-live="polite" aria-atomic="true">
-      <!-- Render dinámico -->
+      <!-- Se cargan con JS -->
     </section>
 
-    <!-- 📤 Formulario para enviar pedido -->
-    <section class="carrito-formulario fade-in" aria-label="Enviar pedido">
+    <!-- 📝 Formulario de pedido -->
+    <section class="carrito-formulario fade-in" aria-label="Formulario para confirmar pedido">
       <h3>Total estimado: <span id="cart-total">$0.00</span></h3>
       <p id="total-unidades">Total unidades: 0</p>
 
-      <input type="text" id="clienteNombre" placeholder="Tu nombre" required aria-label="Tu nombre completo" />
-      <textarea id="nota" placeholder="Nota adicional (opcional)" rows="2" aria-label="Nota adicional del pedido"></textarea>
+      <input type="text" id="clienteNombre" placeholder="Tu nombre completo" required aria-label="Tu nombre" />
+      <textarea id="nota" placeholder="Nota adicional (opcional)" rows="2" aria-label="Nota para el pedido"></textarea>
 
       <div class="botones-finales">
-        <button type="button" onclick="enviarDesdeCarrito()" class="btn-whatsapp" aria-label="Enviar pedido por WhatsApp">📲 Consultar por WhatsApp</button>
-        <button type="button" onclick="vaciarCarrito()" class="btn-vaciar" aria-label="Vaciar todo el carrito">🗑 Vaciar Carrito</button>
+        <button type="button" class="btn-whatsapp" onclick="enviarDesdeCarrito()" aria-label="Enviar pedido por WhatsApp">📲 Consultar por WhatsApp</button>
+        <button type="button" class="btn-vaciar" onclick="vaciarCarrito()" aria-label="Vaciar el carrito">🗑 Vaciar Carrito</button>
         <a href="index.html" class="btn-secundario" aria-label="Seguir comprando productos">🛒 Seguir comprando</a>
       </div>
 
@@ -71,9 +73,9 @@
     </section>
   </main>
 
-  <!-- 🔍 Modal imagen -->
+  <!-- 🔍 Modal para imagen -->
   <div id="imageModal" class="modal-zoom oculto fade-in" onclick="cerrarModalImagen()" role="dialog" aria-modal="true" aria-hidden="true">
-    <span class="modal-close" title="Cerrar imagen">✖️</span>
+    <span class="modal-close" title="Cerrar imagen ampliada">✖️</span>
     <img id="modalImage" src="" alt="Vista ampliada del producto" />
   </div>
 
@@ -84,7 +86,6 @@
       if (typeof renderCartItems === "function") renderCartItems();
       if (typeof updateCartWidget === "function") updateCartWidget();
 
-      // 🌗 Modo oscuro automático
       if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
       }
@@ -125,7 +126,7 @@
 
   <!-- 🔐 JS fallback -->
   <noscript>
-    <p style="color: red; text-align: center;">⚠️ Activa JavaScript para usar el carrito.</p>
+    <p style="color: red; text-align: center;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
 </body>
 </html>

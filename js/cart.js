@@ -4,7 +4,7 @@ const CART_KEY = "km_ez_cart";
 const WHATSAPP_NUMBER = "593990270864";
 const API_URL = "https://km-ez-ropa-backend.onrender.com/api";
 
-// 📥 Obtener carrito
+/* 📥 Obtener carrito desde localStorage */
 function getCart() {
   try {
     const cart = JSON.parse(localStorage.getItem(CART_KEY));
@@ -14,18 +14,23 @@ function getCart() {
   }
 }
 
-// 💾 Guardar carrito
+/* 💾 Guardar carrito */
 function saveCart(cart) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
 
-// 🔑 Clave única: id + talla + color
+/* 🔑 Generar clave única para un producto (por id + talla + color) */
 function generateKey(product) {
-  return `${product.id}_${product.talla || ""}_${product.color || ""}`;
+  return `${product.id}_${product.talla || ""}_${product.color || ""}`.toLowerCase();
 }
 
-// ➕ Agregar producto
+/* ➕ Agregar producto al carrito */
 function addToCart(product) {
+  if (!product || !product.id || !product.nombre || !product.precio || !product.imagen) {
+    console.warn("❌ Producto inválido al intentar agregar al carrito:", product);
+    return;
+  }
+
   const cart = getCart();
   const key = generateKey(product);
   const index = cart.findIndex(p => generateKey(p) === key);
@@ -38,9 +43,13 @@ function addToCart(product) {
 
   saveCart(cart);
   updateCartWidget();
+
+  if (window.location.href.includes("detalle.html")) {
+    alert("✅ Producto añadido al carrito.");
+  }
 }
 
-// ❌ Eliminar producto
+/* ❌ Eliminar producto del carrito */
 function removeFromCart(key) {
   const updated = getCart().filter(item => generateKey(item) !== key);
   saveCart(updated);
@@ -48,7 +57,7 @@ function removeFromCart(key) {
   updateCartWidget();
 }
 
-// 🔁 Cambiar cantidad
+/* 🔁 Cambiar cantidad (suma/resta) */
 function changeQuantity(key, delta) {
   const updated = getCart()
     .map(item => {
@@ -62,14 +71,14 @@ function changeQuantity(key, delta) {
   updateCartWidget();
 }
 
-// 🧮 Total $
+/* 🧮 Calcular total del carrito */
 function calculateTotal() {
   return getCart()
     .reduce((sum, item) => sum + ((parseFloat(item.precio || item.price) || 0) * item.cantidad), 0)
     .toFixed(2);
 }
 
-// 💾 Enviar pedido al backend
+/* 💾 Guardar pedido en backend */
 async function guardarPedido(nombre, nota = "", origen = "whatsapp") {
   const cart = getCart();
   if (!nombre || cart.length === 0) {
@@ -112,7 +121,7 @@ async function guardarPedido(nombre, nota = "", origen = "whatsapp") {
   }
 }
 
-// 📲 WhatsApp opcional
+/* 📲 Enviar carrito por WhatsApp */
 async function sendCartToWhatsApp(nombre, nota = "") {
   const cart = getCart();
   if (!nombre) return alert("⚠️ Ingresa tu nombre");
@@ -139,14 +148,14 @@ async function sendCartToWhatsApp(nombre, nota = "") {
   setTimeout(() => window.location.href = "index.html", 2500);
 }
 
-// 🛒 Widget contador
+/* 🛒 Actualizar contador visual del carrito */
 function updateCartWidget() {
   const count = getCart().reduce((sum, item) => sum + item.cantidad, 0);
   const badge = document.querySelector("#cart-widget-count");
   if (badge) badge.textContent = count;
 }
 
-// 🖼️ Mostrar productos en carrito
+/* 🖼️ Renderizar items del carrito */
 function renderCartItems() {
   const cart = getCart();
   const contenedor = document.querySelector("#cart-items");
@@ -163,7 +172,6 @@ function renderCartItems() {
     const nombre = item.nombre || item.name || "Producto";
     const precio = item.precio || item.price || 0;
     const imagen = item.imagen || item.image || "/assets/logo.jpg";
-
     const key = generateKey(item);
 
     const div = document.createElement("div");
@@ -190,7 +198,7 @@ function renderCartItems() {
   if (unidadesEl) unidadesEl.textContent = `Total unidades: ${unidades}`;
 }
 
-// 🖼️ Modal imagen
+/* 🖼️ Modal imagen */
 function abrirModalImagen(src) {
   const modal = document.getElementById("imageModal");
   const img = document.getElementById("modalImage");
@@ -204,3 +212,13 @@ function cerrarModalImagen() {
   const modal = document.getElementById("imageModal");
   if (modal) modal.classList.add("oculto");
 }
+
+/* 🌍 Exportar funciones globales */
+window.addToCart = addToCart;
+window.removeFromCart = removeFromCart;
+window.changeQuantity = changeQuantity;
+window.sendCartToWhatsApp = sendCartToWhatsApp;
+window.renderCartItems = renderCartItems;
+window.updateCartWidget = updateCartWidget;
+window.abrirModalImagen = abrirModalImagen;
+window.cerrarModalImagen = cerrarModalImagen;

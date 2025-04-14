@@ -1,11 +1,12 @@
 "use strict";
+import { capitalizar, actualizarContadorCarrito } from "./utils.js";
 
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api/products";
 const contenedor = document.getElementById("detalleProducto");
 
 document.addEventListener("DOMContentLoaded", () => {
   cargarDetalle();
-  actualizarContadorCarrito(); // 🆕 contador de carrito
+  actualizarContadorCarrito(); // contador visual del carrito
 });
 
 // 🔍 Cargar detalle de producto
@@ -35,17 +36,9 @@ async function cargarDetalle() {
 // 🎨 Renderizar producto
 function renderizarProducto(p) {
   const imagenes = [
-    ...(Array.isArray(p.images) ? p.images.map(img => ({
-      url: img?.url,
-      talla: img?.talla,
-      color: img?.color
-    })) : []),
-    ...(Array.isArray(p.variants) ? p.variants.map(v => ({
-      url: v?.imageUrl,
-      talla: v?.talla,
-      color: v?.color
-    })) : [])
-  ].filter(img => img.url); // eliminar nulos
+    ...(p.images || []).map(img => ({ url: img?.url, talla: img?.talla, color: img?.color })),
+    ...(p.variants || []).map(v => ({ url: v?.imageUrl, talla: v?.talla, color: v?.color }))
+  ].filter(img => img.url);
 
   const primeraImagen = imagenes[0]?.url || "/assets/logo.jpg";
   const primeraTalla = imagenes[0]?.talla || "";
@@ -64,12 +57,11 @@ function renderizarProducto(p) {
           ${imagenes.map((img, i) => `
             <img src="${img.url}" alt="Miniatura ${i + 1}" class="${i === 0 ? "active" : ""}" 
               onclick="cambiarImagen('${img.url}', this)" 
-              onerror="this.src='/assets/logo.jpg'" 
-              aria-label="Ver imagen de variante ${i + 1}" />
+              onerror="this.src='/assets/logo.jpg'" />
           `).join("")}
         </div>
         <div class="detalle-imagen-principal">
-          <img id="imagenPrincipal" src="${primeraImagen}" alt="Imagen principal de ${p.name}" onerror="this.src='/assets/logo.jpg'" />
+          <img id="imagenPrincipal" src="${primeraImagen}" alt="Imagen principal de ${p.name}" />
           ${(primeraTalla || primerColor) ? `
             <div class="imagen-info">
               ${primeraTalla ? `<p><strong>Talla:</strong> ${primeraTalla}</p>` : ""}
@@ -106,49 +98,35 @@ function renderizarProducto(p) {
         <button class="btn-comprar" onclick="agregarAlCarrito('${p._id}', '${p.name}', '${p.price}', '${primeraImagen}')">
           🛒 Añadir al carrito
         </button>
-
-        <div class="guia-info">
-          <h4>📏 Guía de Tallas</h4>
-          <table>
-            <thead><tr><th>Talla</th><th>Busto</th><th>Cintura</th><th>Cadera</th></tr></thead>
-            <tbody>
-              <tr><td>XS</td><td>76-80 cm</td><td>60-64 cm</td><td>84-88 cm</td></tr>
-              <tr><td>S</td><td>81-85 cm</td><td>65-69 cm</td><td>89-93 cm</td></tr>
-              <tr><td>M</td><td>86-90 cm</td><td>70-74 cm</td><td>94-98 cm</td></tr>
-              <tr><td>L</td><td>91-96 cm</td><td>75-80 cm</td><td>99-104 cm</td></tr>
-              <tr><td>XL</td><td>97-102 cm</td><td>81-86 cm</td><td>105-110 cm</td></tr>
-            </tbody>
-          </table>
-        </div>
       </div>
     </div>
   `;
 }
 
 // 🖼 Cambiar imagen principal
-function cambiarImagen(url, thumb) {
+window.cambiarImagen = (url, thumb) => {
   const principal = document.getElementById("imagenPrincipal");
   principal.src = url;
   document.querySelectorAll(".detalle-galeria-thumbs img").forEach(img => img.classList.remove("active"));
   thumb.classList.add("active");
-}
+};
 
 // 👕 Seleccionar talla
-function seleccionarTalla(elem) {
+window.seleccionarTalla = (elem) => {
   document.querySelectorAll(".talla-opcion").forEach(btn => btn.classList.remove("selected"));
   elem.classList.add("selected");
-}
+};
 
 // 🔢 Ajustar cantidad
-function ajustarCantidad(delta) {
+window.ajustarCantidad = (delta) => {
   const cantidadElem = document.getElementById("cantidad");
   let cantidad = parseInt(cantidadElem.textContent);
   cantidad = Math.max(1, cantidad + delta);
   cantidadElem.textContent = cantidad;
-}
+};
 
 // 🛒 Añadir al carrito
-function agregarAlCarrito(id, nombre, precio, imagen) {
+window.agregarAlCarrito = (id, nombre, precio, imagen) => {
   const talla = document.querySelector(".talla-opcion.selected")?.textContent;
   const cantidad = parseInt(document.getElementById("cantidad").textContent);
   if (!talla) return alert("⚠️ Por favor, selecciona una talla.");
@@ -168,22 +146,9 @@ function agregarAlCarrito(id, nombre, precio, imagen) {
   if (confirm("✅ Producto añadido al carrito.\n¿Deseas ir al carrito ahora?")) {
     window.location.href = "carrito.html";
   }
-}
+};
 
-// 🔢 Actualizar contador visual del carrito (ícono)
-function actualizarContadorCarrito() {
-  const carrito = JSON.parse(localStorage.getItem("carrito") || "[]");
-  const total = carrito.reduce((acc, item) => acc + item.cantidad, 0);
-  const contador = document.getElementById("cart-widget-count");
-  if (contador) contador.textContent = total;
-}
-
-// ❌ Mostrar error
+// ❌ Mostrar error en pantalla
 function mostrarError(msg) {
   contenedor.innerHTML = `<p class="error fade-in">${msg}</p>`;
-}
-
-// 🔤 Capitalizar texto
-function capitalizar(str) {
-  return typeof str === "string" ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : str;
 }
