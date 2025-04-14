@@ -23,7 +23,7 @@
   <header class="header text-center" role="banner">
     <h1>📦 Pedidos Recibidos</h1>
     <div class="top-buttons mt-1">
-      <button type="button" class="btn" id="modoToggle" aria-label="Cambiar modo claro/oscuro">🌙 Modo Oscuro</button>
+      <button type="button" class="btn" id="modoToggle" aria-label="Cambiar entre modo claro y oscuro">🌙 Modo Oscuro</button>
     </div>
   </header>
 
@@ -31,9 +31,9 @@
   <main class="pedidos-container fade-in" role="main" aria-label="Gestión de pedidos">
     
     <!-- 🔘 Barra de acciones -->
-    <section class="acciones-barra" role="region" aria-label="Controles de pedidos">
+    <section class="acciones-barra" role="region" aria-label="Controles y filtros de pedidos">
       <div class="acciones-botones">
-        <button type="button" class="btn btn-secundario" onclick="exportarPedidos()" aria-label="Exportar lista de pedidos">📄 Exportar</button>
+        <button type="button" class="btn btn-secundario" onclick="exportarPedidos()" aria-label="Exportar lista de pedidos como archivo">📄 Exportar</button>
         <button type="button" class="btn" onclick="regresarAlPanel()" aria-label="Volver al panel de administración">⬅️ Panel</button>
       </div>
 
@@ -50,15 +50,16 @@
     </section>
 
     <!-- 📋 Contenedor de pedidos -->
-    <section id="pedidos-container" aria-live="polite" aria-label="Listado de pedidos">
+    <section id="pedidos-container" aria-live="polite" aria-label="Listado de pedidos cargados">
       <!-- Render dinámico desde orders.js -->
     </section>
-
   </main>
 
   <!-- 🚫 Fallback JS -->
   <noscript>
-    <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+    <div style="padding: 2rem; background: #ffebee; text-align: center; color: #c62828;">
+      ⚠️ Esta página requiere que JavaScript esté habilitado para mostrar los pedidos correctamente.
+    </div>
   </noscript>
 
   <!-- ✅ Scripts -->
