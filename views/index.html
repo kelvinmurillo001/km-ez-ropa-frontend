@@ -93,14 +93,6 @@
     <div id="mensajeCatalogo" class="mensaje-error oculto" role="alert"></div>
   </main>
 
-  <!-- 🛒 Carrito flotante -->
-  <div id="cart-widget" class="fade-in" aria-label="Acceso rápido al carrito">
-    <a href="carrito.html" aria-label="Ver carrito de compras">
-      <img src="/assets/cart-icon.svg" alt="Ícono del carrito" width="48" height="48" />
-      <span id="cart-widget-count">0</span>
-    </a>
-  </div>
-
   <!-- 🧾 Modal carrito -->
   <div id="carritoModal" class="modal fade-in" role="dialog" aria-modal="true" aria-labelledby="tituloCarrito">
     <div class="modal-contenido">
@@ -145,5 +137,15 @@
       });
     });
   </script>
+  <!-- 🛒 Widget del carrito -->
+<div id="carrito-widget-container"></div>
+<script>
+  fetch("carrito-widget.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("carrito-widget-container").innerHTML = html;
+    });
+</script>
+
 </body>
 </html>

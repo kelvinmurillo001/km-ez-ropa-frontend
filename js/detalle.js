@@ -3,7 +3,10 @@
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api/products";
 const contenedor = document.getElementById("detalleProducto");
 
-document.addEventListener("DOMContentLoaded", cargarDetalle);
+document.addEventListener("DOMContentLoaded", () => {
+  cargarDetalle();
+  actualizarContadorCarrito(); // 🆕 contador de carrito
+});
 
 // 🔍 Cargar detalle de producto
 async function cargarDetalle() {
@@ -122,7 +125,7 @@ function renderizarProducto(p) {
   `;
 }
 
-// 🖼 Cambiar imagen
+// 🖼 Cambiar imagen principal
 function cambiarImagen(url, thumb) {
   const principal = document.getElementById("imagenPrincipal");
   principal.src = url;
@@ -160,7 +163,19 @@ function agregarAlCarrito(id, nombre, precio, imagen) {
   }
 
   localStorage.setItem("carrito", JSON.stringify(carrito));
-  alert("✅ Producto añadido al carrito.");
+  actualizarContadorCarrito();
+
+  if (confirm("✅ Producto añadido al carrito.\n¿Deseas ir al carrito ahora?")) {
+    window.location.href = "carrito.html";
+  }
+}
+
+// 🔢 Actualizar contador visual del carrito (ícono)
+function actualizarContadorCarrito() {
+  const carrito = JSON.parse(localStorage.getItem("carrito") || "[]");
+  const total = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+  const contador = document.getElementById("cart-widget-count");
+  if (contador) contador.textContent = total;
 }
 
 // ❌ Mostrar error
@@ -168,7 +183,7 @@ function mostrarError(msg) {
   contenedor.innerHTML = `<p class="error fade-in">${msg}</p>`;
 }
 
-// 🔤 Capitalizar
+// 🔤 Capitalizar texto
 function capitalizar(str) {
   return typeof str === "string" ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : str;
 }
