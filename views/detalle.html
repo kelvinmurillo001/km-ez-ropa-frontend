@@ -2,10 +2,10 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Detalle del Producto | KM & EZ ROPA</title>
 
-  <!-- 🔍 SEO -->
+  <!-- ✅ SEO -->
   <meta name="robots" content="index, follow" />
   <meta name="author" content="KM & EZ ROPA" />
   <meta name="description" content="Consulta todos los detalles del producto en KM & EZ ROPA: precios, imágenes, tallas y más." />
@@ -18,8 +18,6 @@
   <link rel="stylesheet" href="/css/detalle.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
-  <link rel="stylesheet" href="/css/componentes.css" />
-
 </head>
 <body>
 
@@ -32,6 +30,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       const btn = document.getElementById("modoToggle");
       const isDark = localStorage.getItem("modoOscuro") === "true";
+
       if (isDark) {
         document.body.classList.add("modo-oscuro");
         btn.textContent = "☀️ Modo Claro";
@@ -58,7 +57,7 @@
     </div>
   </main>
 
-  <!-- 🛒 Widget del carrito flotante -->
+  <!-- 🛒 Widget del carrito (cargado dinámicamente) -->
   <div id="carrito-widget-container"></div>
   <script>
     fetch("carrito-widget.html")
@@ -68,15 +67,16 @@
       });
   </script>
 
-  <!-- 🚫 Fallback sin JS -->
+  <!-- 🚫 Fallback si no hay JS -->
   <noscript>
     <p class="mensaje-error" style="text-align: center;">
       ⚠️ Esta página requiere JavaScript para mostrar el contenido del producto.
     </p>
   </noscript>
 
-  <!-- ✅ Scripts -->
-  <script type="module" src="/js/detalle.js"></script>
+  <!-- ✅ Scripts funcionales -->
+  <script src="/js/utils.js" defer></script>
+  <script src="/js/detalle.js" defer></script>
 
 </body>
 </html>
