@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Detalle del Producto | KM & EZ ROPA</title>
 
-  <!-- ✅ SEO -->
+  <!-- SEO -->
   <meta name="robots" content="index, follow" />
   <meta name="author" content="KM & EZ ROPA" />
   <meta name="description" content="Consulta todos los detalles del producto en KM & EZ ROPA: precios, imágenes, tallas y más." />
 
-  <!-- 🖼️ Favicon -->
+  <!-- Favicon -->
   <link rel="icon" href="https://km-ez-ropa-backend.onrender.com/assets/logo.jpg" type="image/jpeg" />
 
-  <!-- 🎨 Estilos -->
+  <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/detalle.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
@@ -21,7 +21,7 @@
 </head>
 <body>
 
-  <!-- ☀️🌙 Alternar modo claro/oscuro -->
+  <!-- Modo Oscuro/Claro -->
   <div style="position: absolute; top: 15px; right: 15px;">
     <button id="modoToggle" class="btn btn-sm" aria-label="Cambiar modo claro/oscuro">🌙 Modo Oscuro</button>
   </div>
@@ -45,19 +45,19 @@
     });
   </script>
 
-  <!-- 🔙 Navegación -->
+  <!-- Navegación -->
   <nav role="navigation" aria-label="Volver al catálogo de productos">
     <a href="index.html" class="btn-volver" aria-label="Volver al catálogo principal">⬅️ Volver al catálogo</a>
   </nav>
 
-  <!-- 🛍️ Contenedor de detalle del producto -->
+  <!-- Detalle del producto -->
   <main class="detalle-container fade-in" role="main" aria-label="Detalle del producto seleccionado">
     <div id="detalleProducto" class="detalle-grid" aria-live="polite">
-      <!-- Render dinámico desde detalle.js -->
+      <!-- Se renderiza dinámicamente con JS -->
     </div>
   </main>
 
-  <!-- 🛒 Widget del carrito (cargado dinámicamente) -->
+  <!-- Widget del carrito (cargado dinámicamente) -->
   <div id="carrito-widget-container"></div>
   <script>
     fetch("carrito-widget.html")
@@ -67,16 +67,15 @@
       });
   </script>
 
-  <!-- 🚫 Fallback si no hay JS -->
+  <!-- Fallback sin JS -->
   <noscript>
     <p class="mensaje-error" style="text-align: center;">
       ⚠️ Esta página requiere JavaScript para mostrar el contenido del producto.
     </p>
   </noscript>
 
-  <!-- ✅ Scripts funcionales -->
-  <script src="/js/utils.js" defer></script>
-  <script src="/js/detalle.js" defer></script>
+  <!-- ✅ Scripts (usa módulo para que import funcione correctamente) -->
+  <script type="module" src="/js/detalle.js"></script>
 
 </body>
 </html>
