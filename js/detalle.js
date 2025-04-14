@@ -6,34 +6,34 @@ const contenedor = document.getElementById("detalleProducto");
 
 document.addEventListener("DOMContentLoaded", () => {
   cargarDetalle();
-  actualizarContadorCarrito(); // contador visual del carrito
+  actualizarContadorCarrito();
 });
 
-// 🔍 Cargar detalle de producto
+// 🔍 Obtener y mostrar detalles del producto
 async function cargarDetalle() {
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id");
-
+  const id = new URLSearchParams(window.location.search).get("id");
   if (!id || !/^[a-f\d]{24}$/i.test(id)) {
     return mostrarError("❌ ID del producto no proporcionado o inválido.");
   }
 
   try {
     const res = await fetch(`${API_BASE}/${id}`);
-    if (res.status === 404) return mostrarError("🚫 Producto no encontrado o fue eliminado.");
-    if (!res.ok) throw new Error(`Error del servidor: ${res.status}`);
+    if (!res.ok) {
+      return res.status === 404
+        ? mostrarError("🚫 Producto no encontrado o fue eliminado.")
+        : mostrarError(`❌ Error del servidor: ${res.status}`);
+    }
 
     const producto = await res.json();
-    if (!producto || !producto._id) return mostrarError("❌ Producto no encontrado.");
-
+    if (!producto?._id) return mostrarError("❌ Producto no encontrado.");
     renderizarProducto(producto);
-  } catch (error) {
-    console.error("❌ Error al cargar detalle:", error);
+  } catch (err) {
+    console.error("❌ Error al cargar detalle:", err);
     mostrarError("❌ Ocurrió un error inesperado al cargar el producto.");
   }
 }
 
-// 🎨 Renderizar producto
+// 🖼 Renderizar producto
 function renderizarProducto(p) {
   const imagenes = [
     ...(p.images || []).map(img => ({ url: img?.url, talla: img?.talla, color: img?.color })),
@@ -55,14 +55,13 @@ function renderizarProducto(p) {
       <div class="detalle-galeria">
         <div class="detalle-galeria-thumbs">
           ${imagenes.map((img, i) => `
-            <img src="${img.url}" alt="Miniatura ${i + 1}" class="${i === 0 ? "active" : ""}" 
-              onclick="cambiarImagen('${img.url}', this)" 
-              onerror="this.src='/assets/logo.jpg'" />
+            <img src="${img.url}" alt="Miniatura ${i + 1}" class="${i === 0 ? "active" : ""}"
+              onclick="cambiarImagen('${img.url}', this)" onerror="this.src='/assets/logo.jpg'" />
           `).join("")}
         </div>
         <div class="detalle-imagen-principal">
           <img id="imagenPrincipal" src="${primeraImagen}" alt="Imagen principal de ${p.name}" />
-          ${(primeraTalla || primerColor) ? `
+          ${primeraTalla || primerColor ? `
             <div class="imagen-info">
               ${primeraTalla ? `<p><strong>Talla:</strong> ${primeraTalla}</p>` : ""}
               ${primerColor ? `<p><strong>Color:</strong> ${primerColor}</p>` : ""}
@@ -121,8 +120,7 @@ window.seleccionarTalla = (elem) => {
 window.ajustarCantidad = (delta) => {
   const cantidadElem = document.getElementById("cantidad");
   let cantidad = parseInt(cantidadElem.textContent);
-  cantidad = Math.max(1, cantidad + delta);
-  cantidadElem.textContent = cantidad;
+  cantidadElem.textContent = Math.max(1, cantidad + delta);
 };
 
 // 🛒 Añadir al carrito
@@ -148,7 +146,7 @@ window.agregarAlCarrito = (id, nombre, precio, imagen) => {
   }
 };
 
-// ❌ Mostrar error en pantalla
+// ❌ Mostrar mensaje de error
 function mostrarError(msg) {
   contenedor.innerHTML = `<p class="error fade-in">${msg}</p>`;
 }

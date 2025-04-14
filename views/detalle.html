@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Detalle del Producto | KM & EZ ROPA</title>
 
-  <!-- ✅ SEO -->
+  <!-- 🔍 SEO -->
   <meta name="robots" content="index, follow" />
   <meta name="author" content="KM & EZ ROPA" />
   <meta name="description" content="Consulta todos los detalles del producto en KM & EZ ROPA: precios, imágenes, tallas y más." />
@@ -16,14 +16,10 @@
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/detalle.css" />
-  <link rel="stylesheet" href="/css/componentes.css" />
-  <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
+  <link rel="stylesheet" href="/css/fondo.css" />
+  <link rel="stylesheet" href="/css/componentes.css" />
 
-  <!-- 🌗 Estilo inicial por JS -->
-  <script>
-    document.documentElement.className += localStorage.getItem("modoOscuro") === "true" ? " modo-oscuro" : "";
-  </script>
 </head>
 <body>
 
@@ -32,12 +28,10 @@
     <button id="modoToggle" class="btn btn-sm" aria-label="Cambiar modo claro/oscuro">🌙 Modo Oscuro</button>
   </div>
 
-  <!-- 🌗 Script modo oscuro persistente -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const btn = document.getElementById("modoToggle");
       const isDark = localStorage.getItem("modoOscuro") === "true";
-
       if (isDark) {
         document.body.classList.add("modo-oscuro");
         btn.textContent = "☀️ Modo Claro";
@@ -64,7 +58,7 @@
     </div>
   </main>
 
-  <!-- 🛒 Widget del carrito (dinámico) -->
+  <!-- 🛒 Widget del carrito flotante -->
   <div id="carrito-widget-container"></div>
   <script>
     fetch("carrito-widget.html")
@@ -74,7 +68,7 @@
       });
   </script>
 
-  <!-- 🚫 Fallback si no hay JS -->
+  <!-- 🚫 Fallback sin JS -->
   <noscript>
     <p class="mensaje-error" style="text-align: center;">
       ⚠️ Esta página requiere JavaScript para mostrar el contenido del producto.
@@ -83,5 +77,6 @@
 
   <!-- ✅ Scripts -->
   <script type="module" src="/js/detalle.js"></script>
+
 </body>
 </html>
