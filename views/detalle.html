@@ -5,92 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Detalle del Producto | KM & EZ ROPA</title>
 
-  <!-- SEO -->
-  <meta name="description" content="Detalles completos del producto seleccionado en KM & EZ ROPA.">
-  <meta name="author" content="KM & EZ ROPA">
-  <meta name="robots" content="index, follow">
-
-  <!-- Estilos -->
-  <link rel="stylesheet" href="/css/global.css" />
-  <link rel="stylesheet" href="/css/componentes.css" />
+  <meta name="description" content="Explora detalles y variantes del producto en KM & EZ ROPA.">
   <link rel="stylesheet" href="/css/detalle.css" />
-  <link rel="stylesheet" href="/css/responsive.css" />
-  <link rel="stylesheet" href="/css/fondo.css" />
-
-  <!-- Scripts -->
-  <script src="/js/cart.js"></script>
   <script src="/js/detalle.js" defer></script>
 </head>
 <body>
 
-  <!-- Volver -->
-  <nav role="navigation" aria-label="Volver al catálogo">
-    <a href="index.html" class="btn-volver">⬅️ Volver al catálogo</a>
-  </nav>
-
-  <!-- Detalle del producto -->
-  <main class="detalle-container fade-in" role="main" aria-label="Detalle de producto">
-    <div class="detalle-grid">
-
-      <!-- Imágenes -->
-      <div class="detalle-galeria">
-        <div class="detalle-imagen-principal">
-          <img id="imagenPrincipal" src="/assets/logo.jpg" alt="Imagen principal del producto" />
-        </div>
-        <div class="detalle-galeria-thumbs" id="miniaturas">
-          <!-- Miniaturas dinámicas -->
-        </div>
+  <!-- 🔝 HEADER -->
+  <header class="main-header">
+    <div class="logo">
+      <a href="/"><img src="/assets/logo.jpg" alt="Logo" /></a>
+      <div class="brand">
+        <h1>KM & EZ ROPA</h1>
+        <p>Detalles del producto</p>
       </div>
+    </div>
+    <nav class="nav-links">
+      <a href="/">🏠 Inicio</a>
+      <a href="/carrito.html">🛒 Carrito</a>
+      <button id="modoOscuroBtn">🌙</button>
+    </nav>
+  </header>
 
-      <!-- Información del producto -->
-      <div class="detalle-info">
-        <h1 id="tituloProducto">Nombre del Producto</h1>
-        <p id="descripcionProducto">Descripción breve del producto.</p>
-        <p id="precioProducto"><strong>Precio:</strong> $0.00</p>
-        <p id="stockProducto"><strong>Stock:</strong> -</p>
-
-        <!-- Tallas -->
-        <div class="guia-tallas">
-          <h3>Selecciona Talla</h3>
-          <div class="tallas-disponibles" id="tallasDisponibles">
-            <!-- Tallas se insertan aquí -->
-          </div>
-        </div>
-
-        <!-- Cantidad -->
-        <div class="contador">
-          <button id="btnMenos" aria-label="Disminuir cantidad">➖</button>
-          <span id="cantidadProducto">1</span>
-          <button id="btnMas" aria-label="Aumentar cantidad">➕</button>
-        </div>
-
-        <!-- Agregar al carrito -->
-        <button class="btn-comprar" id="btnAgregar" aria-label="Agregar producto al carrito">
-          🛒 Agregar al carrito
-        </button>
-      </div>
+  <!-- 📦 DETALLE -->
+  <main class="detalle-container">
+    <div id="detalleProducto" class="detalle-grid">
+      <!-- JS inyecta aquí -->
     </div>
   </main>
 
-  <!-- Modal Zoom Imagen -->
-  <div id="imageModal" class="modal oculto fade-in" role="dialog" aria-hidden="true">
-    <div class="modal-contenido">
-      <span class="modal-close" onclick="cerrarModalImagen()">✖️</span>
-      <img id="modalImage" src="" alt="Vista ampliada del producto" />
-    </div>
+  <!-- 💬 WHATSAPP + CARRITO -->
+  <div class="floating-buttons">
+    <a href="/carrito.html" class="cart-icon"><img src="/assets/cart-icon.svg" alt="Carrito" /><span id="cartCount">0</span></a>
+    <a href="https://wa.me/593990270864" class="whatsapp-icon" target="_blank"><img src="/assets/whatsapp.svg" alt="WhatsApp" /></a>
   </div>
 
-  <!-- JS: modo oscuro persistente -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      if (localStorage.getItem("modoOscuro") === "true") {
-        document.body.classList.add("modo-oscuro");
-      }
-    });
-  </script>
+  <!-- 🔚 FOOTER -->
+  <footer class="site-footer">
+    <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
+  </footer>
 
-  <noscript>
-    <p style="color: red; text-align: center;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
-  </noscript>
 </body>
 </html>

@@ -2,55 +2,62 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Finalizar Pedido | KM & EZ ROPA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>✅ Finalizar Compra | KM & EZ ROPA</title>
 
-  <!-- SEO -->
-  <meta name="description" content="Completa tu pedido con KM & EZ ROPA y recibe tu ropa a domicilio." />
-  <meta name="author" content="KM & EZ ROPA" />
   <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="Ingresa tus datos para completar tu pedido en KM & EZ ROPA.">
 
-  <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/checkout.css" />
-  <link rel="stylesheet" href="/css/responsive.css" />
-  <link rel="stylesheet" href="/css/fondo.css" />
+
+  <script type="module" src="/js/checkout.js" defer></script>
 </head>
 <body>
-  <main class="checkout-container fade-in" role="main" aria-label="Formulario de pedido">
-    <h1 class="text-center">🧾 Finalizar Pedido</h1>
 
-    <!-- 🧾 Resumen -->
-    <section id="resumen-pedido" aria-live="polite" aria-atomic="true">
-      <!-- Se carga dinámicamente -->
-    </section>
+  <main class="checkout-container fade-in">
+    <h1 class="text-center">✅ Finalizar Compra</h1>
 
-    <!-- 📝 Formulario -->
-    <form id="checkoutForm" class="checkout-form" aria-label="Formulario de entrega y confirmación">
-      <input type="text" id="nombre" placeholder="👤 Tu nombre completo" required />
-      <input type="tel" id="telefono" placeholder="📞 Tu número de WhatsApp" required />
-      <input type="text" id="direccion" placeholder="🏠 Dirección de entrega" required />
-      <textarea id="nota" placeholder="✏️ Nota adicional (opcional)" rows="2"></textarea>
+    <form id="formCheckout" class="form-checkout">
+      <!-- 🧍 Datos del cliente -->
+      <fieldset>
+        <legend>🧍 Tus Datos</legend>
+        <label>Nombre Completo:</label>
+        <input type="text" id="nombreInput" required />
 
-      <button type="submit" class="btn-comprar">✅ Confirmar Pedido</button>
-      <button type="button" onclick="enviarWhatsApp()" class="btn-secundario">📲 Consultar por WhatsApp</button>
+        <label>Correo Electrónico:</label>
+        <input type="email" id="emailInput" required />
+
+        <label>Teléfono:</label>
+        <input type="tel" id="telefonoInput" required />
+
+        <label>Dirección de Entrega:</label>
+        <textarea id="direccionInput" required></textarea>
+      </fieldset>
+
+      <!-- 🛍️ Resumen del pedido -->
+      <fieldset class="mt-3">
+        <legend>🛍️ Tu Pedido</legend>
+        <div id="resumenPedido">
+          <!-- JS insertará productos -->
+        </div>
+        <h3>Total: <span id="totalFinal">$0.00</span></h3>
+      </fieldset>
+
+      <!-- ✅ Botón de compra -->
+      <div class="form-actions mt-3">
+        <button type="submit" class="btn">🛒 Confirmar Pedido</button>
+        <button type="button" onclick="window.location.href='/views/carrito.html'" class="btn-secundario">🔙 Volver al Carrito</button>
+      </div>
+
+      <p id="msgEstado" class="form-msg text-center mt-2"></p>
     </form>
-
-    <!-- Mensaje final -->
-    <p id="mensajeFinal" class="oculto" role="alert"></p>
-
-    <!-- Volver -->
-    <a href="carrito.html" class="btn-volver">⬅️ Volver al Carrito</a>
   </main>
 
-  <!-- Scripts -->
-  <script src="/js/cart.js"></script>
-  <script src="/js/checkout.js"></script>
-
-  <!-- JS fallback -->
   <noscript>
-    <p style="color:red; text-align:center;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+    <p style="text-align:center; color:red;">⚠️ Activa JavaScript para usar esta sección.</p>
   </noscript>
+
 </body>
 </html>

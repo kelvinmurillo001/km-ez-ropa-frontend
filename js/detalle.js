@@ -1,135 +1,126 @@
-"use strict";
-
-const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
+// === IMPORTAR DE utils.js SI ESTÁS USANDO MÓDULOS ===
+// import { addToCart, actualizarCarritoWidget } from './utils.js';
 
 document.addEventListener("DOMContentLoaded", () => {
-  const id = new URLSearchParams(window.location.search).get("id");
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+
   if (!id) {
-    mostrarError("❌ Producto no encontrado.");
+    document.getElementById("detalleProducto").innerHTML = "<p style='color:red;'>❌ Producto no encontrado.</p>";
     return;
   }
 
-  cargarDetalleProducto(id);
+  cargarProducto(id);
+  activarModoOscuro();
+  actualizarCarritoWidget();
 });
 
-/* 🔄 Obtener detalle del producto */
-async function cargarDetalleProducto(id) {
+// === CARGAR PRODUCTO POR ID ===
+async function cargarProducto(id) {
   try {
-    const res = await fetch(`${API_BASE}/products/${id}`);
-    if (!res.ok) throw new Error("No se encontró el producto");
-
+    const res = await fetch(`/api/products/${id}`);
     const producto = await res.json();
+    if (!res.ok || !producto) throw new Error("Producto no encontrado");
+
     renderizarProducto(producto);
   } catch (err) {
-    console.error("Error al cargar producto:", err);
-    mostrarError("❌ No se pudo cargar el producto.");
+    console.error(err);
+    document.getElementById("detalleProducto").innerHTML = "<p style='color:red;'>⚠️ Error al cargar el producto.</p>";
   }
 }
 
-/* 🎨 Renderizar información del producto */
+// === MOSTRAR PRODUCTO EN PANTALLA ===
 function renderizarProducto(p) {
-  const imagen = document.getElementById("imagenPrincipal");
-  const thumbs = document.getElementById("miniaturas");
-  const titulo = document.getElementById("tituloProducto");
-  const descripcion = document.getElementById("descripcionProducto");
-  const precio = document.getElementById("precioProducto");
-  const stockEl = document.getElementById("stockProducto");
-  const tallas = document.getElementById("tallasDisponibles");
+  const detalle = document.getElementById("detalleProducto");
+  detalle.innerHTML = `
+    <div class="detalle-img">
+      <img src="${p.image}" alt="${p.name}" />
+    </div>
+    <div class="detalle-info">
+      <h2>${p.name}</h2>
+      <p>${p.description}</p>
+      <p class="precio">$${p.price.toFixed(2)}</p>
 
-  if (!p || !p._id || !p.name || !Array.isArray(p.images)) {
-    mostrarError("❌ Información del producto incompleta.");
-    return;
+      <div class="selectores">
+        <label for="tallaSelect">Talla:</label>
+        <select id="tallaSelect" required>
+          ${p.sizes?.length ? p.sizes.map(t => `<option value="${t}">${t}</option>`).join('') : '<option value="Única">Única</option>'}
+        </select>
+
+        <label for="cantidadInput">Cantidad:</label>
+        <input type="number" id="cantidadInput" value="1" min="1" max="10" />
+      </div>
+
+      <button class="btn-agregar" onclick="agregarAlCarrito('${p._id}', '${p.name}', '${p.image}', ${p.price})">
+        🛒 Agregar al carrito
+      </button>
+    </div>
+  `;
+}
+
+// === AGREGAR AL CARRITO ===
+function agregarAlCarrito(id, nombre, imagen, precio) {
+  const talla = document.getElementById("tallaSelect")?.value || "Única";
+  const cantidad = parseInt(document.getElementById("cantidadInput")?.value) || 1;
+
+  const producto = {
+    id,
+    name: nombre,
+    image: imagen,
+    price: precio,
+    size: talla,
+    quantity: cantidad
+  };
+
+  const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
+
+  const index = carrito.findIndex(p => p.id === id && p.size === talla);
+  if (index >= 0) {
+    carrito[index].quantity += cantidad;
+  } else {
+    carrito.push(producto);
   }
 
-  titulo.textContent = p.name;
-  descripcion.textContent = p.description || "Sin descripción.";
-  precio.textContent = `$${(p.price || 0).toFixed(2)}`;
-  stockEl.textContent = p.stock > 0 ? `Disponible: ${p.stock}` : "❌ Agotado";
+  localStorage.setItem("km_ez_cart", JSON.stringify(carrito));
+  actualizarCarritoWidget();
+  mostrarToast("✅ Producto agregado al carrito");
+}
 
-  const imagenUrl = p.images[0]?.url || "/assets/logo.jpg";
-  imagen.src = imagenUrl;
-  imagen.alt = p.name;
+// === CONTADOR DE CARRITO ===
+function actualizarCarritoWidget() {
+  const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
+  const total = carrito.reduce((sum, item) => sum + item.quantity, 0);
+  const contador = document.getElementById("cartCount");
+  if (contador) contador.textContent = total;
+}
 
-  thumbs.innerHTML = "";
-  p.images.forEach((img, i) => {
-    const mini = document.createElement("img");
-    mini.src = img.url || "/assets/logo.jpg";
-    mini.alt = `Vista ${i + 1}`;
-    mini.className = i === 0 ? "active" : "";
-    mini.addEventListener("click", () => cambiarImagenPrincipal(img.url, i));
-    thumbs.appendChild(mini);
-  });
+// === TOAST MENSAJE ===
+function mostrarToast(mensaje) {
+  const toast = document.createElement("div");
+  toast.textContent = mensaje;
+  toast.style.position = "fixed";
+  toast.style.bottom = "30px";
+  toast.style.right = "30px";
+  toast.style.background = "#ff6d00";
+  toast.style.color = "#fff";
+  toast.style.padding = "0.8rem 1.2rem";
+  toast.style.borderRadius = "8px";
+  toast.style.fontWeight = "bold";
+  toast.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
+  toast.style.zIndex = "999";
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2500);
+}
 
-  if (Array.isArray(p.talla) && p.talla.length) {
-    tallas.innerHTML = "";
-    p.talla.forEach(t => {
-      const span = document.createElement("span");
-      span.textContent = t;
-      span.className = "talla-opcion";
-      span.tabIndex = 0;
-      span.addEventListener("click", () => seleccionarTalla(span));
-      tallas.appendChild(span);
-    });
+// === MODO OSCURO ===
+function activarModoOscuro() {
+  if (localStorage.getItem("modoOscuro") === "true") {
+    document.body.classList.add("modo-oscuro");
   }
 
-  document.getElementById("btnAgregar")?.addEventListener("click", () => {
-    const tallaSeleccionada = document.querySelector(".talla-opcion.selected")?.textContent || "";
-    const cantidad = parseInt(document.getElementById("cantidadProducto")?.textContent) || 1;
-
-    const productoCart = {
-      id: p._id,
-      nombre: p.name,
-      precio: p.price,
-      imagen: imagenUrl,
-      talla: tallaSeleccionada,
-      color: p.colores || ""
-    };
-
-    for (let i = 0; i < cantidad; i++) addToCart(productoCart);
+  const toggleBtn = document.getElementById("modoOscuroBtn");
+  toggleBtn?.addEventListener("click", () => {
+    document.body.classList.toggle("modo-oscuro");
+    localStorage.setItem("modoOscuro", document.body.classList.contains("modo-oscuro"));
   });
-
-  configurarContador();
-}
-
-/* 🔄 Cambiar imagen principal */
-function cambiarImagenPrincipal(url, index) {
-  const imagen = document.getElementById("imagenPrincipal");
-  imagen.src = url;
-  imagen.alt = `Vista ${index + 1}`;
-
-  const miniaturas = document.querySelectorAll("#miniaturas img");
-  miniaturas.forEach((img, i) => img.classList.toggle("active", i === index));
-}
-
-/* ✔️ Seleccionar talla */
-function seleccionarTalla(elemento) {
-  document.querySelectorAll(".talla-opcion").forEach(t => t.classList.remove("selected"));
-  elemento.classList.add("selected");
-}
-
-/* 🔢 Contador de cantidad */
-function configurarContador() {
-  const menos = document.getElementById("btnMenos");
-  const mas = document.getElementById("btnMas");
-  const cantidadEl = document.getElementById("cantidadProducto");
-
-  let cantidad = 1;
-
-  menos?.addEventListener("click", () => {
-    if (cantidad > 1) {
-      cantidad--;
-      cantidadEl.textContent = cantidad;
-    }
-  });
-
-  mas?.addEventListener("click", () => {
-    cantidad++;
-    cantidadEl.textContent = cantidad;
-  });
-}
-
-/* ❌ Mostrar errores */
-function mostrarError(mensaje) {
-  const contenedor = document.querySelector(".detalle-container");
-  contenedor.innerHTML = `<p class="error">${mensaje}</p>`;
 }

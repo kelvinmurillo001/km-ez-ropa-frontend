@@ -1,261 +1,204 @@
-/* 🎯 Contenedor principal */
-.detalle-container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 2rem;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+/* === BASE === */
+body {
+  margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  color: #333;
-}
-body.modo-oscuro .detalle-container {
-  background: #1e1e1e;
-  color: #eee;
+  background-color: #121212;
+  color: #f5f5f5;
 }
 
-/* 🖼️ Grid: galería e info */
-.detalle-grid {
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* === HEADER === */
+.main-header {
   display: flex;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1a1a1a;
+  padding: 1rem 2rem;
+  border-bottom: 2px solid #ff6d00;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid #ff6d00;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.brand p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #bbb;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.nav-links a,
+.nav-links button {
+  background-color: transparent;
+  border: 2px solid #ff6d00;
+  color: #ff6d00;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.nav-links a:hover,
+.nav-links button:hover {
+  background-color: #ff6d00;
+  color: #121212;
+}
+
+/* === DETALLE PRODUCTO === */
+.detalle-container {
+  padding: 2rem;
+  max-width: 1100px;
+  margin: auto;
+}
+
+.detalle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2rem;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.detalle-img img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(255, 109, 0, 0.2);
+}
+
+.detalle-info h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #ff6d00;
+}
+
+.detalle-info p {
+  margin: 0.5rem 0;
+  color: #ccc;
+  line-height: 1.5;
+}
+
+.precio {
+  font-size: 1.5rem;
+  color: #fff;
+  margin: 1rem 0;
+}
+
+.selectores {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.selectores select,
+.selectores input[type="number"] {
+  padding: 0.6rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #333;
+  background-color: #1a1a1a;
+  color: white;
+}
+
+.btn-agregar {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  background-color: #ff6d00;
+  color: #121212;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-agregar:hover {
+  background-color: #ffa733;
+}
+
+/* === BOTONES FLOTANTES === */
+.floating-buttons {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 999;
+}
+
+.cart-icon,
+.whatsapp-icon {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  background: #ff6d00;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
   justify-content: center;
 }
 
-/* 📸 Galería de imágenes */
-.detalle-galeria {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
+.cart-icon img,
+.whatsapp-icon img {
+  width: 28px;
+  height: 28px;
 }
 
-.detalle-galeria-thumbs {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-height: 400px;
-  overflow-y: auto;
-  padding-right: 5px;
-  scrollbar-width: thin;
-}
-.detalle-galeria-thumbs img {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border: 2px solid transparent;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: border-color 0.3s;
-}
-.detalle-galeria-thumbs img:hover,
-.detalle-galeria-thumbs img.active {
-  border-color: darkorange;
+#cartCount {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: red;
+  color: white;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 50%;
 }
 
-.detalle-imagen-principal {
-  max-width: 400px;
-  position: relative;
-}
-.detalle-imagen-principal img {
-  width: 100%;
-  border-radius: 12px;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-.detalle-imagen-principal img:hover {
-  transform: scale(1.04);
-  cursor: zoom-in;
-}
-
-/* ℹ️ Información del producto */
-.detalle-info {
-  flex: 1;
-  min-width: 300px;
-}
-.detalle-info h1 {
-  font-size: 28px;
-  margin-bottom: 1rem;
-  color: #222;
-}
-body.modo-oscuro .detalle-info h1 {
-  color: #fff;
-}
-.detalle-info p {
-  margin: 6px 0;
-  font-size: 15px;
-  color: #444;
-}
-body.modo-oscuro .detalle-info p {
-  color: #ccc;
-}
-
-/* 👕 Tallas */
-.guia-tallas {
-  margin-top: 20px;
-}
-.tallas-disponibles {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 10px 0;
-}
-.talla-opcion {
-  border: 1px solid #ccc;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  background-color: #fafafa;
-  transition: all 0.3s;
-  font-weight: 500;
-  font-size: 14px;
-}
-.talla-opcion:hover {
-  background-color: #eee;
-}
-.talla-opcion.selected {
-  border-color: darkorange;
-  background-color: #fff3e0;
-}
-body.modo-oscuro .talla-opcion {
-  background-color: #333;
-  border-color: #555;
-  color: #eee;
-}
-body.modo-oscuro .talla-opcion.selected {
-  background-color: #442e00;
-  border-color: orange;
-}
-
-/* ➕ Selector de cantidad */
-.contador {
-  margin-top: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.contador button {
-  background: #ddd;
-  border: none;
-  padding: 6px 12px;
-  font-size: 18px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-.contador button:hover {
-  background: #ccc;
-}
-body.modo-oscuro .contador button {
-  background: #555;
-  color: #fff;
-}
-body.modo-oscuro .contador button:hover {
-  background: #777;
-}
-.contador span {
-  font-weight: bold;
-  font-size: 18px;
-  min-width: 20px;
+/* === FOOTER === */
+.site-footer {
   text-align: center;
+  padding: 2rem;
+  font-size: 0.9rem;
+  background-color: #1a1a1a;
+  color: #999;
 }
 
-/* 🛒 Botón Comprar */
-.btn-comprar {
-  margin-top: 1.5rem;
-  padding: 12px 24px;
-  background-color: darkorange;
-  color: #fff;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.btn-comprar:hover {
-  background-color: #cc7000;
-}
-
-/* 📏 Guía de tallas */
-.guia-info {
-  margin-top: 1.5rem;
-  border-top: 1px solid #eee;
-  padding-top: 1rem;
-  font-size: 14px;
-  color: #555;
-}
-body.modo-oscuro .guia-info {
-  color: #bbb;
-  border-color: #444;
-}
-.guia-info table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 0.5rem;
-}
-.guia-info th,
-.guia-info td {
-  padding: 6px 10px;
-  border: 1px solid #ccc;
-  text-align: center;
-}
-body.modo-oscuro .guia-info th,
-body.modo-oscuro .guia-info td {
-  border-color: #555;
-}
-
-/* ❌ Mensaje de error */
-.error {
-  color: red;
-  font-weight: bold;
-  text-align: center;
-}
-
-/* 🔙 Botón de volver */
-.btn-volver {
-  display: inline-block;
-  margin-bottom: 1rem;
-  padding: 8px 16px;
-  background-color: #f5f5f5;
-  color: #333;
-  text-decoration: none;
-  border-radius: 6px;
-  font-weight: 500;
-  border: 1px solid #ddd;
-  transition: all 0.3s ease;
-}
-.btn-volver:hover {
-  background-color: #e0e0e0;
-  color: #000;
-}
-body.modo-oscuro .btn-volver {
-  background-color: #333;
-  color: #eee;
-  border-color: #555;
-}
-body.modo-oscuro .btn-volver:hover {
-  background-color: #444;
-  color: #fff;
-}
-
-/* 📱 Responsive */
+/* === RESPONSIVE === */
 @media (max-width: 768px) {
   .detalle-grid {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .detalle-galeria-thumbs {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    max-height: unset;
-    overflow: visible;
-  }
-
-  .detalle-galeria-thumbs img {
-    width: 50px;
-    height: 50px;
+    grid-template-columns: 1fr;
   }
 }

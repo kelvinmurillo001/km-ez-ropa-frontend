@@ -1,50 +1,48 @@
-"use strict";
-
-const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
-const API_LOGIN = `${API_BASE}/login`;
-
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("loginForm");
-  const email = document.getElementById("email");
-  const password = document.getElementById("password");
-  const mensaje = document.getElementById("mensajeLogin");
+  const errorMsg = document.getElementById("loginError");
 
-  form?.addEventListener("submit", async (e) => {
+  // Si ya hay sesión activa, redirigir al dashboard
+  const token = localStorage.getItem("km_ez_token");
+  if (token) {
+    window.location.href = "/dashboard.html";
+    return;
+  }
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    errorMsg.textContent = ""; // limpiar
 
-    const correo = email.value.trim();
-    const clave = password.value.trim();
+    const email = document.getElementById("emailInput")?.value.trim();
+    const password = document.getElementById("passwordInput")?.value.trim();
 
-    if (!correo || !clave) {
-      mostrarMensaje("⚠️ Ingresa correo y contraseña", "error");
+    if (!email || !password) {
+      errorMsg.textContent = "⚠️ Por favor completa todos los campos.";
       return;
     }
 
     try {
-      const res = await fetch(API_LOGIN, {
+      const res = await fetch("/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: correo, password: clave })
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
+
       if (!res.ok) {
-        const msg = data.message || "Credenciales incorrectas";
-        mostrarMensaje(`❌ ${msg}`, "error");
-        return;
+        throw new Error(data.message || "Credenciales inválidas");
       }
 
-      // Guardar token y redirigir
-      localStorage.setItem("adminToken", data.token);
-      window.location.href = "/admin.html";
+      // Guardar sesión
+      localStorage.setItem("km_ez_token", data.token);
+      localStorage.setItem("km_ez_admin_name", data.name);
+
+      // Redirigir al dashboard
+      window.location.href = "/dashboard.html";
+
     } catch (err) {
-      mostrarMensaje("❌ Error al conectar con el servidor", "error");
+      errorMsg.textContent = "❌ " + err.message;
     }
   });
-
-  function mostrarMensaje(texto, tipo = "error") {
-    mensaje.textContent = texto;
-    mensaje.className = tipo === "error" ? "error fade-in" : "success fade-in";
-    mensaje.classList.remove("oculto");
-  }
 });

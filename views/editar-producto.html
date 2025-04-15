@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>✏️ Editar Producto | KM & EZ ROPA</title>
+
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="Editar detalles de un producto del catálogo. Imágenes, precios, stock, variantes.">
+
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/componentes.css" />
+  <link rel="stylesheet" href="/css/crear-producto.css" />
+
+  <script type="module" src="/js/editar-producto.js" defer></script>
+</head>
+<body>
+
+  <main class="formulario-container fade-in">
+    <h1 class="text-center">✏️ Editar Producto</h1>
+
+    <form id="formEditarProducto" class="form-producto">
+
+      <!-- 🔍 Imagen actual -->
+      <label>Imagen Principal Actual:</label>
+      <div id="imagenPrincipalActual" class="preview-imagen"></div>
+
+      <!-- 🎯 Reemplazar imagen -->
+      <label>Cambiar Imagen Principal (opcional):</label>
+      <input type="file" id="imagenPrincipalNueva" accept="image/*" />
+
+      <!-- 📝 Datos generales -->
+      <label>Nombre:</label>
+      <input type="text" id="nombreInput" required />
+
+      <label>Descripción:</label>
+      <textarea id="descripcionInput" required></textarea>
+
+      <label>Precio:</label>
+      <input type="number" id="precioInput" step="0.01" min="0" required />
+
+      <label>Stock base:</label>
+      <input type="number" id="stockInput" min="0" required />
+
+      <label>Categoría:</label>
+      <select id="categoriaInput" required>
+        <option value="">Selecciona categoría</option>
+      </select>
+
+      <label>Tallas (separadas por coma):</label>
+      <input type="text" id="tallasInput" />
+
+      <label>Color principal:</label>
+      <input type="color" id="colorInput" />
+
+      <!-- 🎨 Variantes -->
+      <fieldset class="mt-2">
+        <legend>Variantes (editar o eliminar):</legend>
+        <div id="variantesExistentes"></div>
+        <button type="button" id="btnAgregarVariante" class="btn-secundario mt-1">➕ Añadir Variante</button>
+      </fieldset>
+
+      <!-- ✅ Acciones -->
+      <div class="form-actions mt-3">
+        <button type="submit" class="btn">💾 Guardar Cambios</button>
+        <button type="button" onclick="goBack()" class="btn-secundario">🔙 Cancelar</button>
+      </div>
+
+      <p id="msgEstado" class="form-msg text-center mt-2"></p>
+    </form>
+  </main>
+
+  <!-- JS Fallback -->
+  <noscript>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar esta función.</p>
+  </noscript>
+
+</body>
+</html>

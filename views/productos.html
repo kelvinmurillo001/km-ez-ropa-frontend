@@ -3,49 +3,53 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>👕 Gestión de Productos | KM & EZ ROPA</title>
+  <title>📦 Administración de Productos | KM & EZ ROPA</title>
 
+  <meta name="description" content="Panel para gestionar productos: agregar, editar o eliminar.">
   <meta name="robots" content="noindex, nofollow" />
+
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/productos.css" />
-  <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
 
+  <!-- ✅ Lógica -->
   <script type="module" src="/js/productos.js" defer></script>
 </head>
 <body>
 
-  <main class="admin-container fade-in">
+  <main class="productos-container fade-in" role="main">
     <h1 class="text-center">👕 Gestión de Productos</h1>
 
-    <!-- 📦 Formulario de creación -->
-    <form id="productoForm" class="formulario-producto" autocomplete="off">
-      <input type="text" id="name" placeholder="Nombre del producto" required />
-      <input type="number" id="price" placeholder="Precio ($)" step="0.01" required />
-      <input type="number" id="stock" placeholder="Stock disponible" required />
-      <input type="text" id="category" placeholder="Categoría" required />
-      <input type="text" id="subcategory" placeholder="Subcategoría" />
-      <input type="text" id="talla" placeholder="Talla (opcional)" />
-      <input type="text" id="colores" placeholder="Colores (opcional)" />
-      <input type="url" id="imageUrl" placeholder="URL de imagen" required />
-      <label><input type="checkbox" id="featured" /> Producto destacado</label>
-      <button type="submit" class="btn">💾 Guardar producto</button>
-    </form>
+    <div class="text-center mt-2">
+      <button id="btnNuevoProducto" class="btn">➕ Nuevo Producto</button>
+    </div>
 
-    <!-- 📋 Lista -->
-    <section id="listaProductos" class="productos-lista mt-3">
-      <!-- Tarjetas cargadas por JS -->
+    <section id="productosLista" class="productos-lista mt-3" aria-label="Lista de productos">
+      <!-- JS inserta la tabla aquí -->
     </section>
 
     <div class="text-center mt-3">
-      <a href="panel.html" class="btn-secundario">🔙 Volver al Panel</a>
+      <button type="button" onclick="goBack()" class="btn-secundario">
+        🔙 Volver al Panel
+      </button>
     </div>
   </main>
 
+  <!-- ⚠️ JS Fallback -->
   <noscript>
-    <p style="text-align:center; color:red;">⚠️ Activa JavaScript para ver y editar productos.</p>
+    <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
+
+  <!-- 🌙 Modo oscuro -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("modoOscuro") === "true") {
+        document.body.classList.add("modo-oscuro");
+      }
+    });
+  </script>
 
 </body>
 </html>

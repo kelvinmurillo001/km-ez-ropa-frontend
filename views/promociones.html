@@ -3,51 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🎯 Gestión de Promociones | KM & EZ ROPA</title>
+  <title>🎯 Promociones | KM & EZ ROPA</title>
 
   <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="Administra las promociones activas de la tienda: crea, activa, desactiva o elimina.">
+
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/promociones.css" />
-  <link rel="stylesheet" href="/css/responsive.css" />
-  <link rel="stylesheet" href="/css/fondo.css" />
 
   <script type="module" src="/js/promociones.js" defer></script>
 </head>
 <body>
 
-  <main class="promociones-container fade-in" role="main" aria-label="Gestión de Promociones">
-    <h1>🎯 Promoción Activa</h1>
+  <main class="promociones-container fade-in">
+    <h1 class="text-center">🎯 Gestión de Promociones</h1>
 
-    <form id="formPromo" aria-label="Formulario de promoción">
-      <input type="text" id="mensaje" placeholder="📝 Mensaje promocional..." required />
-      <input type="date" id="fechaInicio" required />
-      <input type="date" id="fechaFin" required />
-      <select id="tema">
-        <option value="blue">Azul</option>
-        <option value="green">Verde</option>
-        <option value="orange">Naranja</option>
-        <option value="red">Rojo</option>
-        <option value="purple">Púrpura</option>
-        <option value="yellow">Amarillo</option>
-        <option value="teal">Verde Azulado</option>
-        <option value="gray">Gris</option>
-      </select>
+    <!-- 📤 Crear nueva promoción -->
+    <section class="form-nueva-promo mt-2">
+      <h3>➕ Nueva Promoción</h3>
+      <form id="formPromo" enctype="multipart/form-data">
+        <label>Imagen (Banner):</label>
+        <input type="file" id="promoImagen" accept="image/*" required />
 
-      <div class="row">
-        <label><input type="checkbox" id="activa" /> Activar promoción</label>
-        <button type="submit">💾 Guardar</button>
-        <button type="button" onclick="goBack()">🔙 Volver</button>
+        <label>Título de la Promoción:</label>
+        <input type="text" id="promoTitulo" required />
+
+        <label>Categoría asociada:</label>
+        <select id="promoCategoria" required>
+          <option value="">Selecciona categoría</option>
+          <!-- JS inserta dinámicamente -->
+        </select>
+
+        <button type="submit" class="btn mt-1">✅ Crear Promoción</button>
+        <p id="msgPromo" class="form-msg text-center mt-2"></p>
+      </form>
+    </section>
+
+    <!-- 📋 Promociones activas -->
+    <section class="listado-promos mt-4">
+      <h3>📋 Promociones Actuales</h3>
+      <div id="listaPromos" class="grid-promos">
+        <!-- JS carga promos aquí -->
       </div>
-    </form>
+    </section>
 
-    <div class="promo-preview mt-3 oculto" id="previewBanner"></div>
-
-    <div id="mensajeFinal" class="admin-message oculto"></div>
+    <!-- 🔙 Botón volver -->
+    <div class="text-center mt-3">
+      <button onclick="goBack()" class="btn-secundario">🔙 Volver al panel</button>
+    </div>
   </main>
 
   <noscript>
-    <p style="text-align:center; color:red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar esta función.</p>
   </noscript>
+
 </body>
 </html>

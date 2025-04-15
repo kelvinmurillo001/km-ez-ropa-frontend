@@ -1,199 +1,124 @@
-:root {
-  --color-blue: linear-gradient(135deg, #2196f3, #21cbf3);
-  --color-green: linear-gradient(135deg, #43a047, #66bb6a);
-  --color-orange: linear-gradient(135deg, #fb8c00, #ffb74d);
-  --color-red: linear-gradient(135deg, #e53935, #ef5350);
-  --color-purple: linear-gradient(135deg, #8e24aa, #ba68c8);
-  --color-yellow: linear-gradient(135deg, #fdd835, #fff176);
-  --color-teal: linear-gradient(135deg, #009688, #4db6ac);
-  --color-gray: linear-gradient(135deg, #bdbdbd, #e0e0e0);
-}
-
-/* 🧾 Contenedor principal */
-.promociones-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 28px 20px;
+body {
+  background-color: #121212;
+  color: #f5f5f5;
   font-family: 'Segoe UI', sans-serif;
-  background-color: #fff;
-  color: #333;
-  border-radius: 12px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
-  animation: fadeIn 0.4s ease-in-out;
-}
-body.modo-oscuro .promociones-container {
-  background-color: #1f1f1f;
-  color: #eee;
 }
 
-/* 📌 Título */
-.promociones-container h1 {
+h1, h3 {
+  color: #ff6d00;
   text-align: center;
-  margin-bottom: 24px;
-  font-size: 1.8rem;
 }
 
-/* 📝 Formulario */
-.promociones-container form {
+.promociones-container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 2rem;
+}
+
+/* === FORMULARIO NUEVA PROMO === */
+.form-nueva-promo {
+  background-color: #1a1a1a;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(255, 109, 0, 0.2);
+}
+
+.form-nueva-promo form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  background-color: #f7f7f7;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
-body.modo-oscuro .promociones-container form {
-  background-color: #2a2a2a;
+  gap: 1rem;
 }
 
-/* 📥 Inputs */
-.promociones-container input,
-.promociones-container select {
-  padding: 12px;
-  font-size: 16px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  transition: all 0.2s ease;
-}
-.promociones-container input:focus,
-.promociones-container select:focus {
-  border-color: #1976d2;
-  outline: none;
-}
-body.modo-oscuro .promociones-container input,
-body.modo-oscuro .promociones-container select {
-  background-color: #1e1e1e;
-  color: #eee;
-  border-color: #555;
-}
-
-/* 📐 Fila de inputs */
-.promociones-container .row {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-/* 🔘 Botones */
-.promociones-container button {
-  background-color: #1976d2;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.25s ease, transform 0.2s ease;
-}
-.promociones-container button:hover {
-  background-color: #125ea9;
-  transform: translateY(-2px);
-}
-.promociones-container button:focus-visible {
-  outline: 3px solid orange;
-  outline-offset: 2px;
-}
-body.modo-oscuro .promociones-container button {
-  background-color: #2196f3;
-}
-body.modo-oscuro .promociones-container button:hover {
-  background-color: #1b7fcc;
-}
-
-/* 🧾 Vista previa */
-.promo-preview {
-  padding: 18px 24px;
-  font-size: 17px;
-  font-weight: 600;
-  border-radius: 12px;
-  margin-top: 16px;
-  text-align: center;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-/* 🎨 Temas por color */
-.promo-preview.blue     { background: var(--color-blue); color: #fff; }
-.promo-preview.green    { background: var(--color-green); color: #fff; }
-.promo-preview.orange   { background: var(--color-orange); color: #fff; }
-.promo-preview.red      { background: var(--color-red); color: #fff; }
-.promo-preview.purple   { background: var(--color-purple); color: #fff; }
-.promo-preview.yellow   { background: var(--color-yellow); color: #000; }
-.promo-preview.teal     { background: var(--color-teal); color: #fff; }
-.promo-preview.gray     { background: var(--color-gray); color: #333; }
-.promo-preview.dark     { background: #333; color: #eee; border: 1px solid #555; }
-
-/* ⏸️ Estados alternos */
-.promo-preview.inactive {
-  background-color: #eeeeee;
-  color: #666;
-  border: 1px dashed #bbb;
-}
-.promo-preview.error {
-  background-color: #ffebee;
-  color: #b71c1c;
-  border: 1px solid #c62828;
-}
-.promo-preview.empty {
-  background-color: #fafafa;
-  color: #888;
-  font-style: italic;
-}
-
-/* 💬 Feedback */
-.admin-message {
-  margin-top: 16px;
-  padding: 12px;
+.form-nueva-promo input,
+.form-nueva-promo select {
+  background-color: #222;
+  color: #f5f5f5;
+  border: 1px solid #444;
+  padding: 0.6rem;
   border-radius: 6px;
-  font-weight: bold;
+  font-size: 1rem;
+}
+
+.form-msg {
+  font-size: 0.9rem;
   text-align: center;
-}
-.admin-message.success { color: #2e7d32; }
-.admin-message.error   { color: #c62828; }
-
-/* 🔝 Botonera final */
-.top-buttons {
-  margin-top: 24px;
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-.top-buttons .btn {
-  min-width: 120px;
+  font-weight: bold;
 }
 
-/* Oculto dinámico */
-.oculto {
-  display: none !important;
+/* === GRID PROMOCIONES === */
+.grid-promos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
 }
 
-/* ✨ Animación suave */
-.fade-in {
-  animation: fadeIn 0.5s ease-in-out;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* === CARD PROMO === */
+.promo-card {
+  background-color: #1f1f1f;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 0 10px rgba(255, 109, 0, 0.1);
+  transition: transform 0.3s ease;
 }
 
-/* 📱 Responsive */
+.promo-card:hover {
+  transform: scale(1.02);
+}
+
+.promo-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 0.8rem;
+  border: 2px solid #ff6d00;
+}
+
+.promo-card h4 {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+  color: #ffa733;
+}
+
+.promo-card p {
+  font-size: 0.9rem;
+  margin: 0.2rem 0;
+}
+
+.estado.activo {
+  color: #00e676;
+}
+
+.estado.inactivo {
+  color: #ff3d00;
+}
+
+.btn-eliminar {
+  background-color: transparent;
+  border: 2px solid #ff3d00;
+  color: #ff3d00;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-eliminar:hover {
+  background-color: #ff3d00;
+  color: #121212;
+}
+
+/* === RESPONSIVE === */
 @media (max-width: 600px) {
-  .promociones-container {
-    padding: 14px;
+  .form-nueva-promo form {
+    gap: 0.8rem;
   }
-  .row {
-    flex-direction: column;
-    gap: 12px;
-  }
-  .top-buttons {
-    flex-direction: column;
-  }
-  .promociones-container button {
-    width: 100%;
+
+  .grid-promos {
+    grid-template-columns: 1fr;
   }
 }

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>➕ Crear Producto | KM & EZ ROPA</title>
+
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Formulario avanzado para crear un producto en KM & EZ ROPA. Con variantes, tallas, colores e imágenes múltiples.">
+
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/componentes.css" />
+  <link rel="stylesheet" href="/css/crear-producto.css" />
+
+  <script type="module" src="/js/crear-producto.js" defer></script>
+</head>
+<body>
+
+  <main class="formulario-container fade-in">
+    <h1 class="text-center">➕ Crear Nuevo Producto</h1>
+
+    <form id="formProducto" class="form-producto" enctype="multipart/form-data">
+
+      <!-- ✅ Imagen principal -->
+      <label>Imagen Principal:</label>
+      <input type="file" id="imagenPrincipalInput" accept="image/*" required />
+      <div id="previewPrincipal" class="preview-imagen"></div>
+
+      <!-- 🎯 Datos generales -->
+      <label>Nombre del Producto:</label>
+      <input type="text" id="nombreInput" placeholder="Ej: Hoodie urbana" required />
+
+      <label>Descripción:</label>
+      <textarea id="descripcionInput" placeholder="Detalles de tela, corte, estilo..." required></textarea>
+
+      <label>Precio:</label>
+      <input type="number" id="precioInput" step="0.01" min="0" required />
+
+      <label>Stock base:</label>
+      <input type="number" id="stockInput" min="0" required />
+
+      <label>Categoría:</label>
+      <select id="categoriaInput" required>
+        <option value="">Selecciona una categoría</option>
+        <!-- JS insertará las opciones -->
+      </select>
+
+      <!-- 🎨 Variantes -->
+      <fieldset class="mt-2">
+        <legend>Variantes (colores/tallas opcionales)</legend>
+        <div id="variantesContainer">
+          <!-- Variantes se agregan desde JS -->
+        </div>
+        <button type="button" class="btn-secundario mt-1" id="btnAgregarVariante">➕ Añadir Variante</button>
+      </fieldset>
+
+      <!-- 🧵 Tallas generales (opcional) -->
+      <label class="mt-2">Tallas disponibles (separadas por coma):</label>
+      <input type="text" id="tallasInput" placeholder="Ej: S, M, L, XL" />
+
+      <!-- 🎯 Color base del producto -->
+      <label>Color Principal:</label>
+      <input type="color" id="colorInput" />
+
+      <!-- ✅ Acciones -->
+      <div class="form-actions mt-3">
+        <button type="submit" class="btn">✅ Guardar Producto</button>
+        <button type="button" onclick="goBack()" class="btn-secundario">🔙 Cancelar</button>
+      </div>
+
+      <p id="msgEstado" class="form-msg text-center mt-2"></p>
+    </form>
+  </main>
+
+  <!-- ⚠️ JS fallback -->
+  <noscript>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar este formulario correctamente.</p>
+  </noscript>
+
+</body>
+</html>

@@ -3,102 +3,77 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Catálogo por Categoría | KM & EZ ROPA</title>
+  <title>Categorías | KM & EZ ROPA</title>
 
   <!-- SEO -->
-  <meta name="description" content="Explora ropa por categorías y subcategorías. Encuentra lo más reciente en moda urbana y callejera.">
-  <meta name="author" content="KM & EZ ROPA">
-  <meta name="robots" content="index, follow">
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="Catálogo | KM & EZ ROPA">
-  <meta property="og:description" content="Moda urbana para todos. Catálogo dinámico por categoría.">
-  <meta property="og:image" content="/assets/logo.jpg">
-  <meta property="og:type" content="website">
-
-  <!-- Estilos -->
-  <link rel="stylesheet" href="/css/global.css" />
-  <link rel="stylesheet" href="/css/catalogo.css" />
-  <link rel="stylesheet" href="/css/fondo.css" />
-  <link rel="stylesheet" href="/css/responsive.css" />
-
-  <!-- JS Principal -->
-  <script src="/js/catalogo.js" defer></script>
+  <meta name="description" content="Explora todas las categorías de ropa urbana disponibles en KM & EZ ROPA." />
+  <link rel="stylesheet" href="/css/categorias.css" />
+  <script src="/js/categorias.js" defer></script>
 </head>
 <body>
 
-  <!-- 🔝 Header -->
-  <header class="header" role="banner">
+  <!-- 🔝 HEADER -->
+  <header class="main-header">
     <div class="logo">
-      <img src="/assets/logo.jpg" alt="KM & EZ ROPA" class="logo-img">
-      <div>
+      <a href="/"><img src="/assets/logo.jpg" alt="Logo" /></a>
+      <div class="brand">
         <h1>KM & EZ ROPA</h1>
-        <p class="subtitulo">Moda para todos | Calidad & Estilo</p>
+        <p>Explora tu estilo</p>
       </div>
     </div>
-    <nav class="top-buttons mt-2">
-      <a href="index.html" class="btn-secundario">🏠 Inicio</a>
-      <a href="login.html" class="btn">🔐 Admin</a>
-      <button id="modoToggle" class="btn-secundario">🌙 Modo Oscuro</button>
+    <nav class="nav-links">
+      <a href="/">🏠 Inicio</a>
+      <a href="/carrito.html">🛒 Carrito</a>
+      <button id="modoOscuroBtn">🌙</button>
     </nav>
   </header>
 
-  <!-- 💥 Banner -->
-  <section class="promo-banner mt-2 fade-in">
-    ⚡ Explora las últimas novedades por categoría.
+  <!-- 🔥 BANNER PROMOCIONAL -->
+  <section id="promoBanner" class="promo-banner">
+    <!-- Se llena dinámicamente desde JS -->
   </section>
 
-  <!-- 🔍 Filtros -->
-  <section class="filtros-container fade-in" aria-label="Filtros del catálogo">
-    <select id="filtroCategoria" aria-label="Selecciona una categoría"></select>
-    <select id="filtroSubcategoria" aria-label="Selecciona una subcategoría"></select>
-    <select id="ordenar" aria-label="Ordenar productos">
-      <option value="recientes">Más recientes</option>
-      <option value="precio_asc">Precio: Menor a mayor</option>
-      <option value="precio_desc">Precio: Mayor a menor</option>
-    </select>
-    <input type="search" id="busqueda" placeholder="🔍 Buscar productos..." aria-label="Buscar por nombre" />
+  <!-- 🔍 FILTROS -->
+  <section class="filtros-section">
+    <div class="filtro">
+      <label for="categoriaSelect">Categoría:</label>
+      <select id="categoriaSelect"><option value="">Todas</option></select>
+    </div>
+    <div class="filtro">
+      <label for="subcategoriaSelect">Subcategoría:</label>
+      <select id="subcategoriaSelect"><option value="">Todas</option></select>
+    </div>
+    <div class="filtro">
+      <label for="precioSelect">Precio:</label>
+      <select id="precioSelect">
+        <option value="">Todos</option>
+        <option value="low">Menor a mayor</option>
+        <option value="high">Mayor a menor</option>
+      </select>
+    </div>
+    <div class="filtro">
+      <input type="search" id="busquedaInput" placeholder="Buscar producto..." />
+    </div>
   </section>
 
-  <!-- 🛍️ Catálogo de Productos -->
-  <main class="catalogo-container fade-in" id="catalogo" role="main" aria-label="Lista de productos">
-    <!-- Aquí se insertan dinámicamente los productos -->
+  <!-- 🧾 CATÁLOGO -->
+  <main class="catalogo-section">
+    <h2 class="section-title">🧢 Productos disponibles</h2>
+    <div id="catalogo" class="product-grid">
+      <!-- JS renderiza productos aquí -->
+    </div>
   </main>
 
-  <!-- 🛒 Widget del carrito -->
-  <div id="cart-widget">
-    <a href="carrito.html" aria-label="Ir al carrito de compras">
-      <img src="/assets/cart-icon.svg" alt="Carrito" />
-      <span id="cart-widget-count">0</span>
-    </a>
+  <!-- 💬 WHATSAPP + CARRITO -->
+  <div class="floating-buttons">
+    <a href="/carrito.html" class="cart-icon"><img src="/assets/cart-icon.svg" alt="Carrito" /><span id="cartCount">0</span></a>
+    <a href="https://wa.me/593990270864" class="whatsapp-icon" target="_blank"><img src="/assets/whatsapp.svg" alt="WhatsApp" /></a>
   </div>
 
-  <!-- 💬 WhatsApp flotante -->
-  <div class="whatsapp-float">
-    <a href="https://wa.me/593990270864" target="_blank" rel="noopener" aria-label="Consulta por WhatsApp">
-      <img src="/assets/whatsapp.svg" alt="WhatsApp" width="50" height="50" />
-    </a>
-  </div>
-
-  <!-- 🌙 Modo oscuro persistente -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const toggle = document.getElementById("modoToggle");
-      if (localStorage.getItem("modoOscuro") === "true") {
-        document.body.classList.add("modo-oscuro");
-      }
-
-      toggle?.addEventListener("click", () => {
-        document.body.classList.toggle("modo-oscuro");
-        localStorage.setItem("modoOscuro", document.body.classList.contains("modo-oscuro"));
-      });
-    });
-  </script>
-
-  <!-- Fallback sin JS -->
-  <noscript>
-    <p style="color: red; text-align: center;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
-  </noscript>
+  <!-- 🔚 FOOTER -->
+  <footer class="site-footer">
+    <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
+  </footer>
 
 </body>
 </html>

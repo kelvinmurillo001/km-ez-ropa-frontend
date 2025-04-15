@@ -5,33 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Iniciar Sesión | KM & EZ ROPA</title>
 
-  <!-- Estilos -->
-  <link rel="stylesheet" href="/css/global.css" />
+  <meta name="description" content="Accede de forma segura al panel de administración de KM & EZ ROPA.">
   <link rel="stylesheet" href="/css/login.css" />
-
-  <!-- Scripts -->
-  <script defer src="/js/login.js"></script>
+  <script src="/js/login.js" defer></script>
 </head>
 <body>
-  <main class="login-box fade-in" role="main">
-    <h1>🔐 Iniciar Sesión</h1>
 
-    <form id="loginForm" autocomplete="off" novalidate>
-      <input type="email" id="email" placeholder="📧 Correo" required />
-      <input type="password" id="password" placeholder="🔑 Contraseña" required />
-      <button type="submit" class="btn">➡️ Ingresar</button>
-    </form>
+  <main class="login-container">
+    <div class="login-box">
+      <img src="/assets/logo.jpg" alt="Logo" class="login-logo" />
+      <h2>Acceso Administrativo</h2>
 
-    <p id="mensajeLogin" class="error oculto" role="alert"></p>
+      <form id="loginForm">
+        <input type="email" id="emailInput" placeholder="Correo electrónico" required />
+        <input type="password" id="passwordInput" placeholder="Contraseña" required />
+        <button type="submit" class="btn-login">🔐 Iniciar Sesión</button>
+      </form>
 
-    <!-- 🔙 Botón de regreso al catálogo -->
-    <div class="mt-2 text-center">
-      <a href="/index.html" class="btn-volver" aria-label="Volver al inicio">⬅️ Volver al Catálogo</a>
+      <p id="loginError" class="login-error"></p>
     </div>
   </main>
 
-  <noscript>
-    <p style="text-align: center; color: red;">⚠️ Esta página necesita JavaScript.</p>
-  </noscript>
+  <footer class="site-footer">
+    <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
+  </footer>
+
 </body>
 </html>

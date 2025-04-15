@@ -1,131 +1,40 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tu Carrito | KM & EZ ROPA</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🛒 Carrito de Compras | KM & EZ ROPA</title>
 
-  <!-- SEO -->
-  <meta name="description" content="Revisa y finaliza tu pedido con KM & EZ ROPA. Consulta por WhatsApp y recibe tu ropa a domicilio.">
-  <meta name="keywords" content="carrito, pedidos, ropa, km ez, moda, whatsapp, ecommerce, comprar ropa">
-  <meta name="author" content="KM & EZ ROPA">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Revisa y gestiona tu carrito de compras antes de finalizar tu pedido.">
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="Tu Carrito | KM & EZ ROPA">
-  <meta property="og:description" content="Revisa y finaliza tu pedido con KM & EZ ROPA. Consulta por WhatsApp y recibe tu ropa a domicilio.">
-  <meta property="og:image" content="/assets/logo.jpg">
-  <meta property="og:url" content="https://km-ez-ropa-frontend.onrender.com/carrito.html">
-  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/componentes.css">
+  <link rel="stylesheet" href="/css/carrito.css">
 
-  <!-- Estilos -->
-  <link rel="stylesheet" href="/css/global.css" />
-  <link rel="stylesheet" href="/css/componentes.css" />
-  <link rel="stylesheet" href="/css/carrito.css" />
-  <link rel="stylesheet" href="/css/responsive.css" />
-  <link rel="stylesheet" href="/css/fondo.css" />
+  <script type="module" src="/js/carrito.js" defer></script>
 </head>
 <body>
 
-  <!-- 🔙 Volver -->
-  <nav aria-label="Navegación principal">
-    <a href="index.html" class="btn-volver">⬅️ Volver al catálogo</a>
-  </nav>
+  <main class="carrito-container fade-in">
+    <h1 class="text-center">🛒 Tu Carrito</h1>
 
-  <!-- 🛍️ Carrito -->
-  <main class="catalogo-container fade-in" role="main">
-    <h1 class="text-center carrito-titulo">🛍️ Tu Carrito</h1>
-
-    <!-- 🧾 Productos -->
-    <section id="cart-items" class="carrito-items" aria-live="polite">
-      <!-- Productos se insertan aquí dinámicamente -->
+    <section id="carritoItems" class="carrito-lista">
+      <!-- JS insertará aquí los productos del carrito -->
     </section>
 
-    <!-- 📝 Formulario -->
-    <section class="carrito-formulario fade-in" aria-label="Formulario de confirmación de pedido">
-      <h3>Total estimado: <span id="cart-total">$0.00</span></h3>
-      <p id="total-unidades">Total unidades: 0</p>
-
-      <input type="text" id="clienteNombre" placeholder="👤 Tu nombre completo" required />
-      <textarea id="nota" placeholder="✏️ Nota adicional (opcional)" rows="2"></textarea>
-
-      <div class="botones-finales">
-        <button type="button" class="btn-whatsapp" id="btnEnviar">📲 Enviar por WhatsApp</button>
-        <button type="button" class="btn-vaciar" id="btnVaciar">🗑 Vaciar Carrito</button>
-        <a href="index.html" class="btn-secundario">🛒 Seguir comprando</a>
+    <section class="carrito-resumen mt-3">
+      <h3>Total: <span id="carritoTotal">$0.00</span></h3>
+      <div class="botones-carrito">
+        <button onclick="window.location.href='/index.html'" class="btn-secundario">⬅️ Seguir Comprando</button>
+        <button id="btnIrCheckout" class="btn">✅ Finalizar Compra</button>
       </div>
-
-      <p id="confirmacion" class="confirmacion oculto" role="status" aria-live="assertive" tabindex="-1"></p>
     </section>
   </main>
 
-  <!-- 🔍 Modal Imagen -->
-  <div id="imageModal" class="modal-zoom oculto fade-in" role="dialog" aria-hidden="true">
-    <span class="modal-close" title="Cerrar" onclick="cerrarModalImagen()">✖️</span>
-    <img id="modalImage" src="" alt="Vista ampliada del producto" />
-  </div>
-
-  <!-- 🛒 Widget de carrito flotante -->
-  <div id="cart-widget" class="whatsapp-float">
-    <a href="carrito.html">
-      <img src="/assets/cart.png" alt="Carrito" />
-      <span id="cart-widget-count">0</span>
-    </a>
-  </div>
-
-  <!-- 💬 WhatsApp flotante -->
-  <div class="whatsapp-float" style="bottom: 90px;">
-    <a href="https://wa.me/593990270864" target="_blank">
-      <img src="/assets/whatsapp.png" alt="Habla con nosotros por WhatsApp">
-    </a>
-  </div>
-
-  <!-- Scripts -->
-  <script src="/js/cart.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      renderCartItems?.();
-      updateCartWidget?.();
-
-      if (localStorage.getItem("modoOscuro") === "true") {
-        document.body.classList.add("modo-oscuro");
-      }
-
-      document.getElementById("btnEnviar")?.addEventListener("click", () => {
-        const nombre = document.getElementById("clienteNombre").value.trim();
-        const nota = document.getElementById("nota").value.trim();
-        const confirmacion = document.getElementById("confirmacion");
-
-        if (!nombre) {
-          alert("⚠️ Por favor, escribe tu nombre.");
-          document.getElementById("clienteNombre").focus();
-          return;
-        }
-
-        sendCartToWhatsApp?.(nombre, nota);
-        confirmacion.textContent = "✅ ¡Pedido enviado correctamente por WhatsApp!";
-        confirmacion.classList.remove("oculto");
-        confirmacion.focus();
-      });
-
-      document.getElementById("btnVaciar")?.addEventListener("click", () => {
-        if (!confirm("¿Deseas vaciar el carrito?")) return;
-        localStorage.removeItem("km_ez_cart");
-        renderCartItems?.();
-        updateCartWidget?.();
-      });
-    });
-
-    function cerrarModalImagen() {
-      const modal = document.getElementById("imageModal");
-      modal?.classList.add("oculto");
-      document.getElementById("modalImage").src = "";
-    }
-  </script>
-
-  <!-- 🚫 JS Fallback -->
   <noscript>
-    <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar el carrito.</p>
   </noscript>
+
 </body>
 </html>
