@@ -2,16 +2,15 @@
 
 import { verificarSesion } from "./admin-utils.js";
 
-// Validar sesión
+// Validar token al cargar
 verificarSesion();
 
-/* 🔒 Cerrar sesión */
+/* 🚪 Cerrar sesión */
 function cerrarSesion() {
-  if (confirm("¿Deseas cerrar sesión?")) {
-    sessionStorage.removeItem("admin_token");
-    window.location.href = "login.html";
-  }
+  localStorage.removeItem("admin_token");
+  alert("👋 Sesión cerrada");
+  window.location.href = "login.html";
 }
 
-// 🌐 Exponer
+// Global para el botón
 window.cerrarSesion = cerrarSesion;

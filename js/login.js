@@ -1,47 +1,58 @@
 "use strict";
 
-const API_LOGIN = "https://km-ez-ropa-backend.onrender.com/api/auth/login";
-
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("loginForm");
-  const errorBox = document.getElementById("mensajeError");
+  const form = document.getElementById("formLogin");
+  const email = document.getElementById("email");
+  const password = document.getElementById("password");
+  const mensaje = document.getElementById("loginMensaje");
 
-  form?.addEventListener("submit", async (e) => {
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const email = document.getElementById("email")?.value.trim();
-    const password = document.getElementById("password")?.value.trim();
+    const emailVal = email.value.trim();
+    const passVal = password.value.trim();
 
-    if (!email || !password) {
-      mostrarError("⚠️ Completa ambos campos.");
+    if (!emailVal || !passVal) {
+      mostrarMensaje("⚠️ Por favor, completa todos los campos.", "error");
       return;
     }
 
     try {
-      const res = await fetch(API_LOGIN, {
+      const res = await fetch("https://km-ez-ropa-backend.onrender.com/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: emailVal, password: passVal })
       });
 
       const data = await res.json();
 
-      if (!res.ok || !data.token) {
-        mostrarError(data.message || "❌ Credenciales incorrectas");
-        return;
+      if (!res.ok) {
+        throw new Error(data.message || "Error desconocido");
       }
 
-      sessionStorage.setItem("admin_token", data.token);
-      window.location.href = "panel.html";
-    } catch (err) {
-      mostrarError("❌ Error de conexión. Intenta más tarde.");
-      console.error("Login error:", err);
+      localStorage.setItem("admin_token", data.token);
+      mostrarMensaje("✅ Acceso correcto. Redirigiendo...", "success");
+
+      setTimeout(() => {
+        window.location.href = "panel.html";
+      }, 1500);
+    } catch (error) {
+      console.error("❌ Error de login:", error);
+      mostrarMensaje(`❌ ${error.message}`, "error");
     }
   });
-
-  function mostrarError(msg) {
-    if (!errorBox) return;
-    errorBox.textContent = msg;
-    errorBox.classList.remove("oculto");
-  }
 });
+
+/* 💬 Mostrar mensaje de login */
+function mostrarMensaje(texto, tipo = "info") {
+  const mensaje = document.getElementById("loginMensaje");
+  if (!mensaje) return;
+
+  mensaje.className = tipo === "success" ? "login-message success" : "login-message error";
+  mensaje.textContent = texto;
+  mensaje.classList.remove("oculto");
+
+  setTimeout(() => mensaje.classList.add("oculto"), 5000);
+}

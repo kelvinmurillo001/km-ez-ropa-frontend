@@ -3,98 +3,51 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Promociones | KM & EZ ROPA</title>
+  <title>🎯 Gestión de Promociones | KM & EZ ROPA</title>
 
-  <!-- 🔐 Seguridad y SEO -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="description" content="Administrador de promociones activas en KM & EZ ROPA. Define el mensaje, colores y fechas.">
-
-  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/promociones.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- 🌗 Modo oscuro persistente -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      if (localStorage.getItem("modoOscuro") === "true") {
-        document.body.classList.add("modo-oscuro");
-      }
-    });
-  </script>
+  <script type="module" src="/js/promociones.js" defer></script>
 </head>
 <body>
 
-  <main class="promociones-container fade-in" role="main" aria-label="Gestión de promociones">
-    <h1>🎯 Administrar Promoción</h1>
+  <main class="promociones-container fade-in" role="main" aria-label="Gestión de Promociones">
+    <h1>🎯 Promoción Activa</h1>
 
-    <!-- 📋 Formulario -->
-    <form id="promoForm" autocomplete="off" aria-label="Formulario de promoción activa" role="form">
-      <input 
-        type="text" 
-        id="promoMessage" 
-        placeholder="Texto de promoción..." 
-        required 
-        aria-label="Texto de promoción"
-        maxlength="150"
-      />
-
-      <div class="row">
-        <label for="isActive">
-          <input type="checkbox" id="isActive" aria-checked="false" />
-          Activar promoción
-        </label>
-
-        <label for="theme">
-          Color del banner:
-          <select id="theme" aria-label="Selecciona un color de tema">
-            <option value="blue">Azul</option>
-            <option value="orange">Naranja</option>
-            <option value="green">Verde</option>
-            <option value="red">Rojo</option>
-          </select>
-        </label>
-      </div>
+    <form id="formPromo" aria-label="Formulario de promoción">
+      <input type="text" id="mensaje" placeholder="📝 Mensaje promocional..." required />
+      <input type="date" id="fechaInicio" required />
+      <input type="date" id="fechaFin" required />
+      <select id="tema">
+        <option value="blue">Azul</option>
+        <option value="green">Verde</option>
+        <option value="orange">Naranja</option>
+        <option value="red">Rojo</option>
+        <option value="purple">Púrpura</option>
+        <option value="yellow">Amarillo</option>
+        <option value="teal">Verde Azulado</option>
+        <option value="gray">Gris</option>
+      </select>
 
       <div class="row">
-        <label for="startDate">
-          Inicio:
-          <input type="date" id="startDate" aria-label="Fecha de inicio" />
-        </label>
-
-        <label for="endDate">
-          Fin:
-          <input type="date" id="endDate" aria-label="Fecha de finalización" />
-        </label>
+        <label><input type="checkbox" id="activa" /> Activar promoción</label>
+        <button type="submit">💾 Guardar</button>
+        <button type="button" onclick="goBack()">🔙 Volver</button>
       </div>
-
-      <button type="submit" class="btn" aria-label="Guardar promoción activa">💾 Guardar Promoción</button>
     </form>
 
-    <!-- 🔔 Mensaje dinámico -->
-    <div id="promoFeedback" class="admin-message oculto" role="alert" aria-live="assertive"></div>
+    <div class="promo-preview mt-3 oculto" id="previewBanner"></div>
 
-    <!-- 👁️ Vista previa -->
-    <h2 class="mt-2">👀 Vista previa:</h2>
-    <div id="promoPreview" class="promo-preview blue" aria-label="Vista previa del banner">
-      Tu mensaje aparecerá aquí...
-    </div>
-
-    <!-- 🔘 Botones -->
-    <div class="top-buttons mt-3" role="navigation" aria-label="Acciones rápidas">
-      <button type="button" onclick="goBack()" class="btn" aria-label="Volver al Panel de administración">🔙 Volver al Panel</button>
-      <button type="button" onclick="logout()" class="btn btn-secundario" aria-label="Cerrar sesión">🔒 Cerrar sesión</button>
-    </div>
+    <div id="mensajeFinal" class="admin-message oculto"></div>
   </main>
 
-  <!-- 🚫 Fallback sin JS -->
   <noscript>
     <p style="text-align:center; color:red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
-
-  <!-- ✅ Script como MÓDULO -->
-  <script type="module" src="/js/promociones.js" defer></script>
 </body>
 </html>

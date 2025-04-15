@@ -3,167 +3,91 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin - Productos | KM & EZ ROPA</title>
+  <title>🔧 Administrar Productos | KM & EZ ROPA</title>
 
-  <!-- 🔐 SEO -->
+  <!-- SEO -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="author" content="KM & EZ ROPA" />
-  <meta name="description" content="Panel de administración para gestionar productos en KM & EZ ROPA." />
+  <meta name="description" content="Panel para administrar productos y promociones de la tienda KM & EZ ROPA." />
 
-  <!-- 🎨 Estilos -->
+  <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
-  <link rel="stylesheet" href="/css/admin.css" />
+  <link rel="stylesheet" href="/css/panel.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- 📜 Script principal -->
-  <script src="/js/admin.js" defer></script>
+  <!-- Script de funciones del administrador -->
+  <script type="module" src="/js/admin.js" defer></script>
 </head>
 <body>
+  <main class="panel-container fade-in" role="main" aria-label="Panel de administración">
+    
+    <!-- 🔰 Header del panel -->
+    <header class="header-panel">
+      <h1>📦 Panel de Productos</h1>
+      <button onclick="goBack()">🔙 Volver</button>
+    </header>
 
-  <!-- ☀️🌙 Modo Oscuro -->
-  <div style="position: absolute; top: 15px; right: 15px;">
-    <button id="modoToggle" class="btn btn-sm" aria-label="Alternar modo oscuro">🌙 Modo Oscuro</button>
-  </div>
+    <!-- 💬 Mensajes de alerta -->
+    <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="polite"></div>
 
-  <main class="admin-container fade-in" role="main" aria-label="Gestión de productos">
-    <!-- 🔙 Navegación -->
-    <nav aria-label="Volver al panel principal" role="navigation">
-      <a class="btn-volver" href="panel.html">⬅️ Volver al Panel</a>
-    </nav>
+    <!-- 📋 Formulario para agregar productos -->
+    <form id="formProducto" class="formulario-producto fade-in" aria-label="Formulario para agregar producto">
+      <h2>➕ Nuevo Producto</h2>
 
-    <h1>🛍️ Administrar Productos</h1>
-    <p class="admin-info">👤 Usuario actual: <span id="admin-username">admin</span></p>
+      <div class="form-row">
+        <input type="text" id="nombre" placeholder="Nombre del producto" required />
+        <input type="number" id="precio" placeholder="Precio $" step="0.01" required />
+      </div>
 
-    <!-- 📝 Formulario de Producto -->
-    <form id="productoForm" autocomplete="off" aria-label="Formulario para crear producto">
-      <!-- 📦 Información básica -->
-      <fieldset>
-        <legend>📦 Información del Producto</legend>
-        <div class="form-row">
-          <input type="text" id="nombre" placeholder="Nombre del producto" required minlength="2" maxlength="100" />
-          <input type="number" id="precio" placeholder="Precio ($)" step="0.01" required min="0.01" />
-        </div>
-        <input type="text" id="descripcion" placeholder="Descripción (opcional)" />
+      <div class="form-row">
+        <input type="text" id="categoria" placeholder="Categoría" required />
+        <input type="text" id="subcategoria" placeholder="Subcategoría" />
+      </div>
 
-        <div class="form-row">
-          <select id="categoriaSelect" required aria-label="Selecciona una categoría">
-            <option value="">Cargando categorías...</option>
-          </select>
-          <select id="subcategoriaSelect" required aria-label="Selecciona una subcategoría">
-            <option value="">Selecciona una subcategoría</option>
-          </select>
-          <select id="tallaTipoSelect" required aria-label="Tipo de Talla">
-            <option value="">Tipo de talla</option>
-            <option value="adulto">Adulto</option>
-            <option value="niño">Niño</option>
-            <option value="niña">Niña</option>
-            <option value="bebé">Bebé</option>
-          </select>
-        </div>
-      </fieldset>
+      <div class="form-row">
+        <input type="text" id="colores" placeholder="Colores (opcional)" />
+        <input type="text" id="talla" placeholder="Talla (opcional)" />
+      </div>
 
-      <!-- 🖼️ Imagen principal -->
-      <fieldset>
-        <legend>🖼️ Imagen Principal</legend>
-        <p id="descImagen" class="nota">⚠️ Solo se permite <strong>1 imagen</strong> principal (JPG, PNG o WEBP).</p>
-        <input 
-          type="file" 
-          id="imagenesPrincipales" 
-          accept=".jpg,.jpeg,.png,.webp"
-          aria-describedby="descImagen"
-          aria-label="Subir imagen principal"
-        />
-        <div id="previewImagenesPrincipales" class="image-preview" aria-live="polite"></div>
+      <div class="form-row">
+        <input type="number" id="stock" placeholder="Stock disponible" required />
+        <input type="url" id="imagen" placeholder="URL de la imagen" required />
+      </div>
 
-        <div class="form-row">
-          <input type="text" id="mainTalla" placeholder="Talla principal (Ej: M)" required />
-          <input type="text" id="mainColor" placeholder="Color principal (Ej: Azul)" required />
-        </div>
+      <div class="form-row">
+        <label>
+          <input type="checkbox" id="destacado" />
+          ⭐ Producto Destacado
+        </label>
+      </div>
 
-        <div id="uploadStatus" class="admin-message oculto" aria-live="polite">📤 Subiendo imagen...</div>
-      </fieldset>
-
-      <!-- 🧩 Variantes -->
-      <fieldset>
-        <legend>🧩 Variantes (opcional)</legend>
-        <p class="nota">Máximo 4 variantes. Incluye talla, color e imagen.</p>
-        <div class="form-row">
-          <input type="text" id="talla" placeholder="Talla (Ej: S, M, L)" />
-          <input type="text" id="color" placeholder="Color (Ej: rojo, azul)" />
-        </div>
-        <input type="file" id="imagen" accept=".jpg,.jpeg,.png,.webp" aria-label="Subir imagen de variante" />
-        <button type="button" id="addVariante" class="btn-secundario">➕ Agregar Variante</button>
-        <div id="previewImagen" class="image-preview" aria-live="polite"></div>
-      </fieldset>
-
-      <!-- 📊 Inventario -->
-      <fieldset>
-        <legend>📊 Inventario</legend>
-        <div class="form-row">
-          <input type="number" id="stock" placeholder="Stock disponible" min="0" required />
-          <div>
-            <input type="checkbox" id="featured" />
-            <label for="featured">Producto destacado ⭐</label>
-          </div>
-        </div>
-      </fieldset>
-
-      <!-- 💾 Guardar -->
-      <button type="submit" class="btn-guardar" id="btnGuardar">💾 Guardar Producto</button>
+      <button type="submit" class="btn">💾 Guardar Producto</button>
     </form>
 
-    <!-- 🧩 Variantes agregadas -->
-    <section aria-label="Variantes añadidas">
-      <h3>📸 Variantes añadidas</h3>
-      <div id="listaVariantes" class="variantes-container" role="region" aria-live="polite"></div>
+    <!-- 📑 Lista de productos actuales -->
+    <section class="productos-actuales mt-3" aria-label="Lista de productos actuales">
+      <h2>📋 Productos Existentes</h2>
+      <div id="listaProductos" class="grid-responsive">
+        <!-- Se rellena con JavaScript -->
+      </div>
     </section>
 
-    <!-- 📢 Mensajes -->
-    <div id="editandoProducto" class="admin-message oculto" role="alert" aria-live="polite">✏️ Estás editando un producto existente</div>
-    <div id="message" class="admin-message" role="alert" aria-live="polite"></div>
-
-    <hr />
-
-    <!-- 📋 Lista de productos -->
-    <section aria-label="Lista de productos registrados">
-      <h2>📦 Productos Registrados</h2>
-      <div id="listaProductos" class="product-list" role="region" aria-live="polite"></div>
-    </section>
+    <div class="text-center mt-3">
+      <button onclick="goBack()" class="btn-secundario">🔙 Volver al Panel</button>
+    </div>
   </main>
 
-  <!-- 🌗 Script Modo Oscuro + Token -->
+  <noscript>
+    <p style="color:red; text-align:center;">⚠️ Esta página requiere JavaScript habilitado.</p>
+  </noscript>
+
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const btnToggle = document.getElementById("modoToggle");
-      const usernameEl = document.getElementById("admin-username");
-
-      // Token
-      const token = localStorage.getItem("token");
-      if (token) {
-        try {
-          const payload = JSON.parse(atob(token.split('.')[1]));
-          usernameEl.textContent = payload?.username || "admin";
-        } catch (e) {
-          console.warn("⚠️ Token inválido:", e);
-          usernameEl.textContent = "admin";
-        }
-      }
-
-      // Modo Oscuro
-      const oscuro = localStorage.getItem("modoOscuro") === "true";
-      if (oscuro) {
+      if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
-        btnToggle.textContent = "☀️ Modo Claro";
       }
-
-      btnToggle?.addEventListener("click", () => {
-        document.body.classList.toggle("modo-oscuro");
-        const isDark = document.body.classList.contains("modo-oscuro");
-        localStorage.setItem("modoOscuro", isDark);
-        btnToggle.textContent = isDark ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
-      });
     });
   </script>
 </body>

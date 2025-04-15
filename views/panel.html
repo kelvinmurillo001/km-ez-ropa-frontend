@@ -2,41 +2,42 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Panel de Administración | KM & EZ ROPA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎛️ Panel Administrativo | KM & EZ ROPA</title>
 
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="description" content="Panel principal de administración para KM & EZ ROPA" />
-  <meta name="author" content="KM & EZ ROPA" />
-
-  <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/panel.css" />
-  <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
 
-  <!-- Scripts -->
   <script type="module" src="/js/panel.js" defer></script>
 </head>
 <body>
-  <main class="panel-container fade-in" role="main" aria-label="Panel de administración principal">
-    <header class="header-panel" role="banner">
-      <h1>⚙️ Panel de Control</h1>
-      <button onclick="cerrarSesion()" aria-label="Cerrar sesión del administrador">Cerrar sesión</button>
+  <main class="panel-container fade-in">
+    <header class="header-panel">
+      <h1>🎛️ Panel de Administración</h1>
+      <button onclick="cerrarSesion()">🚪 Cerrar Sesión</button>
     </header>
 
-    <!-- Menú de navegación -->
-    <nav class="menu-panel" aria-label="Menú de navegación administrativa">
-      <a href="productos.html">🧥 Productos</a>
-      <a href="pedidos.html">📦 Pedidos</a>
+    <section class="menu-panel">
+      <a href="productos.html">👕 Gestionar Productos</a>
+      <a href="pedidos.html">🧾 Ver Pedidos</a>
+      <a href="categorias.html">🗂️ Categorías/Subcategorías</a>
       <a href="promociones.html">🎯 Promociones</a>
-      <a href="dashboard.html">📊 Dashboard</a>
-    </nav>
+      <a href="dashboard.html">📊 Analítica</a>
+    </section>
   </main>
 
+  <script>
+    if (localStorage.getItem("modoOscuro") === "true") {
+      document.body.classList.add("modo-oscuro");
+    }
+  </script>
+
   <noscript>
-    <p style="color:red; text-align:center;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+    <p style="text-align:center; color:red;">⚠️ Activa JavaScript para usar este panel.</p>
   </noscript>
 </body>
 </html>

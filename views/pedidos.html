@@ -3,93 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pedidos | KM & EZ ROPA</title>
+  <title>📦 Pedidos Recibidos | KM & EZ ROPA</title>
 
-  <!-- 🔐 Seguridad SEO -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="author" content="KM & EZ ROPA" />
-  <meta name="description" content="Gestión de pedidos para la tienda KM & EZ ROPA." />
-
-  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/pedidos.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
+
+  <script type="module" src="/js/orders.js" defer></script>
 </head>
 <body>
-
-  <!-- 🧭 Cabecera -->
-  <header class="header text-center" role="banner">
+  <main class="pedidos-container fade-in" role="main" aria-label="Lista de pedidos">
     <h1>📦 Pedidos Recibidos</h1>
-    <div class="top-buttons mt-1">
-      <button id="modoToggle" class="btn" aria-label="Cambiar entre modo claro y oscuro">🌙 Modo Oscuro</button>
-    </div>
-  </header>
 
-  <!-- 🔧 Contenido principal -->
-  <main class="pedidos-container fade-in" role="main" aria-label="Gestión de pedidos">
-    
-    <!-- 🔘 Barra de acciones -->
-    <section class="acciones-barra" role="region" aria-label="Controles de filtros y acciones">
+    <section class="acciones-barra">
       <div class="acciones-botones">
-        <button type="button" class="btn btn-secundario" onclick="exportarPedidos()" aria-label="Exportar lista de pedidos como archivo">📄 Exportar</button>
-        <button type="button" class="btn" onclick="regresarAlPanel()" aria-label="Volver al panel de administración">⬅️ Panel</button>
+        <button onclick="filtrarPedidos('todos')" class="btn-secundario">📋 Todos</button>
+        <button onclick="filtrarPedidos('pendiente')" class="btn-secundario">🕒 Pendientes</button>
+        <button onclick="filtrarPedidos('en_proceso')" class="btn-secundario">🔧 En Proceso</button>
+        <button onclick="filtrarPedidos('enviado')" class="btn-secundario">🚚 Enviados</button>
       </div>
-
-      <div class="filtros-pedidos">
-        <label for="filtroEstado" class="sr-only">Filtrar por estado</label>
-        <select id="filtroEstado" onchange="filtrarPedidos()" aria-label="Filtrar pedidos por estado">
-          <option value="todos">📋 Todos</option>
-          <option value="pendiente">⏳ Pendiente</option>
-          <option value="en_proceso">⚙️ En proceso</option>
-          <option value="enviado">📦 Enviado</option>
-          <option value="cancelado">❌ Cancelado</option>
-        </select>
-      </div>
+      <button onclick="goBack()" class="btn-volver">🔙 Volver</button>
     </section>
 
-    <!-- 📋 Contenedor de pedidos -->
-    <section id="pedidos-container" aria-live="polite" aria-label="Listado de pedidos cargados">
-      <!-- Renderizado dinámicamente por JS -->
+    <section id="pedidosLista" aria-live="polite">
+      <!-- Tarjetas se cargan vía JS -->
     </section>
   </main>
 
-  <!-- 🚫 Fallback para JS desactivado -->
   <noscript>
-    <div style="padding: 2rem; background: #ffebee; text-align: center; color: #c62828;">
-      ⚠️ Esta página requiere que JavaScript esté habilitado para mostrar los pedidos correctamente.
-    </div>
+    <p style="text-align: center; color: red;">⚠️ Esta página necesita JavaScript para funcionar correctamente.</p>
   </noscript>
-
-  <!-- ✅ Scripts -->
-  <script src="/js/login.js"></script>
-  <script src="/js/orders.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      try {
-        if (typeof verificarToken === "function") verificarToken();
-        if (typeof cargarPedidos === "function") cargarPedidos();
-      } catch (err) {
-        console.warn("⚠️ Error al cargar scripts de pedidos:", err);
-      }
-
-      // 🌗 Modo oscuro persistente
-      const toggleBtn = document.getElementById("modoToggle");
-      const isDark = localStorage.getItem("modoOscuro") === "true";
-
-      if (isDark) {
-        document.body.classList.add("modo-oscuro");
-        toggleBtn.textContent = "☀️ Modo Claro";
-      }
-
-      toggleBtn?.addEventListener("click", () => {
-        document.body.classList.toggle("modo-oscuro");
-        const isNowDark = document.body.classList.contains("modo-oscuro");
-        localStorage.setItem("modoOscuro", isNowDark);
-        toggleBtn.textContent = isNowDark ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
-      });
-    });
-  </script>
 </body>
 </html>

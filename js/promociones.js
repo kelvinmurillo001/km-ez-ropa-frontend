@@ -1,135 +1,80 @@
 "use strict";
 
-// ✅ Importar funciones utilitarias
-import {
-  verificarSesion,
-  mostrarMensaje,
-  isDateInRange,
-  logout,
-  goBack
-} from "./admin-utils.js";
+import { verificarSesion, goBack } from "./admin-utils.js";
 
-// 🌐 API + token
-const API_PROMO = "https://km-ez-ropa-backend.onrender.com/api/promos";
 const token = verificarSesion();
+const API_PROMO = "https://km-ez-ropa-backend.onrender.com/api/promos";
 
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("promoForm");
-  const promoInput = document.getElementById("promoMessage");
-  const isActive = document.getElementById("isActive");
-  const themeSelect = document.getElementById("theme");
-  const startDate = document.getElementById("startDate");
-  const endDate = document.getElementById("endDate");
-  const mensajeExito = document.getElementById("promoFeedback");
-  const promoPreview = document.getElementById("promoPreview");
-
-  // 🎯 Previsualización
-  const updatePreview = () => {
-    const mensaje = promoInput.value.trim() || "Tu mensaje aparecerá aquí...";
-    const tema = themeSelect.value || "blue";
-
-    promoPreview.textContent = mensaje;
-    promoPreview.className = `promo-preview ${tema}`;
-  };
-
-  // ❌ Mostrar error en preview
-  const mostrarErrorPreview = (msg = "⚠️ Error de vista previa", clase = "inactive") => {
-    promoPreview.textContent = msg;
-    promoPreview.className = `promo-preview ${clase}`;
-  };
-
-  // 📥 Obtener promoción actual
-  const loadPromotion = async () => {
-    try {
-      const res = await fetch(API_PROMO, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data) {
-        mostrarErrorPreview("❌ No se pudo cargar la promoción.");
-        return;
-      }
-
-      promoInput.value = data.message || "";
-      isActive.checked = data.active ?? false;
-      themeSelect.value = data.theme || "blue";
-      startDate.value = data.startDate?.split("T")[0] || "";
-      endDate.value = data.endDate?.split("T")[0] || "";
-
-      if (data.active && isDateInRange(data.startDate, data.endDate)) {
-        promoPreview.textContent = data.message;
-        promoPreview.className = `promo-preview ${data.theme || "blue"}`;
-      } else {
-        mostrarErrorPreview("⚠️ Promoción inactiva o fuera de fecha");
-      }
-    } catch (err) {
-      console.error("❌ Error cargando promoción:", err);
-      mostrarErrorPreview("❌ Error de red.");
-    }
-  };
-
-  // 💾 Guardar promoción
-  const guardarPromocion = async (e) => {
-    e.preventDefault();
-
-    const mensaje = promoInput.value.trim();
-    const start = startDate.value;
-    const end = endDate.value;
-
-    if (!mensaje) {
-      mostrarMensaje(mensajeExito, "⚠️ El mensaje no puede estar vacío", "warning");
-      return;
-    }
-
-    if (start && end && new Date(start) > new Date(end)) {
-      mostrarMensaje(mensajeExito, "⚠️ La fecha de inicio no puede ser mayor a la de fin", "warning");
-      return;
-    }
-
-    const payload = {
-      message: mensaje,
-      active: isActive.checked,
-      theme: themeSelect.value,
-      startDate: start,
-      endDate: end
-    };
-
-    try {
-      const res = await fetch(API_PROMO, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
-      });
-
-      const result = await res.json();
-      mensajeExito.classList.remove("oculto");
-
-      if (res.ok) {
-        mostrarMensaje(mensajeExito, "✅ Promoción actualizada correctamente", "success");
-        await loadPromotion();
-      } else {
-        mostrarMensaje(mensajeExito, `❌ ${result.message || "Error inesperado"}`, "error");
-      }
-    } catch (err) {
-      console.error("❌ Error al guardar promoción:", err);
-      mostrarMensaje(mensajeExito, "❌ Error de red o servidor", "error");
-    }
-  };
-
-  // 🧩 Eventos
-  promoInput?.addEventListener("input", updatePreview);
-  themeSelect?.addEventListener("change", updatePreview);
-  form?.addEventListener("submit", guardarPromocion);
-
-  // ▶️ Inicial
-  loadPromotion();
-
-  // 🔓 Acciones globales
-  window.logout = logout;
-  window.goBack = goBack;
+  cargarPromocion();
+  document.getElementById("formPromo").addEventListener("submit", guardarPromocion);
 });
+
+async function cargarPromocion() {
+  try {
+    const res = await fetch(API_PROMO, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (!res.ok) throw new Error("No se pudo obtener la promo");
+    const data = await res.json();
+
+    document.getElementById("mensaje").value = data.message || "";
+    document.getElementById("fechaInicio").value = data.startDate || "";
+    document.getElementById("fechaFin").value = data.endDate || "";
+    document.getElementById("tema").value = data.theme || "blue";
+    document.getElementById("activa").checked = data.active;
+
+    renderPreview(data);
+  } catch (err) {
+    mostrarMensaje("❌ No se pudo cargar la promoción actual", "error");
+  }
+}
+
+async function guardarPromocion(e) {
+  e.preventDefault();
+
+  const payload = {
+    message: document.getElementById("mensaje").value.trim(),
+    startDate: document.getElementById("fechaInicio").value,
+    endDate: document.getElementById("fechaFin").value,
+    theme: document.getElementById("tema").value,
+    active: document.getElementById("activa").checked
+  };
+
+  try {
+    const res = await fetch(API_PROMO, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) throw new Error("Error al guardar");
+    const data = await res.json();
+
+    mostrarMensaje("✅ Promoción guardada con éxito", "success");
+    renderPreview(data);
+  } catch (err) {
+    mostrarMensaje("❌ Error al guardar la promoción", "error");
+  }
+}
+
+function renderPreview(data) {
+  const preview = document.getElementById("previewBanner");
+  preview.className = `promo-preview fade-in ${data.theme || "blue"}`;
+  preview.textContent = data.message;
+  preview.classList.remove("oculto");
+}
+
+function mostrarMensaje(texto, tipo = "info") {
+  const mensaje = document.getElementById("mensajeFinal");
+  mensaje.textContent = texto;
+  mensaje.className = tipo === "success" ? "admin-message success" : "admin-message error";
+  mensaje.classList.remove("oculto");
+}
+
+// Exportar para HTML
+window.goBack = goBack;
