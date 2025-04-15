@@ -1,3 +1,4 @@
+import { API_BASE } from "./config.js";
 const API_BASE = "https://km-ez-ropa-backend.onrender.com";
 
 document.addEventListener("DOMContentLoaded", () => {

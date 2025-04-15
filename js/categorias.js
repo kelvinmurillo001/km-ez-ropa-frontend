@@ -1,4 +1,6 @@
 "use strict";
+import { API_BASE } from "./config.js";
+
 
 // === ELEMENTOS DEL DOM ===
 const catalogo = document.getElementById("catalogo");

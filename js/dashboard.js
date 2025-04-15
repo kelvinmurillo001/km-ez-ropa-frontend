@@ -2,6 +2,8 @@
 
 // 🔐 Importar utilidades comunes
 import { verificarSesion, goBack } from "./admin-utils.js";
+import { API_BASE } from "./config.js";
+
 
 // 🛡️ Verificar si hay sesión activa (admin)
 const token = verificarSesion();

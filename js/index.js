@@ -1,5 +1,7 @@
 // 📥 Importar utilidades comunes
 import { registrarVisitaPublica } from "./utils.js";
+import { API_BASE } from "./config.js";
+
 
 // === CARGAR PRODUCTOS DESTACADOS ===
 document.addEventListener("DOMContentLoaded", async () => {

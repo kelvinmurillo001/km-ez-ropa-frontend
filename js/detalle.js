@@ -1,5 +1,7 @@
 // ✅ IMPORTAR desde utils.js
 import { registrarVisitaPublica } from "./utils.js";
+import { API_BASE } from "./config.js";
+
 
 document.addEventListener("DOMContentLoaded", () => {
   registrarVisitaPublica(); // 📊 Registrar la visita

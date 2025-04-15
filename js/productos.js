@@ -1,6 +1,8 @@
 "use strict";
 
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
+import { API_BASE } from "./config.js";
+
 
 const token = verificarSesion();
 
