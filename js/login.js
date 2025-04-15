@@ -1,58 +1,50 @@
 "use strict";
 
+const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
+const API_LOGIN = `${API_BASE}/login`;
+
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("formLogin");
+  const form = document.getElementById("loginForm");
   const email = document.getElementById("email");
   const password = document.getElementById("password");
-  const mensaje = document.getElementById("loginMensaje");
+  const mensaje = document.getElementById("mensajeLogin");
 
-  if (!form) return;
-
-  form.addEventListener("submit", async (e) => {
+  form?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const emailVal = email.value.trim();
-    const passVal = password.value.trim();
+    const correo = email.value.trim();
+    const clave = password.value.trim();
 
-    if (!emailVal || !passVal) {
-      mostrarMensaje("⚠️ Por favor, completa todos los campos.", "error");
+    if (!correo || !clave) {
+      mostrarMensaje("⚠️ Ingresa correo y contraseña", "error");
       return;
     }
 
     try {
-      const res = await fetch("https://km-ez-ropa-backend.onrender.com/api/auth/login", {
+      const res = await fetch(API_LOGIN, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: emailVal, password: passVal })
+        body: JSON.stringify({ email: correo, password: clave })
       });
 
       const data = await res.json();
-
       if (!res.ok) {
-        throw new Error(data.message || "Error desconocido");
+        const msg = data.message || "Credenciales incorrectas";
+        mostrarMensaje(`❌ ${msg}`, "error");
+        return;
       }
 
-      localStorage.setItem("admin_token", data.token);
-      mostrarMensaje("✅ Acceso correcto. Redirigiendo...", "success");
-
-      setTimeout(() => {
-        window.location.href = "panel.html";
-      }, 1500);
-    } catch (error) {
-      console.error("❌ Error de login:", error);
-      mostrarMensaje(`❌ ${error.message}`, "error");
+      // Guardar token y redirigir
+      localStorage.setItem("adminToken", data.token);
+      window.location.href = "/admin.html";
+    } catch (err) {
+      mostrarMensaje("❌ Error al conectar con el servidor", "error");
     }
   });
+
+  function mostrarMensaje(texto, tipo = "error") {
+    mensaje.textContent = texto;
+    mensaje.className = tipo === "error" ? "error fade-in" : "success fade-in";
+    mensaje.classList.remove("oculto");
+  }
 });
-
-/* 💬 Mostrar mensaje de login */
-function mostrarMensaje(texto, tipo = "info") {
-  const mensaje = document.getElementById("loginMensaje");
-  if (!mensaje) return;
-
-  mensaje.className = tipo === "success" ? "login-message success" : "login-message error";
-  mensaje.textContent = texto;
-  mensaje.classList.remove("oculto");
-
-  setTimeout(() => mensaje.classList.add("oculto"), 5000);
-}

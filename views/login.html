@@ -2,36 +2,36 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Iniciar Sesión | KM & EZ ROPA</title>
 
-  <meta name="robots" content="noindex, nofollow" />
-  <meta name="author" content="KM & EZ ROPA" />
-  <meta name="description" content="Accede al panel de administración de KM & EZ ROPA" />
-
+  <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
-  <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/login.css" />
-  <link rel="stylesheet" href="/css/responsive.css" />
-  <link rel="stylesheet" href="/css/fondo.css" />
 
-  <script type="module" src="/js/login.js" defer></script>
+  <!-- Scripts -->
+  <script defer src="/js/login.js"></script>
 </head>
 <body>
-  <main class="login-box fade-in" role="main" aria-label="Formulario de inicio de sesión">
+  <main class="login-box fade-in" role="main">
     <h1>🔐 Iniciar Sesión</h1>
-    
-    <form id="loginForm" aria-label="Formulario de acceso">
-      <input type="email" id="email" placeholder="📧 Correo electrónico" required aria-required="true" />
-      <input type="password" id="password" placeholder="🔑 Contraseña" required aria-required="true" />
-      <button type="submit" class="btn">Ingresar</button>
+
+    <form id="loginForm" autocomplete="off" novalidate>
+      <input type="email" id="email" placeholder="📧 Correo" required />
+      <input type="password" id="password" placeholder="🔑 Contraseña" required />
+      <button type="submit" class="btn">➡️ Ingresar</button>
     </form>
 
-    <p id="mensajeError" class="error oculto" role="alert" aria-live="assertive"></p>
+    <p id="mensajeLogin" class="error oculto" role="alert"></p>
+
+    <!-- 🔙 Botón de regreso al catálogo -->
+    <div class="mt-2 text-center">
+      <a href="/index.html" class="btn-volver" aria-label="Volver al inicio">⬅️ Volver al Catálogo</a>
+    </div>
   </main>
 
   <noscript>
-    <p style="color:red; text-align:center;">⚠️ Esta página necesita JavaScript habilitado.</p>
+    <p style="text-align: center; color: red;">⚠️ Esta página necesita JavaScript.</p>
   </noscript>
 </body>
 </html>
