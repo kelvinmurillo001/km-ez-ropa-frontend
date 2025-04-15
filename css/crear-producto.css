@@ -1,20 +1,24 @@
+/* === BASE === */
 body {
   background-color: #121212;
   color: #f5f5f5;
   font-family: 'Segoe UI', sans-serif;
 }
 
+/* === TITULO === */
 h1 {
   text-align: center;
   color: #ff6d00;
 }
 
+/* === CONTENEDOR === */
 .formulario-container {
   max-width: 800px;
   margin: auto;
   padding: 2rem;
 }
 
+/* === FORMULARIO === */
 form.form-producto {
   background-color: #1a1a1a;
   padding: 2rem;
@@ -31,6 +35,12 @@ form label {
   color: #ffa733;
 }
 
+form label::after {
+  content: " *";
+  color: red;
+  font-weight: normal;
+}
+
 form input[type="text"],
 form input[type="number"],
 form input[type="color"],
@@ -44,6 +54,7 @@ form textarea {
   border-radius: 6px;
   width: 100%;
   font-size: 1rem;
+  transition: border 0.2s ease;
 }
 
 form textarea {
@@ -51,6 +62,15 @@ form textarea {
   min-height: 100px;
 }
 
+form input:focus,
+form textarea:focus,
+form select:focus {
+  outline: none;
+  border-color: #ff6d00;
+  box-shadow: 0 0 5px rgba(255, 109, 0, 0.5);
+}
+
+/* === IMAGENES === */
 .preview-imagen,
 .preview-imagenes {
   display: flex;
@@ -67,12 +87,19 @@ form textarea {
   border: 2px solid #ff6d00;
 }
 
+/* === VARIANTES === */
 .variante-box {
   border: 1px solid #444;
   border-radius: 8px;
   padding: 1rem;
   margin-top: 1rem;
   background-color: #1e1e1e;
+}
+
+.variante-box:not(:last-child) {
+  border-bottom: 1px dashed #333;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .variante-box label {
@@ -87,13 +114,16 @@ form textarea {
   margin-bottom: 0.5rem;
 }
 
+/* === ACCIONES === */
 .form-actions {
   display: flex;
   justify-content: center;
   gap: 1rem;
   margin-top: 1rem;
+  flex-wrap: wrap;
 }
 
+/* === BOTONES === */
 .btn, .btn-secundario {
   padding: 0.8rem 1.5rem;
   font-weight: bold;
@@ -101,7 +131,7 @@ form textarea {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background 0.3s, color 0.3s;
 }
 
 .btn {
@@ -124,11 +154,26 @@ form textarea {
   color: #121212;
 }
 
+/* === MENSAJE ESTADO === */
 .form-msg {
   font-size: 1rem;
   font-weight: bold;
+  text-align: center;
+  margin-top: 1rem;
+  padding: 0.8rem;
+  border-radius: 6px;
+  background-color: #1a1a1a;
+  color: limegreen;
+  border: 1px solid #444;
 }
 
+.form-msg.error {
+  color: red;
+  background-color: #2a0000;
+  border: 1px solid red;
+}
+
+/* === RESPONSIVE === */
 @media (max-width: 600px) {
   .form-actions {
     flex-direction: column;

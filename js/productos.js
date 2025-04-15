@@ -1,81 +1,99 @@
 "use strict";
 
-// 🔐 Importar utilidades comunes
-import { verificarSesion, goBack } from "./admin-utils.js";
+import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 
-// 🔑 Token de sesión
 const token = verificarSesion();
 
-// 🌍 API URL
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api/products";
+const productosLista = document.getElementById("productosLista");
 
-// 📦 Al cargar
-document.addEventListener("DOMContentLoaded", () => {
-  cargarProductos();
-  document.getElementById("btnNuevoProducto").addEventListener("click", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  document.getElementById("btnNuevoProducto")?.addEventListener("click", () => {
     window.location.href = "/crear-producto.html";
   });
+
+  await cargarProductos();
+
+  // Modo oscuro si está guardado
+  if (localStorage.getItem("modoOscuro") === "true") {
+    document.body.classList.add("modo-oscuro");
+  }
 });
 
-// ✅ Cargar productos del backend
+/**
+ * 📦 Cargar todos los productos del backend
+ */
 async function cargarProductos() {
   try {
-    const res = await fetch(API_BASE);
-    const productos = await res.json();
-    renderizarTabla(productos);
+    const res = await fetch(API_BASE, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.message || "Error al obtener productos");
+
+    if (!Array.isArray(data) || data.length === 0) {
+      productosLista.innerHTML = "<p class='text-center'>😢 No hay productos aún.</p>";
+      return;
+    }
+
+    renderizarProductos(data);
   } catch (err) {
     console.error("❌ Error al cargar productos:", err);
-    document.getElementById("productosLista").innerHTML =
-      "<p style='color:red;'>❌ Error al cargar productos.</p>";
+    productosLista.innerHTML = `<p class='text-center' style='color:red;'>❌ Error al cargar productos.</p>`;
   }
 }
 
-// ✅ Renderizar tabla
-function renderizarTabla(lista) {
-  if (!Array.isArray(lista)) return;
-
-  const tabla = document.createElement("table");
-  tabla.className = "productos-table";
-
-  tabla.innerHTML = `
-    <thead>
-      <tr>
-        <th>Imagen</th>
-        <th>Nombre</th>
-        <th>Precio</th>
-        <th>Stock</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${lista
-        .map(p => `
-          <tr>
-            <td><img src="${p.image}" alt="${p.name}" class="producto-img" /></td>
-            <td>${p.name}</td>
-            <td>$${p.price.toFixed(2)}</td>
-            <td>${p.stock}</td>
-            <td>
-              <button class="btn-accion btn-editar" onclick="editarProducto('${p._id}')">✏️ Editar</button>
-              <button class="btn-accion btn-eliminar" onclick="eliminarProducto('${p._id}')">🗑️ Eliminar</button>
-            </td>
-          </tr>
-        `)
-        .join("")}
-    </tbody>
+/**
+ * 🧾 Mostrar productos en tabla
+ */
+function renderizarProductos(productos) {
+  let html = `
+    <table class="tabla-productos">
+      <thead>
+        <tr>
+          <th>Imagen</th>
+          <th>Nombre</th>
+          <th>Precio</th>
+          <th>Categoría</th>
+          <th>Stock</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
   `;
 
-  const contenedor = document.getElementById("productosLista");
-  contenedor.innerHTML = "";
-  contenedor.appendChild(tabla);
+  productos.forEach(p => {
+    html += `
+      <tr>
+        <td><img src="${p.image}" alt="${p.name}" class="img-mini" /></td>
+        <td>${p.name}</td>
+        <td>$${p.price.toFixed(2)}</td>
+        <td>${p.category || '-'}</td>
+        <td>${p.stock || 0}</td>
+        <td>
+          <button class="btn-secundario" onclick="editarProducto('${p._id}')">✏️</button>
+          <button class="btn-danger" onclick="eliminarProducto('${p._id}')">🗑️</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  html += `</tbody></table>`;
+  productosLista.innerHTML = html;
 }
 
-// ✏️ Editar producto
+/**
+ * ✏️ Editar producto
+ */
 function editarProducto(id) {
-  window.location.href = `/editar-producto.html?id=${id}`;
+  window.location.href = `/crear-producto.html?id=${id}`;
 }
 
-// ❌ Eliminar producto
+/**
+ * ❌ Eliminar producto
+ */
 async function eliminarProducto(id) {
   const confirmar = confirm("⚠️ ¿Estás seguro de eliminar este producto?");
   if (!confirmar) return;
@@ -83,20 +101,22 @@ async function eliminarProducto(id) {
   try {
     const res = await fetch(`${API_BASE}/${id}`, {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      headers: { Authorization: `Bearer ${token}` }
     });
 
-    if (!res.ok) throw new Error("No se pudo eliminar");
+    const data = await res.json();
 
-    alert("✅ Producto eliminado correctamente.");
-    cargarProductos();
+    if (!res.ok) throw new Error(data.message || "No se pudo eliminar");
+
+    mostrarMensaje("✅ Producto eliminado con éxito", "success");
+    await cargarProductos();
   } catch (err) {
-    console.error(err);
-    alert("❌ Error al eliminar el producto.");
+    console.error("❌ Error eliminando producto:", err);
+    mostrarMensaje("❌ No se pudo eliminar", "error");
   }
 }
 
-// 🌐 Función global para volver
+// 🌐 Exponer para botones globales
+window.editarProducto = editarProducto;
+window.eliminarProducto = eliminarProducto;
 window.goBack = goBack;

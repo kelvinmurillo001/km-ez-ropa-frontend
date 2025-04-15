@@ -1,137 +1,157 @@
 "use strict";
 
-import { verificarSesion, goBack } from "./admin-utils.js";
+import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 
+// 🔐 Verifica sesión admin
 const token = verificarSesion();
-const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
-const cloudinaryUploadUrl = `${API_BASE}/upload`;
 
-// DOM Elements
+const API_PRODUCTS = "https://km-ez-ropa-backend.onrender.com/api/products";
+const API_CATEGORIES = "https://km-ez-ropa-backend.onrender.com/api/categories";
+const API_UPLOADS = "https://km-ez-ropa-backend.onrender.com/api/uploads";
+
 const form = document.getElementById("formProducto");
-const imagenPrincipalInput = document.getElementById("imagenPrincipalInput");
+const imagenInput = document.getElementById("imagenPrincipalInput");
 const previewPrincipal = document.getElementById("previewPrincipal");
 const variantesContainer = document.getElementById("variantesContainer");
 const btnAgregarVariante = document.getElementById("btnAgregarVariante");
+const categoriaInput = document.getElementById("categoriaInput");
 const msgEstado = document.getElementById("msgEstado");
 
-// Cargar categorías al iniciar
+let variantes = [];
+
+// === CARGA INICIAL ===
 document.addEventListener("DOMContentLoaded", async () => {
-  try {
-    const res = await fetch(`${API_BASE}/categories`);
-    const categorias = await res.json();
-    const select = document.getElementById("categoriaInput");
-
-    categorias.forEach(cat => {
-      const option = document.createElement("option");
-      option.value = cat._id;
-      option.textContent = cat.name;
-      select.appendChild(option);
-    });
-
-  } catch (err) {
-    console.error("Error cargando categorías", err);
-  }
+  await cargarCategorias();
+  agregarVariante(); // Mínimo 1 variante visible
 });
 
-// Vista previa de imagen principal
-imagenPrincipalInput.addEventListener("change", e => {
-  const file = e.target.files[0];
+// === PREVISUALIZAR IMAGEN ===
+imagenInput.addEventListener("change", () => {
+  const file = imagenInput.files[0];
   if (!file) return;
-
-  const img = document.createElement("img");
-  img.src = URL.createObjectURL(file);
-  img.className = "preview-mini";
-  previewPrincipal.innerHTML = "";
-  previewPrincipal.appendChild(img);
+  const url = URL.createObjectURL(file);
+  previewPrincipal.innerHTML = `<img src="${url}" alt="Preview Imagen" />`;
 });
 
-// Añadir variante dinámica
-btnAgregarVariante.addEventListener("click", () => {
+// === CARGAR CATEGORÍAS ===
+async function cargarCategorias() {
+  try {
+    const res = await fetch(API_CATEGORIES);
+    const data = await res.json();
+
+    if (!res.ok) throw new Error("Error al cargar categorías");
+
+    categoriaInput.innerHTML += data.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+  } catch (err) {
+    console.error("❌", err);
+    mostrarMensaje("❌ No se pudieron cargar las categorías", "error");
+  }
+}
+
+// === AÑADIR VARIANTE ===
+btnAgregarVariante.addEventListener("click", () => agregarVariante());
+
+function agregarVariante() {
+  const index = variantes.length;
   const div = document.createElement("div");
-  div.className = "variante-box";
+  div.classList.add("variante-item");
   div.innerHTML = `
-    <label>Imagen Variante:</label>
-    <input type="file" class="variante-img" accept="image/*" required />
-    <label>Color:</label>
-    <input type="color" class="variante-color" required />
-    <label>Talla:</label>
-    <input type="text" class="variante-talla" required />
+    <label>Color Variante:</label>
+    <input type="color" name="colorVariante${index}" />
+
+    <label>Imagen:</label>
+    <input type="file" name="imagenVariante${index}" accept="image/*" />
+
     <label>Stock:</label>
-    <input type="number" class="variante-stock" min="0" required />
+    <input type="number" name="stockVariante${index}" min="0" value="0" />
+
+    <button type="button" class="btn-secundario" onclick="this.parentElement.remove()">❌ Quitar</button>
     <hr />
   `;
   variantesContainer.appendChild(div);
-});
-
-// 🧠 Subir imagen a Cloudinary vía backend
-async function subirImagen(file) {
-  const formData = new FormData();
-  formData.append("file", file);
-
-  const res = await fetch(cloudinaryUploadUrl, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    body: formData
-  });
-
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "Error al subir imagen");
-  return {
-    url: data.secure_url,
-    cloudinaryId: data.public_id
-  };
+  variantes.push(index);
 }
 
-// 📤 Enviar producto
-form.addEventListener("submit", async e => {
+// === GUARDAR PRODUCTO ===
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  msgEstado.textContent = "Subiendo imágenes...";
+
+  const nombre = document.getElementById("nombreInput").value.trim();
+  const descripcion = document.getElementById("descripcionInput").value.trim();
+  const precio = parseFloat(document.getElementById("precioInput").value);
+  const stock = parseInt(document.getElementById("stockInput").value);
+  const categoria = categoriaInput.value;
+  const color = document.getElementById("colorInput").value;
+  const tallas = document.getElementById("tallasInput").value.split(',').map(t => t.trim()).filter(Boolean);
+
+  const filePrincipal = imagenInput.files[0];
+  if (!filePrincipal) return mostrarMensaje("⚠️ Imagen principal es obligatoria", "error");
 
   try {
-    // 1. Subir imagen principal
-    const imgFile = imagenPrincipalInput.files[0];
-    if (!imgFile) throw new Error("Imagen principal requerida");
-    const imagenPrincipal = await subirImagen(imgFile);
+    msgEstado.textContent = "⏳ Subiendo imagen...";
+    const formData = new FormData();
+    formData.append("image", filePrincipal);
 
-    // 2. Procesar variantes
-    const variantes = [];
-    const bloques = variantesContainer.querySelectorAll(".variante-box");
+    const uploadRes = await fetch(API_UPLOADS, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData
+    });
 
-    for (const bloque of bloques) {
-      const fileInput = bloque.querySelector(".variante-img");
-      const color = bloque.querySelector(".variante-color").value;
-      const talla = bloque.querySelector(".variante-talla").value.trim();
-      const stock = parseInt(bloque.querySelector(".variante-stock").value);
+    const uploadData = await uploadRes.json();
+    if (!uploadRes.ok) throw new Error(uploadData.message || "Error al subir imagen");
 
-      const file = fileInput.files[0];
-      const img = await subirImagen(file);
+    const imagenURL = uploadData.url;
 
-      variantes.push({
-        imageUrl: img.url,
-        cloudinaryId: img.cloudinaryId,
-        color,
-        talla,
-        stock
+    // Variantes procesadas
+    const variantesFinales = [];
+    for (let i = 0; i < variantesContainer.children.length; i++) {
+      const variante = variantesContainer.children[i];
+      const colorInput = variante.querySelector(`input[type="color"]`);
+      const stockInput = variante.querySelector(`input[type="number"]`);
+      const imgInput = variante.querySelector(`input[type="file"]`);
+      const varColor = colorInput?.value;
+      const varStock = parseInt(stockInput?.value) || 0;
+
+      let varImgURL = "";
+
+      if (imgInput?.files.length) {
+        const varFormData = new FormData();
+        varFormData.append("image", imgInput.files[0]);
+
+        const varRes = await fetch(API_UPLOADS, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: varFormData
+        });
+
+        const varData = await varRes.json();
+        if (!varRes.ok) throw new Error("Error subiendo imagen variante");
+        varImgURL = varData.url;
+      }
+
+      variantesFinales.push({
+        color: varColor,
+        stock: varStock,
+        image: varImgURL
       });
     }
 
-    // 3. Obtener otros datos
+    // Crear producto final
     const producto = {
-      name: document.getElementById("nombreInput").value.trim(),
-      description: document.getElementById("descripcionInput").value.trim(),
-      price: parseFloat(document.getElementById("precioInput").value),
-      stock: parseInt(document.getElementById("stockInput").value),
-      category: document.getElementById("categoriaInput").value,
-      tallas: document.getElementById("tallasInput").value.split(",").map(t => t.trim()).filter(Boolean),
-      color: document.getElementById("colorInput").value,
-      images: [imagenPrincipal],
-      variants: variantes
+      name: nombre,
+      description: descripcion,
+      price: precio,
+      stock,
+      image: imagenURL,
+      category: categoria,
+      color,
+      sizes: tallas,
+      variantes: variantesFinales
     };
 
-    // 4. Enviar al backend
-    const res = await fetch(`${API_BASE}/products`, {
+    msgEstado.textContent = "⏳ Guardando producto...";
+    const res = await fetch(API_PRODUCTS, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -140,21 +160,17 @@ form.addEventListener("submit", async e => {
       body: JSON.stringify(producto)
     });
 
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message || "No se pudo crear el producto");
-    }
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "No se pudo guardar el producto");
 
-    msgEstado.textContent = "✅ Producto creado con éxito.";
+    mostrarMensaje("✅ Producto creado exitosamente", "success");
     form.reset();
     previewPrincipal.innerHTML = "";
     variantesContainer.innerHTML = "";
-
+    variantes = [];
+    agregarVariante();
   } catch (err) {
-    console.error("Error:", err);
-    msgEstado.textContent = "❌ " + err.message;
+    console.error("❌", err);
+    mostrarMensaje("❌ " + err.message, "error");
   }
 });
-
-// Exportar para HTML
-window.goBack = goBack;

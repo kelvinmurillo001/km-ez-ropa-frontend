@@ -169,6 +169,6 @@ function exportarEstadisticas() {
   a.click();
 }
 
-// 🌐 Exponer funciones globales para botones u otros scripts
+// 🌐 Exponer funciones globales para botones
 window.exportarEstadisticas = exportarEstadisticas;
 window.goBack = goBack;

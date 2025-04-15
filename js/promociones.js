@@ -1,154 +1,146 @@
 "use strict";
 
-import { verificarSesion, goBack } from "./admin-utils.js";
+import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 
 const token = verificarSesion();
-const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
-const API_PROMOS = `${API_BASE}/promos`;
-const API_UPLOAD = `${API_BASE}/upload`;
-const API_CATEGORIAS = `${API_BASE}/categories`;
 
-// DOM
+const API_PROMOS = "https://km-ez-ropa-backend.onrender.com/api/promos";
+const API_CATEGORIES = "https://km-ez-ropa-backend.onrender.com/api/categories";
+
 const formPromo = document.getElementById("formPromo");
+const promoImagen = document.getElementById("promoImagen");
+const promoTitulo = document.getElementById("promoTitulo");
+const promoCategoria = document.getElementById("promoCategoria");
 const listaPromos = document.getElementById("listaPromos");
 const msgPromo = document.getElementById("msgPromo");
 
-// Al cargar
 document.addEventListener("DOMContentLoaded", () => {
   cargarCategorias();
   cargarPromociones();
+
+  formPromo.addEventListener("submit", crearPromocion);
 });
 
-// Cargar categorías para select
+// === CARGAR CATEGORÍAS PARA SELECT ===
 async function cargarCategorias() {
   try {
-    const res = await fetch(API_CATEGORIAS);
-    const categorias = await res.json();
-    const select = document.getElementById("promoCategoria");
+    const res = await fetch(API_CATEGORIES);
+    const data = await res.json();
 
-    categorias.forEach(c => {
-      const opt = document.createElement("option");
-      opt.value = c._id;
-      opt.textContent = c.name;
-      select.appendChild(opt);
-    });
+    if (!res.ok) throw new Error("❌ Error al obtener categorías");
+
+    promoCategoria.innerHTML += data.map(cat =>
+      `<option value="${cat.name}">${cat.name}</option>`
+    ).join('');
   } catch (err) {
-    console.error("❌ Error al cargar categorías", err);
+    console.error(err);
+    mostrarMensaje("⚠️ Error al cargar categorías", "error");
   }
 }
 
-// Subir imagen a Cloudinary vía backend
-async function subirImagen(file) {
-  const fd = new FormData();
-  fd.append("file", file);
-
-  const res = await fetch(API_UPLOAD, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}` },
-    body: fd
-  });
-
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "Error al subir imagen");
-  return { url: data.secure_url, cloudinaryId: data.public_id };
-}
-
-// Crear promoción
-formPromo.addEventListener("submit", async e => {
+// === CREAR NUEVA PROMOCIÓN ===
+async function crearPromocion(e) {
   e.preventDefault();
-  msgPromo.textContent = "Subiendo imagen...";
+
+  const file = promoImagen.files[0];
+  const titulo = promoTitulo.value.trim();
+  const categoria = promoCategoria.value;
+
+  if (!file || !titulo || !categoria) {
+    msgPromo.textContent = "⚠️ Todos los campos son obligatorios.";
+    msgPromo.style.color = "orange";
+    return;
+  }
 
   try {
-    const titulo = document.getElementById("promoTitulo").value.trim();
-    const categoria = document.getElementById("promoCategoria").value;
-    const file = document.getElementById("promoImagen").files[0];
-
-    if (!file) throw new Error("Imagen requerida");
-    const imagen = await subirImagen(file);
+    const formData = new FormData();
+    formData.append("image", file);
+    formData.append("titulo", titulo);
+    formData.append("categoria", categoria);
 
     const res = await fetch(API_PROMOS, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
+        Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({
-        titulo,
-        imageUrl: imagen.url,
-        cloudinaryId: imagen.cloudinaryId,
-        categoria
-      })
+      body: formData
     });
 
-    if (!res.ok) throw new Error("No se pudo crear promoción");
+    const data = await res.json();
 
-    msgPromo.textContent = "✅ Promoción creada correctamente.";
+    if (!res.ok) throw new Error(data.message || "Error al crear promoción");
+
+    msgPromo.textContent = "✅ Promoción creada con éxito.";
+    msgPromo.style.color = "limegreen";
+
     formPromo.reset();
     cargarPromociones();
-
   } catch (err) {
     console.error("❌", err);
-    msgPromo.textContent = "❌ " + err.message;
+    msgPromo.textContent = "❌ Error al crear la promoción.";
+    msgPromo.style.color = "red";
   }
-});
+}
 
-// Cargar promociones existentes
+// === CARGAR PROMOCIONES EXISTENTES ===
 async function cargarPromociones() {
   try {
-    const res = await fetch(API_PROMOS, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-
+    const res = await fetch(API_PROMOS);
     const promos = await res.json();
-    renderPromos(promos);
+
+    if (!res.ok) throw new Error("Error al cargar promociones");
+
+    if (!Array.isArray(promos) || promos.length === 0) {
+      listaPromos.innerHTML = "<p>No hay promociones activas.</p>";
+      return;
+    }
+
+    listaPromos.innerHTML = promos.map(promo => `
+      <div class="promo-card">
+        <img src="${promo.image}" alt="${promo.titulo}" />
+        <h4>${promo.titulo}</h4>
+        <p>Categoría: ${promo.categoria}</p>
+        <p>Estado: ${promo.activa ? '✅ Activa' : '⛔ Inactiva'}</p>
+        <div class="promo-actions">
+          <button onclick="cambiarEstadoPromo('${promo._id}', ${!promo.activa})">
+            ${promo.activa ? 'Desactivar' : 'Activar'}
+          </button>
+          <button onclick="eliminarPromo('${promo._id}')">🗑️ Eliminar</button>
+        </div>
+      </div>
+    `).join('');
   } catch (err) {
-    console.error("❌ Error al cargar promociones", err);
-    listaPromos.innerHTML = `<p style="color:red;">❌ Error al cargar promociones.</p>`;
+    console.error("❌ Error cargando promociones:", err);
+    listaPromos.innerHTML = "<p style='color:red;'>❌ No se pudieron cargar promociones.</p>";
   }
 }
 
-// Render cards
-function renderPromos(promos) {
-  if (!Array.isArray(promos) || promos.length === 0) {
-    listaPromos.innerHTML = `<p>No hay promociones creadas.</p>`;
-    return;
-  }
-
-  listaPromos.innerHTML = promos.map(p => `
-    <div class="promo-card">
-      <img src="${p.imageUrl}" alt="${p.titulo}" />
-      <h4>${p.titulo}</h4>
-      <p>Categoría: ${p.categoria?.name || "Sin asignar"}</p>
-      <p class="estado ${p.activo ? 'activo' : 'inactivo'}">
-        Estado: ${p.activo ? "Activo ✅" : "Inactivo ❌"}
-      </p>
-      <button onclick="cambiarEstadoPromo('${p._id}')" class="btn-secundario">
-        ${p.activo ? "Desactivar" : "Activar"}
-      </button>
-      <button onclick="eliminarPromo('${p._id}')" class="btn-eliminar mt-1">🗑️ Eliminar</button>
-    </div>
-  `).join("");
-}
-
-// Activar/desactivar
-window.cambiarEstadoPromo = async function(id) {
+// === CAMBIAR ESTADO DE PROMOCIÓN ===
+async function cambiarEstadoPromo(id, activa) {
   try {
-    const res = await fetch(`${API_PROMOS}/${id}/estado`, {
-      method: "PATCH",
-      headers: { Authorization: `Bearer ${token}` }
+    const res = await fetch(`${API_PROMOS}/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ activa })
     });
 
-    if (!res.ok) throw new Error("Error al cambiar estado");
-    await cargarPromociones();
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Error al actualizar estado");
+
+    mostrarMensaje("✅ Estado actualizado", "success");
+    cargarPromociones();
   } catch (err) {
     console.error("❌", err);
-    alert("❌ No se pudo cambiar el estado.");
+    mostrarMensaje("❌ No se pudo cambiar el estado", "error");
   }
-};
+}
 
-// Eliminar promoción
-window.eliminarPromo = async function(id) {
-  const confirmar = confirm("⚠️ ¿Estás seguro de eliminar esta promoción?");
+// === ELIMINAR PROMOCIÓN ===
+async function eliminarPromo(id) {
+  const confirmar = confirm("⚠️ ¿Deseas eliminar esta promoción?");
   if (!confirmar) return;
 
   try {
@@ -157,12 +149,18 @@ window.eliminarPromo = async function(id) {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    if (!res.ok) throw new Error("Error al eliminar");
-    await cargarPromociones();
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Error al eliminar promoción");
+
+    mostrarMensaje("✅ Promoción eliminada", "success");
+    cargarPromociones();
   } catch (err) {
     console.error("❌", err);
-    alert("❌ No se pudo eliminar la promoción.");
+    mostrarMensaje("❌ No se pudo eliminar", "error");
   }
-};
+}
 
+// 🌐 Exponer funciones globales
 window.goBack = goBack;
+window.cambiarEstadoPromo = cambiarEstadoPromo;
+window.eliminarPromo = eliminarPromo;

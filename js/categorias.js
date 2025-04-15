@@ -1,7 +1,6 @@
-// ✅ IMPORTAR función desde utils.js
-import { registrarVisitaPublica } from "./utils.js";
+"use strict";
 
-// === VARIABLES DE DOM ===
+// === ELEMENTOS DEL DOM ===
 const catalogo = document.getElementById("catalogo");
 const categoriaSelect = document.getElementById("categoriaSelect");
 const subcategoriaSelect = document.getElementById("subcategoriaSelect");
@@ -9,13 +8,16 @@ const precioSelect = document.getElementById("precioSelect");
 const busquedaInput = document.getElementById("busquedaInput");
 const promoBanner = document.getElementById("promoBanner");
 
-// === CARGA INICIAL ===
+// === API ===
+const API_PRODUCTS = "/api/products";
+const API_PROMOS = "/api/promos";
+
+// === INICIO ===
 document.addEventListener("DOMContentLoaded", () => {
-  registrarVisitaPublica(); // 📊 registrar visita
   cargarPromocion();
   cargarProductos();
   actualizarCarritoWidget();
-  activarModoOscuro();
+  aplicarModoOscuro();
 });
 
 // === MODO OSCURO ===
@@ -24,13 +26,13 @@ document.getElementById("modoOscuroBtn")?.addEventListener("click", () => {
   localStorage.setItem("modoOscuro", document.body.classList.contains("modo-oscuro"));
 });
 
-function activarModoOscuro() {
+function aplicarModoOscuro() {
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 }
 
-// === ESCUCHAR FILTROS ===
+// === FILTROS CAMBIO ===
 [categoriaSelect, subcategoriaSelect, precioSelect, busquedaInput].forEach(elem => {
   elem.addEventListener("change", cargarProductos);
   if (elem === busquedaInput) {
@@ -38,10 +40,10 @@ function activarModoOscuro() {
   }
 });
 
-// === CARGAR PRODUCTOS CON FILTROS ===
+// === CARGAR PRODUCTOS DESDE BACKEND ===
 async function cargarProductos() {
   try {
-    const res = await fetch("/api/products");
+    const res = await fetch(API_PRODUCTS);
     const data = await res.json();
 
     if (!res.ok) throw new Error("Error al cargar productos");
@@ -49,35 +51,26 @@ async function cargarProductos() {
     let productos = data;
 
     // Filtros
-    const categoria = categoriaSelect.value;
-    const subcategoria = subcategoriaSelect.value;
+    const cat = categoriaSelect.value;
+    const sub = subcategoriaSelect.value;
     const precio = precioSelect.value;
-    const busqueda = busquedaInput.value.trim().toLowerCase();
+    const texto = busquedaInput.value.trim().toLowerCase();
 
-    if (categoria) {
-      productos = productos.filter(p => p.category === categoria);
-    }
-    if (subcategoria) {
-      productos = productos.filter(p => p.subcategory === subcategoria);
-    }
-    if (busqueda) {
-      productos = productos.filter(p => p.name.toLowerCase().includes(busqueda));
-    }
-    if (precio === "low") {
-      productos.sort((a, b) => a.price - b.price);
-    } else if (precio === "high") {
-      productos.sort((a, b) => b.price - a.price);
-    }
+    if (cat) productos = productos.filter(p => p.category === cat);
+    if (sub) productos = productos.filter(p => p.subcategory === sub);
+    if (texto) productos = productos.filter(p => p.name.toLowerCase().includes(texto));
+    if (precio === "low") productos.sort((a, b) => a.price - b.price);
+    if (precio === "high") productos.sort((a, b) => b.price - a.price);
 
     renderizarCatalogo(productos);
-    cargarCategoriasUnicas(data); // Para popular selects dinámicamente
+    cargarCategorias(data); // Popular selects
   } catch (err) {
-    console.error("Error:", err);
-    catalogo.innerHTML = "<p style='text-align:center;color:red;'>⚠️ Error al cargar productos.</p>";
+    console.error("❌ Error:", err);
+    catalogo.innerHTML = "<p style='text-align:center; color:red;'>❌ No se pudo cargar el catálogo.</p>";
   }
 }
 
-// === RENDERIZAR PRODUCTOS ===
+// === RENDER CATALOGO ===
 function renderizarCatalogo(productos) {
   catalogo.innerHTML = "";
   if (!productos.length) {
@@ -100,13 +93,13 @@ function renderizarCatalogo(productos) {
   });
 }
 
-// === REDIRECCIÓN AL DETALLE ===
+// === DETALLE PRODUCTO ===
 function verDetalle(id) {
   window.location.href = `/detalle.html?id=${id}`;
 }
 
-// === CARGAR CATEGORÍAS Y SUBCATEGORÍAS ===
-function cargarCategoriasUnicas(productos) {
+// === LLENAR SELECTS CON OPCIONES UNICAS ===
+function cargarCategorias(productos) {
   const categorias = [...new Set(productos.map(p => p.category))];
   const subcategorias = [...new Set(productos.map(p => p.subcategory))];
 
@@ -114,7 +107,7 @@ function cargarCategoriasUnicas(productos) {
   subcategoriaSelect.innerHTML = '<option value="">Todas</option>' + subcategorias.map(s => `<option value="${s}">${s}</option>`).join('');
 }
 
-// === ACTUALIZAR CARRITO Flotante ===
+// === ACTUALIZAR CONTADOR CARRITO ===
 function actualizarCarritoWidget() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
   const total = carrito.reduce((sum, item) => sum + item.quantity, 0);
@@ -122,15 +115,16 @@ function actualizarCarritoWidget() {
   if (contador) contador.textContent = total;
 }
 
-// === CARGAR PROMOCIÓN ===
+// === CARGAR PROMOCIÓN ACTIVA ===
 async function cargarPromocion() {
   try {
-    const res = await fetch("/api/promos");
+    const res = await fetch(API_PROMOS);
     const promo = await res.json();
     if (!promo?.activa) return;
+
     promoBanner.style.background = promo.color || "#ff6d00";
     promoBanner.textContent = promo.mensaje;
   } catch (err) {
-    console.warn("No se pudo cargar promoción.");
+    console.warn("⚠️ No se pudo cargar promoción activa.");
   }
 }
