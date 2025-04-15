@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>📊 Dashboard Analítico | KM & EZ ROPA</title>
 
-  <!-- 🔐 SEO y Seguridad -->
+  <!-- 🔐 Meta Seguridad y SEO -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="author" content="KM & EZ ROPA" />
   <meta name="description" content="Panel de control con estadísticas de ventas, productos, visitas y pedidos recibidos." />
@@ -13,34 +13,22 @@
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
-  <link rel="stylesheet" href="/css/analitica.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- 💡 Animación fade-in -->
-  <style>
-    .metricas .card, .analitica-extra {
-      animation: fadeIn 0.6s ease-in;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
-
-  <!-- ✅ JS del Dashboard -->
+  <!-- ✅ Script JS del Dashboard -->
   <script type="module" src="/js/dashboard.js" defer></script>
 </head>
 <body>
-
-  <main class="dashboard-container fade-in" role="main" aria-label="Dashboard analítico">
+  <main class="dashboard-container fade-in" role="main" aria-label="Dashboard principal de analítica">
     <h1 class="text-center">📊 Panel de Analítica</h1>
 
-    <!-- 🔢 Métricas principales -->
-    <section class="metricas grid-responsive" aria-label="Resumen de métricas generales">
-      <div class="card" role="region" aria-labelledby="ventasTotales">
+    <!-- 🔢 Métricas -->
+    <section class="dashboard-grid" aria-label="Métricas generales del negocio">
+      <div class="card" id="ventas" role="region" aria-labelledby="ventasTotales">
         <h3>🛒 Ventas Totales</h3>
-        <p>$ <span id="ventasTotales" aria-live="polite">0</span></p>
+        <p><span id="ventasTotales" aria-live="polite">0</span></p>
       </div>
       <div class="card" role="region" aria-labelledby="visitasTotales">
         <h3>👥 Visitas</h3>
@@ -56,10 +44,10 @@
       </div>
     </section>
 
-    <!-- 📋 Pedidos -->
-    <section class="analitica-extra mt-3" aria-label="Estado de los pedidos">
+    <!-- 🧾 Estado de Pedidos -->
+    <section class="analitica-extra mt-3" aria-label="Estado actual de los pedidos">
       <h2 class="text-center">🧾 Estado de Pedidos</h2>
-      <ul class="listado-categorias mt-2">
+      <ul class="listado-categorias">
         <li><strong>Totales:</strong> <span id="total">-</span></li>
         <li><strong>Pendientes:</strong> <span id="pendientes">-</span></li>
         <li><strong>En Proceso:</strong> <span id="en_proceso">-</span></li>
@@ -69,34 +57,34 @@
       </ul>
     </section>
 
-    <!-- 📁 Categorías -->
+    <!-- 📁 Top Categorías -->
     <section class="analitica-extra mt-3" aria-label="Categorías más utilizadas">
       <h2 class="text-center">📁 Top Categorías</h2>
-      <ul id="topCategorias" class="listado-categorias mt-2" aria-live="polite">
-        <!-- Rellenado desde JS -->
+      <ul id="topCategorias" class="listado-categorias" aria-live="polite">
+        <!-- JS insertará aquí -->
       </ul>
     </section>
 
-    <!-- 📤 Acciones -->
+    <!-- 📤 Botones de Acción -->
     <div class="text-center mt-3">
-      <button type="button" onclick="exportarEstadisticas()" class="btn-secundario" aria-label="Exportar estadísticas como CSV">
+      <button type="button" onclick="exportarEstadisticas()" class="btn-secundario">
         📤 Exportar Estadísticas (CSV)
       </button>
     </div>
 
-    <div class="text-center mt-3">
-      <button type="button" onclick="goBack()" class="btn" aria-label="Volver al panel de administración">
+    <div class="text-center mt-2">
+      <button type="button" onclick="goBack()" class="btn">
         🔙 Volver al Panel
       </button>
     </div>
   </main>
 
-  <!-- 🚫 Sin JavaScript -->
+  <!-- ⚠️ Fallback para JS -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
 
-  <!-- 🌗 Modo oscuro persistente -->
+  <!-- 🌙 Modo oscuro automático -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("modoOscuro") === "true") {

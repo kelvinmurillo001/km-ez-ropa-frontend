@@ -129,16 +129,16 @@ async function sendCartToWhatsApp(nombre, nota = "") {
   const ok = await guardarPedido(nombre, nota, "whatsapp");
   if (!ok) return;
 
-  let mensaje = `👋 Hola! Me interesa consultar estos productos:\n\n`;
+  let mensaje = `👋 Hola! Estoy interesado en los siguientes productos:\n\n`;
 
   cart.forEach(p => {
-    mensaje += `🧥 ${p.nombre} x${p.cantidad}`;
+    mensaje += `• ${p.nombre} x${p.cantidad}`;
     if (p.talla) mensaje += ` | Talla: ${p.talla}`;
     if (p.color || p.colores) mensaje += ` | Color: ${p.color || p.colores}`;
     mensaje += `\n`;
   });
 
-  mensaje += `\n💰 Total: $${calculateTotal()}\n👤 Cliente: ${nombre}\n`;
+  mensaje += `\n💰 Total: $${calculateTotal()}\n👤 Nombre: ${nombre}\n`;
   if (nota) mensaje += `📌 Nota: ${nota}\n`;
 
   const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensaje)}`;
@@ -155,7 +155,7 @@ function updateCartWidget() {
   if (badge) badge.textContent = count;
 }
 
-/* 🖼️ Renderizar item individual */
+/* 🖼️ Renderizar item */
 function renderizarItem(item) {
   const nombre = item.nombre || item.name || "Producto";
   const precio = item.precio || item.price || 0;
@@ -175,14 +175,14 @@ function renderizarItem(item) {
         <button onclick="changeQuantity('${key}', -1)">➖</button>
         <span>${item.cantidad}</span>
         <button onclick="changeQuantity('${key}', 1)">➕</button>
-        <button onclick="removeFromCart('${key}')">🗑️</button>
+        <button onclick="removeFromCart('${key}')">🗑</button>
       </div>
     </div>
   `;
   return div;
 }
 
-/* 🛍️ Render general */
+/* 🛍️ Renderizar todos */
 function renderCartItems() {
   const cart = getCart();
   const contenedor = document.querySelector("#cart-items");
@@ -192,8 +192,15 @@ function renderCartItems() {
   if (!contenedor || !total) return;
 
   contenedor.innerHTML = "";
-  let unidades = 0;
 
+  if (!cart.length) {
+    contenedor.innerHTML = `<p style="text-align:center; font-weight:bold;">🛒 Tu carrito está vacío.</p>`;
+    if (unidadesEl) unidadesEl.textContent = "Total unidades: 0";
+    total.textContent = "$0.00";
+    return;
+  }
+
+  let unidades = 0;
   cart.forEach(item => {
     unidades += item.cantidad;
     contenedor.appendChild(renderizarItem(item));
@@ -203,7 +210,7 @@ function renderCartItems() {
   if (unidadesEl) unidadesEl.textContent = `Total unidades: ${unidades}`;
 }
 
-/* 🔍 Modal imagen */
+/* 🔍 Modal */
 function abrirModalImagen(src) {
   const modal = document.getElementById("imageModal");
   const img = document.getElementById("modalImage");
@@ -218,7 +225,7 @@ function cerrarModalImagen() {
   if (modal) modal.classList.add("oculto");
 }
 
-/* 🌍 Exponer funciones */
+/* 🌍 Exportar funciones */
 window.addToCart = addToCart;
 window.removeFromCart = removeFromCart;
 window.changeQuantity = changeQuantity;

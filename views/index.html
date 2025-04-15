@@ -2,151 +2,64 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KM & EZ ROPA - Catálogo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KM & EZ ROPA | Moda con Estilo</title>
 
-  <!-- ✅ SEO -->
-  <meta name="description" content="Tienda de ropa para toda la familia. Encuentra moda para hombre, mujer, niños y bebés a precios accesibles." />
-  <meta name="keywords" content="ropa, moda, tienda de ropa, catálogo, hombre, mujer, niño, niña, bebé, ofertas" />
-  <meta name="author" content="KM & EZ ROPA" />
-  <meta name="robots" content="index, follow" />
-
-  <!-- 🌐 Open Graph -->
-  <meta property="og:title" content="KM & EZ ROPA - Tienda de Moda para la Familia" />
-  <meta property="og:description" content="Explora nuestra tienda en línea con prendas para todas las edades. Calidad, estilo y buenos precios." />
-  <meta property="og:image" content="https://res.cloudinary.com/dmbnkrhek/image/upload/v1711234567/logo.jpg" />
-  <meta property="og:url" content="https://km-ez-ropa-frontend.onrender.com/index.html" />
-  <meta property="og:type" content="website" />
-
-  <!-- 🐦 Twitter Cards -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="KM & EZ ROPA - Catálogo" />
-  <meta name="twitter:description" content="Moda para toda la familia con excelente calidad y precio. Visítanos online." />
-  <meta name="twitter:image" content="https://res.cloudinary.com/dmbnkrhek/image/upload/v1711234567/logo.jpg" />
-
-  <!-- 🖼️ Favicon -->
-  <link rel="icon" href="https://res.cloudinary.com/dmbnkrhek/image/upload/v1711234567/logo.jpg" type="image/jpeg" />
+  <!-- 🔍 SEO -->
+  <meta name="description" content="Explora la moda más fresca y urbana en KM & EZ ROPA. Catálogo moderno, promociones activas y más." />
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="KM & EZ ROPA">
 
   <!-- ✅ Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
-  <link rel="stylesheet" href="/css/catalogo.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
-  <link rel="stylesheet" href="/css/responsive.css" />
+  <link rel="stylesheet" href="/css/catalogo.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
 
-  <!-- 📊 Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LPEBT3EKGE"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-LPEBT3EKGE');
-  </script>
+  <!-- 📜 Script principal -->
+  <script src="/js/main.js" defer></script>
 </head>
 <body>
 
-  <!-- 🔝 ENCABEZADO -->
-  <header class="header fade-in" role="banner">
+  <!-- 🔝 Header con logo y navegación -->
+  <header class="header" role="banner">
     <div class="logo">
-      <img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" width="64" height="64" onerror="this.src='https://res.cloudinary.com/dmbnkrhek/image/upload/v1711234567/logo.jpg'" />
-      <h1>KM & EZ ROPA</h1>
+      <img src="/assets/logo.jpg" alt="KM & EZ ROPA" class="logo-img">
+      <div>
+        <h1>KM & EZ ROPA</h1>
+        <p class="subtitulo">Moda Urbana | Estilo Callejero</p>
+      </div>
     </div>
-    <p class="subtitulo">Moda para toda la familia | Calidad y precio</p>
-    <div class="top-buttons">
-      <button type="button" class="btn btn-toggle-modo" id="modoToggle" aria-label="Cambiar modo de visualización">
-        <span aria-hidden="true">🌙</span> <span class="texto-modo">Modo Oscuro</span>
-      </button>
-      <a href="login.html" class="btn" title="Ingresar como administrador">🔐 Iniciar sesión</a>
-    </div>
+    <nav class="top-buttons mt-2">
+      <a href="/catalogo.html" class="btn-secundario">🛍️ Ver Catálogo</a>
+      <a href="/login.html" class="btn">🔐 Administrar</a>
+      <button id="modoToggle" class="btn-secundario">🌙 Modo Oscuro</button>
+    </nav>
   </header>
 
-  <!-- 🎁 PROMOCIÓN ACTIVA -->
-  <section id="promoBanner" class="promo-banner oculto fade-in" aria-live="polite" role="region">
-    <p id="promoTexto"><!-- contenido dinámico --></p>
+  <!-- 💥 Banner Promocional -->
+  <section class="promo-banner mt-2 fade-in">
+    🔥 ¡Rebajas de temporada disponibles ahora en todas las categorías!
   </section>
 
-  <!-- 🎯 FILTROS -->
-  <section class="filtros-container fade-in" aria-label="Filtros del catálogo">
-    <select id="categoria" name="categoria" autocomplete="off" aria-label="Categoría">
-      <option value="todas">Categoría: Todas</option>
-    </select>
-    <select id="subcategoria" name="subcategoria" autocomplete="off" aria-label="Subcategoría">
-      <option value="todas">Subcategoría: Todas</option>
-    </select>
-    <select id="orden" name="orden" autocomplete="off" aria-label="Ordenar por">
-      <option value="reciente">Más recientes</option>
-      <option value="precioAsc">Precio ↑</option>
-      <option value="precioDesc">Precio ↓</option>
-      <option value="destacados">Destacados ⭐</option>
-    </select>
-    <input type="search" id="busqueda" placeholder="🔍 Buscar productos..." aria-label="Buscar productos" class="busqueda-input" />
-  </section>
-
-  <!-- 🛍️ CATÁLOGO -->
-  <main class="catalogo-container fade-in" role="main">
-    <h2 class="text-center">Catálogo de Productos</h2>
-    <div id="catalogo" class="catalogo-grid" role="list"></div>
-    <div id="mensajeCatalogo" class="mensaje-error oculto" role="alert"></div>
+  <!-- 🧭 Contenedor del catálogo de inicio -->
+  <main class="container fade-in" role="main">
+    <h2 class="text-center mt-3">🎯 Lo más popular</h2>
+    <div id="catalogo" class="catalogo-container">
+      <!-- Tarjetas de productos populares serán insertadas dinámicamente -->
+    </div>
   </main>
 
-  <!-- 🧾 MODAL CARRITO -->
-  <div id="carritoModal" class="modal fade-in" role="dialog" aria-modal="true" aria-labelledby="tituloCarrito">
-    <div class="modal-contenido">
-      <button class="cerrar" id="cerrarCarrito" aria-label="Cerrar carrito">&times;</button>
-      <h3 id="tituloCarrito">🛍️ Tu Carrito</h3>
-      <ul id="listaCarrito"></ul>
-      <button type="button" id="enviarWhatsApp" class="btn">📲 Enviar a WhatsApp</button>
-    </div>
-  </div>
-
-  <!-- 📞 BOTÓN WHATSAPP FLOTANTE -->
-  <aside>
-    <a href="https://wa.me/593990270864" class="whatsapp-float fade-in" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
-      <img src="/assets/whatsapp.svg" alt="Icono WhatsApp" width="48" height="48" />
-    </a>
-  </aside>
-
-  <!-- 👣 PIE DE PÁGINA -->
-  <footer class="footer fade-in" role="contentinfo">
-    <p>© 2025 KM & EZ ROPA - Todos los derechos reservados</p>
-  </footer>
-
-  <!-- ✅ SCRIPTS -->
-  <script src="/js/cart.js" defer></script>
-  <script src="/js/script.js" defer></script>
-
-  <!-- 🌗 MODO OSCURO -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const btnToggle = document.getElementById("modoToggle");
-      const spanTexto = btnToggle.querySelector(".texto-modo");
-      const body = document.body;
-      const oscuro = localStorage.getItem("modoOscuro") === "true";
-
-      if (oscuro) {
-        body.classList.add("modo-oscuro");
-        spanTexto.textContent = "Modo Claro";
-      }
-
-      btnToggle?.addEventListener("click", () => {
-        body.classList.toggle("modo-oscuro");
-        const activo = body.classList.contains("modo-oscuro");
-        localStorage.setItem("modoOscuro", activo);
-        spanTexto.textContent = activo ? "Modo Claro" : "Modo Oscuro";
-      });
-    });
-  </script>
-
-  <!-- 🛒 CARRITO WIDGET -->
+  <!-- 🛒 Widget del carrito flotante -->
   <div id="carrito-widget-container"></div>
-  <script>
-    fetch("carrito-widget.html")
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("carrito-widget-container").innerHTML = html;
-      })
-      .catch(() => console.warn("⚠️ No se pudo cargar el widget del carrito."));
-  </script>
+
+  <!-- 💬 WhatsApp flotante cargado vía JS -->
+
+  <!-- 🔕 Fallback sin JS -->
+  <noscript>
+    <p style="text-align:center; color:red;">⚠️ Activa JavaScript para visualizar correctamente este sitio.</p>
+  </noscript>
 
 </body>
 </html>

@@ -148,7 +148,7 @@ function activarInteracciones(p) {
   });
 }
 
-/* 🔄 Interacción individual */
+// 🔄 Utilidades visuales
 function cambiarImagen(url, thumb) {
   const principal = document.getElementById("imagenPrincipal");
   if (principal) principal.src = url;
