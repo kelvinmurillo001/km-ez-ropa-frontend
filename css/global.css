@@ -13,7 +13,7 @@ html {
   --color-bg: #f9f9f9;
   --color-text: #2b2b2b;
   --color-primario: #2c3e50;
-  --color-acento: darkorange;
+  --color-acento: #e67e22;
   --color-secundario: #3498db;
   --color-success: #27ae60;
   --color-error: #c0392b;
@@ -26,63 +26,28 @@ html {
 /* 🖥️ Base */
 body {
   font-family: var(--font-main);
-  background: url("/assets/logo.jpg") no-repeat center center fixed;
-  background-size: cover;
+  background-color: var(--color-bg);
   color: var(--color-text);
   line-height: 1.6;
-  transition: background-color 0.3s ease, color 0.3s ease;
   position: relative;
-  z-index: 1;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(255, 255, 255, 0.8);
-  z-index: -1;
-}
-
-/* 🌙 Modo oscuro */
-body.modo-oscuro {
-  background-color: #121212;
-  color: #eee;
-}
-body.modo-oscuro::before {
-  background-color: rgba(0, 0, 0, 0.65);
-}
-body.modo-oscuro a {
-  color: #90caf9;
-}
-body.modo-oscuro .card,
-body.modo-oscuro .header,
-body.modo-oscuro .footer,
-body.modo-oscuro .promo-banner {
-  background-color: rgba(30, 30, 30, 0.9);
-  border-color: #444;
-  color: #eee;
-}
-
-/* 🧱 Estructura */
 .container {
   max-width: 1200px;
   margin: auto;
   padding: 1rem;
 }
 
-/* 🎨 Tipografía */
 h1, h2, h3 {
   color: var(--color-primario);
   margin-bottom: 0.5rem;
 }
-.text-center { text-align: center; }
 
-/* 🔗 Enlaces */
 a {
   color: var(--color-secundario);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color 0.2s;
 }
 a:hover {
   text-decoration: underline;
@@ -103,13 +68,6 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
   border-color: var(--color-acento);
   outline: 2px solid var(--color-acento);
 }
-body.modo-oscuro input,
-body.modo-oscuro select,
-body.modo-oscuro textarea {
-  background-color: #2a2a2a;
-  color: #fff;
-  border-color: #444;
-}
 
 /* 🔘 Botones */
 button, .btn {
@@ -125,40 +83,19 @@ button, .btn {
 button:hover, .btn:hover {
   background: #1a252f;
 }
-.btn-secundario {
-  background: var(--color-acento);
-}
-.btn-secundario:hover {
-  background: #cc7000;
-}
 
-/* 🧱 Cards */
-.card {
-  background: #fff;
-  padding: 16px;
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  box-shadow: var(--shadow-soft);
-  text-align: center;
-  transition: all 0.3s ease;
-}
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-hover);
-}
-.card img {
-  max-width: 100%;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-.card button {
-  background-color: var(--color-secundario);
-}
-.card button:hover {
-  background-color: #216a94;
-}
+/* 🎯 Utilidades */
+.text-center { text-align: center; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.p-1 { padding: 0.5rem; }
+.p-2 { padding: 1rem; }
 
-/* 💬 Banner promocional */
+/* 💬 Promo banner */
 .promo-banner {
   background-color: #ffe082;
   padding: 0.75rem;
@@ -169,7 +106,7 @@ button:hover, .btn:hover {
   display: none;
 }
 
-/* 🛒 Carrito flotante */
+/* 🛒 Widget carrito */
 #cart-widget {
   position: fixed;
   bottom: 20px;
@@ -195,7 +132,7 @@ button:hover, .btn:hover {
   border-radius: 50%;
 }
 
-/* 💬 WhatsApp flotante */
+/* 📞 WhatsApp flotante */
 .whatsapp-float {
   position: fixed;
   bottom: 20px;
@@ -207,78 +144,71 @@ button:hover, .btn:hover {
   padding: 6px;
   border-radius: 50%;
   box-shadow: var(--shadow-soft);
-  width: 48px;
-  height: 48px;
 }
 
-/* ✨ Animaciones */
+/* 🧱 Tarjetas de producto */
+.card {
+  background: #fff;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+}
+.card img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+.card button {
+  background-color: var(--color-secundario);
+}
+.card button:hover {
+  background-color: #216a94;
+}
+
+/* 🌙 Modo oscuro */
+body.modo-oscuro {
+  background-color: #121212;
+  color: #eee;
+}
+body.modo-oscuro .header,
+body.modo-oscuro .footer,
+body.modo-oscuro .promo-banner,
+body.modo-oscuro .card,
+body.modo-oscuro .filtros-container {
+  background-color: rgba(30, 30, 30, 0.85);
+  color: #eee;
+  border-color: #444;
+}
+body.modo-oscuro a {
+  color: #90caf9;
+}
+body.modo-oscuro input,
+body.modo-oscuro select,
+body.modo-oscuro textarea {
+  background-color: #2a2a2a;
+  color: #fff;
+  border-color: #444;
+}
+body.modo-oscuro button,
+body.modo-oscuro .btn {
+  background-color: var(--color-secundario);
+}
+body.modo-oscuro .btn:hover {
+  background-color: #1e88e5;
+}
+
+/* ✨ Fade-in Animación */
 .fade-in {
-  animation: fadeIn 0.5s ease;
-}
-.zoom-in {
-  animation: zoomIn 0.4s ease;
-}
-.slide-up {
-  animation: slideUp 0.4s ease;
-}
-.pulse {
-  animation: pulse 1.5s infinite;
+  animation: fadeIn 0.6s ease-in-out;
 }
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes zoomIn {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-@keyframes slideUp {
-  from { transform: translateY(40px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-/* 🎯 Utilidades spacing */
-.mt-1 { margin-top: 0.5rem; }
-.mt-2 { margin-top: 1rem; }
-.mt-3 { margin-top: 1.5rem; }
-.mb-1 { margin-bottom: 0.5rem; }
-.mb-2 { margin-bottom: 1rem; }
-.mb-3 { margin-bottom: 1.5rem; }
-.p-1 { padding: 0.5rem; }
-.p-2 { padding: 1rem; }
-
-/* 🙈 Accesibilidad */
-.visually-hidden {
-  position: absolute !important;
-  width: 1px; height: 1px;
-  padding: 0; margin: -1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* 📱 Responsive */
-@media (max-width: 768px) {
-  .container {
-    padding: 1rem;
-  }
-
-  h1 {
-    font-size: 1.5rem;
-  }
-
-  .top-buttons {
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-  }
-
-  .promo-banner {
-    font-size: 0.95rem;
-  }
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

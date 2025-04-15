@@ -3,84 +3,102 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Categorías | KM & EZ ROPA</title>
+  <title>Catálogo por Categoría | KM & EZ ROPA</title>
 
-  <!-- 🔐 Meta -->
-  <meta name="robots" content="noindex, nofollow" />
-  <meta name="description" content="Gestión de categorías y subcategorías para los productos de KM & EZ ROPA." />
-  <meta name="author" content="KM & EZ ROPA" />
+  <!-- SEO -->
+  <meta name="description" content="Explora ropa por categorías y subcategorías. Encuentra lo más reciente en moda urbana y callejera.">
+  <meta name="author" content="KM & EZ ROPA">
+  <meta name="robots" content="index, follow">
 
-  <!-- 🎨 Estilos -->
+  <!-- Open Graph -->
+  <meta property="og:title" content="Catálogo | KM & EZ ROPA">
+  <meta property="og:description" content="Moda urbana para todos. Catálogo dinámico por categoría.">
+  <meta property="og:image" content="/assets/logo.jpg">
+  <meta property="og:type" content="website">
+
+  <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
-  <link rel="stylesheet" href="/css/componentes.css" />
-  <link rel="stylesheet" href="/css/admin.css" />
-  <link rel="stylesheet" href="/css/categorias.css" />
-  <link rel="stylesheet" href="/css/responsive.css" />
+  <link rel="stylesheet" href="/css/catalogo.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
 
-  <!-- ✅ Scripts -->
-  <script src="/js/login.js" defer></script>
-  <script src="/js/categorias.js" defer></script>
+  <!-- JS Principal -->
+  <script src="/js/catalogo.js" defer></script>
 </head>
-<body class="admin-page fade-in">
+<body>
 
-  <main class="admin-container" role="main" aria-label="Gestión de categorías">
-    <h1>📁 Gestión de Categorías</h1>
-
-    <!-- 💬 Mensaje -->
-    <div id="message" class="admin-message oculto" role="alert" aria-live="polite"></div>
-
-    <!-- 📋 Formulario de Categoría y Subcategoría -->
-    <div class="form-row" style="gap: 20px; flex-wrap: wrap;">
-      
-      <!-- Nueva categoría -->
-      <form id="formCategoria" class="form-categoria" style="flex: 1;" autocomplete="off" aria-labelledby="tituloCategoria">
-        <label for="nombreCategoria" id="tituloCategoria" class="visually-hidden">Crear nueva categoría</label>
-        <input type="text" id="nombreCategoria" placeholder="Nombre de categoría" required />
-        <button type="submit" class="btn-guardar" aria-label="Crear categoría">➕ Crear</button>
-      </form>
-
-      <!-- Nueva subcategoría -->
-      <form id="subcategoryForm" class="form-categoria" style="flex: 1;" autocomplete="off" aria-labelledby="tituloSubcategoria">
-        <label for="nuevaSubcategoria" id="tituloSubcategoria" class="visually-hidden">Agregar subcategoría</label>
-        <select id="categorySelect" required aria-label="Selecciona una categoría">
-          <option value="">Categoría</option>
-        </select>
-        <input type="text" id="nuevaSubcategoria" placeholder="Subcategoría" required />
-        <button type="submit" class="btn-secundario" aria-label="Agregar subcategoría">➕ Agregar</button>
-      </form>
+  <!-- 🔝 Header -->
+  <header class="header" role="banner">
+    <div class="logo">
+      <img src="/assets/logo.jpg" alt="KM & EZ ROPA" class="logo-img">
+      <div>
+        <h1>KM & EZ ROPA</h1>
+        <p class="subtitulo">Moda para todos | Calidad & Estilo</p>
+      </div>
     </div>
+    <nav class="top-buttons mt-2">
+      <a href="index.html" class="btn-secundario">🏠 Inicio</a>
+      <a href="login.html" class="btn">🔐 Admin</a>
+      <button id="modoToggle" class="btn-secundario">🌙 Modo Oscuro</button>
+    </nav>
+  </header>
 
-    <!-- 🧾 Lista de Categorías -->
-    <section class="lista-categorias mt-3" id="listaCategorias" aria-label="Listado de categorías con subcategorías">
-      <!-- Render dinámico desde JS -->
-    </section>
+  <!-- 💥 Banner -->
+  <section class="promo-banner mt-2 fade-in">
+    ⚡ Explora las últimas novedades por categoría.
+  </section>
 
-    <!-- 🔙 Navegación -->
-    <div style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
-      <a href="panel.html" class="btn-secundario">🔙 Volver al Panel</a>
-      <button onclick="logout()" class="btn-danger">🚪 Cerrar sesión</button>
-    </div>
+  <!-- 🔍 Filtros -->
+  <section class="filtros-container fade-in" aria-label="Filtros del catálogo">
+    <select id="filtroCategoria" aria-label="Selecciona una categoría"></select>
+    <select id="filtroSubcategoria" aria-label="Selecciona una subcategoría"></select>
+    <select id="ordenar" aria-label="Ordenar productos">
+      <option value="recientes">Más recientes</option>
+      <option value="precio_asc">Precio: Menor a mayor</option>
+      <option value="precio_desc">Precio: Mayor a menor</option>
+    </select>
+    <input type="search" id="busqueda" placeholder="🔍 Buscar productos..." aria-label="Buscar por nombre" />
+  </section>
+
+  <!-- 🛍️ Catálogo de Productos -->
+  <main class="catalogo-container fade-in" id="catalogo" role="main" aria-label="Lista de productos">
+    <!-- Aquí se insertan dinámicamente los productos -->
   </main>
 
-  <!-- 🚫 JS Fallback -->
-  <noscript>
-    <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
-  </noscript>
+  <!-- 🛒 Widget del carrito -->
+  <div id="cart-widget">
+    <a href="carrito.html" aria-label="Ir al carrito de compras">
+      <img src="/assets/cart-icon.svg" alt="Carrito" />
+      <span id="cart-widget-count">0</span>
+    </a>
+  </div>
 
-  <!-- 🌙 Activar modo oscuro -->
+  <!-- 💬 WhatsApp flotante -->
+  <div class="whatsapp-float">
+    <a href="https://wa.me/593990270864" target="_blank" rel="noopener" aria-label="Consulta por WhatsApp">
+      <img src="/assets/whatsapp.svg" alt="WhatsApp" width="50" height="50" />
+    </a>
+  </div>
+
+  <!-- 🌙 Modo oscuro persistente -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+      const toggle = document.getElementById("modoToggle");
       if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
       }
 
-      if (typeof verificarToken === "function") {
-        verificarToken();
-      } else {
-        console.warn("⚠️ verificarToken() no está definida. Verifica login.js");
-      }
+      toggle?.addEventListener("click", () => {
+        document.body.classList.toggle("modo-oscuro");
+        localStorage.setItem("modoOscuro", document.body.classList.contains("modo-oscuro"));
+      });
     });
   </script>
+
+  <!-- Fallback sin JS -->
+  <noscript>
+    <p style="color: red; text-align: center;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+  </noscript>
+
 </body>
 </html>

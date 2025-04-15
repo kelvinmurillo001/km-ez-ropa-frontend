@@ -1,246 +1,124 @@
 "use strict";
 
-/* =============================
-   ✅ Validación de Sesión Admin
-============================= */
-function verificarSesion() {
-  const token = localStorage.getItem("token");
-  if (!token || typeof token !== "string" || token.length < 10) {
-    alert("⚠️ No autorizado. Inicia sesión.");
-    location.href = "login.html";
-    return null;
-  }
+// 📦 Configuraciones
+const API_URL = "https://km-ez-ropa-backend.onrender.com/api/products";
 
+// 🔄 Elementos del DOM
+const contenedor = document.getElementById("contenedorProductos");
+const filtroCategoria = document.getElementById("filtroCategoria");
+const filtroSubcategoria = document.getElementById("filtroSubcategoria");
+const filtroOrden = document.getElementById("filtroOrden");
+const campoBusqueda = document.getElementById("busqueda");
+
+// 🛒 Inicializar
+document.addEventListener("DOMContentLoaded", async () => {
   try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    if (!payload || payload.role !== "admin") {
-      alert("⛔ Acceso denegado.");
-      localStorage.removeItem("token");
-      location.href = "login.html";
-      return null;
-    }
-    return token;
+    const productos = await obtenerProductos();
+    renderizarFiltros(productos);
+    renderizarProductos(productos);
+    updateCartWidget();
+
+    // Eventos de filtros y búsqueda
+    [filtroCategoria, filtroSubcategoria, filtroOrden, campoBusqueda].forEach(input =>
+      input.addEventListener("input", () => renderizarProductos(productos))
+    );
   } catch (err) {
-    console.error("❌ Token inválido:", err);
-    alert("⚠️ Sesión inválida. Inicia sesión nuevamente.");
-    localStorage.removeItem("token");
-    location.href = "login.html";
-    return null;
+    console.error("❌ Error al cargar productos:", err);
+    contenedor.innerHTML = "<p>❌ Error al cargar productos. Intenta más tarde.</p>";
   }
-}
 
-/* =============================
-   🎨 Utilidades de UI
-============================= */
-function mostrarMensaje(el, mensaje, tipo = "info") {
-  const colores = {
-    success: { bg: "#e8f5e9", color: "#2e7d32" },
-    error: { bg: "#ffebee", color: "#b71c1c" },
-    warning: { bg: "#fff3cd", color: "#856404" },
-    info: { bg: "#e3f2fd", color: "#0277bd" }
-  };
-
-  const { bg, color } = colores[tipo] || colores.info;
-  el.textContent = mensaje;
-  el.classList.remove("oculto");
-  el.style.backgroundColor = bg;
-  el.style.color = color;
-
-  setTimeout(() => el.classList.add("oculto"), 4000);
-}
-
-function logout() {
-  localStorage.removeItem("token");
-  location.href = "login.html";
-}
-
-function goBack() {
-  location.href = "panel.html";
-}
-
-/* =============================
-   📦 Config inicial
-============================= */
-const token = verificarSesion();
-const headers = {
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${token}`
-};
-const API = "https://km-ez-ropa-backend.onrender.com/api/categories";
-
-/* =============================
-   📍 Elementos DOM
-============================= */
-const message = document.getElementById("message");
-const categoryForm = document.getElementById("formCategoria");
-const subcategoryForm = document.getElementById("subcategoryForm");
-const categoryNameInput = document.getElementById("nombreCategoria");
-const subcategoryNameInput = document.getElementById("nuevaSubcategoria");
-const categorySelect = document.getElementById("categorySelect");
-const categoryList = document.getElementById("listaCategorias");
-
-const coloresCategorias = ["blue", "orange", "red", "green", "purple", "teal"];
-
-/* =============================
-   📥 Cargar Categorías
-============================= */
-async function loadCategories() {
-  try {
-    const res = await fetch(API);
-    const data = await res.json();
-    renderCategorySelect(data);
-    renderCategoryCards(data);
-  } catch (err) {
-    console.error("❌ Error al cargar categorías:", err);
-    mostrarMensaje(message, "❌ No se pudieron cargar las categorías", "error");
+  // Aplicar modo oscuro si está activado
+  if (localStorage.getItem("modoOscuro") === "true") {
+    document.body.classList.add("modo-oscuro");
   }
+
+  // Toggle modo oscuro
+  document.getElementById("modoToggle")?.addEventListener("click", () => {
+    document.body.classList.toggle("modo-oscuro");
+    localStorage.setItem("modoOscuro", document.body.classList.contains("modo-oscuro"));
+  });
+});
+
+// 🔍 Obtener productos desde el backend
+async function obtenerProductos() {
+  const res = await fetch(API_URL);
+  if (!res.ok) throw new Error("No se pudo obtener el catálogo.");
+  return await res.json();
 }
 
-function renderCategorySelect(data) {
-  categorySelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
-  data.forEach(cat => {
-    const opt = new Option(cat.name, cat._id);
-    categorySelect.appendChild(opt);
+// 🎨 Renderizar filtros
+function renderizarFiltros(productos) {
+  const categorias = [...new Set(productos.map(p => p.category || "Sin categoría"))];
+  const subcategorias = [...new Set(productos.map(p => p.subcategory || "Sin subcategoría"))];
+
+  categorias.forEach(c => {
+    const option = document.createElement("option");
+    option.value = c;
+    option.textContent = c;
+    filtroCategoria.appendChild(option);
+  });
+
+  subcategorias.forEach(s => {
+    const option = document.createElement("option");
+    option.value = s;
+    option.textContent = s;
+    filtroSubcategoria.appendChild(option);
   });
 }
 
-function renderCategoryCards(data) {
-  categoryList.innerHTML = "";
+// 🖼️ Renderizar productos en el DOM
+function renderizarProductos(productos) {
+  contenedor.innerHTML = "";
+  const categoria = filtroCategoria.value;
+  const subcategoria = filtroSubcategoria.value;
+  const orden = filtroOrden.value;
+  const busqueda = campoBusqueda.value.toLowerCase();
 
-  data.forEach((cat, index) => {
-    const color = coloresCategorias[index % coloresCategorias.length];
+  let filtrados = productos.filter(p => {
+    const nombre = p.nombre.toLowerCase();
+    const coincideCategoria = !categoria || p.category === categoria;
+    const coincideSubcategoria = !subcategoria || p.subcategory === subcategoria;
+    const coincideBusqueda = nombre.includes(busqueda);
 
-    const card = document.createElement("div");
-    card.className = `categoria-card fade-in`;
-    card.dataset.color = color;
-
-    const subcats = (cat.subcategories || []).map(sub => `
-      <li>
-        ${sub}
-        <button onclick="deleteSubcategory('${cat._id}', '${sub}')" aria-label="Eliminar subcategoría ${sub}">❌</button>
-      </li>
-    `).join("");
-
-    card.innerHTML = `
-      <div class="cat-header">
-        <strong>${cat.name}</strong>
-        <button onclick="deleteCategory('${cat._id}')" class="btn btn-sm danger" aria-label="Eliminar categoría ${cat.name}">🗑</button>
-      </div>
-      <ul class="subcategoria-list">${subcats}</ul>
-    `;
-    categoryList.appendChild(card);
+    return coincideCategoria && coincideSubcategoria && coincideBusqueda;
   });
+
+  if (orden === "precio-asc") {
+    filtrados.sort((a, b) => a.precio - b.precio);
+  } else if (orden === "precio-desc") {
+    filtrados.sort((a, b) => b.precio - a.precio);
+  } else {
+    filtrados.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }
+
+  if (!filtrados.length) {
+    contenedor.innerHTML = "<p style='text-align:center;'>🙁 No se encontraron productos.</p>";
+    return;
+  }
+
+  filtrados.forEach(producto => contenedor.appendChild(crearTarjetaProducto(producto)));
 }
 
-/* =============================
-   ➕ Crear Categoría
-============================= */
-categoryForm?.addEventListener("submit", async e => {
-  e.preventDefault();
-  const name = categoryNameInput.value.trim();
-  if (!name) return mostrarMensaje(message, "⚠️ Escribe un nombre", "warning");
+// 🧱 Crear tarjeta HTML de producto
+function crearTarjetaProducto(producto) {
+  const div = document.createElement("div");
+  div.className = "card fade-in";
 
-  try {
-    const res = await fetch(API, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({ name })
-    });
+  const esDestacado = producto.destacado;
+  const stock = producto.stock || 0;
 
-    const data = await res.json();
-    if (res.ok) {
-      mostrarMensaje(message, "✅ Categoría creada", "success");
-      categoryNameInput.value = "";
-      loadCategories();
-    } else {
-      mostrarMensaje(message, `❌ ${data.message || "Error al crear categoría"}`, "error");
-    }
-  } catch {
-    mostrarMensaje(message, "❌ Error de red", "error");
-  }
-});
+  div.innerHTML = `
+    <img src="${producto.imagen || '/assets/logo.jpg'}" alt="${producto.nombre}" onerror="this.src='/assets/logo.jpg'">
+    <h4>${producto.nombre}</h4>
+    ${esDestacado ? `<p class="badge-destacado">⭐ Destacado</p>` : ""}
+    <p><strong>Precio:</strong> $${producto.precio}</p>
+    <p><strong>Categoría:</strong> ${producto.category}</p>
+    <p><strong>Subcategoría:</strong> ${producto.subcategory}</p>
+    <p><strong>Stock:</strong> ${stock}</p>
+    <button class="btn-comprar" onclick='addToCart(${JSON.stringify(producto)})'>
+      🛒 Agregar al carrito
+    </button>
+  `;
 
-/* =============================
-   ➕ Crear Subcategoría
-============================= */
-subcategoryForm?.addEventListener("submit", async e => {
-  e.preventDefault();
-  const categoryId = categorySelect.value;
-  const subcategory = subcategoryNameInput.value.trim();
-
-  if (!categoryId || !subcategory) {
-    return mostrarMensaje(message, "⚠️ Selecciona una categoría y escribe una subcategoría", "warning");
-  }
-
-  try {
-    const res = await fetch(`${API}/${categoryId}/subcategories`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({ subcategory })
-    });
-
-    const data = await res.json();
-    if (res.ok) {
-      mostrarMensaje(message, "✅ Subcategoría añadida", "success");
-      subcategoryNameInput.value = "";
-      loadCategories();
-    } else {
-      mostrarMensaje(message, `❌ ${data.message || "Error al agregar subcategoría"}`, "error");
-    }
-  } catch {
-    mostrarMensaje(message, "❌ Error al conectar con servidor", "error");
-  }
-});
-
-/* =============================
-   🗑 Eliminar Categoría
-============================= */
-window.deleteCategory = async id => {
-  if (!confirm("¿Eliminar esta categoría completa?")) return;
-
-  try {
-    const res = await fetch(`${API}/${id}`, {
-      method: "DELETE",
-      headers
-    });
-
-    if (res.ok) {
-      mostrarMensaje(message, "🗑 Categoría eliminada", "success");
-      loadCategories();
-    } else {
-      mostrarMensaje(message, "❌ No se pudo eliminar categoría", "error");
-    }
-  } catch {
-    mostrarMensaje(message, "❌ Error de red al eliminar", "error");
-  }
-};
-
-/* =============================
-   🗑 Eliminar Subcategoría
-============================= */
-window.deleteSubcategory = async (id, subcategory) => {
-  if (!confirm("¿Eliminar esta subcategoría?")) return;
-
-  try {
-    const res = await fetch(`${API}/${id}/subcategories`, {
-      method: "DELETE",
-      headers,
-      body: JSON.stringify({ subcategory })
-    });
-
-    if (res.ok) {
-      mostrarMensaje(message, "✅ Subcategoría eliminada", "success");
-      loadCategories();
-    } else {
-      mostrarMensaje(message, "❌ No se pudo eliminar subcategoría", "error");
-    }
-  } catch {
-    mostrarMensaje(message, "❌ Error al eliminar subcategoría", "error");
-  }
-};
-
-/* =============================
-   ▶️ Inicialización
-============================= */
-loadCategories();
-window.verificarToken = verificarSesion;
+  return div;
+}

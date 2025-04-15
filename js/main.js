@@ -1,65 +1,101 @@
 "use strict";
 
-document.addEventListener("DOMContentLoaded", () => {
-  aplicarModoOscuroInicial();
-  renderProductosPopulares();
-  renderFloatingButtons();
-});
+/**
+ * main.js
+ * Controla la carga de productos destacados en el index.html
+ * y gestiona el botón de modo oscuro.
+ */
 
-/* 🌙 Modo oscuro */
-function aplicarModoOscuroInicial() {
-  const toggle = document.getElementById("modoToggle");
-  if (localStorage.getItem("modoOscuro") === "true") {
+// Endpoint del backend
+const API_URL = "https://km-ez-ropa-backend.onrender.com/api/products";
+
+// Elementos
+const catalogo = document.getElementById("catalogo");
+const modoBtn = document.getElementById("modoToggle");
+const carritoWidgetContainer = document.getElementById("carrito-widget-container");
+
+// 🌓 Alternar modo oscuro
+function toggleModoOscuro() {
+  document.body.classList.toggle("modo-oscuro");
+  const isDark = document.body.classList.contains("modo-oscuro");
+  localStorage.setItem("modoOscuro", isDark);
+  modoBtn.textContent = isDark ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+}
+
+// ✅ Restaurar preferencia guardada
+function verificarModoGuardado() {
+  const modoOscuro = localStorage.getItem("modoOscuro") === "true";
+  if (modoOscuro) {
     document.body.classList.add("modo-oscuro");
+    modoBtn.textContent = "☀️ Modo Claro";
   }
-
-  toggle?.addEventListener("click", () => {
-    document.body.classList.toggle("modo-oscuro");
-    localStorage.setItem("modoOscuro", document.body.classList.contains("modo-oscuro"));
-  });
 }
 
-/* 🧥 Mostrar productos populares */
-async function renderProductosPopulares() {
+// 🧲 Cargar productos populares
+async function cargarProductos() {
   try {
-    const res = await fetch("https://km-ez-ropa-backend.onrender.com/api/products");
-    const productos = await res.json();
-    const populares = productos.filter(p => p.destacado).slice(0, 6);
-    const contenedor = document.getElementById("catalogo");
+    const res = await fetch(API_URL);
+    if (!res.ok) throw new Error("Error al cargar productos");
 
-    populares.forEach(p => {
-      const card = document.createElement("div");
-      card.className = "card fade-in";
-      card.innerHTML = `
-        <img src="${p.imagen}" alt="${p.nombre}" />
-        <h3>${p.nombre}</h3>
-        <p><strong>Precio:</strong> $${p.precio}</p>
-        <p><strong>Categoría:</strong> ${p.category}</p>
-        <button onclick="window.location.href='detalle.html?id=${p._id}'">👁️ Ver Detalles</button>
-      `;
-      contenedor.appendChild(card);
+    const productos = await res.json();
+
+    const destacados = productos
+      .filter(p => p.destacado)
+      .slice(0, 12); // Limita a 12 para evitar scroll excesivo
+
+    destacados.forEach(p => {
+      const card = crearCard(p);
+      catalogo.appendChild(card);
     });
-  } catch (err) {
-    console.error("❌ Error al cargar productos:", err);
+
+  } catch (error) {
+    console.error("❌ Error cargando productos:", error.message);
+    catalogo.innerHTML = `<p style="color:red; text-align:center;">❌ Error al cargar productos.</p>`;
   }
 }
 
-/* 🛒 Carrito + 💬 WhatsApp */
-function renderFloatingButtons() {
-  const contenedor = document.getElementById("carrito-widget-container");
-  if (!contenedor) return;
+// 🧩 Crear tarjeta de producto
+function crearCard(producto) {
+  const div = document.createElement("div");
+  div.className = "card fade-in";
 
-  contenedor.innerHTML = `
-    <div id="cart-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
-      <img src="/assets/cart-icon.svg" alt="Carrito" />
-      <span id="cart-widget-count">0</span>
+  const imagen = producto.imagen || "/assets/logo.jpg";
+  const nombre = producto.nombre || "Producto";
+  const precio = producto.precio || 0;
+
+  div.innerHTML = `
+    <img src="${imagen}" alt="${nombre}" loading="lazy" onerror="this.src='/assets/logo.jpg'" />
+    <h3>${nombre}</h3>
+    <p><strong>$${precio}</strong></p>
+    ${producto.destacado ? `<span class="destacado-badge">🔥 Popular</span>` : ""}
+    <button onclick="window.location.href='detalle.html?id=${producto._id}'">Ver Detalle</button>
+  `;
+  return div;
+}
+
+// 🛒 Agregar botón flotante del carrito y WhatsApp
+function agregarWidgetsFlotantes() {
+  carritoWidgetContainer.innerHTML = `
+    <div id="cart-widget">
+      <a href="/carrito.html">
+        <img src="/assets/cart.png" alt="Carrito de Compras" />
+        <span id="cart-widget-count">0</span>
+      </a>
     </div>
     <div class="whatsapp-float">
-      <a href="https://wa.me/593990270864" target="_blank" aria-label="WhatsApp">
-        <img src="/assets/whatsapp.svg" alt="WhatsApp" />
+      <a href="https://wa.me/593990270864" target="_blank">
+        <img src="/assets/whatsapp.png" alt="WhatsApp" />
       </a>
     </div>
   `;
-
-  if (typeof updateCartWidget === "function") updateCartWidget();
 }
+
+// 📦 Inicializar
+document.addEventListener("DOMContentLoaded", () => {
+  verificarModoGuardado();
+  agregarWidgetsFlotantes();
+  cargarProductos();
+  updateCartWidget?.(); // desde cart.js
+
+  modoBtn?.addEventListener("click", toggleModoOscuro);
+});

@@ -1,143 +1,157 @@
-/* 📦 Formularios en línea */
-.form-inline {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 20px;
+/* 🎨 Estilos para catálogo de productos por categorías */
+
+.catalogo-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.05);
 }
 
-.form-inline input,
-.form-inline select {
-  padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-  flex: 1;
-  min-width: 200px;
-  transition: border-color 0.3s, background 0.3s;
-}
-.form-inline input:focus-visible,
-.form-inline select:focus-visible {
-  border-color: #1976d2;
-  outline: none;
-}
-body.modo-oscuro .form-inline input,
-body.modo-oscuro .form-inline select {
-  background-color: #2c2c2c;
+body.modo-oscuro .catalogo-container {
+  background-color: #1f1f1f;
   color: #eee;
+}
+
+/* 🧱 Tarjeta del producto */
+.card {
+  background-color: #fafafa;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 1px solid #eee;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.card img {
+  max-width: 100%;
+  height: 180px;
+  object-fit: contain;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  background-color: #f3f3f3;
+}
+
+.card h4 {
+  font-size: 1.05rem;
+  font-weight: bold;
+  margin: 8px 0;
+  color: #333;
+}
+
+.card p {
+  font-size: 0.95rem;
+  margin: 6px 0;
+  color: #555;
+}
+
+.card button {
+  margin-top: 10px;
+  background-color: darkorange;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.card button:hover {
+  background-color: #cc7000;
+}
+
+body.modo-oscuro .card {
+  background-color: #262626;
+  color: #eee;
+  border: 1px solid #444;
+}
+
+body.modo-oscuro .card p {
+  color: #ccc;
+}
+
+/* ⭐ Badge */
+.badge-destacado {
+  background-color: #ffeb3b;
+  color: #333;
+  padding: 3px 8px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  border-radius: 12px;
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+/* 🔍 Filtros */
+.filtros-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  justify-content: center;
+  align-items: center;
+  background-color: #f3f3f3;
+  border-bottom: 1px solid #ddd;
+}
+
+body.modo-oscuro .filtros-container {
+  background-color: #2a2a2a;
+  border-bottom: 1px solid #444;
+}
+
+.filtros-container select,
+.filtros-container input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  min-width: 160px;
+}
+
+.filtros-container input::placeholder {
+  color: #888;
+}
+
+body.modo-oscuro .filtros-container select,
+body.modo-oscuro .filtros-container input {
+  background-color: #1e1e1e;
+  color: #fff;
   border-color: #555;
 }
 
-/* ➕ Botón en línea */
-.form-inline .btn {
-  padding: 10px 16px;
-  font-weight: bold;
-  font-size: 14px;
-  background-color: #00796b;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.form-inline .btn:hover,
-.form-inline .btn:focus-visible {
-  background-color: #004d40;
-  outline: none;
-}
-
-/* 🔷 Tarjeta de categoría */
-.categoria-card {
-  border-left: 5px solid var(--cat-color, #aaa);
-  background: #f8f8f8;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1.2rem;
-  animation: fadeIn 0.4s ease;
-}
-body.modo-oscuro .categoria-card {
-  background-color: #2a2a2a;
-  border-color: var(--cat-color, #555);
-}
-
-.cat-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.categoria-card strong {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #333;
-}
-body.modo-oscuro .categoria-card strong {
-  color: #fff;
-}
-
-/* 📌 Lista de subcategorías */
-.subcategoria-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.subcategoria-list li {
-  background: #e0e0e0;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: background 0.2s ease;
-}
-.subcategoria-list li:hover {
-  background-color: #d0d0d0;
-}
-body.modo-oscuro .subcategoria-list li {
-  background: #444;
-  color: #fff;
-}
-body.modo-oscuro .subcategoria-list li:hover {
-  background-color: #555;
-}
-
-/* ❌ Botón de subcategoría */
-.subcategoria-list button {
-  background: transparent;
-  border: none;
-  color: crimson;
-  font-size: 15px;
-  cursor: pointer;
-  padding: 0;
-}
-.subcategoria-list button:hover,
-.subcategoria-list button:focus-visible {
-  text-decoration: underline;
-  outline: none;
-}
-
-/* 🎨 Colores para categorías */
-.categoria-card[data-color="blue"]   { --cat-color: #2196f3; }
-.categoria-card[data-color="orange"] { --cat-color: #ff9800; }
-.categoria-card[data-color="red"]    { --cat-color: #f44336; }
-.categoria-card[data-color="green"]  { --cat-color: #4caf50; }
-.categoria-card[data-color="purple"] { --cat-color: #9c27b0; }
-.categoria-card[data-color="teal"]   { --cat-color: #009688; }
-
-/* ✨ Fade-in suave */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
 /* 📱 Responsive */
-@media (max-width: 600px) {
-  .form-inline {
+@media (max-width: 768px) {
+  .catalogo-container {
+    grid-template-columns: 1fr 1fr;
+    padding: 1rem;
+  }
+
+  .filtros-container {
     flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .card img {
+    height: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .catalogo-container {
+    grid-template-columns: 1fr;
+  }
+
+  .card img {
+    height: 150px;
   }
 }
