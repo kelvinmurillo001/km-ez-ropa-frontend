@@ -2,12 +2,12 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KM & EZ ROPA - Catálogo</title>
 
   <!-- ✅ SEO -->
   <meta name="description" content="Tienda de ropa para toda la familia. Encuentra moda para hombre, mujer, niños y bebés a precios accesibles." />
-  <meta name="keywords" content="ropa, moda, tienda de ropa, catálogo, hombre, mujer, niño, niña, bebé, ofertas, vestimenta" />
+  <meta name="keywords" content="ropa, moda, tienda de ropa, catálogo, hombre, mujer, niño, niña, bebé, ofertas" />
   <meta name="author" content="KM & EZ ROPA" />
   <meta name="robots" content="index, follow" />
 
@@ -45,107 +45,108 @@
 </head>
 <body>
 
-  <!-- 🔝 Encabezado -->
+  <!-- 🔝 ENCABEZADO -->
   <header class="header fade-in" role="banner">
     <div class="logo">
-      <img src="/assets/logo.jpg" alt="Logo de KM & EZ ROPA" class="logo-img" onerror="this.src='https://res.cloudinary.com/dmbnkrhek/image/upload/v1711234567/logo.jpg'" />
+      <img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" width="64" height="64" onerror="this.src='https://res.cloudinary.com/dmbnkrhek/image/upload/v1711234567/logo.jpg'" />
       <h1>KM & EZ ROPA</h1>
     </div>
     <p class="subtitulo">Moda para toda la familia | Calidad y precio</p>
     <div class="top-buttons">
-      <button type="button" class="btn" id="modoToggle" aria-label="Cambiar a modo oscuro o claro">🌙 Modo Oscuro</button>
+      <button type="button" class="btn btn-toggle-modo" id="modoToggle" aria-label="Cambiar modo de visualización">
+        <span aria-hidden="true">🌙</span> <span class="texto-modo">Modo Oscuro</span>
+      </button>
       <a href="login.html" class="btn" title="Ingresar como administrador">🔐 Iniciar sesión</a>
     </div>
   </header>
 
-  <!-- 🎁 Promoción activa -->
+  <!-- 🎁 PROMOCIÓN ACTIVA -->
   <section id="promoBanner" class="promo-banner oculto fade-in" aria-live="polite" role="region">
-    <p id="promoTexto"></p>
+    <p id="promoTexto"><!-- contenido dinámico --></p>
   </section>
 
-  <!-- 🎯 Filtros -->
-  <section class="filtros-container fade-in" aria-label="Filtros de búsqueda de productos">
-    <label for="categoria" class="visually-hidden">Filtrar por categoría</label>
-    <select id="categoria" aria-label="Filtrar por categoría">
+  <!-- 🎯 FILTROS -->
+  <section class="filtros-container fade-in" aria-label="Filtros del catálogo">
+    <select id="categoria" name="categoria" autocomplete="off" aria-label="Categoría">
       <option value="todas">Categoría: Todas</option>
     </select>
-
-    <label for="subcategoria" class="visually-hidden">Filtrar por subcategoría</label>
-    <select id="subcategoria" aria-label="Filtrar por subcategoría">
+    <select id="subcategoria" name="subcategoria" autocomplete="off" aria-label="Subcategoría">
       <option value="todas">Subcategoría: Todas</option>
     </select>
-
-    <label for="orden" class="visually-hidden">Ordenar productos</label>
-    <select id="orden" aria-label="Ordenar productos">
+    <select id="orden" name="orden" autocomplete="off" aria-label="Ordenar por">
       <option value="reciente">Más recientes</option>
       <option value="precioAsc">Precio ↑</option>
       <option value="precioDesc">Precio ↓</option>
       <option value="destacados">Destacados ⭐</option>
     </select>
-
-    <input type="text" id="busqueda" placeholder="🔍 Buscar productos..." class="busqueda-input" aria-label="Buscar productos por nombre" />
+    <input type="search" id="busqueda" placeholder="🔍 Buscar productos..." aria-label="Buscar productos" class="busqueda-input" />
   </section>
 
-  <!-- 🛍️ Catálogo principal -->
+  <!-- 🛍️ CATÁLOGO -->
   <main class="catalogo-container fade-in" role="main">
     <h2 class="text-center">Catálogo de Productos</h2>
     <div id="catalogo" class="catalogo-grid" role="list"></div>
     <div id="mensajeCatalogo" class="mensaje-error oculto" role="alert"></div>
   </main>
 
-  <!-- 🧾 Modal carrito -->
+  <!-- 🧾 MODAL CARRITO -->
   <div id="carritoModal" class="modal fade-in" role="dialog" aria-modal="true" aria-labelledby="tituloCarrito">
     <div class="modal-contenido">
-      <span class="cerrar" id="cerrarCarrito" role="button" aria-label="Cerrar carrito">&times;</span>
+      <button class="cerrar" id="cerrarCarrito" aria-label="Cerrar carrito">&times;</button>
       <h3 id="tituloCarrito">🛍️ Tu Carrito</h3>
       <ul id="listaCarrito"></ul>
-      <button type="button" id="enviarWhatsApp" class="btn" aria-label="Enviar pedido por WhatsApp">📲 Enviar a WhatsApp</button>
+      <button type="button" id="enviarWhatsApp" class="btn">📲 Enviar a WhatsApp</button>
     </div>
   </div>
 
-  <!-- 📞 Botón flotante de WhatsApp -->
-  <a href="https://wa.me/593990270864" class="whatsapp-float fade-in" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
-    <img src="/assets/whatsapp.svg" alt="Icono de WhatsApp" width="48" height="48" />
-  </a>
+  <!-- 📞 BOTÓN WHATSAPP FLOTANTE -->
+  <aside>
+    <a href="https://wa.me/593990270864" class="whatsapp-float fade-in" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
+      <img src="/assets/whatsapp.svg" alt="Icono WhatsApp" width="48" height="48" />
+    </a>
+  </aside>
 
-  <!-- 👣 Pie de página -->
+  <!-- 👣 PIE DE PÁGINA -->
   <footer class="footer fade-in" role="contentinfo">
     <p>© 2025 KM & EZ ROPA - Todos los derechos reservados</p>
   </footer>
 
-  <!-- ✅ Scripts -->
+  <!-- ✅ SCRIPTS -->
   <script src="/js/cart.js" defer></script>
   <script src="/js/script.js" defer></script>
 
-  <!-- 🌗 Modo Oscuro persistente -->
+  <!-- 🌗 MODO OSCURO -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const btnToggle = document.getElementById("modoToggle");
+      const spanTexto = btnToggle.querySelector(".texto-modo");
       const body = document.body;
+      const oscuro = localStorage.getItem("modoOscuro") === "true";
 
-      const activar = localStorage.getItem("modoOscuro") === "true";
-      if (activar) {
+      if (oscuro) {
         body.classList.add("modo-oscuro");
-        btnToggle.textContent = "☀️ Modo Claro";
+        spanTexto.textContent = "Modo Claro";
       }
 
       btnToggle?.addEventListener("click", () => {
         body.classList.toggle("modo-oscuro");
         const activo = body.classList.contains("modo-oscuro");
         localStorage.setItem("modoOscuro", activo);
-        btnToggle.textContent = activo ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+        spanTexto.textContent = activo ? "Modo Claro" : "Modo Oscuro";
       });
     });
   </script>
-  <!-- 🛒 Widget del carrito -->
-<div id="carrito-widget-container"></div>
-<script>
-  fetch("carrito-widget.html")
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById("carrito-widget-container").innerHTML = html;
-    });
-</script>
+
+  <!-- 🛒 CARRITO WIDGET -->
+  <div id="carrito-widget-container"></div>
+  <script>
+    fetch("carrito-widget.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("carrito-widget-container").innerHTML = html;
+      })
+      .catch(() => console.warn("⚠️ No se pudo cargar el widget del carrito."));
+  </script>
 
 </body>
 </html>

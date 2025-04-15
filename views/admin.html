@@ -6,9 +6,9 @@
   <title>Admin - Productos | KM & EZ ROPA</title>
 
   <!-- 🔐 SEO -->
-  <meta name="robots" content="noindex, nofollow">
-  <meta name="author" content="KM & EZ ROPA">
-  <meta name="description" content="Panel de administración para gestionar productos en KM & EZ ROPA.">
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="author" content="KM & EZ ROPA" />
+  <meta name="description" content="Panel de administración para gestionar productos en KM & EZ ROPA." />
 
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -22,18 +22,22 @@
 </head>
 <body>
 
+  <!-- ☀️🌙 Modo Oscuro -->
+  <div style="position: absolute; top: 15px; right: 15px;">
+    <button id="modoToggle" class="btn btn-sm" aria-label="Alternar modo oscuro">🌙 Modo Oscuro</button>
+  </div>
+
   <main class="admin-container fade-in" role="main" aria-label="Gestión de productos">
     <!-- 🔙 Navegación -->
-    <nav aria-label="Volver al panel" role="navigation">
+    <nav aria-label="Volver al panel principal" role="navigation">
       <a class="btn-volver" href="panel.html">⬅️ Volver al Panel</a>
     </nav>
 
     <h1>🛍️ Administrar Productos</h1>
     <p class="admin-info">👤 Usuario actual: <span id="admin-username">admin</span></p>
 
-    <!-- 📝 Formulario producto -->
+    <!-- 📝 Formulario de Producto -->
     <form id="productoForm" autocomplete="off" aria-label="Formulario para crear producto">
-
       <!-- 📦 Información básica -->
       <fieldset>
         <legend>📦 Información del Producto</legend>
@@ -73,7 +77,6 @@
         />
         <div id="previewImagenesPrincipales" class="image-preview" aria-live="polite"></div>
 
-        <!-- 🆕 Talla y Color para la imagen principal -->
         <div class="form-row">
           <input type="text" id="mainTalla" placeholder="Talla principal (Ej: M)" required />
           <input type="text" id="mainColor" placeholder="Color principal (Ej: Azul)" required />
@@ -85,7 +88,7 @@
       <!-- 🧩 Variantes -->
       <fieldset>
         <legend>🧩 Variantes (opcional)</legend>
-        <p class="nota">Máximo 4 variantes (talla, color e imagen cada una).</p>
+        <p class="nota">Máximo 4 variantes. Incluye talla, color e imagen.</p>
         <div class="form-row">
           <input type="text" id="talla" placeholder="Talla (Ej: S, M, L)" />
           <input type="text" id="color" placeholder="Color (Ej: rojo, azul)" />
@@ -95,7 +98,7 @@
         <div id="previewImagen" class="image-preview" aria-live="polite"></div>
       </fieldset>
 
-      <!-- 📦 Inventario -->
+      <!-- 📊 Inventario -->
       <fieldset>
         <legend>📊 Inventario</legend>
         <div class="form-row">
@@ -107,56 +110,60 @@
         </div>
       </fieldset>
 
-      <!-- 💾 Botón Guardar -->
+      <!-- 💾 Guardar -->
       <button type="submit" class="btn-guardar" id="btnGuardar">💾 Guardar Producto</button>
     </form>
 
-    <!-- 🧩 Variantes Agregadas -->
+    <!-- 🧩 Variantes agregadas -->
     <section aria-label="Variantes añadidas">
       <h3>📸 Variantes añadidas</h3>
       <div id="listaVariantes" class="variantes-container" role="region" aria-live="polite"></div>
     </section>
 
-    <!-- 📢 Mensaje de estado -->
+    <!-- 📢 Mensajes -->
     <div id="editandoProducto" class="admin-message oculto" role="alert" aria-live="polite">✏️ Estás editando un producto existente</div>
     <div id="message" class="admin-message" role="alert" aria-live="polite"></div>
 
     <hr />
 
     <!-- 📋 Lista de productos -->
-    <section aria-label="Lista de productos">
+    <section aria-label="Lista de productos registrados">
       <h2>📦 Productos Registrados</h2>
       <div id="listaProductos" class="product-list" role="region" aria-live="polite"></div>
     </section>
   </main>
 
-  <!-- 🌗 Modo oscuro persistente -->
+  <!-- 🌗 Script Modo Oscuro + Token -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const btnToggle = document.getElementById("modoToggle");
+      const usernameEl = document.getElementById("admin-username");
+
+      // Token
       const token = localStorage.getItem("token");
       if (token) {
         try {
-          const userData = JSON.parse(atob(token.split('.')[1]));
-          document.getElementById("admin-username").textContent = userData.username || "admin";
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          usernameEl.textContent = payload?.username || "admin";
         } catch (e) {
-          console.warn("Token inválido:", e);
+          console.warn("⚠️ Token inválido:", e);
+          usernameEl.textContent = "admin";
         }
       }
 
-      if (localStorage.getItem("modoOscuro") === "true") {
+      // Modo Oscuro
+      const oscuro = localStorage.getItem("modoOscuro") === "true";
+      if (oscuro) {
         document.body.classList.add("modo-oscuro");
-        if (btnToggle) btnToggle.textContent = "☀️ Modo Claro";
+        btnToggle.textContent = "☀️ Modo Claro";
       }
 
-      if (btnToggle) {
-        btnToggle.addEventListener("click", () => {
-          document.body.classList.toggle("modo-oscuro");
-          const oscuro = document.body.classList.contains("modo-oscuro");
-          localStorage.setItem("modoOscuro", oscuro);
-          btnToggle.textContent = oscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
-        });
-      }
+      btnToggle?.addEventListener("click", () => {
+        document.body.classList.toggle("modo-oscuro");
+        const isDark = document.body.classList.contains("modo-oscuro");
+        localStorage.setItem("modoOscuro", isDark);
+        btnToggle.textContent = isDark ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+      });
     });
   </script>
 </body>

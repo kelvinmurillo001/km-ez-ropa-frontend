@@ -10,10 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   restaurarModoOscuro();
   inicializarBotones();
 
-  // Actualizar contador del carrito desde cart.js si existe
-  if (typeof updateCartWidget === "function") {
-    updateCartWidget();
-  }
+  if (typeof updateCartWidget === "function") updateCartWidget();
 });
 
 /* 📦 Cargar productos */
@@ -32,13 +29,18 @@ async function cargarProductos() {
     cargarSubcategoriasUnicas();
     cargarPromocionActiva();
 
-    document.getElementById("busqueda")?.addEventListener("input", aplicarFiltros);
-    document.getElementById("categoria")?.addEventListener("change", () => {
+    const busqueda = document.getElementById("busqueda");
+    const categoria = document.getElementById("categoria");
+    const subcategoria = document.getElementById("subcategoria");
+    const orden = document.getElementById("orden");
+
+    busqueda?.addEventListener("input", aplicarFiltros);
+    categoria?.addEventListener("change", () => {
       cargarSubcategoriasUnicas();
       aplicarFiltros();
     });
-    document.getElementById("subcategoria")?.addEventListener("change", aplicarFiltros);
-    document.getElementById("orden")?.addEventListener("change", aplicarFiltros);
+    subcategoria?.addEventListener("change", aplicarFiltros);
+    orden?.addEventListener("change", aplicarFiltros);
   } catch (error) {
     console.error("❌ Error al cargar productos:", error);
     const catalogo = document.getElementById("catalogo");
@@ -48,52 +50,42 @@ async function cargarProductos() {
   }
 }
 
-/* 🔍 Filtros */
+/* 🔍 Aplicar filtros */
 function aplicarFiltros() {
-  const termino = (document.getElementById("busqueda")?.value || "")
-    .trim().toLowerCase().replace(/[^\w\s]/gi, "");
-
+  const termino = normalizarTexto(document.getElementById("busqueda")?.value);
   const categoria = (document.getElementById("categoria")?.value || "todas").toLowerCase();
   const subcategoria = (document.getElementById("subcategoria")?.value || "todas").toLowerCase();
   const orden = document.getElementById("orden")?.value || "reciente";
 
-  let filtrados = productos.filter(p => {
-    const valido = typeof p.name === "string" &&
-                   typeof p.price === "number" &&
-                   Array.isArray(p.images) &&
-                   p.images.length > 0 &&
-                   typeof p.images[0]?.url === "string";
-
-    if (!valido) {
-      console.warn("⚠️ Producto omitido por estructura inválida:", p);
-      return false;
-    }
-
-    return (
-      (categoria === "todas" || p.category?.toLowerCase() === categoria) &&
-      (subcategoria === "todas" || p.subcategory?.toLowerCase() === subcategoria) &&
-      (!termino || p.name.toLowerCase().includes(termino))
-    );
-  });
+  let filtrados = productos.filter(esProductoValido).filter(p =>
+    (categoria === "todas" || p.category?.toLowerCase() === categoria) &&
+    (subcategoria === "todas" || p.subcategory?.toLowerCase() === subcategoria) &&
+    (!termino || p.name.toLowerCase().includes(termino))
+  );
 
   switch (orden) {
-    case "precioAsc":
-      filtrados.sort((a, b) => a.price - b.price);
-      break;
-    case "precioDesc":
-      filtrados.sort((a, b) => b.price - a.price);
-      break;
-    case "destacados":
-      filtrados = filtrados.filter(p => p.featured);
-      break;
-    default:
-      filtrados.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    case "precioAsc": filtrados.sort((a, b) => a.price - b.price); break;
+    case "precioDesc": filtrados.sort((a, b) => b.price - a.price); break;
+    case "destacados": filtrados = filtrados.filter(p => p.featured); break;
+    default: filtrados.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }
 
   mostrarProductos(filtrados);
 }
 
-/* 🖼️ Renderizado */
+/* ✅ Validación base de producto */
+function esProductoValido(p) {
+  const valido = typeof p.name === "string" &&
+                 typeof p.price === "number" &&
+                 Array.isArray(p.images) &&
+                 p.images.length > 0 &&
+                 typeof p.images[0]?.url === "string";
+
+  if (!valido) console.warn("⚠️ Producto omitido por estructura inválida:", p);
+  return valido;
+}
+
+/* 🖼️ Mostrar productos */
 function mostrarProductos(lista) {
   const contenedor = document.getElementById("catalogo");
   contenedor.innerHTML = "";
@@ -109,9 +101,8 @@ function mostrarProductos(lista) {
 
   lista.forEach(p => {
     const {
-      _id, name, price, stock,
-      images = [], category = "N/A",
-      subcategory = "N/A", featured, talla, colores
+      _id, name, price, stock, images = [],
+      category = "N/A", subcategory = "N/A", featured, talla, colores
     } = p;
 
     const agotado = !stock || stock <= 0;
@@ -122,43 +113,31 @@ function mostrarProductos(lista) {
     card.className = "card fade-in";
 
     const productoCart = {
-      id: _id,
-      nombre: name,
-      precio: price,
-      imagen,
-      talla: talla || "",
-      color: colores || ""
+      id: _id, nombre: name, precio: price,
+      imagen, talla: talla || "", color: colores || ""
     };
 
     card.innerHTML = `
       <a href="detalle.html?id=${encoded}" class="enlace-producto" aria-label="Ver detalles de ${name}">
         <div class="imagen-catalogo">
-          <img 
-            src="${imagen}" 
-            alt="${name}" 
-            class="zoomable" 
-            loading="lazy"
-            onerror="this.src='/assets/logo.jpg'" />
+          <img src="${imagen}" alt="${name}" class="zoomable" loading="lazy" onerror="this.src='/assets/logo.jpg'" />
         </div>
         <h3>${name}</h3>
       </a>
-
       ${featured ? `<span class="destacado-badge">⭐ Destacado</span>` : ""}
       <p><strong>Precio:</strong> $${price.toFixed(2)}</p>
       <p><strong>Categoría:</strong> ${category}</p>
       <p><strong>Subcategoría:</strong> ${subcategory}</p>
       <p><strong>Stock:</strong> ${agotado ? "❌ Agotado" : stock}</p>
-
       <button ${agotado ? "disabled" : ""} onclick='addToCart(${JSON.stringify(productoCart)})'>
         🛒 Agregar al carrito
-      </button>
-    `;
+      </button>`;
 
     contenedor.appendChild(card);
   });
 }
 
-/* 📂 Subcategorías dinámicas */
+/* 📂 Subcategorías únicas */
 function cargarSubcategoriasUnicas() {
   const categoria = (document.getElementById("categoria")?.value || "todas").toLowerCase();
   const subSelect = document.getElementById("subcategoria");
@@ -200,35 +179,40 @@ async function cargarPromocionActiva() {
   }
 }
 
-/* 📅 Fecha válida */
+/* 📅 Validar fecha */
 function isFechaEnRango(start, end) {
   const hoy = new Date().toISOString().split("T")[0];
   return (!start || start <= hoy) && (!end || end >= hoy);
 }
 
-/* 🌗 Modo oscuro */
+/* 🌗 Restaurar modo oscuro */
 function restaurarModoOscuro() {
   const oscuro = localStorage.getItem("modoOscuro") === "true";
   if (oscuro) {
     document.body.classList.add("modo-oscuro");
     const btn = document.getElementById("modoToggle");
-    if (btn) btn.textContent = "☀️ Modo Claro";
+    btn && (btn.textContent = "☀️ Modo Claro");
   }
 }
 
-/* ☀️ Botones */
+/* ☀️ Inicializar botones */
 function inicializarBotones() {
   const toggleBtn = document.getElementById("modoToggle");
   toggleBtn?.addEventListener("click", () => {
-    document.body.classList.toggle("modo-oscuro");
-    const oscuro = document.body.classList.contains("modo-oscuro");
+    const body = document.body;
+    body.classList.toggle("modo-oscuro");
+    const oscuro = body.classList.contains("modo-oscuro");
     localStorage.setItem("modoOscuro", oscuro);
     toggleBtn.textContent = oscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
   });
 
-  document.getElementById("loginRedirectBtn")?.addEventListener("click", () => {
-    window.location.href = "login.html";
-  });
+  const loginBtn = document.getElementById("loginRedirectBtn");
+  loginBtn?.addEventListener("click", () => (window.location.href = "login.html"));
+}
+
+/* 🧠 Normalizar texto */
+function normalizarTexto(txt = "") {
+  return txt.trim().toLowerCase().replace(/[^\w\s]/gi, "");
 }
 
 /* 👁️ Registrar visita */

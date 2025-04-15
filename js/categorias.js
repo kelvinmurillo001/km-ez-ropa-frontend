@@ -1,9 +1,10 @@
 "use strict";
 
-// ✅ Verifica si el usuario es admin
+/* =============================
+   ✅ Validación de Sesión Admin
+============================= */
 function verificarSesion() {
   const token = localStorage.getItem("token");
-
   if (!token || typeof token !== "string" || token.length < 10) {
     alert("⚠️ No autorizado. Inicia sesión.");
     location.href = "login.html";
@@ -13,36 +14,39 @@ function verificarSesion() {
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
     if (!payload || payload.role !== "admin") {
-      alert("⛔ Acceso denegado. Solo administradores.");
+      alert("⛔ Acceso denegado.");
       localStorage.removeItem("token");
       location.href = "login.html";
       return null;
     }
     return token;
   } catch (err) {
-    console.error("❌ Token malformado:", err);
-    alert("⚠️ Sesión inválida. Vuelve a iniciar sesión.");
+    console.error("❌ Token inválido:", err);
+    alert("⚠️ Sesión inválida. Inicia sesión nuevamente.");
     localStorage.removeItem("token");
     location.href = "login.html";
     return null;
   }
 }
 
-function mostrarMensaje(elemento, mensaje, tipo = "info") {
+/* =============================
+   🎨 Utilidades de UI
+============================= */
+function mostrarMensaje(el, mensaje, tipo = "info") {
   const colores = {
     success: { bg: "#e8f5e9", color: "#2e7d32" },
     error: { bg: "#ffebee", color: "#b71c1c" },
-    warning: { bg: "#fff8e1", color: "#f57c00" },
+    warning: { bg: "#fff3cd", color: "#856404" },
     info: { bg: "#e3f2fd", color: "#0277bd" }
   };
 
   const { bg, color } = colores[tipo] || colores.info;
-  elemento.textContent = mensaje;
-  elemento.classList.remove("oculto");
-  elemento.style.backgroundColor = bg;
-  elemento.style.color = color;
+  el.textContent = mensaje;
+  el.classList.remove("oculto");
+  el.style.backgroundColor = bg;
+  el.style.color = color;
 
-  setTimeout(() => elemento.classList.add("oculto"), 3500);
+  setTimeout(() => el.classList.add("oculto"), 4000);
 }
 
 function logout() {
@@ -54,15 +58,19 @@ function goBack() {
   location.href = "panel.html";
 }
 
-// ✅ Token y Headers
+/* =============================
+   📦 Config inicial
+============================= */
 const token = verificarSesion();
 const headers = {
   "Content-Type": "application/json",
   Authorization: `Bearer ${token}`
 };
-
-// 📍 DOM
 const API = "https://km-ez-ropa-backend.onrender.com/api/categories";
+
+/* =============================
+   📍 Elementos DOM
+============================= */
 const message = document.getElementById("message");
 const categoryForm = document.getElementById("formCategoria");
 const subcategoryForm = document.getElementById("subcategoryForm");
@@ -71,12 +79,11 @@ const subcategoryNameInput = document.getElementById("nuevaSubcategoria");
 const categorySelect = document.getElementById("categorySelect");
 const categoryList = document.getElementById("listaCategorias");
 
-// 🎨 Colores predeterminados para categoría
-const coloresCategorias = [
-  "blue", "orange", "red", "green", "purple", "teal"
-];
+const coloresCategorias = ["blue", "orange", "red", "green", "purple", "teal"];
 
-// 🔃 Cargar categorías
+/* =============================
+   📥 Cargar Categorías
+============================= */
 async function loadCategories() {
   try {
     const res = await fetch(API);
@@ -84,53 +91,50 @@ async function loadCategories() {
     renderCategorySelect(data);
     renderCategoryCards(data);
   } catch (err) {
-    console.error("❌ Error cargando categorías:", err);
+    console.error("❌ Error al cargar categorías:", err);
     mostrarMensaje(message, "❌ No se pudieron cargar las categorías", "error");
   }
 }
 
-// 🔽 Rellenar el <select> con categorías
 function renderCategorySelect(data) {
   categorySelect.innerHTML = `<option value="">Selecciona una categoría</option>`;
   data.forEach(cat => {
-    const option = document.createElement("option");
-    option.value = cat._id;
-    option.textContent = cat.name;
-    categorySelect.appendChild(option);
+    const opt = new Option(cat.name, cat._id);
+    categorySelect.appendChild(opt);
   });
 }
 
-// 📋 Renderizar tarjetas
 function renderCategoryCards(data) {
   categoryList.innerHTML = "";
 
   data.forEach((cat, index) => {
-    const color = coloresCategorias[index % coloresCategorias.length]; // Rota colores
+    const color = coloresCategorias[index % coloresCategorias.length];
 
     const card = document.createElement("div");
-    card.className = "categoria-card fade-in";
-    card.setAttribute("data-color", color);
+    card.className = `categoria-card fade-in`;
+    card.dataset.color = color;
 
     const subcats = (cat.subcategories || []).map(sub => `
       <li>
         ${sub}
-        <button onclick="deleteSubcategory('${cat._id}', '${sub}')" title="Eliminar">❌</button>
+        <button onclick="deleteSubcategory('${cat._id}', '${sub}')" aria-label="Eliminar subcategoría ${sub}">❌</button>
       </li>
     `).join("");
 
     card.innerHTML = `
       <div class="cat-header">
         <strong>${cat.name}</strong>
-        <button onclick="deleteCategory('${cat._id}')" class="btn btn-sm danger" title="Eliminar categoría">🗑</button>
+        <button onclick="deleteCategory('${cat._id}')" class="btn btn-sm danger" aria-label="Eliminar categoría ${cat.name}">🗑</button>
       </div>
       <ul class="subcategoria-list">${subcats}</ul>
     `;
-
     categoryList.appendChild(card);
   });
 }
 
-// ➕ Crear categoría
+/* =============================
+   ➕ Crear Categoría
+============================= */
 categoryForm?.addEventListener("submit", async e => {
   e.preventDefault();
   const name = categoryNameInput.value.trim();
@@ -144,7 +148,6 @@ categoryForm?.addEventListener("submit", async e => {
     });
 
     const data = await res.json();
-
     if (res.ok) {
       mostrarMensaje(message, "✅ Categoría creada", "success");
       categoryNameInput.value = "";
@@ -153,18 +156,20 @@ categoryForm?.addEventListener("submit", async e => {
       mostrarMensaje(message, `❌ ${data.message || "Error al crear categoría"}`, "error");
     }
   } catch {
-    mostrarMensaje(message, "❌ Error de red al crear categoría", "error");
+    mostrarMensaje(message, "❌ Error de red", "error");
   }
 });
 
-// ➕ Agregar subcategoría
+/* =============================
+   ➕ Crear Subcategoría
+============================= */
 subcategoryForm?.addEventListener("submit", async e => {
   e.preventDefault();
   const categoryId = categorySelect.value;
   const subcategory = subcategoryNameInput.value.trim();
 
   if (!categoryId || !subcategory) {
-    return mostrarMensaje(message, "⚠️ Completa todos los campos", "warning");
+    return mostrarMensaje(message, "⚠️ Selecciona una categoría y escribe una subcategoría", "warning");
   }
 
   try {
@@ -175,20 +180,21 @@ subcategoryForm?.addEventListener("submit", async e => {
     });
 
     const data = await res.json();
-
     if (res.ok) {
-      mostrarMensaje(message, "✅ Subcategoría agregada", "success");
+      mostrarMensaje(message, "✅ Subcategoría añadida", "success");
       subcategoryNameInput.value = "";
       loadCategories();
     } else {
-      mostrarMensaje(message, `❌ ${data.message || "No se pudo agregar"}`, "error");
+      mostrarMensaje(message, `❌ ${data.message || "Error al agregar subcategoría"}`, "error");
     }
   } catch {
-    mostrarMensaje(message, "❌ Error al agregar subcategoría", "error");
+    mostrarMensaje(message, "❌ Error al conectar con servidor", "error");
   }
 });
 
-// 🗑 Eliminar categoría
+/* =============================
+   🗑 Eliminar Categoría
+============================= */
 window.deleteCategory = async id => {
   if (!confirm("¿Eliminar esta categoría completa?")) return;
 
@@ -199,17 +205,19 @@ window.deleteCategory = async id => {
     });
 
     if (res.ok) {
-      mostrarMensaje(message, "✅ Categoría eliminada", "success");
+      mostrarMensaje(message, "🗑 Categoría eliminada", "success");
       loadCategories();
     } else {
       mostrarMensaje(message, "❌ No se pudo eliminar categoría", "error");
     }
   } catch {
-    mostrarMensaje(message, "❌ Error eliminando categoría", "error");
+    mostrarMensaje(message, "❌ Error de red al eliminar", "error");
   }
 };
 
-// 🗑 Eliminar subcategoría
+/* =============================
+   🗑 Eliminar Subcategoría
+============================= */
 window.deleteSubcategory = async (id, subcategory) => {
   if (!confirm("¿Eliminar esta subcategoría?")) return;
 
@@ -227,12 +235,12 @@ window.deleteSubcategory = async (id, subcategory) => {
       mostrarMensaje(message, "❌ No se pudo eliminar subcategoría", "error");
     }
   } catch {
-    mostrarMensaje(message, "❌ Error eliminando subcategoría", "error");
+    mostrarMensaje(message, "❌ Error al eliminar subcategoría", "error");
   }
 };
 
-// ▶️ Init
+/* =============================
+   ▶️ Inicialización
+============================= */
 loadCategories();
-
-// 🌐 Exponer para el HTML
 window.verificarToken = verificarSesion;

@@ -1,6 +1,6 @@
 "use strict";
 
-// ✅ Importar funciones compartidas
+// ✅ Importar funciones utilitarias
 import {
   verificarSesion,
   mostrarMensaje,
@@ -9,12 +9,11 @@ import {
   goBack
 } from "./admin-utils.js";
 
-// 🌐 API y token
+// 🌐 API + token
 const API_PROMO = "https://km-ez-ropa-backend.onrender.com/api/promos";
 const token = verificarSesion();
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 📌 Elementos del DOM
   const form = document.getElementById("promoForm");
   const promoInput = document.getElementById("promoMessage");
   const isActive = document.getElementById("isActive");
@@ -24,22 +23,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const mensajeExito = document.getElementById("promoFeedback");
   const promoPreview = document.getElementById("promoPreview");
 
-  // 👁️ Vista previa
-  function updatePreview() {
-    const mensaje = promoInput.value || "Tu mensaje aparecerá aquí...";
+  // 🎯 Previsualización
+  const updatePreview = () => {
+    const mensaje = promoInput.value.trim() || "Tu mensaje aparecerá aquí...";
     const tema = themeSelect.value || "blue";
+
     promoPreview.textContent = mensaje;
     promoPreview.className = `promo-preview ${tema}`;
-  }
+  };
 
-  // ⚠️ Vista previa con error
-  function mostrarErrorPreview(msg, clase = "error") {
+  // ❌ Mostrar error en preview
+  const mostrarErrorPreview = (msg = "⚠️ Error de vista previa", clase = "inactive") => {
     promoPreview.textContent = msg;
     promoPreview.className = `promo-preview ${clase}`;
-  }
+  };
 
-  // 📥 Cargar promoción actual
-  async function loadPromotion() {
+  // 📥 Obtener promoción actual
+  const loadPromotion = async () => {
     try {
       const res = await fetch(API_PROMO, {
         headers: { Authorization: `Bearer ${token}` }
@@ -52,36 +52,48 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Mostrar datos actuales
       promoInput.value = data.message || "";
-      isActive.checked = data.active || false;
+      isActive.checked = data.active ?? false;
       themeSelect.value = data.theme || "blue";
       startDate.value = data.startDate?.split("T")[0] || "";
       endDate.value = data.endDate?.split("T")[0] || "";
 
-      // Vista previa
       if (data.active && isDateInRange(data.startDate, data.endDate)) {
         promoPreview.textContent = data.message;
         promoPreview.className = `promo-preview ${data.theme || "blue"}`;
       } else {
-        mostrarErrorPreview("⚠️ Promoción inactiva o fuera de fecha.", "inactive");
+        mostrarErrorPreview("⚠️ Promoción inactiva o fuera de fecha");
       }
     } catch (err) {
-      console.error("❌ Error al obtener promoción:", err);
+      console.error("❌ Error cargando promoción:", err);
       mostrarErrorPreview("❌ Error de red.");
     }
-  }
+  };
 
   // 💾 Guardar promoción
-  async function guardarPromocion(e) {
+  const guardarPromocion = async (e) => {
     e.preventDefault();
 
+    const mensaje = promoInput.value.trim();
+    const start = startDate.value;
+    const end = endDate.value;
+
+    if (!mensaje) {
+      mostrarMensaje(mensajeExito, "⚠️ El mensaje no puede estar vacío", "warning");
+      return;
+    }
+
+    if (start && end && new Date(start) > new Date(end)) {
+      mostrarMensaje(mensajeExito, "⚠️ La fecha de inicio no puede ser mayor a la de fin", "warning");
+      return;
+    }
+
     const payload = {
-      message: promoInput.value.trim(),
+      message: mensaje,
       active: isActive.checked,
       theme: themeSelect.value,
-      startDate: startDate.value,
-      endDate: endDate.value
+      startDate: start,
+      endDate: end
     };
 
     try {
@@ -94,30 +106,30 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify(payload)
       });
 
-      const data = await res.json();
+      const result = await res.json();
       mensajeExito.classList.remove("oculto");
 
       if (res.ok) {
         mostrarMensaje(mensajeExito, "✅ Promoción actualizada correctamente", "success");
         await loadPromotion();
       } else {
-        mostrarMensaje(mensajeExito, "❌ " + (data.message || "Error inesperado"), "error");
+        mostrarMensaje(mensajeExito, `❌ ${result.message || "Error inesperado"}`, "error");
       }
-    } catch (error) {
-      console.error("❌ Error al guardar:", error);
-      mostrarMensaje(mensajeExito, "❌ Error del servidor.", "error");
+    } catch (err) {
+      console.error("❌ Error al guardar promoción:", err);
+      mostrarMensaje(mensajeExito, "❌ Error de red o servidor", "error");
     }
-  }
+  };
 
-  // ▶️ Eventos de usuario
+  // 🧩 Eventos
   promoInput?.addEventListener("input", updatePreview);
   themeSelect?.addEventListener("change", updatePreview);
   form?.addEventListener("submit", guardarPromocion);
 
-  // ▶️ Inicialización
+  // ▶️ Inicial
   loadPromotion();
 
-  // 🔗 Exponer utilidades al HTML
-  window.goBack = goBack;
+  // 🔓 Acciones globales
   window.logout = logout;
+  window.goBack = goBack;
 });

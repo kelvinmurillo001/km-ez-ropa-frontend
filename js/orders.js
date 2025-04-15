@@ -5,24 +5,21 @@ const API_ORDERS = "https://km-ez-ropa-backend.onrender.com/api/orders";
 const container = document.getElementById("pedidos-container");
 const token = localStorage.getItem("token");
 
-// ⛔ Verificación mínima de seguridad
-if (!token || typeof token !== "string" || token.length < 10) {
-  alert("⚠️ No autorizado. Inicia sesión primero.");
+if (!token || token.length < 10) {
+  alert("⚠️ No autorizado. Inicia sesión.");
   window.location.href = "login.html";
 }
 
 let pedidosPrevios = 0;
 let todosLosPedidos = [];
 
-// ▶️ Inicializar
+// ▶️ Inicialización
 document.addEventListener("DOMContentLoaded", () => {
   cargarPedidos();
-  setInterval(monitorearPedidos, 10000); // cada 10s
+  setInterval(monitorearPedidos, 10000);
 });
 
-/**
- * 📥 Obtener y mostrar pedidos
- */
+/* 📥 Cargar pedidos desde backend */
 async function cargarPedidos() {
   if (!container) return;
   container.innerHTML = "<p>⏳ Cargando pedidos...</p>";
@@ -34,28 +31,24 @@ async function cargarPedidos() {
     renderPedidos(pedidos);
   } catch (err) {
     console.error("❌ Error al cargar pedidos:", err);
-    container.innerHTML = "<p>❌ No se pudieron cargar los pedidos.</p>";
+    container.innerHTML = "<p class='mensaje-error'>❌ No se pudieron cargar los pedidos.</p>";
   }
 }
 
-/**
- * 🌐 Obtener pedidos desde backend
- */
+/* 🔄 Obtener pedidos con token */
 async function fetchPedidos() {
   const res = await fetch(API_ORDERS, {
     headers: { Authorization: `Bearer ${token}` }
   });
-
   if (!res.ok) throw new Error("❌ Error al obtener pedidos");
+
   const data = await res.json();
-  if (!Array.isArray(data)) throw new Error("❌ Formato de datos incorrecto");
+  if (!Array.isArray(data)) throw new Error("❌ Formato de pedidos inválido");
 
   return data;
 }
 
-/**
- * 🧾 Renderizar pedidos
- */
+/* 🧾 Renderizar pedidos */
 function renderPedidos(pedidos) {
   container.innerHTML = pedidos.length
     ? ""
@@ -64,22 +57,20 @@ function renderPedidos(pedidos) {
   pedidos.forEach(p => container.appendChild(crearCardPedido(p)));
 }
 
-/**
- * 🧱 Crear tarjeta de pedido
- */
+/* 🧱 Crear tarjeta de pedido */
 function crearCardPedido(p) {
   const card = document.createElement("div");
   card.className = "pedido-card fade-in";
 
-  const itemsHTML = (p.items || []).map(i =>
-    `<li>${i.nombre || "Producto"} (x${i.cantidad || 1}) - $${i.precio || 0}</li>`
-  ).join("");
-
   const fecha = p.createdAt ? new Date(p.createdAt).toLocaleString() : "N/A";
   const estado = p.estado || "pendiente";
 
+  const itemsHTML = (p.items || [])
+    .map(i => `<li>${i.nombre || "Producto"} (x${i.cantidad || 1}) - $${i.precio || 0}</li>`)
+    .join("");
+
   card.innerHTML = `
-    <h3>📌 ${p.nombreCliente || "Sin nombre"}</h3>
+    <h3>📌 ${p.nombreCliente || "Cliente desconocido"}</h3>
     <p><strong>Total:</strong> $${p.total || "0.00"}</p>
     <ul>${itemsHTML}</ul>
     <p><strong>Nota:</strong> ${p.nota || "—"}</p>
@@ -102,23 +93,17 @@ function crearCardPedido(p) {
   return card;
 }
 
-/**
- * 🔠 Formatea texto del estado
- */
-function formatearEstado(str) {
-  return str.replace("_", " ").replace(/^\w/, l => l.toUpperCase());
+/* 🔠 Formatear estado */
+function formatearEstado(estado) {
+  return estado.replace("_", " ").replace(/^\w/, c => c.toUpperCase());
 }
 
-/**
- * 🔄 Obtener estado actual del select
- */
+/* 🔁 Obtener valor de estado seleccionado */
 function getEstadoSeleccionado(id) {
   return document.querySelector(`#estado-${id}`)?.value || "pendiente";
 }
 
-/**
- * ✅ Actualizar estado de pedido
- */
+/* 🔄 Actualizar estado en backend */
 async function actualizarEstado(id, estado, boton) {
   if (boton) {
     boton.disabled = true;
@@ -135,16 +120,17 @@ async function actualizarEstado(id, estado, boton) {
       body: JSON.stringify({ estado })
     });
 
-    const data = await res.json();
+    const result = await res.json();
+
     if (res.ok) {
       alert("✅ Estado actualizado correctamente.");
       cargarPedidos();
     } else {
-      alert("❌ " + (data.message || "No se pudo actualizar"));
+      alert("❌ " + (result.message || "Error al actualizar"));
     }
   } catch (err) {
     console.error("❌", err);
-    alert("❌ Error al conectar con el servidor");
+    alert("❌ No se pudo conectar con el servidor.");
   } finally {
     if (boton) {
       boton.disabled = false;
@@ -153,9 +139,7 @@ async function actualizarEstado(id, estado, boton) {
   }
 }
 
-/**
- * 🛠️ Icono de estado
- */
+/* 🛠️ Iconos visuales para estados */
 function estadoIcono(estado) {
   const iconos = {
     pendiente: "⏳",
@@ -166,9 +150,7 @@ function estadoIcono(estado) {
   return iconos[estado] || "📋";
 }
 
-/**
- * 🔍 Filtrar pedidos por estado
- */
+/* 🔍 Filtro de estado */
 function filtrarPedidos() {
   const filtro = document.getElementById("filtroEstado")?.value || "todos";
   const filtrados = filtro === "todos"
@@ -177,20 +159,18 @@ function filtrarPedidos() {
   renderPedidos(filtrados);
 }
 
-/**
- * 📤 Exportar pedidos como TXT
- */
+/* 📤 Exportar pedidos */
 function exportarPedidos() {
   const contenido = todosLosPedidos.map(p => {
-    const items = p.items?.map(i =>
+    const items = (p.items || []).map(i =>
       `- ${i.nombre || "Producto"} x${i.cantidad} ($${i.precio})`
-    ).join("\n") || "";
+    ).join("\n");
 
     return `Cliente: ${p.nombreCliente || "Desconocido"}
 Total: $${p.total}
 Estado: ${formatearEstado(p.estado || "pendiente")}
 Fecha: ${new Date(p.createdAt).toLocaleString()}
-Nota: ${p.nota || "N/A"}
+Nota: ${p.nota || "—"}
 Items:\n${items}
 ==============================`;
   }).join("\n\n");
@@ -202,9 +182,7 @@ Items:\n${items}
   link.click();
 }
 
-/**
- * 🔔 Sonido si hay nuevos pedidos
- */
+/* 🔔 Monitorear nuevos pedidos */
 async function monitorearPedidos() {
   try {
     const nuevos = await fetchPedidos();
@@ -217,9 +195,7 @@ async function monitorearPedidos() {
   }
 }
 
-/**
- * 🔙 Volver al panel de administración
- */
+/* ⬅️ Volver al panel */
 function regresarAlPanel() {
   window.location.href = "panel.html";
 }

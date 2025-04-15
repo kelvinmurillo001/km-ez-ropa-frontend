@@ -1,4 +1,4 @@
-/* 📦 Formularios en línea: crear y agregar subcategoría */
+/* 📦 Formularios en línea */
 .form-inline {
   display: flex;
   flex-wrap: wrap;
@@ -14,6 +14,12 @@
   font-size: 14px;
   flex: 1;
   min-width: 200px;
+  transition: border-color 0.3s, background 0.3s;
+}
+.form-inline input:focus-visible,
+.form-inline select:focus-visible {
+  border-color: #1976d2;
+  outline: none;
 }
 body.modo-oscuro .form-inline input,
 body.modo-oscuro .form-inline select {
@@ -22,6 +28,7 @@ body.modo-oscuro .form-inline select {
   border-color: #555;
 }
 
+/* ➕ Botón en línea */
 .form-inline .btn {
   padding: 10px 16px;
   font-weight: bold;
@@ -31,13 +38,15 @@ body.modo-oscuro .form-inline select {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease;
 }
-.form-inline .btn:hover {
+.form-inline .btn:hover,
+.form-inline .btn:focus-visible {
   background-color: #004d40;
+  outline: none;
 }
 
-/* 🔷 Categoría visual con color e ícono opcional */
+/* 🔷 Tarjeta de categoría */
 .categoria-card {
   border-left: 5px solid var(--cat-color, #aaa);
   background: #f8f8f8;
@@ -51,6 +60,13 @@ body.modo-oscuro .categoria-card {
   border-color: var(--cat-color, #555);
 }
 
+.cat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
 .categoria-card strong {
   font-size: 1rem;
   font-weight: 600;
@@ -60,14 +76,7 @@ body.modo-oscuro .categoria-card strong {
   color: #fff;
 }
 
-.cat-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-/* 📌 Subcategorías estilo etiqueta */
+/* 📌 Lista de subcategorías */
 .subcategoria-list {
   display: flex;
   flex-wrap: wrap;
@@ -76,7 +85,6 @@ body.modo-oscuro .categoria-card strong {
   padding: 0;
   margin: 0;
 }
-
 .subcategoria-list li {
   background: #e0e0e0;
   padding: 6px 10px;
@@ -85,12 +93,20 @@ body.modo-oscuro .categoria-card strong {
   display: flex;
   align-items: center;
   gap: 6px;
+  transition: background 0.2s ease;
+}
+.subcategoria-list li:hover {
+  background-color: #d0d0d0;
 }
 body.modo-oscuro .subcategoria-list li {
   background: #444;
   color: #fff;
 }
+body.modo-oscuro .subcategoria-list li:hover {
+  background-color: #555;
+}
 
+/* ❌ Botón de subcategoría */
 .subcategoria-list button {
   background: transparent;
   border: none;
@@ -99,17 +115,29 @@ body.modo-oscuro .subcategoria-list li {
   cursor: pointer;
   padding: 0;
 }
-.subcategoria-list button:hover {
+.subcategoria-list button:hover,
+.subcategoria-list button:focus-visible {
   text-decoration: underline;
+  outline: none;
 }
 
-/* Colores por categoría (personalizables con data-attr o clases) */
-.categoria-card[data-color="blue"] {
-  --cat-color: #2196f3;
+/* 🎨 Colores para categorías */
+.categoria-card[data-color="blue"]   { --cat-color: #2196f3; }
+.categoria-card[data-color="orange"] { --cat-color: #ff9800; }
+.categoria-card[data-color="red"]    { --cat-color: #f44336; }
+.categoria-card[data-color="green"]  { --cat-color: #4caf50; }
+.categoria-card[data-color="purple"] { --cat-color: #9c27b0; }
+.categoria-card[data-color="teal"]   { --cat-color: #009688; }
+
+/* ✨ Fade-in suave */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-.categoria-card[data-color="orange"] {
-  --cat-color: #ff9800;
-}
-.categoria-card[data-color="red"] {
-  --cat-color: #f44336;
+
+/* 📱 Responsive */
+@media (max-width: 600px) {
+  .form-inline {
+    flex-direction: column;
+  }
 }

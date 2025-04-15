@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pedidos | KM & EZ ROPA</title>
 
   <!-- 🔐 Seguridad SEO -->
@@ -10,7 +10,7 @@
   <meta name="author" content="KM & EZ ROPA" />
   <meta name="description" content="Gestión de pedidos para la tienda KM & EZ ROPA." />
 
-  <!-- ✅ Estilos -->
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/pedidos.css" />
@@ -23,7 +23,7 @@
   <header class="header text-center" role="banner">
     <h1>📦 Pedidos Recibidos</h1>
     <div class="top-buttons mt-1">
-      <button type="button" class="btn" id="modoToggle" aria-label="Cambiar entre modo claro y oscuro">🌙 Modo Oscuro</button>
+      <button id="modoToggle" class="btn" aria-label="Cambiar entre modo claro y oscuro">🌙 Modo Oscuro</button>
     </div>
   </header>
 
@@ -31,7 +31,7 @@
   <main class="pedidos-container fade-in" role="main" aria-label="Gestión de pedidos">
     
     <!-- 🔘 Barra de acciones -->
-    <section class="acciones-barra" role="region" aria-label="Controles y filtros de pedidos">
+    <section class="acciones-barra" role="region" aria-label="Controles de filtros y acciones">
       <div class="acciones-botones">
         <button type="button" class="btn btn-secundario" onclick="exportarPedidos()" aria-label="Exportar lista de pedidos como archivo">📄 Exportar</button>
         <button type="button" class="btn" onclick="regresarAlPanel()" aria-label="Volver al panel de administración">⬅️ Panel</button>
@@ -51,11 +51,11 @@
 
     <!-- 📋 Contenedor de pedidos -->
     <section id="pedidos-container" aria-live="polite" aria-label="Listado de pedidos cargados">
-      <!-- Render dinámico desde orders.js -->
+      <!-- Renderizado dinámicamente por JS -->
     </section>
   </main>
 
-  <!-- 🚫 Fallback JS -->
+  <!-- 🚫 Fallback para JS desactivado -->
   <noscript>
     <div style="padding: 2rem; background: #ffebee; text-align: center; color: #c62828;">
       ⚠️ Esta página requiere que JavaScript esté habilitado para mostrar los pedidos correctamente.
@@ -71,10 +71,10 @@
         if (typeof verificarToken === "function") verificarToken();
         if (typeof cargarPedidos === "function") cargarPedidos();
       } catch (err) {
-        console.warn("⚠️ Error inicializando scripts:", err);
+        console.warn("⚠️ Error al cargar scripts de pedidos:", err);
       }
 
-      // 🌙 Modo oscuro persistente
+      // 🌗 Modo oscuro persistente
       const toggleBtn = document.getElementById("modoToggle");
       const isDark = localStorage.getItem("modoOscuro") === "true";
 
@@ -85,9 +85,9 @@
 
       toggleBtn?.addEventListener("click", () => {
         document.body.classList.toggle("modo-oscuro");
-        const oscuro = document.body.classList.contains("modo-oscuro");
-        localStorage.setItem("modoOscuro", oscuro);
-        toggleBtn.textContent = oscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+        const isNowDark = document.body.classList.contains("modo-oscuro");
+        localStorage.setItem("modoOscuro", isNowDark);
+        toggleBtn.textContent = isNowDark ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
       });
     });
   </script>

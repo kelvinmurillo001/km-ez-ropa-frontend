@@ -3,49 +3,69 @@
 document.addEventListener("DOMContentLoaded", () => {
   renderResumen();
 
-  document.getElementById("checkoutForm")?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const nombre = document.getElementById("nombre").value.trim();
-    const telefono = document.getElementById("telefono").value.trim();
-    const direccion = document.getElementById("direccion").value.trim();
-    const nota = document.getElementById("nota").value.trim();
+  const form = document.getElementById("checkoutForm");
+  const nombre = document.getElementById("nombre");
+  const telefono = document.getElementById("telefono");
+  const direccion = document.getElementById("direccion");
+  const nota = document.getElementById("nota");
 
-    if (!nombre || !telefono || !direccion) {
-      return alert("⚠️ Completa todos los campos obligatorios");
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const nombreVal = nombre.value.trim();
+    const telefonoVal = telefono.value.trim();
+    const direccionVal = direccion.value.trim();
+    const notaVal = nota.value.trim();
+
+    if (!nombreVal || !telefonoVal || !direccionVal) {
+      mostrarMensaje("⚠️ Por favor, completa todos los campos obligatorios.", "error");
+      if (!nombreVal) nombre.focus();
+      else if (!telefonoVal) telefono.focus();
+      else direccion.focus();
+      return;
     }
 
-    const ok = await guardarPedido(nombre, nota || "", "sitio");
+    const ok = await guardarPedido(nombreVal, notaVal || "", "sitio");
     if (ok) {
-      document.querySelector("#mensajeFinal").classList.remove("oculto");
-      document.querySelector("#mensajeFinal").textContent = "✅ Pedido confirmado con éxito";
+      mostrarMensaje("✅ Pedido confirmado con éxito", "success");
       localStorage.removeItem("km_ez_cart");
       setTimeout(() => window.location.href = "index.html", 3000);
     }
   });
 });
 
-// WhatsApp opcional
+/* ✅ WhatsApp opcional */
 function enviarWhatsApp() {
-  const nombre = document.getElementById("nombre").value.trim();
-  const nota = document.getElementById("nota").value.trim();
+  const nombre = document.getElementById("nombre")?.value.trim();
+  const nota = document.getElementById("nota")?.value.trim();
   sendCartToWhatsApp(nombre, nota);
 }
 
-// Cargar resumen
+/* 🧾 Resumen del carrito */
 function renderResumen() {
   const resumen = document.getElementById("resumen-pedido");
   const cart = getCart();
 
   if (!cart.length) {
-    resumen.innerHTML = "<p>Tu carrito está vacío.</p>";
+    resumen.innerHTML = "<p>🛒 Tu carrito está vacío.</p>";
     return;
   }
 
   resumen.innerHTML = cart.map(p => `
     <div class="item">
       <strong>${p.nombre}</strong> x${p.cantidad}
-      ${p.talla ? `| Talla: ${p.talla}` : ""} ${p.color ? `| Color: ${p.color}` : ""}
-      <br />$${(p.precio * p.cantidad).toFixed(2)}
+      ${p.talla ? ` | Talla: ${p.talla}` : ""} 
+      ${p.color ? ` | Color: ${p.color}` : ""}
+      <br/><span class="precio">$${(p.precio * p.cantidad).toFixed(2)}</span>
     </div>
-  `).join("") + `<p><strong>Total:</strong> $${calculateTotal()}</p>`;
+  `).join("") + `<p class="total"><strong>Total:</strong> $${calculateTotal()}</p>`;
+}
+
+/* 💬 Mensaje visual */
+function mostrarMensaje(texto, tipo = "info") {
+  const mensaje = document.getElementById("mensajeFinal");
+  if (!mensaje) return;
+  mensaje.className = tipo === "success" ? "mensaje-exito fade-in" : "mensaje-error fade-in";
+  mensaje.textContent = texto;
+  mensaje.classList.remove("oculto");
 }

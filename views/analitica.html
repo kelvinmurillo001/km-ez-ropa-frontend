@@ -3,72 +3,78 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>📊 Analítica - KM & EZ ROPA</title>
+  <title>📊 Analítica | KM & EZ ROPA</title>
 
-  <!-- 🔒 Seguridad básica -->
+  <!-- 🔒 Seguridad y metadatos -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="author" content="KM & EZ ROPA" />
-  <meta name="description" content="Panel de analítica de la tienda, incluyendo ventas, productos y visitas." />
+  <meta name="description" content="Panel de analítica con métricas clave de la tienda: ventas, visitas, productos y pedidos." />
 
-  <!-- ✅ Estilos -->
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/admin.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- 📜 Script principal como módulo -->
+  <!-- ✅ Script como módulo -->
   <script type="module" src="/js/analitica.js" defer></script>
 </head>
 <body>
 
   <!-- 🧭 Encabezado -->
-  <header class="text-center mt-2 mb-2" role="banner">
+  <header class="text-center mt-2 mb-2" role="banner" aria-label="Encabezado de analítica">
     <h1>📊 Panel de Analítica</h1>
-    <p>Resumen de actividad en la tienda KM & EZ ROPA</p>
+    <p>Resumen de la actividad reciente en KM & EZ ROPA</p>
   </header>
 
-  <main class="admin-container" role="main" aria-label="Panel de analítica">
+  <!-- 🧾 Contenido Principal -->
+  <main class="admin-container fade-in" role="main" aria-label="Contenido principal del dashboard">
     <section aria-labelledby="tituloResumen" class="panel-analitico mt-2" aria-live="polite">
       <h2 id="tituloResumen" class="mb-1">📋 Resumen General</h2>
       <ul>
-        <li><strong>🛒 Ventas totales:</strong> <span id="ventasTotales">$0.00</span></li>
-        <li><strong>📦 Pedidos totales:</strong> <span id="pedidosTotales">-</span></li>
-        <li><strong>📅 Pedidos del día:</strong> <span id="pedidosHoy">-</span></li>
-        <li><strong>📁 Total productos:</strong> <span id="totalProductos">-</span></li>
-        <li><strong>🎯 Promos activas:</strong> <span id="promosActivas">-</span></li>
-        <li><strong>👁️ Visitas al sitio:</strong> <span id="visitas">-</span></li>
+        <li><strong>🛒 Ventas totales:</strong> <span id="ventasTotales" aria-live="polite">$0.00</span></li>
+        <li><strong>📦 Pedidos totales:</strong> <span id="pedidosTotales" aria-live="polite">-</span></li>
+        <li><strong>📅 Pedidos del día:</strong> <span id="pedidosHoy" aria-live="polite">-</span></li>
+        <li><strong>📁 Total productos:</strong> <span id="totalProductos" aria-live="polite">-</span></li>
+        <li><strong>🎯 Promos activas:</strong> <span id="promosActivas" aria-live="polite">-</span></li>
+        <li><strong>👁️ Visitas al sitio:</strong> <span id="visitas" aria-live="polite">-</span></li>
       </ul>
 
+      <!-- 📂 Categorías principales -->
       <h3 class="mt-2">📂 Top Categorías</h3>
-      <ul id="topCategorias" class="mt-1">
-        <!-- Rellenado por analitica.js -->
+      <ul id="topCategorias" class="mt-1" aria-live="polite">
+        <!-- Dinámico desde analitica.js -->
       </ul>
 
-      <!-- 📤 Botón para exportar CSV -->
+      <!-- 📤 Exportar botón -->
       <div class="text-center mt-3">
-        <button type="button" onclick="exportarEstadisticas()" class="btn-secundario">
+        <button type="button" onclick="exportarEstadisticas()" class="btn-secundario" aria-label="Exportar estadísticas como CSV">
           📤 Exportar Estadísticas (CSV)
         </button>
       </div>
     </section>
 
-    <!-- 🔙 Navegación -->
-    <section class="text-center mt-3" role="navigation" aria-label="Volver">
-      <button type="button" onclick="goBack()" class="btn">🔙 Volver al Panel</button>
+    <!-- 🔙 Volver al Panel -->
+    <section class="text-center mt-3" role="region" aria-label="Navegación">
+      <button type="button" onclick="goBack()" class="btn" aria-label="Volver al panel principal">
+        🔙 Volver al Panel
+      </button>
     </section>
   </main>
 
   <!-- 🚫 JS Fallback -->
   <noscript>
-    <p style="text-align:center; color:red;">⚠️ Esta página requiere JavaScript habilitado.</p>
+    <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
 
-  <!-- 🌗 Modo oscuro -->
+  <!-- 🌙 Modo oscuro persistente -->
   <script>
-    if (localStorage.getItem("modoOscuro") === "true") {
-      document.body.classList.add("modo-oscuro");
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("modoOscuro") === "true") {
+        document.body.classList.add("modo-oscuro");
+      }
+    });
   </script>
 </body>
 </html>

@@ -14,7 +14,7 @@ body.modo-oscuro .detalle-container {
   color: #eee;
 }
 
-/* 🖼️ Grid de imagen + info */
+/* 🖼️ Grid: galería e info */
 .detalle-grid {
   display: flex;
   flex-wrap: wrap;
@@ -22,7 +22,7 @@ body.modo-oscuro .detalle-container {
   justify-content: center;
 }
 
-/* 📸 Galería */
+/* 📸 Galería de imágenes */
 .detalle-galeria {
   display: flex;
   flex-direction: column;
@@ -39,7 +39,6 @@ body.modo-oscuro .detalle-container {
   padding-right: 5px;
   scrollbar-width: thin;
 }
-
 .detalle-galeria-thumbs img {
   width: 60px;
   height: 60px;
@@ -69,7 +68,7 @@ body.modo-oscuro .detalle-container {
   cursor: zoom-in;
 }
 
-/* ℹ️ Info */
+/* ℹ️ Información del producto */
 .detalle-info {
   flex: 1;
   min-width: 300px;
@@ -128,7 +127,7 @@ body.modo-oscuro .talla-opcion.selected {
   border-color: orange;
 }
 
-/* ➕ Cantidad */
+/* ➕ Selector de cantidad */
 .contador {
   margin-top: 1rem;
   display: flex;
@@ -161,7 +160,7 @@ body.modo-oscuro .contador button:hover {
   text-align: center;
 }
 
-/* 🛒 Botón */
+/* 🛒 Botón Comprar */
 .btn-comprar {
   margin-top: 1.5rem;
   padding: 12px 24px;
@@ -178,7 +177,7 @@ body.modo-oscuro .contador button:hover {
   background-color: #cc7000;
 }
 
-/* 📏 Guía tallas */
+/* 📏 Guía de tallas */
 .guia-info {
   margin-top: 1.5rem;
   border-top: 1px solid #eee;
@@ -206,33 +205,14 @@ body.modo-oscuro .guia-info td {
   border-color: #555;
 }
 
-/* ❌ Error */
+/* ❌ Mensaje de error */
 .error {
   color: red;
   font-weight: bold;
   text-align: center;
 }
 
-/* 📱 Responsive */
-@media (max-width: 768px) {
-  .detalle-grid {
-    flex-direction: column;
-    align-items: center;
-  }
-  .detalle-galeria-thumbs {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    max-height: unset;
-    overflow: visible;
-  }
-  .detalle-galeria-thumbs img {
-    width: 50px;
-    height: 50px;
-  }
-}
-
-/* 🔙 Volver */
+/* 🔙 Botón de volver */
 .btn-volver {
   display: inline-block;
   margin-bottom: 1rem;
@@ -257,4 +237,25 @@ body.modo-oscuro .btn-volver {
 body.modo-oscuro .btn-volver:hover {
   background-color: #444;
   color: #fff;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .detalle-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .detalle-galeria-thumbs {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-height: unset;
+    overflow: visible;
+  }
+
+  .detalle-galeria-thumbs img {
+    width: 50px;
+    height: 50px;
+  }
 }

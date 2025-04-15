@@ -5,10 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Detalle del Producto | KM & EZ ROPA</title>
 
-  <!-- 🛡️ SEO -->
+  <!-- ✅ SEO -->
   <meta name="description" content="Consulta todos los detalles del producto en KM & EZ ROPA: precios, imágenes, tallas y más." />
+  <meta name="keywords" content="ropa, detalle producto, moda, ecommerce, KM & EZ ROPA" />
   <meta name="author" content="KM & EZ ROPA" />
   <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="KM & EZ ROPA - Detalle del Producto" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://res.cloudinary.com/dmbnkrhek/image/upload/v1711234567/logo.jpg" />
+  <meta property="og:description" content="Consulta precios, tallas y colores disponibles para tu próxima compra." />
+  <meta property="og:url" content="https://km-ez-ropa-frontend.onrender.com/detalle.html" />
 
   <!-- 🖼️ Favicon -->
   <link rel="icon" href="https://km-ez-ropa-backend.onrender.com/assets/logo.jpg" type="image/jpeg" />
@@ -18,65 +24,70 @@
   <link rel="stylesheet" href="/css/detalle.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
-
-  <!-- 🌗 Modo Oscuro -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const btn = document.getElementById("modoToggle");
-      const isDark = localStorage.getItem("modoOscuro") === "true";
-
-      if (isDark) {
-        document.body.classList.add("modo-oscuro");
-        if (btn) btn.textContent = "☀️ Modo Claro";
-      }
-
-      btn?.addEventListener("click", () => {
-        document.body.classList.toggle("modo-oscuro");
-        const oscuro = document.body.classList.contains("modo-oscuro");
-        localStorage.setItem("modoOscuro", oscuro);
-        btn.textContent = oscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
-      });
-    });
-  </script>
 </head>
 <body>
 
-  <!-- ☀️🌙 Modo claro / oscuro -->
-  <div style="position: absolute; top: 15px; right: 15px;">
-    <button id="modoToggle" class="btn btn-sm" aria-label="Cambiar modo claro/oscuro">🌙 Modo Oscuro</button>
-  </div>
+  <!-- 🔝 ENCABEZADO -->
+  <header class="fade-in" role="banner">
+    <div class="modo-toggle" style="position: absolute; top: 15px; right: 15px;">
+      <button id="modoToggle" class="btn btn-sm" aria-label="Cambiar modo visual">🌙 Modo Oscuro</button>
+    </div>
+  </header>
 
-  <!-- 🔙 Navegación -->
-  <nav role="navigation" aria-label="Volver al catálogo">
-    <a href="index.html" class="btn-volver" aria-label="Volver al catálogo">⬅️ Volver al catálogo</a>
+  <!-- 🔙 VOLVER -->
+  <nav class="fade-in" role="navigation" aria-label="Volver al catálogo">
+    <a href="index.html" class="btn-volver" aria-label="Volver al catálogo principal">⬅️ Volver al catálogo</a>
   </nav>
 
-  <!-- 🛍️ Contenedor dinámico -->
-  <main class="detalle-container fade-in" role="main" aria-label="Detalle del producto seleccionado">
+  <!-- 🛍️ DETALLE DEL PRODUCTO -->
+  <main class="detalle-container fade-in" role="main" aria-label="Detalle de producto">
     <div id="detalleProducto" class="detalle-grid" aria-live="polite">
-      <!-- Render dinámico desde detalle.js -->
+      <!-- Rellenado por detalle.js -->
     </div>
   </main>
 
-  <!-- 🛒 Widget de carrito cargado dinámicamente -->
-  <div id="carrito-widget-container"></div>
-  <script>
-    fetch("carrito-widget.html")
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("carrito-widget-container").innerHTML = html;
-      });
-  </script>
+  <!-- 🛒 WIDGET DE CARRITO -->
+  <aside aria-label="Widget del carrito">
+    <div id="carrito-widget-container"></div>
+  </aside>
 
-  <!-- 🚫 Fallback sin JS -->
+  <!-- 🚫 Fallback JS -->
   <noscript>
     <p class="mensaje-error" style="text-align: center;">
       ⚠️ Esta página requiere JavaScript para mostrar el contenido del producto.
     </p>
   </noscript>
 
-  <!-- 📦 Scripts funcionales -->
+  <!-- 📦 SCRIPTS -->
   <script src="/js/utils.js" type="module"></script>
   <script src="/js/detalle.js" type="module"></script>
+  <script>
+    // 🌗 Activación modo oscuro
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggle = document.getElementById("modoToggle");
+      const oscuro = localStorage.getItem("modoOscuro") === "true";
+
+      if (oscuro) {
+        document.body.classList.add("modo-oscuro");
+        toggle.textContent = "☀️ Modo Claro";
+      }
+
+      toggle?.addEventListener("click", () => {
+        document.body.classList.toggle("modo-oscuro");
+        const activo = document.body.classList.contains("modo-oscuro");
+        localStorage.setItem("modoOscuro", activo);
+        toggle.textContent = activo ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+      });
+    });
+
+    // 🛒 Cargar carrito-widget
+    fetch("carrito-widget.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("carrito-widget-container").innerHTML = html;
+      })
+      .catch(() => console.warn("⚠️ Error al cargar carrito widget"));
+  </script>
+
 </body>
 </html>

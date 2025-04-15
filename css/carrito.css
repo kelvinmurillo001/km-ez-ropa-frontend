@@ -26,7 +26,7 @@ body.modo-oscuro .carrito-titulo {
   animation: fadeIn 0.5s ease;
 }
 body.modo-oscuro .carrito-formulario {
-  background-color: rgba(25, 25, 25, 0.95);
+  background-color: rgba(30, 30, 30, 0.95);
 }
 
 .carrito-formulario input,
@@ -77,7 +77,7 @@ body.modo-oscuro .carrito-formulario textarea {
   font-weight: bold;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease;
 }
 .btn-vaciar:hover,
 .btn-vaciar:focus-visible {
@@ -104,7 +104,7 @@ body.modo-oscuro .carrito-formulario textarea {
   border: 1px solid #ddd;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   align-items: flex-start;
-  transition: transform 0.2s;
+  transition: transform 0.2s ease;
 }
 .cart-item:hover {
   transform: translateY(-2px);
@@ -114,6 +114,7 @@ body.modo-oscuro .cart-item {
   color: #fff;
   border-color: #444;
 }
+
 .cart-item img {
   width: 90px;
   height: 90px;
@@ -133,7 +134,7 @@ body.modo-oscuro .cart-item {
   font-weight: 600;
 }
 
-/* ➕➖ Botones */
+/* ➕➖ Botones de acción */
 .cart-actions {
   display: flex;
   gap: 8px;
@@ -180,6 +181,7 @@ body.modo-oscuro .cart-actions button:hover {
 body.modo-oscuro #total-unidades {
   color: #bbb;
 }
+
 .confirmacion {
   margin-top: 10px;
   font-weight: bold;
@@ -194,14 +196,11 @@ body.modo-oscuro .confirmacion {
   color: #c8e6c9;
 }
 
-/* 🔍 Modal Imagen */
+/* 🔍 Modal de imagen ampliada */
 .modal-zoom {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -224,7 +223,7 @@ body.modo-oscuro .confirmacion {
   cursor: pointer;
   font-weight: bold;
   z-index: 10000;
-  transition: color 0.2s;
+  transition: color 0.2s ease;
 }
 .modal-close:hover,
 .modal-close:focus-visible {
@@ -236,26 +235,29 @@ body.modo-oscuro .modal-close {
 }
 
 /* 📱 Responsive */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .cart-item {
     flex-direction: column;
     align-items: center;
     text-align: center;
   }
+
   .cart-item img {
     width: 100px;
     height: auto;
   }
+
   .cart-actions {
     justify-content: center;
   }
+
   .carrito-formulario {
     margin: 20px 10px;
     padding: 20px;
   }
 }
 
-/* ✨ Entrada suave */
+/* ✨ Fade in */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }

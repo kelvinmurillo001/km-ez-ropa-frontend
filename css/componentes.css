@@ -1,4 +1,4 @@
-/* 🧩 Botones genéricos */
+/* 🧩 Botones base */
 .btn {
   padding: 10px 16px;
   font-size: 15px;
@@ -8,8 +8,8 @@
   background-color: #1a73e8;
   color: white;
   font-weight: 500;
-  transition: background-color 0.3s ease, transform 0.2s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .btn:hover {
@@ -21,17 +21,16 @@
   transform: scale(0.98);
 }
 
-/* 🔲 Foco accesible para teclado */
 .btn:focus-visible {
   outline: 3px solid #ff9800;
   outline-offset: 2px;
 }
 
+/* 🎯 Botones variantes */
 .btn-danger {
   background-color: #e53935;
   color: white;
 }
-
 .btn-danger:hover {
   background-color: #c62828;
 }
@@ -40,27 +39,25 @@
   background-color: #ffa726;
   color: #fff;
 }
-
 .btn-secundario:hover {
   background-color: #fb8c00;
 }
 
-/* 🔲 Tarjetas reutilizables */
+/* 📦 Tarjetas reutilizables */
 .card {
   background-color: #fdfdfd;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 1rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
   transition: transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
-
 .card:hover {
   transform: translateY(-4px);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
 }
 
-/* 🔔 Badge */
+/* 🏷️ Badges */
 .badge {
   display: inline-block;
   padding: 4px 10px;
@@ -73,22 +70,19 @@
   letter-spacing: 0.5px;
 }
 
-/* 🔳 Modal */
+/* 🔳 Modal general */
 .modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
   background-color: rgba(0, 0, 0, 0.6);
   display: none;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  animation: fadeIn 0.3s ease forwards;
   overflow-y: auto;
+  animation: fadeIn 0.3s ease forwards;
 }
-
 .modal-contenido {
   background-color: white;
   padding: 24px;
@@ -100,32 +94,28 @@
   animation: slideUp 0.3s ease forwards;
 }
 
-/* ✅ Etiquetas de estado (pedidos) */
+/* 🧾 Estado visual para pedidos */
 .estado-pendiente {
   color: #e53935;
   font-weight: bold;
 }
-
 .estado-en_proceso {
   color: #1e88e5;
   font-weight: bold;
 }
-
 .estado-enviado {
   color: #43a047;
   font-weight: bold;
 }
-
 .estado-cancelado {
   color: #757575;
   font-weight: bold;
 }
 
-/* 📱 Responsive utilitario */
+/* 🔧 Ocultar en móvil */
 .hide-mobile {
   display: block;
 }
-
 @media (max-width: 600px) {
   .hide-mobile {
     display: none;
@@ -143,46 +133,36 @@
   to   { transform: translateY(0); opacity: 1; }
 }
 
-/* 🌙 Modo oscuro */
+/* 🌙 Estilo para modo oscuro */
 body.modo-oscuro .card {
   background-color: #2a2a2a;
   border-color: #444;
   color: #eee;
 }
-
 body.modo-oscuro .modal-contenido {
   background-color: #1e1e1e;
   color: #fff;
   border-color: #555;
 }
-
 body.modo-oscuro .btn {
   background-color: #2196f3;
-  color: white;
 }
-
 body.modo-oscuro .btn:hover {
   background-color: #1e88e5;
 }
-
 body.modo-oscuro .btn:active {
   background-color: #1e88e5;
   transform: scale(0.96);
 }
-
 body.modo-oscuro .btn-danger {
   background-color: #ef5350;
 }
-
 body.modo-oscuro .btn-danger:hover {
   background-color: #e53935;
 }
-
 body.modo-oscuro .btn-secundario {
   background-color: #ff9800;
-  color: #fff;
 }
-
 body.modo-oscuro .badge {
   background-color: #ffa726;
   color: #111;

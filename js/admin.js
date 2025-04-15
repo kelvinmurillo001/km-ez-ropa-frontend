@@ -1,6 +1,6 @@
 "use strict";
 
-// ✅ Verificar sesión de administrador
+// 🔐 Verificación de sesión
 function verificarAdmin() {
   const token = localStorage.getItem("token");
   if (!token || typeof token !== "string" || token.length < 10) {
@@ -257,7 +257,7 @@ form.addEventListener("submit", async (e) => {
       throw new Error(err.message || "Error al guardar");
     }
 
-    mostrarMensaje(message, "✅ Producto guardado", "success");
+    mostrarMensaje(message, "✅ Producto guardado correctamente", "success");
     form.reset();
     variantes = [];
     imagenesPrincipales = [];
@@ -269,14 +269,10 @@ form.addEventListener("submit", async (e) => {
     console.error("❌", err);
     mostrarMensaje(message, err.message, "error");
   } finally {
-    resetBoton(boton);
+    boton.disabled = false;
+    boton.textContent = "💾 Guardar Producto";
   }
 });
-
-function resetBoton(btn) {
-  btn.disabled = false;
-  btn.textContent = "💾 Guardar Producto";
-}
 
 async function cargarProductos() {
   try {

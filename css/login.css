@@ -1,4 +1,4 @@
-/* 🎨 Fondo login centrado */
+/* 🌄 Fondo centrado con gradiente suave */
 body {
   display: flex;
   justify-content: center;
@@ -8,14 +8,14 @@ body {
   background: linear-gradient(120deg, #eceff1, #f5f5f5);
   font-family: 'Segoe UI', sans-serif;
   color: #333;
-  transition: background-color 0.3s ease;
+  transition: background 0.4s ease, color 0.3s ease;
 }
 body.modo-oscuro {
   background: linear-gradient(120deg, #121212, #1e1e1e);
   color: #eee;
 }
 
-/* 🧱 Caja de login */
+/* 🧱 Contenedor principal de login */
 .login-box {
   background-color: white;
   padding: 32px;
@@ -27,18 +27,19 @@ body.modo-oscuro {
 }
 body.modo-oscuro .login-box {
   background-color: #1f1f1f;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
   color: #fff;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
 }
 
-/* 🧾 Título */
+/* 📝 Título */
 .login-box h1 {
   text-align: center;
   margin-bottom: 24px;
   font-size: 1.8rem;
+  font-weight: 600;
 }
 
-/* 🧩 Campos de entrada */
+/* ✏️ Inputs */
 .login-box input {
   width: 100%;
   padding: 12px;
@@ -46,11 +47,12 @@ body.modo-oscuro .login-box {
   font-size: 15px;
   border-radius: 8px;
   border: 1px solid #ccc;
-  transition: border-color 0.3s ease;
+  transition: border 0.3s, box-shadow 0.2s ease;
 }
-.login-box input:focus {
+.login-box input:focus-visible {
   border-color: #1976d2;
   outline: none;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2);
 }
 body.modo-oscuro .login-box input {
   background-color: #2a2a2a;
@@ -58,7 +60,7 @@ body.modo-oscuro .login-box input {
   border-color: #444;
 }
 
-/* 🔘 Botón */
+/* 🔘 Botón de inicio */
 .login-box .btn {
   width: 100%;
   background-color: #1976d2;
@@ -69,12 +71,16 @@ body.modo-oscuro .login-box input {
   border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
   margin-top: 10px;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 .login-box .btn:hover {
   background-color: #125ea8;
   transform: translateY(-1px);
+}
+.login-box .btn:focus-visible {
+  outline: 3px solid #ff9800;
+  outline-offset: 2px;
 }
 body.modo-oscuro .login-box .btn {
   background-color: #2196f3;
@@ -89,9 +95,10 @@ body.modo-oscuro .login-box .btn:hover {
   text-align: center;
   margin-top: 12px;
   font-weight: bold;
+  font-size: 14px;
 }
 
-/* ✨ Animación de entrada */
+/* ✨ Entrada suave */
 @keyframes fadeIn {
   from {
     opacity: 0;

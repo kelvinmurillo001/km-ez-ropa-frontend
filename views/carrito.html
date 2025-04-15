@@ -5,29 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tu Carrito | KM & EZ ROPA</title>
 
-  <!-- ✅ SEO -->
+  <!-- SEO -->
   <meta name="description" content="Revisa y finaliza tu pedido con KM & EZ ROPA. Consulta por WhatsApp y recibe tu ropa a domicilio.">
   <meta name="keywords" content="carrito, pedidos, ropa, km ez, moda, whatsapp, ecommerce, comprar ropa">
   <meta name="author" content="KM & EZ ROPA">
   <meta name="robots" content="index, follow">
 
-  <!-- 🌐 Open Graph -->
+  <!-- Open Graph -->
   <meta property="og:title" content="Tu Carrito | KM & EZ ROPA">
   <meta property="og:description" content="Revisa y finaliza tu pedido con KM & EZ ROPA. Consulta por WhatsApp y recibe tu ropa a domicilio.">
   <meta property="og:image" content="https://km-ez-ropa-backend.onrender.com/assets/logo.jpg">
   <meta property="og:url" content="https://km-ez-ropa-frontend.onrender.com/carrito.html">
   <meta property="og:type" content="website">
 
-  <!-- 🐦 Twitter Cards -->
+  <!-- Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Tu Carrito | KM & EZ ROPA">
   <meta name="twitter:description" content="Consulta tus productos seleccionados y realiza tu pedido fácilmente.">
   <meta name="twitter:image" content="https://km-ez-ropa-backend.onrender.com/assets/logo.jpg">
 
-  <!-- 🖼️ Favicon -->
+  <!-- Favicon -->
   <link rel="icon" href="/assets/logo.jpg" type="image/jpeg">
 
-  <!-- 🎨 Estilos -->
+  <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/catalogo.css" />
@@ -37,49 +37,47 @@
 </head>
 <body>
 
-  <!-- 🔙 Navegación -->
+  <!-- Volver -->
   <nav role="navigation" aria-label="Volver al catálogo principal">
     <a href="index.html" class="btn-volver">⬅️ Volver al catálogo</a>
   </nav>
 
-  <!-- 🛍️ Contenido principal -->
+  <!-- Main -->
   <main class="catalogo-container fade-in" role="main" aria-label="Carrito de compras">
     <header>
       <h1 class="text-center carrito-titulo">🛍️ Tu Carrito</h1>
     </header>
 
-    <!-- 🧾 Productos del carrito -->
+    <!-- Productos -->
     <section id="cart-items" class="carrito-items" aria-live="polite" aria-atomic="true">
-      <!-- Cargado dinámicamente -->
+      <!-- Se cargan dinámicamente -->
     </section>
 
-    <!-- 📝 Formulario de pedido -->
-    <section class="carrito-formulario fade-in" aria-label="Formulario para confirmar pedido">
+    <!-- Formulario -->
+    <section class="carrito-formulario fade-in" aria-label="Formulario de confirmación de pedido">
       <h3>Total estimado: <span id="cart-total">$0.00</span></h3>
       <p id="total-unidades">Total unidades: 0</p>
 
-      <input type="text" id="clienteNombre" placeholder="Tu nombre completo" required aria-label="Tu nombre" />
-      <textarea id="nota" placeholder="Nota adicional (opcional)" rows="2" aria-label="Nota para el pedido"></textarea>
+      <input type="text" id="clienteNombre" placeholder="👤 Tu nombre completo" required aria-label="Tu nombre completo" />
+      <textarea id="nota" placeholder="✏️ Nota adicional (opcional)" rows="2" aria-label="Nota para el pedido"></textarea>
 
       <div class="botones-finales">
-        <button type="button" class="btn-whatsapp" onclick="enviarDesdeCarrito()" aria-label="Enviar pedido por WhatsApp">📲 Consultar por WhatsApp</button>
-        <button type="button" class="btn-vaciar" onclick="vaciarCarrito()" aria-label="Vaciar el carrito">🗑 Vaciar Carrito</button>
+        <button type="button" class="btn-whatsapp" id="btnEnviar" aria-label="Enviar pedido por WhatsApp">📲 Consultar por WhatsApp</button>
+        <button type="button" class="btn-vaciar" id="btnVaciar" aria-label="Vaciar el carrito">🗑 Vaciar Carrito</button>
         <a href="index.html" class="btn-secundario" aria-label="Seguir comprando productos">🛒 Seguir comprando</a>
       </div>
 
-      <p id="confirmacion" class="confirmacion oculto" role="status" aria-live="assertive" tabindex="-1">
-        ✅ ¡Pedido enviado correctamente!
-      </p>
+      <p id="confirmacion" class="confirmacion oculto" role="status" aria-live="assertive" tabindex="-1"></p>
     </section>
   </main>
 
-  <!-- 🔍 Modal de imagen -->
-  <div id="imageModal" class="modal-zoom oculto fade-in" onclick="cerrarModalImagen()" role="dialog" aria-modal="true" aria-hidden="true">
-    <span class="modal-close" title="Cerrar imagen ampliada">✖️</span>
+  <!-- Modal imagen -->
+  <div id="imageModal" class="modal-zoom oculto fade-in" role="dialog" aria-modal="true" aria-hidden="true">
+    <span class="modal-close" title="Cerrar imagen ampliada" onclick="cerrarModalImagen()">✖️</span>
     <img id="modalImage" src="" alt="Vista ampliada del producto" />
   </div>
 
-  <!-- ✅ Scripts -->
+  <!-- Scripts -->
   <script src="/js/cart.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -89,39 +87,44 @@
       if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
       }
+
+      document.getElementById("btnEnviar")?.addEventListener("click", () => {
+        const nombre = document.getElementById("clienteNombre").value.trim();
+        const nota = document.getElementById("nota").value.trim();
+        const confirmacion = document.getElementById("confirmacion");
+
+        if (!nombre) {
+          alert("⚠️ Por favor, escribe tu nombre.");
+          document.getElementById("clienteNombre").focus();
+          return;
+        }
+
+        sendCartToWhatsApp?.(nombre, nota);
+        confirmacion.textContent = "✅ ¡Pedido enviado correctamente por WhatsApp!";
+        confirmacion.classList.remove("oculto");
+        confirmacion.classList.add("fade-in");
+        confirmacion.setAttribute("aria-hidden", "false");
+        confirmacion.focus();
+      });
+
+      document.getElementById("btnVaciar")?.addEventListener("click", () => {
+        if (!confirm("¿Seguro que deseas vaciar el carrito?")) return;
+        localStorage.removeItem("km_ez_cart");
+        renderCartItems?.();
+        updateCartWidget?.();
+
+        document.getElementById("cart-total").textContent = "$0.00";
+        document.getElementById("total-unidades").textContent = "Total unidades: 0";
+      });
     });
 
-    function enviarDesdeCarrito() {
-      const nombre = document.getElementById("clienteNombre").value.trim();
-      const nota = document.getElementById("nota").value.trim();
-      const confirm = document.getElementById("confirmacion");
-
-      if (!nombre) {
-        alert("⚠️ Por favor, escribe tu nombre.");
-        document.getElementById("clienteNombre").focus();
-        return;
-      }
-
-      sendCartToWhatsApp?.(nombre, nota);
-      confirm.textContent = "✅ ¡Pedido enviado correctamente por WhatsApp!";
-      confirm.classList.remove("oculto");
-      confirm.classList.add("fade-in");
-      confirm.setAttribute("aria-hidden", "false");
-      confirm.focus();
-    }
-
-    function vaciarCarrito() {
-      if (!confirm("¿Seguro que deseas vaciar el carrito?")) return;
-      localStorage.removeItem("km_ez_cart");
-      renderCartItems?.();
-      updateCartWidget?.();
-
-      document.getElementById("cart-total").textContent = "$0.00";
-      document.getElementById("total-unidades").textContent = "Total unidades: 0";
+    function cerrarModalImagen() {
+      document.getElementById("imageModal")?.classList.add("oculto");
+      document.getElementById("modalImage").src = "";
     }
   </script>
 
-  <!-- 🔐 JS fallback -->
+  <!-- JS Fallback -->
   <noscript>
     <p style="color: red; text-align: center;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Promociones | KM & EZ ROPA</title>
 
-  <!-- 🔐 Seguridad -->
+  <!-- 🔐 Seguridad y SEO -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Administrador de promociones activas en KM & EZ ROPA. Define el mensaje, colores y fechas.">
 
@@ -16,11 +16,13 @@
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- 🌙 Modo oscuro persistente -->
+  <!-- 🌗 Modo oscuro persistente -->
   <script>
-    if (localStorage.getItem("modoOscuro") === "true") {
-      document.documentElement.classList.add("modo-oscuro");
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("modoOscuro") === "true") {
+        document.body.classList.add("modo-oscuro");
+      }
+    });
   </script>
 </head>
 <body>
@@ -29,17 +31,24 @@
     <h1>🎯 Administrar Promoción</h1>
 
     <!-- 📋 Formulario -->
-    <form id="promoForm" autocomplete="off" aria-label="Formulario de promoción" role="form">
-      <input type="text" id="promoMessage" placeholder="Texto de promoción..." required aria-label="Texto de promoción" />
+    <form id="promoForm" autocomplete="off" aria-label="Formulario de promoción activa" role="form">
+      <input 
+        type="text" 
+        id="promoMessage" 
+        placeholder="Texto de promoción..." 
+        required 
+        aria-label="Texto de promoción"
+        maxlength="150"
+      />
 
       <div class="row">
         <label for="isActive">
-          <input type="checkbox" id="isActive" />
-          Activo
+          <input type="checkbox" id="isActive" aria-checked="false" />
+          Activar promoción
         </label>
 
         <label for="theme">
-          Tema:
+          Color del banner:
           <select id="theme" aria-label="Selecciona un color de tema">
             <option value="blue">Azul</option>
             <option value="orange">Naranja</option>
@@ -51,36 +60,36 @@
 
       <div class="row">
         <label for="startDate">
-          Fecha de inicio:
+          Inicio:
           <input type="date" id="startDate" aria-label="Fecha de inicio" />
         </label>
 
         <label for="endDate">
-          Fecha de fin:
-          <input type="date" id="endDate" aria-label="Fecha de fin" />
+          Fin:
+          <input type="date" id="endDate" aria-label="Fecha de finalización" />
         </label>
       </div>
 
-      <button type="submit" class="btn" aria-label="Guardar promoción">💾 Guardar Promoción</button>
+      <button type="submit" class="btn" aria-label="Guardar promoción activa">💾 Guardar Promoción</button>
     </form>
 
-    <!-- ✅ Feedback -->
-    <div id="promoFeedback" class="admin-message oculto" role="alert" aria-live="polite"></div>
+    <!-- 🔔 Mensaje dinámico -->
+    <div id="promoFeedback" class="admin-message oculto" role="alert" aria-live="assertive"></div>
 
     <!-- 👁️ Vista previa -->
-    <h3 class="mt-2">Vista previa:</h3>
-    <div id="promoPreview" class="promo-preview blue" aria-label="Vista previa de promoción">
+    <h2 class="mt-2">👀 Vista previa:</h2>
+    <div id="promoPreview" class="promo-preview blue" aria-label="Vista previa del banner">
       Tu mensaje aparecerá aquí...
     </div>
 
-    <!-- 🔘 Acciones -->
-    <div class="top-buttons mt-3" role="navigation" aria-label="Navegación">
-      <button type="button" onclick="goBack()" class="btn" aria-label="Volver al panel">🔙 Volver al Panel</button>
+    <!-- 🔘 Botones -->
+    <div class="top-buttons mt-3" role="navigation" aria-label="Acciones rápidas">
+      <button type="button" onclick="goBack()" class="btn" aria-label="Volver al Panel de administración">🔙 Volver al Panel</button>
       <button type="button" onclick="logout()" class="btn btn-secundario" aria-label="Cerrar sesión">🔒 Cerrar sesión</button>
     </div>
   </main>
 
-  <!-- 🚫 No JS -->
+  <!-- 🚫 Fallback sin JS -->
   <noscript>
     <p style="text-align:center; color:red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>

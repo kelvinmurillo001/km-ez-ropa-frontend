@@ -55,9 +55,9 @@ body.modo-oscuro .filtros-container {
   border: 1px solid #bbb;
   font-size: 15px;
   width: 260px;
-  transition: border 0.3s;
+  transition: border-color 0.3s ease;
 }
-.busqueda-input:focus {
+.busqueda-input:focus-visible {
   border-color: #1976d2;
   outline: none;
 }
@@ -100,56 +100,7 @@ body.modo-oscuro .footer {
   border-top-color: #333;
 }
 
-/* 🛒 Carrito flotante (ya definido en global.css) */
-
-/* 🛍️ Carrito - Items */
-.cart-item {
-  display: flex;
-  gap: 16px;
-  background-color: #fafafa;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 16px;
-  margin-bottom: 18px;
-  align-items: center;
-}
-body.modo-oscuro .cart-item {
-  background-color: #2a2a2a;
-  border-color: #444;
-  color: #fff;
-}
-.cart-item img {
-  width: 100px;
-  border-radius: 6px;
-  object-fit: cover;
-}
-.cart-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 10px;
-  flex-wrap: wrap;
-}
-.cart-actions button {
-  padding: 6px 12px;
-  font-size: 14px;
-  border: none;
-  background-color: #ddd;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-.cart-actions button:hover {
-  background-color: #ccc;
-}
-body.modo-oscuro .cart-actions button {
-  background-color: #444;
-  color: #eee;
-}
-body.modo-oscuro .cart-actions button:hover {
-  background-color: #555;
-}
-
-/* 🛍️ Catálogo */
+/* 🛍️ Catálogo - Items */
 #catalogo {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -163,7 +114,7 @@ body.modo-oscuro .cart-actions button:hover {
   padding: 1rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   text-align: center;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .card:hover {
   transform: translateY(-5px);
@@ -196,15 +147,17 @@ body.modo-oscuro .cart-actions button:hover {
   font-weight: 500;
   transition: background-color 0.3s ease;
 }
-.card button:hover {
+.card button:hover,
+.card button:focus-visible {
   background-color: #cc7000;
+  outline: none;
 }
 .card button:disabled {
   background-color: #aaa;
   cursor: not-allowed;
 }
 
-/* 🏷️ Badge */
+/* 🏷️ Destacado */
 .destacado-badge {
   background-color: gold;
   color: #222;
@@ -216,11 +169,11 @@ body.modo-oscuro .cart-actions button:hover {
   font-weight: bold;
 }
 
-/* 🖼️ Modal de imagen */
+/* 🖼️ Modal Imagen */
 .modal-img {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.85);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -230,7 +183,7 @@ body.modo-oscuro .cart-actions button:hover {
   max-width: 90%;
   max-height: 80vh;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
 }
 .modal-img .cerrar {
   position: absolute;
@@ -241,16 +194,7 @@ body.modo-oscuro .cart-actions button:hover {
   cursor: pointer;
 }
 
-/* ✨ Fade-in para catálogo */
-.fade-in {
-  animation: fadeIn 0.5s ease-in-out;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ✅ NUEVO: Galería de imágenes pequeñas */
+/* ✅ Mini galería */
 .galeria-imagenes {
   display: flex;
   flex-wrap: wrap;
@@ -267,4 +211,30 @@ body.modo-oscuro .cart-actions button:hover {
 }
 .galeria-img:hover {
   transform: scale(1.1);
+}
+
+/* ✨ Animaciones */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  #catalogo {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+
+  .card img {
+    height: 200px;
+  }
+
+  .filtros-container {
+    flex-direction: column;
+    align-items: center;
+  }
 }

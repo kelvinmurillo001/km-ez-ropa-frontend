@@ -1,42 +1,39 @@
 "use strict";
 
+/** @const {string} */
+const ADMIN_ROLE = "admin";
+
 /**
- * 🔐 Verifica si el token de sesión es válido y pertenece a un administrador.
- * - Redirige a login si el token no existe o no es válido.
- * - Solo permite acceso a usuarios con rol "admin".
- * @returns {string|null} token válido o null si no autorizado
+ * 🔐 Verifica si el token de sesión pertenece a un administrador.
+ * Redirige al login si no es válido.
+ * @returns {string|null}
  */
 export function verificarSesion() {
   const token = localStorage.getItem("token");
 
   if (!esTokenValido(token)) {
-    alert("⚠️ No autorizado. Inicia sesión.");
-    window.location.href = "login.html";
+    redirigirLogin("⚠️ No autorizado. Inicia sesión.");
     return null;
   }
 
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
 
-    if (!payload || payload.role !== "admin") {
-      alert("⛔ Acceso denegado. Solo administradores.");
-      localStorage.removeItem("token");
-      window.location.href = "login.html";
+    if (!payload || payload.role !== ADMIN_ROLE) {
+      redirigirLogin("⛔ Acceso denegado. Solo administradores.");
       return null;
     }
 
     return token;
   } catch (err) {
     console.error("❌ Token inválido:", err);
-    alert("⚠️ Token corrupto. Inicia sesión nuevamente.");
-    localStorage.removeItem("token");
-    window.location.href = "login.html";
+    redirigirLogin("⚠️ Sesión corrupta. Inicia nuevamente.");
     return null;
   }
 }
 
 /**
- * 🧪 Valida la estructura básica de un JWT.
+ * ✅ Verifica estructura mínima del token JWT
  * @param {string} token 
  * @returns {boolean}
  */
@@ -46,16 +43,17 @@ export function esTokenValido(token) {
 
 /**
  * 💬 Muestra un mensaje visual temporal en el elemento indicado.
- * @param {HTMLElement} elElemento Elemento HTML donde se mostrará el mensaje.
- * @param {string} mensaje Texto del mensaje a mostrar.
- * @param {string} tipo Tipo del mensaje: success | error | warning | info.
+ * @param {HTMLElement} elElemento 
+ * @param {string} mensaje 
+ * @param {"success" | "error" | "warning" | "info"} tipo 
+ * @param {number} duracionMS 
  */
-export function mostrarMensaje(elElemento, mensaje, tipo = "info") {
+export function mostrarMensaje(elElemento, mensaje, tipo = "info", duracionMS = 4000) {
   const colores = {
     success: { bg: "#e8f5e9", color: "#2e7d32" },
-    error: { bg: "#ffebee", color: "#b71c1c" },
+    error:   { bg: "#ffebee", color: "#b71c1c" },
     warning: { bg: "#fff8e1", color: "#f57c00" },
-    info: { bg: "#e3f2fd", color: "#0277bd" }
+    info:    { bg: "#e3f2fd", color: "#0277bd" }
   };
 
   const { bg, color } = colores[tipo] || colores.info;
@@ -65,24 +63,35 @@ export function mostrarMensaje(elElemento, mensaje, tipo = "info") {
   elElemento.style.backgroundColor = bg;
   elElemento.style.color = color;
 
+  // Accesibilidad + Scroll a la vista
+  elElemento.setAttribute("role", "alert");
+  elElemento.setAttribute("aria-live", "assertive");
+  elElemento.tabIndex = -1;
+
+  if (typeof elElemento.scrollIntoView === "function") {
+    elElemento.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  elElemento.focus?.();
+
   setTimeout(() => {
     elElemento.classList.add("oculto");
-  }, 4000);
+  }, duracionMS);
 }
 
 /**
- * 📅 Verifica si la fecha actual está dentro del rango dado (inclusive).
- * @param {string} start Fecha de inicio (YYYY-MM-DD)
- * @param {string} end Fecha de fin (YYYY-MM-DD)
- * @returns {boolean} Verdadero si la fecha actual está en el rango.
+ * 📅 Verifica si la fecha actual está dentro del rango dado.
+ * @param {string} start - Fecha de inicio en formato YYYY-MM-DD
+ * @param {string} end - Fecha de fin en formato YYYY-MM-DD
+ * @returns {boolean}
  */
 export function isDateInRange(start, end) {
-  const today = new Date().toISOString().split("T")[0];
-  return (!start || start <= today) && (!end || end >= today);
+  const hoy = new Date().toISOString().split("T")[0];
+  return (!start || start <= hoy) && (!end || end >= hoy);
 }
 
 /**
- * 🔐 Cierra sesión del usuario y redirige al login.
+ * 🔐 Cierra sesión eliminando token y redirige al login.
  */
 export function logout() {
   localStorage.removeItem("token");
@@ -90,8 +99,18 @@ export function logout() {
 }
 
 /**
- * 🔙 Redirige al panel de administración principal.
+ * 🔙 Redirige al panel principal del administrador.
  */
 export function goBack() {
   window.location.href = "panel.html";
+}
+
+/**
+ * 🚪 Redirige al login con mensaje emergente.
+ * @param {string} mensaje 
+ */
+export function redirigirLogin(mensaje = "🔐 Debes iniciar sesión.") {
+  alert(mensaje);
+  localStorage.removeItem("token");
+  window.location.href = "login.html";
 }

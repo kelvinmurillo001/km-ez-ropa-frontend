@@ -21,7 +21,7 @@ body.modo-oscuro .pedidos-container {
   font-weight: 700;
 }
 
-/* 🔍 Filtros y Acciones */
+/* 🔍 Barra de acciones y filtros */
 .acciones-barra {
   display: flex;
   justify-content: space-between;
@@ -30,7 +30,6 @@ body.modo-oscuro .pedidos-container {
   gap: 14px;
   margin-bottom: 24px;
 }
-
 .acciones-botones {
   display: flex;
   gap: 10px;
@@ -39,10 +38,10 @@ body.modo-oscuro .pedidos-container {
 .acciones-botones button {
   padding: 10px 18px;
   font-size: 14px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
   font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
   transition: background-color 0.25s ease, transform 0.2s ease;
 }
 .acciones-botones button:focus-visible {
@@ -54,7 +53,7 @@ body.modo-oscuro .pedidos-container {
   cursor: not-allowed;
 }
 
-/* 🔘 Botones */
+/* 🔘 Botones personalizados */
 .btn-exportar {
   background-color: #388e3c;
   color: white;
@@ -73,7 +72,7 @@ body.modo-oscuro .pedidos-container {
   background-color: #424242;
 }
 
-/* 🧾 Tarjeta del pedido */
+/* 🧾 Tarjetas de pedidos */
 .pedido-card {
   background-color: #f9f9f9;
   border: 1px solid #ddd;
@@ -81,7 +80,7 @@ body.modo-oscuro .pedidos-container {
   border-radius: 10px;
   margin-bottom: 20px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
+  transition: transform 0.3s, box-shadow 0.3s;
   animation: fadeIn 0.3s ease-in-out;
 }
 .pedido-card:hover {
@@ -92,6 +91,7 @@ body.modo-oscuro .pedido-card {
   background-color: #1e1e1e;
   border-color: #444;
 }
+
 .pedido-card h3 {
   margin: 0 0 10px;
   font-size: 18px;
@@ -113,15 +113,15 @@ body.modo-oscuro .pedido-card .fecha {
   color: #ccc;
 }
 
-/* ✏️ Select para editar estado */
+/* 🔄 Select de estado */
 .estado-select {
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 14px;
   margin-top: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
   width: 100%;
   max-width: 200px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
   transition: border 0.3s;
 }
 .estado-select:focus-visible {
@@ -138,6 +138,7 @@ body.modo-oscuro .estado-select {
   margin-top: 12px;
   padding: 9px 16px;
   font-size: 14px;
+  font-weight: bold;
   background-color: #1976d2;
   color: white;
   border: none;
@@ -152,13 +153,13 @@ body.modo-oscuro .estado-select {
   outline: 2px solid orange;
 }
 
-/* 🎨 Badges de Estado */
+/* 🎨 Etiquetas de estado */
 .badge-estado {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 13px;
   display: inline-block;
+  padding: 4px 10px;
+  font-size: 13px;
   font-weight: bold;
+  border-radius: 12px;
 }
 .badge-pendiente {
   background: #ffcdd2;
@@ -177,7 +178,7 @@ body.modo-oscuro .estado-select {
   color: #424242;
 }
 
-/* ✅ Animaciones */
+/* ✨ Animaciones */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
@@ -191,21 +192,22 @@ body.modo-oscuro .estado-select {
   .pedido-card {
     padding: 16px;
   }
-  .estado-select {
-    width: 100%;
-    margin-top: 6px;
-  }
+
+  .estado-select,
   .pedido-card button {
     width: 100%;
   }
+
   .acciones-barra {
     flex-direction: column;
     align-items: center;
   }
+
   .acciones-botones {
     flex-direction: column;
     width: 100%;
   }
+
   .acciones-botones button {
     width: 100%;
   }

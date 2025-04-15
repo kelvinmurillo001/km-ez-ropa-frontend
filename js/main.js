@@ -1,46 +1,53 @@
 "use strict";
 
-// 🌙 Modo oscuro persistente
+// 🔁 Inicialización
 document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("modoToggle");
-  const oscuroGuardado = localStorage.getItem("modoOscuro") === "true";
-
-  if (oscuroGuardado) {
-    document.body.classList.add("modo-oscuro");
-    if (btn) btn.textContent = "☀️ Modo Claro";
-  }
-
-  btn?.addEventListener("click", () => {
-    document.body.classList.toggle("modo-oscuro");
-    const oscuro = document.body.classList.contains("modo-oscuro");
-    localStorage.setItem("modoOscuro", oscuro);
-    btn.textContent = oscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
-  });
-
-  // 🛒 Cargar widget del carrito
+  aplicarModoOscuroPersistente();
   cargarCarritoWidget();
-
-  // 🔄 Actualizar contador
-  actualizarContadorCarrito();
 });
 
-// 📦 Cargar widget flotante del carrito
+// 🌙 Aplica y gestiona el modo oscuro desde localStorage
+function aplicarModoOscuroPersistente() {
+  const btnToggle = document.getElementById("modoToggle");
+  const oscuro = localStorage.getItem("modoOscuro") === "true";
+
+  if (oscuro) {
+    document.body.classList.add("modo-oscuro");
+    if (btnToggle) btnToggle.textContent = "☀️ Modo Claro";
+  }
+
+  btnToggle?.addEventListener("click", () => {
+    const activo = document.body.classList.toggle("modo-oscuro");
+    localStorage.setItem("modoOscuro", activo);
+    btnToggle.textContent = activo ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+  });
+}
+
+// 🛒 Carga el widget del carrito (HTML externo) y actualiza el contador
 function cargarCarritoWidget() {
   const contenedor = document.getElementById("carrito-widget-container");
   if (!contenedor) return;
+
   fetch("/carrito-widget.html")
-    .then(res => res.text())
+    .then(res => {
+      if (!res.ok) throw new Error("❌ No se pudo cargar carrito-widget.");
+      return res.text();
+    })
     .then(html => {
       contenedor.innerHTML = html;
-      actualizarContadorCarrito();
+      actualizarContadorCarrito(); // 🧮 Llama después de cargar el HTML
     })
-    .catch(err => console.error("❌ Error al cargar carrito-widget:", err));
+    .catch(err => console.error("❌ Error:", err));
 }
 
-// 🔢 Actualiza el número de productos en el carrito
+// 🔢 Muestra la cantidad total de productos en el carrito
 function actualizarContadorCarrito() {
   const carrito = JSON.parse(localStorage.getItem("carrito") || "[]");
   const total = carrito.reduce((acc, item) => acc + (item.cantidad || 0), 0);
+
   const contador = document.getElementById("cart-widget-count");
-  if (contador) contador.textContent = total;
+  if (contador) {
+    contador.textContent = total;
+    contador.setAttribute("aria-label", `Carrito con ${total} producto${total !== 1 ? "s" : ""}`);
+  }
 }

@@ -4,7 +4,7 @@ const CART_KEY = "km_ez_cart";
 const WHATSAPP_NUMBER = "593990270864";
 const API_URL = "https://km-ez-ropa-backend.onrender.com/api";
 
-/* 📥 Obtener carrito desde localStorage */
+/* 📥 Obtener carrito */
 function getCart() {
   try {
     const cart = JSON.parse(localStorage.getItem(CART_KEY));
@@ -19,15 +19,15 @@ function saveCart(cart) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
 
-/* 🔑 Generar clave única para un producto (por id + talla + color) */
+/* 🧩 Clave única */
 function generateKey(product) {
   return `${product.id}_${product.talla || ""}_${product.color || ""}`.toLowerCase();
 }
 
-/* ➕ Agregar producto al carrito */
+/* ➕ Añadir producto */
 function addToCart(product) {
-  if (!product || !product.id || !product.nombre || !product.precio || !product.imagen) {
-    console.warn("❌ Producto inválido al intentar agregar al carrito:", product);
+  if (!product?.id || !product?.nombre || !product?.precio || !product?.imagen) {
+    console.warn("❌ Producto inválido:", product);
     return;
   }
 
@@ -49,15 +49,15 @@ function addToCart(product) {
   }
 }
 
-/* ❌ Eliminar producto del carrito */
+/* ❌ Quitar producto */
 function removeFromCart(key) {
-  const updated = getCart().filter(item => generateKey(item) !== key);
-  saveCart(updated);
+  const nuevoCarrito = getCart().filter(item => generateKey(item) !== key);
+  saveCart(nuevoCarrito);
   renderCartItems();
   updateCartWidget();
 }
 
-/* 🔁 Cambiar cantidad (suma/resta) */
+/* 🔁 Modificar cantidad */
 function changeQuantity(key, delta) {
   const updated = getCart()
     .map(item => {
@@ -71,18 +71,18 @@ function changeQuantity(key, delta) {
   updateCartWidget();
 }
 
-/* 🧮 Calcular total del carrito */
+/* 🧮 Total */
 function calculateTotal() {
   return getCart()
     .reduce((sum, item) => sum + ((parseFloat(item.precio || item.price) || 0) * item.cantidad), 0)
     .toFixed(2);
 }
 
-/* 💾 Guardar pedido en backend */
+/* 💾 Backend */
 async function guardarPedido(nombre, nota = "", origen = "whatsapp") {
   const cart = getCart();
   if (!nombre || cart.length === 0) {
-    alert("⚠️ Ingresa tu nombre y agrega productos al carrito.");
+    alert("⚠️ Ingresa tu nombre y agrega productos.");
     return false;
   }
 
@@ -108,7 +108,6 @@ async function guardarPedido(nombre, nota = "", origen = "whatsapp") {
     });
 
     const result = await res.json();
-
     if (!res.ok) {
       alert("❌ Error al guardar pedido: " + (result.message || "Desconocido"));
       return false;
@@ -121,41 +120,69 @@ async function guardarPedido(nombre, nota = "", origen = "whatsapp") {
   }
 }
 
-/* 📲 Enviar carrito por WhatsApp */
+/* 📲 WhatsApp */
 async function sendCartToWhatsApp(nombre, nota = "") {
   const cart = getCart();
   if (!nombre) return alert("⚠️ Ingresa tu nombre");
-  if (cart.length === 0) return alert("🛒 El carrito está vacío");
+  if (!cart.length) return alert("🛒 El carrito está vacío");
 
   const ok = await guardarPedido(nombre, nota, "whatsapp");
   if (!ok) return;
 
-  let msg = `👋 Hola! Me interesa consultar por estos productos:\n\n`;
+  let mensaje = `👋 Hola! Me interesa consultar estos productos:\n\n`;
+
   cart.forEach(p => {
-    msg += `• ${p.nombre || p.name} (x${p.cantidad})`;
-    if (p.talla) msg += ` | Talla: ${p.talla}`;
-    if (p.color || p.colores) msg += ` | Color: ${p.color || p.colores}`;
-    msg += `\n`;
+    mensaje += `🧥 ${p.nombre} x${p.cantidad}`;
+    if (p.talla) mensaje += ` | Talla: ${p.talla}`;
+    if (p.color || p.colores) mensaje += ` | Color: ${p.color || p.colores}`;
+    mensaje += `\n`;
   });
 
-  msg += `\n💰 Total: $${calculateTotal()}\n👤 Cliente: ${nombre}\n`;
-  if (nota) msg += `📌 Nota: ${nota}\n`;
+  mensaje += `\n💰 Total: $${calculateTotal()}\n👤 Cliente: ${nombre}\n`;
+  if (nota) mensaje += `📌 Nota: ${nota}\n`;
 
-  const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-  window.open(whatsappURL, "_blank");
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensaje)}`;
+  window.open(url, "_blank");
 
   localStorage.removeItem(CART_KEY);
-  setTimeout(() => window.location.href = "index.html", 2500);
+  setTimeout(() => (window.location.href = "index.html"), 2500);
 }
 
-/* 🛒 Actualizar contador visual del carrito */
+/* 🔢 Contador */
 function updateCartWidget() {
   const count = getCart().reduce((sum, item) => sum + item.cantidad, 0);
   const badge = document.querySelector("#cart-widget-count");
   if (badge) badge.textContent = count;
 }
 
-/* 🖼️ Renderizar items del carrito */
+/* 🖼️ Renderizar item individual */
+function renderizarItem(item) {
+  const nombre = item.nombre || item.name || "Producto";
+  const precio = item.precio || item.price || 0;
+  const imagen = item.imagen || item.image || "/assets/logo.jpg";
+  const key = generateKey(item);
+
+  const div = document.createElement("div");
+  div.className = "cart-item fade-in";
+  div.innerHTML = `
+    <img src="${imagen}" alt="${nombre}" onclick="abrirModalImagen('${imagen}')" onerror="this.src='/assets/logo.jpg'" />
+    <div class="cart-info">
+      <h4>${nombre}</h4>
+      <p><strong>Precio:</strong> $${precio} x ${item.cantidad}</p>
+      ${item.talla ? `<p><strong>Talla:</strong> ${item.talla}</p>` : ""}
+      ${(item.color || item.colores) ? `<p><strong>Color:</strong> ${item.color || item.colores}</p>` : ""}
+      <div class="cart-actions">
+        <button onclick="changeQuantity('${key}', -1)">➖</button>
+        <span>${item.cantidad}</span>
+        <button onclick="changeQuantity('${key}', 1)">➕</button>
+        <button onclick="removeFromCart('${key}')">🗑️</button>
+      </div>
+    </div>
+  `;
+  return div;
+}
+
+/* 🛍️ Render general */
 function renderCartItems() {
   const cart = getCart();
   const contenedor = document.querySelector("#cart-items");
@@ -169,36 +196,14 @@ function renderCartItems() {
 
   cart.forEach(item => {
     unidades += item.cantidad;
-    const nombre = item.nombre || item.name || "Producto";
-    const precio = item.precio || item.price || 0;
-    const imagen = item.imagen || item.image || "/assets/logo.jpg";
-    const key = generateKey(item);
-
-    const div = document.createElement("div");
-    div.className = "cart-item fade-in";
-    div.innerHTML = `
-      <img src="${imagen}" alt="${nombre}" onclick="abrirModalImagen('${imagen}')" onerror="this.src='/assets/logo.jpg'" />
-      <div class="cart-info">
-        <h4>${nombre}</h4>
-        <p><strong>Precio:</strong> $${precio} x ${item.cantidad}</p>
-        ${item.talla ? `<p><strong>Talla:</strong> ${item.talla}</p>` : ""}
-        ${(item.color || item.colores) ? `<p><strong>Color:</strong> ${item.color || item.colores}</p>` : ""}
-        <div class="cart-actions">
-          <button onclick="changeQuantity('${key}', -1)">➖</button>
-          <span>${item.cantidad}</span>
-          <button onclick="changeQuantity('${key}', 1)">➕</button>
-          <button onclick="removeFromCart('${key}')">🗑️</button>
-        </div>
-      </div>
-    `;
-    contenedor.appendChild(div);
+    contenedor.appendChild(renderizarItem(item));
   });
 
   total.textContent = `$${calculateTotal()}`;
   if (unidadesEl) unidadesEl.textContent = `Total unidades: ${unidades}`;
 }
 
-/* 🖼️ Modal imagen */
+/* 🔍 Modal imagen */
 function abrirModalImagen(src) {
   const modal = document.getElementById("imageModal");
   const img = document.getElementById("modalImage");
@@ -213,7 +218,7 @@ function cerrarModalImagen() {
   if (modal) modal.classList.add("oculto");
 }
 
-/* 🌍 Exportar funciones globales */
+/* 🌍 Exponer funciones */
 window.addToCart = addToCart;
 window.removeFromCart = removeFromCart;
 window.changeQuantity = changeQuantity;

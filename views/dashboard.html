@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard | KM & EZ ROPA</title>
+  <title>📊 Dashboard Analítico | KM & EZ ROPA</title>
 
-  <!-- 🔐 SEO -->
+  <!-- 🔐 SEO y Seguridad -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="author" content="KM & EZ ROPA" />
-  <meta name="description" content="Panel analítico con métricas de ventas, visitas y productos." />
+  <meta name="description" content="Panel de control con estadísticas de ventas, productos, visitas y pedidos recibidos." />
 
-  <!-- ✅ Estilos -->
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/analitica.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- 💡 Animaciones -->
+  <!-- 💡 Animación fade-in -->
   <style>
     .metricas .card, .analitica-extra {
       animation: fadeIn 0.6s ease-in;
@@ -28,36 +28,36 @@
     }
   </style>
 
-  <!-- ✅ Script unificado -->
+  <!-- ✅ JS del Dashboard -->
   <script type="module" src="/js/dashboard.js" defer></script>
 </head>
 <body>
 
-  <main class="dashboard-container" role="main">
+  <main class="dashboard-container fade-in" role="main" aria-label="Dashboard analítico">
     <h1 class="text-center">📊 Panel de Analítica</h1>
 
-    <!-- 📈 Métricas -->
-    <section class="metricas grid-responsive" aria-label="Resumen de métricas">
-      <div class="card" role="region">
+    <!-- 🔢 Métricas principales -->
+    <section class="metricas grid-responsive" aria-label="Resumen de métricas generales">
+      <div class="card" role="region" aria-labelledby="ventasTotales">
         <h3>🛒 Ventas Totales</h3>
         <p>$ <span id="ventasTotales" aria-live="polite">0</span></p>
       </div>
-      <div class="card" role="region">
+      <div class="card" role="region" aria-labelledby="visitasTotales">
         <h3>👥 Visitas</h3>
         <p><span id="visitasTotales" aria-live="polite">0</span></p>
       </div>
-      <div class="card" role="region">
+      <div class="card" role="region" aria-labelledby="totalProductos">
         <h3>📦 Productos</h3>
         <p><span id="totalProductos" aria-live="polite">0</span></p>
       </div>
-      <div class="card" role="region">
+      <div class="card" role="region" aria-labelledby="promosActivas">
         <h3>🎯 Promos Activas</h3>
         <p><span id="promosActivas" aria-live="polite">0</span></p>
       </div>
     </section>
 
-    <!-- 📋 Resumen de pedidos -->
-    <section class="analitica-extra mt-3">
+    <!-- 📋 Pedidos -->
+    <section class="analitica-extra mt-3" aria-label="Estado de los pedidos">
       <h2 class="text-center">🧾 Estado de Pedidos</h2>
       <ul class="listado-categorias mt-2">
         <li><strong>Totales:</strong> <span id="total">-</span></li>
@@ -69,37 +69,40 @@
       </ul>
     </section>
 
-    <!-- 📁 Categorías más usadas -->
-    <section class="analitica-extra mt-3">
+    <!-- 📁 Categorías -->
+    <section class="analitica-extra mt-3" aria-label="Categorías más utilizadas">
       <h2 class="text-center">📁 Top Categorías</h2>
       <ul id="topCategorias" class="listado-categorias mt-2" aria-live="polite">
-        <!-- Render dinámico desde dashboard.js -->
+        <!-- Rellenado desde JS -->
       </ul>
     </section>
 
-    <!-- 📤 Exportar -->
+    <!-- 📤 Acciones -->
     <div class="text-center mt-3">
-      <button type="button" onclick="exportarEstadisticas()" class="btn-secundario">
+      <button type="button" onclick="exportarEstadisticas()" class="btn-secundario" aria-label="Exportar estadísticas como CSV">
         📤 Exportar Estadísticas (CSV)
       </button>
     </div>
 
-    <!-- 🔙 Volver -->
     <div class="text-center mt-3">
-      <button type="button" onclick="goBack()" class="btn">🔙 Volver al Panel</button>
+      <button type="button" onclick="goBack()" class="btn" aria-label="Volver al panel de administración">
+        🔙 Volver al Panel
+      </button>
     </div>
   </main>
 
-  <!-- ❌ Fallback sin JS -->
+  <!-- 🚫 Sin JavaScript -->
   <noscript>
-    <p style="text-align:center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+    <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
 
-  <!-- 🌗 Modo oscuro -->
+  <!-- 🌗 Modo oscuro persistente -->
   <script>
-    if (localStorage.getItem("modoOscuro") === "true") {
-      document.body.classList.add("modo-oscuro");
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("modoOscuro") === "true") {
+        document.body.classList.add("modo-oscuro");
+      }
+    });
   </script>
 </body>
 </html>

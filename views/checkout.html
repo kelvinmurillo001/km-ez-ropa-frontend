@@ -5,46 +5,74 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Finalizar Compra | KM & EZ ROPA</title>
 
+  <!-- SEO -->
   <meta name="robots" content="noindex, nofollow"/>
   <meta name="description" content="Resumen del pedido, nombre, nota y confirmación de compra en KM & EZ ROPA"/>
 
+  <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css"/>
   <link rel="stylesheet" href="/css/checkout.css"/>
   <link rel="stylesheet" href="/css/responsive.css"/>
-
-  <script src="/js/cart.js" defer></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      renderCartItems();
-
-      document.getElementById("finalizarPedido")?.addEventListener("click", () => {
-        const nombre = document.getElementById("nombreCliente").value.trim();
-        const nota = document.getElementById("notaPedido").value.trim();
-        sendCartToWhatsApp(nombre, nota);
-      });
-    });
-  </script>
 </head>
 <body>
-  <main class="checkout-container fade-in">
+
+  <main class="checkout-container fade-in" role="main" aria-label="Resumen y confirmación del pedido">
     <h1>🧾 Confirmación del Pedido</h1>
 
-    <section id="cart-items" class="checkout-items">
-      <!-- Carrito renderizado dinámicamente -->
+    <!-- 🛒 Lista de productos -->
+    <section id="cart-items" class="checkout-items" aria-live="polite">
+      <!-- Se renderiza desde cart.js -->
     </section>
 
+    <!-- 💵 Total -->
     <div class="checkout-total">
       <span id="total-unidades">0 productos</span>
       <strong>Total: <span id="cart-total">$0.00</span></strong>
     </div>
 
-    <form class="checkout-form" onsubmit="return false;">
-      <input type="text" id="nombreCliente" placeholder="👤 Tu nombre" required />
-      <textarea id="notaPedido" rows="3" placeholder="✏️ Nota para el pedido (opcional)"></textarea>
-      <button id="finalizarPedido" class="btn btn-comprar">📦 Finalizar Compra</button>
-    </form>
+    <!-- 👤 Datos del cliente -->
+    <form class="checkout-form" id="formCheckout" novalidate>
+      <label for="nombreCliente" class="visually-hidden">Tu nombre</label>
+      <input type="text" id="nombreCliente" name="nombreCliente" placeholder="👤 Tu nombre" required autocomplete="name" />
 
-    <a href="index.html" class="btn-volver">⬅️ Seguir comprando</a>
+      <label for="notaPedido" class="visually-hidden">Nota para el pedido</label>
+      <textarea id="notaPedido" name="notaPedido" rows="3" placeholder="✏️ Nota para el pedido (opcional)"></textarea>
+
+      <button type="submit" id="finalizarPedido" class="btn btn-comprar" aria-label="Enviar pedido por WhatsApp">📦 Finalizar Compra</button>
+    </form>
+    <!-- ✅ Mensaje dinámico aquí -->
+    <p id="mensajeFinal" class="mensaje-error oculto" role="alert"></p>
+
+    <a href="index.html" class="btn-volver" aria-label="Seguir comprando">⬅️ Seguir comprando</a>
   </main>
+
+  <!-- Scripts -->
+  <script src="/js/cart.js" defer></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      renderCartItems();
+
+      const form = document.getElementById("formCheckout");
+      const nombre = document.getElementById("nombreCliente");
+      const nota = document.getElementById("notaPedido");
+
+      form?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const nombreTrim = nombre.value.trim();
+
+        if (!nombreTrim) {
+          nombre.focus();
+          return alert("⚠️ Por favor, ingresa tu nombre.");
+        }
+
+        const carrito = JSON.parse(localStorage.getItem("carrito") || "[]");
+        if (!carrito.length) {
+          return alert("⚠️ Tu carrito está vacío.");
+        }
+
+        sendCartToWhatsApp(nombreTrim, nota.value.trim());
+      });
+    });
+  </script>
 </body>
 </html>

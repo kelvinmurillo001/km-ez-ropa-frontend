@@ -9,7 +9,7 @@
   --color-gray: linear-gradient(135deg, #bdbdbd, #e0e0e0);
 }
 
-/* 🌐 Contenedor principal */
+/* 🧾 Contenedor principal */
 .promociones-container {
   max-width: 800px;
   margin: 0 auto;
@@ -26,14 +26,14 @@ body.modo-oscuro .promociones-container {
   color: #eee;
 }
 
-/* 🧾 Encabezado */
+/* 📌 Título */
 .promociones-container h1 {
   text-align: center;
   margin-bottom: 24px;
   font-size: 1.8rem;
 }
 
-/* 📋 Formulario */
+/* 📝 Formulario */
 .promociones-container form {
   display: flex;
   flex-direction: column;
@@ -47,7 +47,7 @@ body.modo-oscuro .promociones-container form {
   background-color: #2a2a2a;
 }
 
-/* Inputs */
+/* 📥 Inputs */
 .promociones-container input,
 .promociones-container select {
   padding: 12px;
@@ -69,7 +69,7 @@ body.modo-oscuro .promociones-container select {
   border-color: #555;
 }
 
-/* Fila flexible */
+/* 📐 Fila de inputs */
 .promociones-container .row {
   display: flex;
   gap: 20px;
@@ -93,6 +93,10 @@ body.modo-oscuro .promociones-container select {
   background-color: #125ea9;
   transform: translateY(-2px);
 }
+.promociones-container button:focus-visible {
+  outline: 3px solid orange;
+  outline-offset: 2px;
+}
 body.modo-oscuro .promociones-container button {
   background-color: #2196f3;
 }
@@ -100,7 +104,7 @@ body.modo-oscuro .promociones-container button:hover {
   background-color: #1b7fcc;
 }
 
-/* ✅ Vista previa */
+/* 🧾 Vista previa */
 .promo-preview {
   padding: 18px 24px;
   font-size: 17px;
@@ -112,18 +116,18 @@ body.modo-oscuro .promociones-container button:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* 🌈 Temas */
-.promo-preview.blue    { background: var(--color-blue); color: #fff; }
-.promo-preview.green   { background: var(--color-green); color: #fff; }
-.promo-preview.orange  { background: var(--color-orange); color: #fff; }
-.promo-preview.red     { background: var(--color-red); color: #fff; }
-.promo-preview.purple  { background: var(--color-purple); color: #fff; }
-.promo-preview.yellow  { background: var(--color-yellow); color: #000; }
-.promo-preview.teal    { background: var(--color-teal); color: #fff; }
-.promo-preview.gray    { background: var(--color-gray); color: #333; }
-.promo-preview.dark    { background: #333; color: #eee; border: 1px solid #555; }
+/* 🎨 Temas por color */
+.promo-preview.blue     { background: var(--color-blue); color: #fff; }
+.promo-preview.green    { background: var(--color-green); color: #fff; }
+.promo-preview.orange   { background: var(--color-orange); color: #fff; }
+.promo-preview.red      { background: var(--color-red); color: #fff; }
+.promo-preview.purple   { background: var(--color-purple); color: #fff; }
+.promo-preview.yellow   { background: var(--color-yellow); color: #000; }
+.promo-preview.teal     { background: var(--color-teal); color: #fff; }
+.promo-preview.gray     { background: var(--color-gray); color: #333; }
+.promo-preview.dark     { background: #333; color: #eee; border: 1px solid #555; }
 
-/* 💤 Estados */
+/* ⏸️ Estados alternos */
 .promo-preview.inactive {
   background-color: #eeeeee;
   color: #666;
@@ -140,7 +144,7 @@ body.modo-oscuro .promociones-container button:hover {
   font-style: italic;
 }
 
-/* ✅ Feedback */
+/* 💬 Feedback */
 .admin-message {
   margin-top: 16px;
   padding: 12px;
@@ -149,9 +153,9 @@ body.modo-oscuro .promociones-container button:hover {
   text-align: center;
 }
 .admin-message.success { color: #2e7d32; }
-.admin-message.error { color: #c62828; }
+.admin-message.error   { color: #c62828; }
 
-/* 🎯 Botones finales */
+/* 🔝 Botonera final */
 .top-buttons {
   margin-top: 24px;
   display: flex;
@@ -168,7 +172,7 @@ body.modo-oscuro .promociones-container button:hover {
   display: none !important;
 }
 
-/* ✨ Fade */
+/* ✨ Animación suave */
 .fade-in {
   animation: fadeIn 0.5s ease-in-out;
 }

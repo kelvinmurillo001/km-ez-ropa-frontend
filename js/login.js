@@ -1,3 +1,5 @@
+"use strict";
+
 const API_URL = "https://km-ez-ropa-backend.onrender.com/api";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -5,103 +7,117 @@ document.addEventListener("DOMContentLoaded", () => {
   const usernameInput = document.getElementById("username");
   const passwordInput = document.getElementById("password");
   const error = document.getElementById("error");
+  const submitBtn = form?.querySelector("button");
 
-  if (!form || !usernameInput || !passwordInput || !error) return;
+  if (!form || !usernameInput || !passwordInput || !error || !submitBtn) return;
 
   // 🔄 Limpiar errores al escribir
-  [usernameInput, passwordInput].forEach(input => {
-    input.addEventListener("input", () => {
-      clearError(error);
-    });
-  });
+  [usernameInput, passwordInput].forEach(input =>
+    input.addEventListener("input", () => clearError(error))
+  );
 
-  // 🔐 Login on submit
+  // 🔐 Login al enviar
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const user = usernameInput.value.trim();
-    const pass = passwordInput.value.trim();
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
 
-    if (!user || !pass) {
-      return showError("⚠️ Debes completar ambos campos", error);
+    if (!username || !password) {
+      return showError("⚠️ Debes completar ambos campos.", error);
     }
 
-    console.log("📤 Enviando al backend:", { username: user, password: pass });
+    // 🧪 Validación simple
+    if (username.length < 3 || password.length < 4) {
+      return showError("❌ Credenciales demasiado cortas.", error);
+    }
 
-    await handleLogin(user, pass, error, form.querySelector("button"));
+    await handleLogin(username, password, error, submitBtn);
   });
 });
 
 /**
- * 🔓 Maneja el login completo
+ * 🔐 Procesa el login contra el backend
  */
 async function handleLogin(username, password, errorEl, button) {
-  button.disabled = true;
-  button.textContent = "Entrando...";
-
   try {
+    toggleButtonState(button, true, "⏳ Verificando...");
+
     const res = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify({ username, password }),
     });
 
     const data = await res.json();
 
-    if (res.ok && data.token) {
-      const payload = parseJwt(data.token);
-
-      if (payload?.role !== "admin") {
-        return showError("⛔ Solo los administradores pueden ingresar", errorEl);
-      }
-
-      localStorage.setItem("token", data.token);
-      window.location.href = "panel.html";
-    } else {
-      showError(data.message || "❌ Usuario o contraseña incorrectos", errorEl);
+    if (!res.ok || !data.token) {
+      const msg = data.message || "❌ Usuario o contraseña incorrectos.";
+      return showError(msg, errorEl);
     }
 
+    const payload = parseJwt(data.token);
+
+    if (!payload || payload.role !== "admin") {
+      return showError("⛔ Solo administradores pueden acceder.", errorEl);
+    }
+
+    localStorage.setItem("token", data.token);
+    window.location.href = "panel.html";
+
   } catch (err) {
-    console.error("❌ Error de red:", err);
-    showError("❌ Error de red. Intenta nuevamente.", errorEl);
+    console.error("❌ Error al conectar:", err);
+    showError("❌ Error de red. Intenta más tarde.", errorEl);
   } finally {
-    button.disabled = false;
-    button.textContent = "Entrar";
+    toggleButtonState(button, false, "Entrar");
   }
 }
 
 /**
- * ❌ Mostrar mensaje de error accesible
+ * ❌ Muestra mensaje de error accesible
  */
 function showError(msg, el) {
   if (!el) return;
   el.textContent = msg;
+  el.classList.remove("oculto");
   el.setAttribute("role", "alert");
+  el.setAttribute("aria-live", "assertive");
+  el.focus?.();
 }
 
 /**
- * 🔁 Limpia error visible
+ * 🧽 Limpia mensaje de error
  */
 function clearError(el) {
+  if (!el) return;
   el.textContent = "";
   el.removeAttribute("role");
+  el.classList.add("oculto");
 }
 
 /**
- * 🔍 Decodifica payload JWT
+ * 🔍 Decodifica payload de un JWT
  */
 function parseJwt(token) {
   try {
-    const base64 = token.split('.')[1];
+    const base64 = token.split(".")[1];
     return JSON.parse(atob(base64));
-  } catch (err) {
-    console.warn("❌ Token inválido:", err);
+  } catch {
     return null;
   }
 }
 
 /**
- * 🔚 Cierra sesión y redirige
+ * 🧠 Controla estado de botón
+ */
+function toggleButtonState(btn, disable, text) {
+  if (!btn) return;
+  btn.disabled = disable;
+  btn.textContent = text;
+}
+
+/**
+ * 🚪 Cierra sesión
  */
 function logout() {
   localStorage.removeItem("token");
