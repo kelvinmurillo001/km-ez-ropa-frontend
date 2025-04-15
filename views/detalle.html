@@ -2,92 +2,95 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Detalle del Producto | KM & EZ ROPA</title>
 
-  <!-- ✅ SEO -->
-  <meta name="description" content="Consulta todos los detalles del producto en KM & EZ ROPA: precios, imágenes, tallas y más." />
-  <meta name="keywords" content="ropa, detalle producto, moda, ecommerce, KM & EZ ROPA" />
-  <meta name="author" content="KM & EZ ROPA" />
-  <meta name="robots" content="index, follow" />
-  <meta property="og:title" content="KM & EZ ROPA - Detalle del Producto" />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="https://res.cloudinary.com/dmbnkrhek/image/upload/v1711234567/logo.jpg" />
-  <meta property="og:description" content="Consulta precios, tallas y colores disponibles para tu próxima compra." />
-  <meta property="og:url" content="https://km-ez-ropa-frontend.onrender.com/detalle.html" />
+  <!-- SEO -->
+  <meta name="description" content="Detalles completos del producto seleccionado en KM & EZ ROPA.">
+  <meta name="author" content="KM & EZ ROPA">
+  <meta name="robots" content="index, follow">
 
-  <!-- 🖼️ Favicon -->
-  <link rel="icon" href="https://km-ez-ropa-backend.onrender.com/assets/logo.jpg" type="image/jpeg" />
-
-  <!-- 🎨 Estilos -->
+  <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/detalle.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
+
+  <!-- Scripts -->
+  <script src="/js/cart.js"></script>
+  <script src="/js/detalle.js" defer></script>
 </head>
 <body>
 
-  <!-- 🔝 ENCABEZADO -->
-  <header class="fade-in" role="banner">
-    <div class="modo-toggle" style="position: absolute; top: 15px; right: 15px;">
-      <button id="modoToggle" class="btn btn-sm" aria-label="Cambiar modo visual">🌙 Modo Oscuro</button>
-    </div>
-  </header>
-
-  <!-- 🔙 VOLVER -->
-  <nav class="fade-in" role="navigation" aria-label="Volver al catálogo">
-    <a href="index.html" class="btn-volver" aria-label="Volver al catálogo principal">⬅️ Volver al catálogo</a>
+  <!-- Volver -->
+  <nav role="navigation" aria-label="Volver al catálogo">
+    <a href="index.html" class="btn-volver">⬅️ Volver al catálogo</a>
   </nav>
 
-  <!-- 🛍️ DETALLE DEL PRODUCTO -->
+  <!-- Detalle del producto -->
   <main class="detalle-container fade-in" role="main" aria-label="Detalle de producto">
-    <div id="detalleProducto" class="detalle-grid" aria-live="polite">
-      <!-- Rellenado por detalle.js -->
+    <div class="detalle-grid">
+
+      <!-- Imágenes -->
+      <div class="detalle-galeria">
+        <div class="detalle-imagen-principal">
+          <img id="imagenPrincipal" src="/assets/logo.jpg" alt="Imagen principal del producto" />
+        </div>
+        <div class="detalle-galeria-thumbs" id="miniaturas">
+          <!-- Miniaturas dinámicas -->
+        </div>
+      </div>
+
+      <!-- Información del producto -->
+      <div class="detalle-info">
+        <h1 id="tituloProducto">Nombre del Producto</h1>
+        <p id="descripcionProducto">Descripción breve del producto.</p>
+        <p id="precioProducto"><strong>Precio:</strong> $0.00</p>
+        <p id="stockProducto"><strong>Stock:</strong> -</p>
+
+        <!-- Tallas -->
+        <div class="guia-tallas">
+          <h3>Selecciona Talla</h3>
+          <div class="tallas-disponibles" id="tallasDisponibles">
+            <!-- Tallas se insertan aquí -->
+          </div>
+        </div>
+
+        <!-- Cantidad -->
+        <div class="contador">
+          <button id="btnMenos" aria-label="Disminuir cantidad">➖</button>
+          <span id="cantidadProducto">1</span>
+          <button id="btnMas" aria-label="Aumentar cantidad">➕</button>
+        </div>
+
+        <!-- Agregar al carrito -->
+        <button class="btn-comprar" id="btnAgregar" aria-label="Agregar producto al carrito">
+          🛒 Agregar al carrito
+        </button>
+      </div>
     </div>
   </main>
 
-  <!-- 🛒 WIDGET DE CARRITO -->
-  <aside aria-label="Widget del carrito">
-    <div id="carrito-widget-container"></div>
-  </aside>
+  <!-- Modal Zoom Imagen -->
+  <div id="imageModal" class="modal oculto fade-in" role="dialog" aria-hidden="true">
+    <div class="modal-contenido">
+      <span class="modal-close" onclick="cerrarModalImagen()">✖️</span>
+      <img id="modalImage" src="" alt="Vista ampliada del producto" />
+    </div>
+  </div>
 
-  <!-- 🚫 Fallback JS -->
-  <noscript>
-    <p class="mensaje-error" style="text-align: center;">
-      ⚠️ Esta página requiere JavaScript para mostrar el contenido del producto.
-    </p>
-  </noscript>
-
-  <!-- 📦 SCRIPTS -->
-  <script src="/js/utils.js" type="module"></script>
-  <script src="/js/detalle.js" type="module"></script>
+  <!-- JS: modo oscuro persistente -->
   <script>
-    // 🌗 Activación modo oscuro
     document.addEventListener("DOMContentLoaded", () => {
-      const toggle = document.getElementById("modoToggle");
-      const oscuro = localStorage.getItem("modoOscuro") === "true";
-
-      if (oscuro) {
+      if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
-        toggle.textContent = "☀️ Modo Claro";
       }
-
-      toggle?.addEventListener("click", () => {
-        document.body.classList.toggle("modo-oscuro");
-        const activo = document.body.classList.contains("modo-oscuro");
-        localStorage.setItem("modoOscuro", activo);
-        toggle.textContent = activo ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
-      });
     });
-
-    // 🛒 Cargar carrito-widget
-    fetch("carrito-widget.html")
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("carrito-widget-container").innerHTML = html;
-      })
-      .catch(() => console.warn("⚠️ Error al cargar carrito widget"));
   </script>
 
+  <noscript>
+    <p style="color: red; text-align: center;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+  </noscript>
 </body>
 </html>

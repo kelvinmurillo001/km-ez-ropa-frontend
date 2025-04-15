@@ -1,27 +1,17 @@
 "use strict";
 
-import { verificarSesion, logout } from "./admin-utils.js";
+import { verificarSesion } from "./admin-utils.js";
 
-// 🌐 Comprobación de sesión y modo oscuro persistente
-document.addEventListener("DOMContentLoaded", () => {
-  verificarSesion(); // Redirige si el token no es válido
+// Validar sesión
+verificarSesion();
 
-  const btnModo = document.getElementById("modoToggle");
-  const modoOscuroActivo = localStorage.getItem("modoOscuro") === "true";
-
-  if (modoOscuroActivo) {
-    document.body.classList.add("modo-oscuro");
-    if (btnModo) btnModo.textContent = "☀️ Modo Claro";
+/* 🔒 Cerrar sesión */
+function cerrarSesion() {
+  if (confirm("¿Deseas cerrar sesión?")) {
+    sessionStorage.removeItem("admin_token");
+    window.location.href = "login.html";
   }
+}
 
-  // Alternar modo oscuro
-  btnModo?.addEventListener("click", () => {
-    const body = document.body;
-    const esOscuro = body.classList.toggle("modo-oscuro");
-    localStorage.setItem("modoOscuro", esOscuro);
-    btnModo.textContent = esOscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
-  });
-});
-
-// 🔓 Exponer logout globalmente (HTML onclick)
-window.logout = logout;
+// 🌐 Exponer
+window.cerrarSesion = cerrarSesion;

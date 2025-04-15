@@ -4,7 +4,7 @@ const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
 const API_PROMO = `${API_BASE}/promos`;
 let productos = [];
 
-/* ✅ On Load */
+/* ✅ Al cargar la página */
 document.addEventListener("DOMContentLoaded", () => {
   registrarVisita();
   cargarProductos();
@@ -14,14 +14,14 @@ document.addEventListener("DOMContentLoaded", () => {
   if (typeof updateCartWidget === "function") updateCartWidget();
 });
 
-/* 📦 Cargar productos desde backend */
+/* 📦 Obtener productos desde API */
 async function cargarProductos() {
   try {
     const res = await fetch(`${API_BASE}/products`);
     if (!res.ok) throw new Error(`Error ${res.status} al obtener productos`);
 
     productos = await res.json();
-    if (!Array.isArray(productos)) throw new Error("Formato inválido en productos");
+    if (!Array.isArray(productos)) throw new Error("Formato inválido de productos");
 
     aplicarFiltros();
     cargarSubcategoriasUnicas();
@@ -34,20 +34,17 @@ async function cargarProductos() {
     });
     document.getElementById("subcategoria")?.addEventListener("change", aplicarFiltros);
     document.getElementById("orden")?.addEventListener("change", aplicarFiltros);
+
   } catch (error) {
     console.error("❌ Error al cargar productos:", error);
-    const catalogo = document.getElementById("catalogo");
-    if (catalogo) {
-      catalogo.innerHTML = "<p class='mensaje-error'>❌ No se pudieron cargar los productos.</p>";
-    }
+    document.getElementById("catalogo").innerHTML = `
+      <p class='mensaje-error'>❌ No se pudieron cargar los productos. Inténtalo más tarde.</p>`;
   }
 }
 
-/* 🔍 Aplicar filtros */
+/* 🔍 Filtro de productos */
 function aplicarFiltros() {
-  const termino = (document.getElementById("busqueda")?.value || "")
-    .trim().toLowerCase();
-
+  const termino = (document.getElementById("busqueda")?.value || "").trim().toLowerCase();
   const categoria = (document.getElementById("categoria")?.value || "todas").toLowerCase();
   const subcategoria = (document.getElementById("subcategoria")?.value || "todas").toLowerCase();
   const orden = document.getElementById("orden")?.value || "reciente";
@@ -56,8 +53,8 @@ function aplicarFiltros() {
     const valido = typeof p.name === "string" &&
                    typeof p.price === "number" &&
                    Array.isArray(p.images) &&
-                   p.images.length > 0 &&
-                   typeof p.images[0]?.url === "string";
+                   p.images.length &&
+                   p.images[0]?.url;
     if (!valido) return false;
 
     return (
@@ -84,7 +81,7 @@ function aplicarFiltros() {
   mostrarProductos(filtrados);
 }
 
-/* 🖼️ Renderizar productos */
+/* 🖼️ Mostrar catálogo */
 function mostrarProductos(lista) {
   const contenedor = document.getElementById("catalogo");
   contenedor.innerHTML = "";
@@ -107,7 +104,7 @@ function mostrarProductos(lista) {
 
     const agotado = !stock || stock <= 0;
     const imagen = images[0]?.url || "/assets/logo.jpg";
-    const encoded = encodeURIComponent(_id);
+    const encodedId = encodeURIComponent(_id);
 
     const card = document.createElement("div");
     card.className = "card fade-in";
@@ -122,24 +119,18 @@ function mostrarProductos(lista) {
     };
 
     card.innerHTML = `
-      <a href="detalle.html?id=${encoded}" class="enlace-producto" aria-label="Ver detalles de ${name}">
+      <a href="detalle.html?id=${encodedId}" class="enlace-producto" aria-label="Ver detalles de ${name}">
         <div class="imagen-catalogo">
-          <img 
-            src="${imagen}" 
-            alt="${name}" 
-            class="zoomable" 
-            loading="lazy"
+          <img src="${imagen}" alt="${name}" class="zoomable" loading="lazy"
             onerror="this.src='/assets/logo.jpg'" />
         </div>
         <h3>${name}</h3>
       </a>
-
       ${featured ? `<span class="destacado-badge">⭐ Destacado</span>` : ""}
       <p><strong>Precio:</strong> $${price.toFixed(2)}</p>
       <p><strong>Categoría:</strong> ${category}</p>
       <p><strong>Subcategoría:</strong> ${subcategory}</p>
       <p><strong>Stock:</strong> ${agotado ? "❌ Agotado" : stock}</p>
-
       <button ${agotado ? "disabled" : ""} onclick='addToCart(${JSON.stringify(productoCart)})'>
         🛒 Agregar al carrito
       </button>
@@ -149,7 +140,7 @@ function mostrarProductos(lista) {
   });
 }
 
-/* 📂 Subcategorías dinámicas */
+/* 📂 Subcategorías únicas según categoría */
 function cargarSubcategoriasUnicas() {
   const categoria = (document.getElementById("categoria")?.value || "todas").toLowerCase();
   const subSelect = document.getElementById("subcategoria");
@@ -162,7 +153,7 @@ function cargarSubcategoriasUnicas() {
   });
 
   subSelect.innerHTML = `<option value="todas">Subcategoría: Todas</option>`;
-  Array.from(subcategorias).forEach(sub => {
+  [...subcategorias].forEach(sub => {
     const opt = document.createElement("option");
     opt.value = sub;
     opt.textContent = sub;
@@ -170,7 +161,7 @@ function cargarSubcategoriasUnicas() {
   });
 }
 
-/* 📣 Promoción activa */
+/* 📣 Mostrar promoción activa */
 async function cargarPromocionActiva() {
   try {
     const res = await fetch(API_PROMO);
@@ -187,17 +178,17 @@ async function cargarPromocionActiva() {
       }
     }
   } catch (err) {
-    console.error("❌ Error al cargar promoción:", err);
+    console.error("❌ Error al cargar promoción activa:", err);
   }
 }
 
-/* 📅 Validar fechas */
+/* 📆 Validar rango de fechas */
 function isFechaEnRango(start, end) {
   const hoy = new Date().toISOString().split("T")[0];
   return (!start || start <= hoy) && (!end || end >= hoy);
 }
 
-/* 🌗 Modo oscuro */
+/* 🌙 Restaurar modo oscuro */
 function restaurarModoOscuro() {
   const oscuro = localStorage.getItem("modoOscuro") === "true";
   if (oscuro) {
@@ -207,7 +198,7 @@ function restaurarModoOscuro() {
   }
 }
 
-/* 🌗 Botón modo oscuro toggle */
+/* 🌗 Alternar modo */
 function inicializarBotones() {
   const toggleBtn = document.getElementById("modoToggle");
   toggleBtn?.addEventListener("click", () => {
@@ -219,7 +210,7 @@ function inicializarBotones() {
   });
 }
 
-/* 👁️ Registrar visita */
+/* 📈 Registrar visita */
 function registrarVisita() {
   fetch(`${API_BASE}/visitas`, { method: "POST" }).catch(() => {});
 }

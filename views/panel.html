@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Panel de Control | KM & EZ ROPA</title>
+  <title>Panel de Administración | KM & EZ ROPA</title>
 
-  <!-- SEO -->
   <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="Panel principal de administración para KM & EZ ROPA" />
   <meta name="author" content="KM & EZ ROPA" />
-  <meta name="description" content="Accede al panel administrativo de KM & EZ ROPA para gestionar tu tienda." />
 
   <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -16,61 +15,28 @@
   <link rel="stylesheet" href="/css/panel.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
+
+  <!-- Scripts -->
+  <script type="module" src="/js/panel.js" defer></script>
 </head>
 <body>
-
-  <!-- ☀️🌙 Modo Oscuro -->
-  <div class="modo-toggle" style="position: absolute; top: 15px; right: 15px;">
-    <button id="modoToggle" class="btn btn-sm" aria-label="Alternar modo oscuro">🌙 Modo Oscuro</button>
-  </div>
-
-  <main class="panel-container fade-in" role="main" aria-label="Panel de administración">
-    <!-- 🧾 Encabezado -->
-    <header class="header-panel">
-      <h1>🛠️ Panel de Administración</h1>
-      <button type="button" onclick="logout()" class="btn btn-danger" aria-label="Cerrar sesión de administrador">
-        🔓 Cerrar sesión
-      </button>
+  <main class="panel-container fade-in" role="main" aria-label="Panel de administración principal">
+    <header class="header-panel" role="banner">
+      <h1>⚙️ Panel de Control</h1>
+      <button onclick="cerrarSesion()" aria-label="Cerrar sesión del administrador">Cerrar sesión</button>
     </header>
 
-    <!-- 🧭 Navegación -->
-    <nav class="menu-panel" role="navigation" aria-label="Navegación del panel de control">
-      <ul class="panel-links">
-        <li><a href="admin.html" class="btn-panel-link" aria-label="Gestionar productos">📦 Productos</a></li>
-        <li><a href="categorias.html" class="btn-panel-link" aria-label="Gestionar categorías">📁 Categorías</a></li>
-        <li><a href="promociones.html" class="btn-panel-link" aria-label="Gestionar promociones">🎯 Promociones</a></li>
-        <li><a href="pedidos.html" class="btn-panel-link" aria-label="Ver pedidos">🧾 Pedidos</a></li>
-        <li><a href="dashboard.html" class="btn-panel-link" aria-label="Ver analítica">📊 Analítica</a></li>
-        <li><a href="index.html" class="btn-panel-link" aria-label="Volver al catálogo público">🏠 Ir al Catálogo</a></li>
-      </ul>
+    <!-- Menú de navegación -->
+    <nav class="menu-panel" aria-label="Menú de navegación administrativa">
+      <a href="productos.html">🧥 Productos</a>
+      <a href="pedidos.html">📦 Pedidos</a>
+      <a href="promociones.html">🎯 Promociones</a>
+      <a href="dashboard.html">📊 Dashboard</a>
     </nav>
   </main>
 
-  <!-- JS Funcional -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const btnToggle = document.getElementById("modoToggle");
-      const body = document.body;
-
-      const oscuro = localStorage.getItem("modoOscuro") === "true";
-      if (oscuro) {
-        body.classList.add("modo-oscuro");
-        btnToggle.textContent = "☀️ Modo Claro";
-      }
-
-      btnToggle?.addEventListener("click", () => {
-        body.classList.toggle("modo-oscuro");
-        const activo = body.classList.contains("modo-oscuro");
-        localStorage.setItem("modoOscuro", activo);
-        btnToggle.textContent = activo ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
-      });
-    });
-
-    function logout() {
-      if (!confirm("¿Seguro que deseas cerrar sesión?")) return;
-      localStorage.removeItem("token");
-      window.location.href = "login.html";
-    }
-  </script>
+  <noscript>
+    <p style="color:red; text-align:center;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+  </noscript>
 </body>
 </html>

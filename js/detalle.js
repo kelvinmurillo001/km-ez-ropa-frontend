@@ -1,176 +1,135 @@
 "use strict";
 
-import { capitalizar, actualizarContadorCarrito } from "./utils.js";
-
-const API_BASE = "https://km-ez-ropa-backend.onrender.com/api/products";
-const contenedor = document.getElementById("detalleProducto");
+const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
 
 document.addEventListener("DOMContentLoaded", () => {
-  cargarDetalle();
-  actualizarContadorCarrito();
+  const id = new URLSearchParams(window.location.search).get("id");
+  if (!id) {
+    mostrarError("❌ Producto no encontrado.");
+    return;
+  }
+
+  cargarDetalleProducto(id);
 });
 
-async function cargarDetalle() {
-  const id = new URLSearchParams(window.location.search).get("id");
-
-  if (!id || !/^[a-f\d]{24}$/i.test(id)) {
-    return mostrarError("❌ ID del producto no proporcionado o inválido.");
-  }
-
+/* 🔄 Obtener detalle del producto */
+async function cargarDetalleProducto(id) {
   try {
-    const res = await fetch(`${API_BASE}/${id}`);
-    if (res.status === 404) return mostrarError("🚫 Producto no encontrado o fue eliminado.");
-    if (!res.ok) throw new Error(`Error del servidor: ${res.status}`);
+    const res = await fetch(`${API_BASE}/products/${id}`);
+    if (!res.ok) throw new Error("No se encontró el producto");
 
     const producto = await res.json();
-    if (!producto?._id) return mostrarError("❌ Producto no encontrado.");
-
     renderizarProducto(producto);
   } catch (err) {
-    console.error("❌ Error al cargar detalle:", err);
-    mostrarError("❌ Ocurrió un error inesperado al cargar el producto.");
+    console.error("Error al cargar producto:", err);
+    mostrarError("❌ No se pudo cargar el producto.");
   }
 }
 
+/* 🎨 Renderizar información del producto */
 function renderizarProducto(p) {
-  const imagenes = [
-    ...(p.images || []).map(img => ({ url: img?.url, talla: img?.talla, color: img?.color })),
-    ...(p.variants || []).map(v => ({ url: v?.imageUrl, talla: v?.talla, color: v?.color }))
-  ].filter(img => img.url);
+  const imagen = document.getElementById("imagenPrincipal");
+  const thumbs = document.getElementById("miniaturas");
+  const titulo = document.getElementById("tituloProducto");
+  const descripcion = document.getElementById("descripcionProducto");
+  const precio = document.getElementById("precioProducto");
+  const stockEl = document.getElementById("stockProducto");
+  const tallas = document.getElementById("tallasDisponibles");
 
-  const primera = imagenes[0] || {};
-  const tallasUnicas = [...new Set(imagenes.map(i => i.talla?.toUpperCase()).filter(Boolean))];
-  const iconoTalla = { bebé: "👶", niño: "🧒", niña: "👧", adulto: "👕" }[p.tallaTipo?.toLowerCase()] || "👕";
+  if (!p || !p._id || !p.name || !Array.isArray(p.images)) {
+    mostrarError("❌ Información del producto incompleta.");
+    return;
+  }
 
-  contenedor.innerHTML = `
-    <div class="detalle-grid">
-      <div class="detalle-galeria">
-        <div class="detalle-galeria-thumbs">
-          ${imagenes.map((img, i) => `
-            <img src="${img.url}" alt="Miniatura ${i + 1}" 
-              class="${i === 0 ? "active" : ""}" 
-              data-url="${img.url}" tabindex="0"
-              onerror="this.src='/assets/logo.jpg'" />
-          `).join("")}
-        </div>
-        <div class="detalle-imagen-principal">
-          <img id="imagenPrincipal" src="${primera.url || "/assets/logo.jpg"}" alt="Imagen principal de ${p.name}" />
-          ${(primera.talla || primera.color) ? `
-            <div class="imagen-info">
-              ${primera.talla ? `<p><strong>Talla:</strong> ${primera.talla}</p>` : ""}
-              ${primera.color ? `<p><strong>Color:</strong> ${primera.color}</p>` : ""}
-            </div>` : ""}
-        </div>
-      </div>
+  titulo.textContent = p.name;
+  descripcion.textContent = p.description || "Sin descripción.";
+  precio.textContent = `$${(p.price || 0).toFixed(2)}`;
+  stockEl.textContent = p.stock > 0 ? `Disponible: ${p.stock}` : "❌ Agotado";
 
-      <div class="detalle-info">
-        <h1>${p.name || "Producto sin nombre"}</h1>
-        <p><strong>Precio:</strong> $${parseFloat(p.price || 0).toFixed(2)}</p>
-        <p><strong>Categoría:</strong> ${capitalizar(p.category)}</p>
-        <p><strong>Subcategoría:</strong> ${capitalizar(p.subcategory || "N/A")}</p>
-        ${p.tallaTipo ? `<p><strong>Tipo de talla:</strong> ${iconoTalla} ${capitalizar(p.tallaTipo)}</p>` : ""}
-        <p><strong>Stock general:</strong> ${p.stock ?? "N/A"}</p>
+  const imagenUrl = p.images[0]?.url || "/assets/logo.jpg";
+  imagen.src = imagenUrl;
+  imagen.alt = p.name;
 
-        <div class="guia-tallas">
-          <p><strong>Selecciona Talla:</strong></p>
-          <div class="tallas-disponibles">
-            ${tallasUnicas.length
-              ? tallasUnicas.map((t, i) => `
-                <div class="talla-opcion ${i === 0 ? "selected" : ""}" tabindex="0" role="button">${t}</div>
-              `).join("")
-              : "<span>No hay tallas disponibles</span>"}
-          </div>
-        </div>
+  thumbs.innerHTML = "";
+  p.images.forEach((img, i) => {
+    const mini = document.createElement("img");
+    mini.src = img.url || "/assets/logo.jpg";
+    mini.alt = `Vista ${i + 1}`;
+    mini.className = i === 0 ? "active" : "";
+    mini.addEventListener("click", () => cambiarImagenPrincipal(img.url, i));
+    thumbs.appendChild(mini);
+  });
 
-        <div class="contador">
-          <button type="button" id="menos" aria-label="Disminuir cantidad">-</button>
-          <span id="cantidad">1</span>
-          <button type="button" id="mas" aria-label="Aumentar cantidad">+</button>
-        </div>
+  if (Array.isArray(p.talla) && p.talla.length) {
+    tallas.innerHTML = "";
+    p.talla.forEach(t => {
+      const span = document.createElement("span");
+      span.textContent = t;
+      span.className = "talla-opcion";
+      span.tabIndex = 0;
+      span.addEventListener("click", () => seleccionarTalla(span));
+      tallas.appendChild(span);
+    });
+  }
 
-        <button class="btn-comprar" id="agregarCarrito">
-          🛒 Añadir al carrito
-        </button>
-      </div>
-    </div>
-  `;
+  document.getElementById("btnAgregar")?.addEventListener("click", () => {
+    const tallaSeleccionada = document.querySelector(".talla-opcion.selected")?.textContent || "";
+    const cantidad = parseInt(document.getElementById("cantidadProducto")?.textContent) || 1;
 
-  activarInteracciones(p);
-}
-
-function activarInteracciones(p) {
-  // Cambio de imagen
-  document.querySelectorAll(".detalle-galeria-thumbs img").forEach(img =>
-    img.addEventListener("click", () => cambiarImagen(img.dataset.url, img))
-  );
-
-  // Selección de talla
-  document.querySelectorAll(".talla-opcion").forEach(talla =>
-    talla.addEventListener("click", () => seleccionarTalla(talla))
-  );
-
-  // Contador
-  document.getElementById("menos")?.addEventListener("click", () => ajustarCantidad(-1));
-  document.getElementById("mas")?.addEventListener("click", () => ajustarCantidad(1));
-
-  // Agregar al carrito
-  document.getElementById("agregarCarrito")?.addEventListener("click", () => {
-    const talla = document.querySelector(".talla-opcion.selected")?.textContent;
-    const cantidad = parseInt(document.getElementById("cantidad")?.textContent || "1");
-
-    if (!talla) return alert("⚠️ Por favor, selecciona una talla.");
-
-    const item = {
+    const productoCart = {
       id: p._id,
       nombre: p.name,
-      precio: parseFloat(p.price),
-      imagen: p.images?.[0]?.url || "/assets/logo.jpg",
-      talla,
-      cantidad,
-      agregado: new Date().toISOString()
+      precio: p.price,
+      imagen: imagenUrl,
+      talla: tallaSeleccionada,
+      color: p.colores || ""
     };
 
-    const carrito = JSON.parse(localStorage.getItem("carrito") || "[]");
-    const index = carrito.findIndex(i => i.id === item.id && i.talla === item.talla);
+    for (let i = 0; i < cantidad; i++) addToCart(productoCart);
+  });
 
-    if (index !== -1) {
-      carrito[index].cantidad += cantidad;
-    } else {
-      carrito.push(item);
+  configurarContador();
+}
+
+/* 🔄 Cambiar imagen principal */
+function cambiarImagenPrincipal(url, index) {
+  const imagen = document.getElementById("imagenPrincipal");
+  imagen.src = url;
+  imagen.alt = `Vista ${index + 1}`;
+
+  const miniaturas = document.querySelectorAll("#miniaturas img");
+  miniaturas.forEach((img, i) => img.classList.toggle("active", i === index));
+}
+
+/* ✔️ Seleccionar talla */
+function seleccionarTalla(elemento) {
+  document.querySelectorAll(".talla-opcion").forEach(t => t.classList.remove("selected"));
+  elemento.classList.add("selected");
+}
+
+/* 🔢 Contador de cantidad */
+function configurarContador() {
+  const menos = document.getElementById("btnMenos");
+  const mas = document.getElementById("btnMas");
+  const cantidadEl = document.getElementById("cantidadProducto");
+
+  let cantidad = 1;
+
+  menos?.addEventListener("click", () => {
+    if (cantidad > 1) {
+      cantidad--;
+      cantidadEl.textContent = cantidad;
     }
+  });
 
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-    actualizarContadorCarrito();
-
-    if (confirm("✅ Producto añadido al carrito.\n¿Ir al carrito ahora?")) {
-      window.location.href = "carrito.html";
-    }
+  mas?.addEventListener("click", () => {
+    cantidad++;
+    cantidadEl.textContent = cantidad;
   });
 }
 
-// 🔄 Utilidades visuales
-function cambiarImagen(url, thumb) {
-  const principal = document.getElementById("imagenPrincipal");
-  if (principal) principal.src = url;
-
-  document.querySelectorAll(".detalle-galeria-thumbs img")
-    .forEach(img => img.classList.remove("active"));
-  thumb.classList.add("active");
-}
-
-function seleccionarTalla(elem) {
-  document.querySelectorAll(".talla-opcion")
-    .forEach(e => e.classList.remove("selected"));
-  elem.classList.add("selected");
-}
-
-function ajustarCantidad(delta) {
-  const el = document.getElementById("cantidad");
-  let cantidad = parseInt(el.textContent);
-  cantidad = Math.max(1, cantidad + delta);
-  el.textContent = cantidad;
-}
-
-function mostrarError(msg) {
-  contenedor.innerHTML = `<p class="error fade-in">${msg}</p>`;
+/* ❌ Mostrar errores */
+function mostrarError(mensaje) {
+  const contenedor = document.querySelector(".detalle-container");
+  contenedor.innerHTML = `<p class="error">${mensaje}</p>`;
 }

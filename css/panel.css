@@ -1,4 +1,4 @@
-/* 🎛️ Panel Principal */
+/* 🎛️ Contenedor principal del Panel */
 .panel-container {
   max-width: 1000px;
   margin: 0 auto;
@@ -8,12 +8,13 @@
   color: #333;
   animation: fadeIn 0.4s ease;
 }
+
 body.modo-oscuro .panel-container {
   background-color: #121212;
   color: #eee;
 }
 
-/* 🔰 Header Panel */
+/* 🔰 Encabezado */
 .header-panel {
   display: flex;
   justify-content: space-between;
@@ -23,13 +24,15 @@ body.modo-oscuro .panel-container {
   padding: 16px 24px;
   border-radius: 10px;
   margin-bottom: 24px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
+
 .header-panel h1 {
   margin: 0;
   font-size: 1.6rem;
   font-weight: 600;
 }
+
 .header-panel button {
   background-color: #e53935;
   border: none;
@@ -37,24 +40,21 @@ body.modo-oscuro .panel-container {
   color: white;
   border-radius: 6px;
   font-size: 15px;
-  font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
+
 .header-panel button:hover {
   background-color: #c62828;
 }
-.header-panel button:focus-visible {
-  outline: 3px solid orange;
-  outline-offset: 2px;
-}
 
-/* 📂 Menú del Panel */
+/* 🌐 Menú del panel */
 .menu-panel {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 20px;
 }
+
 .menu-panel a {
   display: block;
   padding: 22px;
@@ -65,28 +65,29 @@ body.modo-oscuro .panel-container {
   font-size: 15px;
   color: #333;
   text-decoration: none;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   transition: all 0.25s ease;
 }
+
 .menu-panel a:hover {
   background-color: #eeeeee;
   color: #1976d2;
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
 }
 
-/* 🌙 Modo Oscuro */
 body.modo-oscuro .menu-panel a {
   background-color: #1e1e1e;
   color: #eee;
   border: 1px solid #333;
 }
+
 body.modo-oscuro .menu-panel a:hover {
   background-color: #2a2a2a;
   color: #90caf9;
 }
 
-/* ✨ Animaciones */
+/* ✅ Animación suave */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -103,11 +104,13 @@ body.modo-oscuro .menu-panel a:hover {
   .menu-panel {
     grid-template-columns: 1fr;
   }
+
   .header-panel {
     flex-direction: column;
     gap: 10px;
     text-align: center;
   }
+
   .header-panel button {
     width: 100%;
   }
