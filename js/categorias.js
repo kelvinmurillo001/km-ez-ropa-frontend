@@ -1,3 +1,6 @@
+// ✅ IMPORTAR función desde utils.js
+import { registrarVisitaPublica } from "./utils.js";
+
 // === VARIABLES DE DOM ===
 const catalogo = document.getElementById("catalogo");
 const categoriaSelect = document.getElementById("categoriaSelect");
@@ -8,6 +11,7 @@ const promoBanner = document.getElementById("promoBanner");
 
 // === CARGA INICIAL ===
 document.addEventListener("DOMContentLoaded", () => {
+  registrarVisitaPublica(); // 📊 registrar visita
   cargarPromocion();
   cargarProductos();
   actualizarCarritoWidget();
@@ -110,7 +114,7 @@ function cargarCategoriasUnicas(productos) {
   subcategoriaSelect.innerHTML = '<option value="">Todas</option>' + subcategorias.map(s => `<option value="${s}">${s}</option>`).join('');
 }
 
-// === ACTUALIZAR CARRITO FLotante ===
+// === ACTUALIZAR CARRITO Flotante ===
 function actualizarCarritoWidget() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
   const total = carrito.reduce((sum, item) => sum + item.quantity, 0);

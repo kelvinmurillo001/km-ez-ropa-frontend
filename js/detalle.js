@@ -1,7 +1,9 @@
-// === IMPORTAR DE utils.js SI ESTÁS USANDO MÓDULOS ===
-// import { addToCart, actualizarCarritoWidget } from './utils.js';
+// ✅ IMPORTAR desde utils.js
+import { registrarVisitaPublica } from "./utils.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+  registrarVisitaPublica(); // 📊 Registrar la visita
+
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
 
