@@ -156,3 +156,6 @@ function activarModoOscuro() {
     localStorage.setItem("modoOscuro", document.body.classList.contains("modo-oscuro"));
   });
 }
+
+// ✅ Hacer accesible la función al HTML (solución error onclick)
+window.agregarAlCarrito = agregarAlCarrito;
