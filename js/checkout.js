@@ -61,6 +61,8 @@ form.addEventListener("submit", async e => {
   };
 
   try {
+    console.log("📦 Pedido a enviar:", JSON.stringify(pedido, null, 2)); // prueba
+
     const res = await fetch(API_ORDERS, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
