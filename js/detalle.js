@@ -10,8 +10,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
 
-  if (!id) {
-    document.getElementById("detalleProducto").innerHTML = "<p style='color:red;'>❌ Producto no encontrado.</p>";
+  // 🚨 Validación: ID ausente o mal formado
+  if (!id || id === "undefined") {
+    document.getElementById("detalleProducto").innerHTML = `
+      <div style="color:red; text-align:center;">
+        <h3>❌ Producto no encontrado o inválido.</h3>
+        <p>Por favor regresa al catálogo.</p>
+        <a href="/categorias.html" class="btn-secundario">🔙 Volver al catálogo</a>
+      </div>`;
+    console.warn("⚠️ ID del producto no proporcionado o inválido.");
     return;
   }
 
@@ -33,7 +40,12 @@ async function cargarProducto(id) {
     renderizarProducto(producto);
   } catch (err) {
     console.error("❌ Error cargando producto:", err.message);
-    detalle.innerHTML = "<p style='color:red;'>⚠️ No se pudo cargar el producto.</p>";
+    detalle.innerHTML = `
+      <div style="color:red; text-align:center;">
+        <h3>⚠️ No se pudo cargar el producto.</h3>
+        <p>Intenta de nuevo o vuelve al catálogo.</p>
+        <a href="/categorias.html" class="btn-secundario">🔙 Volver al catálogo</a>
+      </div>`;
   }
 }
 
@@ -59,7 +71,9 @@ function renderizarProducto(p) {
       <div class="selectores">
         <label for="tallaSelect">Talla:</label>
         <select id="tallaSelect" required>
-          ${p.sizes?.length ? p.sizes.map(t => `<option value="${t}">${t}</option>`).join("") : '<option value="Única">Única</option>'}
+          ${p.sizes?.length
+            ? p.sizes.map(t => `<option value="${t}">${t}</option>`).join("")
+            : '<option value="Única">Única</option>'}
         </select>
 
         <label for="cantidadInput">Cantidad:</label>
@@ -102,7 +116,7 @@ function agregarAlCarrito(id, nombre, imagen, precio) {
   mostrarToast("✅ Producto agregado al carrito");
 }
 
-// === 🧮 Actualizar cantidad en widget ===
+// === 🧮 Actualizar widget de carrito ===
 function actualizarCarritoWidget() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
   const total = carrito.reduce((sum, item) => sum + item.cantidad, 0);
