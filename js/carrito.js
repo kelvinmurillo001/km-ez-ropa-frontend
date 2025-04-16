@@ -5,16 +5,19 @@ const carritoItems = document.getElementById("carritoItems");
 const carritoTotal = document.getElementById("carritoTotal");
 const btnIrCheckout = document.getElementById("btnIrCheckout");
 
-// Datos del carrito (desde localStorage)
-let carrito = JSON.parse(localStorage.getItem("carritoKM")) || [];
+// Clave de localStorage usada en todo el sistema
+const STORAGE_KEY = "km_ez_cart";
 
-// ▶️ Iniciar
+// Obtener carrito desde localStorage
+let carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+// ▶️ Inicializar
 document.addEventListener("DOMContentLoaded", () => {
   renderizarCarrito();
   btnIrCheckout.addEventListener("click", irACheckout);
 });
 
-// 🧠 Mostrar productos
+// 🧠 Mostrar productos en carrito
 function renderizarCarrito() {
   if (carrito.length === 0) {
     carritoItems.innerHTML = `<p class="text-center">🛍️ Tu carrito está vacío.</p>`;
@@ -29,17 +32,19 @@ function renderizarCarrito() {
     const div = document.createElement("div");
     div.className = "carrito-item";
 
+    const imagen = item.image || "/assets/logo.jpg";
+
     div.innerHTML = `
-      <img src="${item.image}" alt="${item.name}" class="carrito-img" />
+      <img src="${imagen}" alt="${item.name}" class="carrito-img" />
       <div class="carrito-detalles">
         <h4>${item.name}</h4>
-        <p><strong>Talla:</strong> ${item.talla}</p>
-        <p><strong>Precio:</strong> $${item.precio}</p>
+        <p><strong>Talla:</strong> ${item.size || "Única"}</p>
+        <p><strong>Precio:</strong> $${item.price}</p>
         <div class="carrito-cantidad">
           <label>Cantidad:</label>
-          <input type="number" min="1" value="${item.cantidad}" data-index="${index}" />
+          <input type="number" min="1" value="${item.quantity}" data-index="${index}" />
         </div>
-        <p><strong>Subtotal:</strong> $${(item.precio * item.cantidad).toFixed(2)}</p>
+        <p><strong>Subtotal:</strong> $${(item.price * item.quantity).toFixed(2)}</p>
         <button class="btn-eliminar" data-index="${index}">🗑️ Eliminar</button>
       </div>
     `;
@@ -49,17 +54,18 @@ function renderizarCarrito() {
 
   actualizarTotal();
 
-  // Eventos
+  // Listeners: cambio de cantidad
   document.querySelectorAll(".carrito-cantidad input").forEach(input => {
     input.addEventListener("change", e => {
       const i = parseInt(e.target.dataset.index);
       const nuevaCantidad = Math.max(1, parseInt(e.target.value));
-      carrito[i].cantidad = nuevaCantidad;
+      carrito[i].quantity = nuevaCantidad;
       guardarCarrito();
       renderizarCarrito();
     });
   });
 
+  // Listeners: eliminar producto
   document.querySelectorAll(".btn-eliminar").forEach(btn => {
     btn.addEventListener("click", e => {
       const i = parseInt(e.target.dataset.index);
@@ -72,19 +78,19 @@ function renderizarCarrito() {
 
 // 💰 Calcular total
 function actualizarTotal() {
-  const total = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
+  const total = carrito.reduce((acc, item) => acc + item.price * item.quantity, 0);
   carritoTotal.textContent = `$${total.toFixed(2)}`;
   btnIrCheckout.disabled = carrito.length === 0;
 }
 
-// 💾 Guardar cambios en localStorage
+// 💾 Guardar en localStorage
 function guardarCarrito() {
-  localStorage.setItem("carritoKM", JSON.stringify(carrito));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(carrito));
 }
 
-// ✅ Ir a checkout
+// 🚀 Ir a checkout
 function irACheckout() {
   if (carrito.length > 0) {
-    window.location.href = "/views/checkout.html";
+    window.location.href = "/checkout.html";
   }
 }

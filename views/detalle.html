@@ -5,26 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>👕 Detalle del Producto | KM & EZ ROPA</title>
 
-  <!-- SEO -->
+  <!-- 🔍 SEO -->
   <meta name="description" content="Descubre los detalles del producto seleccionado de KM & EZ ROPA." />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="KM & EZ ROPA" />
 
-  <!-- Estilos -->
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/detalle.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- JS -->
+  <!-- ✅ Script principal -->
   <script type="module" src="/js/detalle.js" defer></script>
 </head>
 <body>
 
-  <!-- Encabezado -->
+  <!-- 🔝 Encabezado -->
   <header class="main-header">
     <div class="logo">
-      <img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" />
+      <a href="/"><img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" /></a>
       <div class="brand">
         <h1>KM & EZ ROPA</h1>
         <p>Moda Urbana con Estilo</p>
@@ -34,36 +34,35 @@
     <nav class="nav-links">
       <a href="/index.html">🏠 Inicio</a>
       <a href="/categorias.html">🛍️ Catálogo</a>
-      <button id="modoOscuroBtn">🌙 Modo Oscuro</button>
+      <button id="modoOscuroBtn" aria-label="Modo Oscuro">🌙</button>
     </nav>
   </header>
 
-  <!-- Contenido del producto -->
-  <main class="detalle-container">
-    <section id="detalleProducto" class="detalle-grid fade-in">
-      <!-- Aquí se carga dinámicamente el producto desde detalle.js -->
+  <!-- 🧾 Detalle del Producto -->
+  <main class="detalle-container" role="main">
+    <section id="detalleProducto" class="detalle-grid fade-in" aria-label="Detalle del producto">
+      <!-- Se carga dinámicamente con JS -->
     </section>
   </main>
 
-  <!-- Botones flotantes -->
+  <!-- 🛒 Botones flotantes -->
   <div class="floating-buttons">
-    <div class="cart-icon" onclick="window.location.href='/carrito.html'">
+    <a href="/carrito.html" class="cart-icon" aria-label="Ir al carrito">
       <img src="/assets/cart-icon.svg" alt="Carrito" />
       <span id="cartCount">0</span>
-    </div>
-    <div class="whatsapp-icon">
-      <a href="https://wa.me/593990270864" target="_blank" rel="noopener noreferrer">
-        <img src="/assets/whatsapp.svg" alt="WhatsApp" />
-      </a>
-    </div>
+    </a>
+
+    <a href="https://wa.me/593990270864" class="whatsapp-icon" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
+      <img src="/assets/whatsapp.svg" alt="WhatsApp" />
+    </a>
   </div>
 
-  <!-- Footer -->
+  <!-- 🔚 Footer -->
   <footer class="site-footer">
     &copy; 2024 KM & EZ ROPA. Todos los derechos reservados.
   </footer>
 
-  <!-- Fallback JS -->
+  <!-- ⚠️ Sin JavaScript -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Activa JavaScript para visualizar correctamente esta página.</p>
   </noscript>

@@ -5,7 +5,7 @@ import { registrarVisitaPublica } from "./utils.js";
 import { API_BASE } from "./config.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  registrarVisitaPublica(); // 📊 Registrar la visita
+  registrarVisitaPublica(); // 📊 Registrar visita
 
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   actualizarCarritoWidget();
 });
 
-// === CARGAR PRODUCTO POR ID ===
+// === 📦 Cargar producto por ID ===
 async function cargarProducto(id) {
   const detalle = document.getElementById("detalleProducto");
 
@@ -37,18 +37,24 @@ async function cargarProducto(id) {
   }
 }
 
-// === MOSTRAR PRODUCTO EN PANTALLA ===
+// === 🖼️ Renderizar producto en pantalla ===
 function renderizarProducto(p) {
   const detalle = document.getElementById("detalleProducto");
 
+  const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
+  const nombre = p.name || "Producto sin nombre";
+  const descripcion = p.description || "Sin descripción disponible";
+  const precio = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
+  const id = p._id || "";
+
   detalle.innerHTML = `
     <div class="detalle-img">
-      <img src="${p.image}" alt="${p.name}" />
+      <img src="${imagen}" alt="${nombre}" onerror="this.src='/assets/logo.jpg'" />
     </div>
     <div class="detalle-info">
-      <h2>${p.name}</h2>
-      <p>${p.description}</p>
-      <p class="precio">$${p.price.toFixed(2)}</p>
+      <h2>${nombre}</h2>
+      <p>${descripcion}</p>
+      <p class="precio">$${precio}</p>
 
       <div class="selectores">
         <label for="tallaSelect">Talla:</label>
@@ -60,32 +66,33 @@ function renderizarProducto(p) {
         <input type="number" id="cantidadInput" value="1" min="1" max="10" />
       </div>
 
-      <button class="btn-agregar" onclick="agregarAlCarrito('${p._id}', '${p.name}', '${p.image}', ${p.price})">
+      <button class="btn-agregar" onclick="agregarAlCarrito('${id}', \`${nombre}\`, \`${imagen}\`, ${p.price})">
         🛒 Agregar al carrito
       </button>
     </div>
   `;
 }
 
-// === AGREGAR AL CARRITO ===
+// === 🛒 Agregar producto al carrito ===
 function agregarAlCarrito(id, nombre, imagen, precio) {
   const talla = document.getElementById("tallaSelect")?.value || "Única";
   const cantidad = parseInt(document.getElementById("cantidadInput")?.value) || 1;
 
   const nuevoProducto = {
     id,
-    name: nombre,
-    image: imagen,
-    price: precio,
-    size: talla,
-    quantity: cantidad
+    nombre,
+    imagen,
+    precio,
+    talla,
+    cantidad
   };
 
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
+  const key = `${id}_${talla}`.toLowerCase();
+  const index = carrito.findIndex(p => `${p.id}_${p.talla}`.toLowerCase() === key);
 
-  const index = carrito.findIndex(p => p.id === id && p.size === talla);
   if (index >= 0) {
-    carrito[index].quantity += cantidad;
+    carrito[index].cantidad += cantidad;
   } else {
     carrito.push(nuevoProducto);
   }
@@ -95,15 +102,15 @@ function agregarAlCarrito(id, nombre, imagen, precio) {
   mostrarToast("✅ Producto agregado al carrito");
 }
 
-// === ACTUALIZAR WIDGET DEL CARRITO ===
+// === 🧮 Actualizar cantidad en widget ===
 function actualizarCarritoWidget() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
-  const total = carrito.reduce((sum, item) => sum + item.quantity, 0);
+  const total = carrito.reduce((sum, item) => sum + item.cantidad, 0);
   const contador = document.getElementById("cartCount");
   if (contador) contador.textContent = total;
 }
 
-// === TOAST PERSONALIZADO ===
+// === ✅ Mensaje visual temporal ===
 function mostrarToast(mensaje) {
   const toast = document.createElement("div");
   toast.textContent = mensaje;
@@ -123,7 +130,7 @@ function mostrarToast(mensaje) {
   setTimeout(() => toast.remove(), 2500);
 }
 
-// === MODO OSCURO ===
+// === 🌙 Modo oscuro ===
 function activarModoOscuro() {
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
