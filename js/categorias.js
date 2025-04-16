@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   configurarFiltros();
 });
 
-// === Modo oscuro persistente ===
+// === 🌙 Modo oscuro persistente ===
 function aplicarModoOscuro() {
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
@@ -36,7 +36,7 @@ function aplicarModoOscuro() {
   });
 }
 
-// === Agregar eventos a filtros ===
+// === 🎛 Agregar eventos a filtros ===
 function configurarFiltros() {
   [categoriaSelect, subcategoriaSelect, precioSelect].forEach(el => {
     el.addEventListener("change", cargarProductos);
@@ -45,7 +45,7 @@ function configurarFiltros() {
   busquedaInput.addEventListener("keyup", cargarProductos);
 }
 
-// === Cargar productos desde API ===
+// === 📦 Cargar productos desde API ===
 async function cargarProductos() {
   try {
     const res = await fetch(API_PRODUCTS);
@@ -62,7 +62,7 @@ async function cargarProductos() {
   }
 }
 
-// === Aplicar filtros seleccionados ===
+// === 🧠 Aplicar filtros seleccionados ===
 function aplicarFiltros(productos) {
   let filtrados = [...productos];
 
@@ -71,16 +71,17 @@ function aplicarFiltros(productos) {
   const precio = precioSelect.value;
   const texto = busquedaInput.value.trim().toLowerCase();
 
-  if (cat) filtrados = filtrados.filter(p => p.category === cat);
-  if (sub) filtrados = filtrados.filter(p => p.subcategory === sub);
-  if (texto) filtrados = filtrados.filter(p => p.name.toLowerCase().includes(texto));
+  if (cat) filtrados = filtrados.filter(p => p.category?.toLowerCase() === cat.toLowerCase());
+  if (sub) filtrados = filtrados.filter(p => p.subcategory?.toLowerCase() === sub.toLowerCase());
+  if (texto) filtrados = filtrados.filter(p => p.name?.toLowerCase().includes(texto));
+
   if (precio === "low") filtrados.sort((a, b) => a.price - b.price);
   if (precio === "high") filtrados.sort((a, b) => b.price - a.price);
 
   return filtrados;
 }
 
-// === Renderizar productos ===
+// === 🖼️ Renderizar productos en pantalla ===
 function renderizarCatalogo(productos) {
   catalogo.innerHTML = "";
 
@@ -90,13 +91,17 @@ function renderizarCatalogo(productos) {
   }
 
   productos.forEach(p => {
+    const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
+    const nombre = p.name || "Producto";
+    const precio = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
+
     const card = document.createElement("div");
     card.className = "product-card";
     card.innerHTML = `
-      <img src="${p.image}" alt="${p.name}" />
+      <img src="${imagen}" alt="${nombre}" onerror="this.src='/assets/logo.jpg'" />
       <div class="product-info">
-        <h3>${p.name}</h3>
-        <p>$${p.price.toFixed(2)}</p>
+        <h3>${nombre}</h3>
+        <p>$${precio}</p>
         <button onclick="verDetalle('${p._id}')" class="btn-card">👁️ Ver</button>
       </div>
     `;
@@ -104,15 +109,16 @@ function renderizarCatalogo(productos) {
   });
 }
 
-// === Navegar al detalle ===
+// === 👁️ Ir a detalle del producto ===
 function verDetalle(id) {
+  if (!id) return;
   window.location.href = `/detalle.html?id=${id}`;
 }
 
-// === Popular categorías y subcategorías ===
+// === 📂 Popular selects de categoría y subcategoría ===
 function llenarSelects(productos) {
-  const categorias = [...new Set(productos.map(p => p.category))];
-  const subcategorias = [...new Set(productos.map(p => p.subcategory))];
+  const categorias = [...new Set(productos.map(p => p.category).filter(Boolean))];
+  const subcategorias = [...new Set(productos.map(p => p.subcategory).filter(Boolean))];
 
   categoriaSelect.innerHTML = '<option value="">Todas</option>' +
     categorias.map(c => `<option value="${c}">${c}</option>`).join('');
@@ -121,23 +127,24 @@ function llenarSelects(productos) {
     subcategorias.map(s => `<option value="${s}">${s}</option>`).join('');
 }
 
-// === Actualizar ícono del carrito ===
+// === 🛒 Actualizar ícono del carrito ===
 function actualizarCarritoWidget() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
-  const total = carrito.reduce((sum, item) => sum + item.quantity, 0);
+  const total = carrito.reduce((sum, item) => sum + (item.cantidad || 0), 0);
   const contador = document.getElementById("cartCount");
   if (contador) contador.textContent = total;
 }
 
-// === Cargar promoción activa (si hay) ===
+// === 📣 Cargar promoción activa ===
 async function cargarPromocion() {
   try {
     const res = await fetch(API_PROMOS);
     const promo = await res.json();
 
-    if (promo?.activa) {
+    if (res.ok && promo?.active && promo.message) {
+      promoBanner.style.display = "block";
       promoBanner.style.background = promo.color || "#ff6d00";
-      promoBanner.textContent = promo.mensaje;
+      promoBanner.textContent = promo.message;
     }
   } catch (err) {
     console.warn("⚠️ No se pudo cargar promoción activa.");
