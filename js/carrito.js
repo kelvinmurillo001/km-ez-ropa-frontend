@@ -20,11 +20,11 @@ document.addEventListener("DOMContentLoaded", () => {
 function filtrarItemsInvalidos() {
   carrito = carrito.filter(p =>
     p &&
-    typeof p.name === "string" &&
-    typeof p.price === "number" &&
-    typeof p.quantity === "number" &&
-    !isNaN(p.price) &&
-    !isNaN(p.quantity)
+    typeof p.nombre === "string" &&
+    typeof p.precio === "number" &&
+    typeof p.cantidad === "number" &&
+    !isNaN(p.precio) &&
+    !isNaN(p.cantidad)
   );
   guardarCarrito();
 }
@@ -41,11 +41,11 @@ function renderizarCarrito() {
   carritoItems.innerHTML = "";
 
   carrito.forEach((item, index) => {
-    const imagen = item.image || "/assets/logo.jpg";
-    const nombre = item.name || "Producto";
-    const talla = item.size || "Única";
-    const precio = isNaN(item.price) ? 0 : item.price;
-    const cantidad = isNaN(item.quantity) || item.quantity < 1 ? 1 : item.quantity;
+    const imagen = item.imagen || "/assets/logo.jpg";
+    const nombre = item.nombre || "Producto";
+    const talla = item.talla || "Única";
+    const precio = isNaN(item.precio) ? 0 : item.precio;
+    const cantidad = isNaN(item.cantidad) || item.cantidad < 1 ? 1 : item.cantidad;
 
     const subtotal = (precio * cantidad).toFixed(2);
 
@@ -77,8 +77,8 @@ function renderizarCarrito() {
 // 💰 Calcular total
 function actualizarTotal() {
   const total = carrito.reduce((acc, item) => {
-    const precio = isNaN(item.price) ? 0 : item.price;
-    const cantidad = isNaN(item.quantity) ? 0 : item.quantity;
+    const precio = isNaN(item.precio) ? 0 : item.precio;
+    const cantidad = isNaN(item.cantidad) ? 0 : item.cantidad;
     return acc + precio * cantidad;
   }, 0);
 
@@ -92,7 +92,7 @@ function agregarListeners() {
     input.addEventListener("change", e => {
       const i = parseInt(e.target.dataset.index);
       const nuevaCantidad = Math.max(1, parseInt(e.target.value) || 1);
-      carrito[i].quantity = nuevaCantidad;
+      carrito[i].cantidad = nuevaCantidad;
       guardarCarrito();
       renderizarCarrito();
     });

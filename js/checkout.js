@@ -20,11 +20,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let total = 0;
   resumenPedido.innerHTML = carrito.map(item => {
-    const subtotal = item.price * item.quantity;
+    const subtotal = item.precio * item.cantidad;
     total += subtotal;
     return `
       <div class="resumen-item">
-        <p>👕 <strong>${item.name}</strong> | Talla: ${item.size || "Única"} | Cant: ${item.quantity} | $${subtotal.toFixed(2)}</p>
+        <p>👕 <strong>${item.nombre}</strong> | Talla: ${item.talla || "Única"} | Cant: ${item.cantidad} | $${subtotal.toFixed(2)}</p>
       </div>
     `;
   }).join("");
@@ -48,18 +48,16 @@ form.addEventListener("submit", async e => {
   }
 
   const pedido = {
-    nombre,
-    email,
-    telefono,
-    direccion,
+    nombreCliente: nombre,
+    nota: direccion,
+    total: carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0),
     items: carrito.map(item => ({
       productId: item.id,
-      name: item.name,
-      talla: item.size,
-      cantidad: item.quantity,
-      precio: item.price
-    })),
-    total: carrito.reduce((acc, item) => acc + item.price * item.quantity, 0)
+      name: item.nombre,
+      talla: item.talla,
+      cantidad: item.cantidad,
+      precio: item.precio
+    }))
   };
 
   try {

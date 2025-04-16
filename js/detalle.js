@@ -52,20 +52,20 @@ async function cargarProducto(id) {
 function renderizarProducto(p) {
   const detalle = document.getElementById("detalleProducto");
 
-  const image = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
-  const name = p.name || "Producto sin nombre";
-  const description = p.description || "Sin descripción disponible";
-  const price = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
+  const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
+  const nombre = p.name || "Producto sin nombre";
+  const descripcion = p.description || "Sin descripción disponible";
+  const precio = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
   const id = p._id || "";
 
   detalle.innerHTML = `
     <div class="detalle-img">
-      <img src="${image}" alt="${name}" onerror="this.src='/assets/logo.jpg'" />
+      <img src="${imagen}" alt="${nombre}" onerror="this.src='/assets/logo.jpg'" />
     </div>
     <div class="detalle-info">
-      <h2>${name}</h2>
-      <p>${description}</p>
-      <p class="precio">$${price}</p>
+      <h2>${nombre}</h2>
+      <p>${descripcion}</p>
+      <p class="precio">$${precio}</p>
 
       <div class="selectores">
         <label for="tallaSelect">Talla:</label>
@@ -79,33 +79,33 @@ function renderizarProducto(p) {
         <input type="number" id="cantidadInput" value="1" min="1" max="10" />
       </div>
 
-      <button class="btn-agregar" onclick="agregarAlCarrito('${id}', \`${name}\`, \`${image}\`, ${p.price})">
+      <button class="btn-agregar" onclick="agregarAlCarrito('${id}', \`${nombre}\`, \`${imagen}\`, ${p.price})">
         🛒 Agregar al carrito
       </button>
     </div>
   `;
 }
 
-// === 🛒 Agregar producto al carrito ===
-function agregarAlCarrito(id, name, image, price) {
-  const size = document.getElementById("tallaSelect")?.value || "Única";
-  const quantity = parseInt(document.getElementById("cantidadInput")?.value) || 1;
+// === 🛒 Agregar producto al carrito (con nombres esperados por el backend)
+function agregarAlCarrito(id, nombre, imagen, precio) {
+  const talla = document.getElementById("tallaSelect")?.value || "Única";
+  const cantidad = parseInt(document.getElementById("cantidadInput")?.value) || 1;
 
   const nuevoProducto = {
     id,
-    name,
-    image,
-    price,
-    size,
-    quantity
+    nombre,      // ✅ nombre en lugar de name
+    imagen,      // ✅ imagen en lugar de image
+    precio,      // ✅ precio en lugar de price
+    talla,       // ✅ talla en lugar de size
+    cantidad     // ✅ cantidad en lugar de quantity
   };
 
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
-  const key = `${id}_${size}`.toLowerCase();
-  const index = carrito.findIndex(p => `${p.id}_${p.size}`.toLowerCase() === key);
+  const key = `${id}_${talla}`.toLowerCase();
+  const index = carrito.findIndex(p => `${p.id}_${p.talla}`.toLowerCase() === key);
 
   if (index >= 0) {
-    carrito[index].quantity += quantity;
+    carrito[index].cantidad += cantidad;
   } else {
     carrito.push(nuevoProducto);
   }
@@ -118,7 +118,7 @@ function agregarAlCarrito(id, name, image, price) {
 // === 🧮 Actualizar widget de carrito ===
 function actualizarCarritoWidget() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
-  const total = carrito.reduce((sum, item) => sum + item.quantity, 0);
+  const total = carrito.reduce((sum, item) => sum + item.cantidad, 0);
   const contador = document.getElementById("cartCount");
   if (contador) contador.textContent = total;
 }
@@ -156,5 +156,5 @@ function activarModoOscuro() {
   });
 }
 
-// ✅ Hacer accesible la función desde el HTML
+// ✅ Hacer accesible desde el HTML
 window.agregarAlCarrito = agregarAlCarrito;
