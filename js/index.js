@@ -2,16 +2,15 @@
 import { registrarVisitaPublica } from "./utils.js";
 import { API_BASE } from "./config.js";
 
-
 // === CARGAR PRODUCTOS DESTACADOS ===
 document.addEventListener("DOMContentLoaded", async () => {
-  // 📊 Registrar la visita al cargar la página
+  // 📊 Registrar visita al sitio
   registrarVisitaPublica();
 
   const catalogo = document.getElementById("catalogo");
 
   try {
-    const res = await fetch("/api/products?featured=true");
+    const res = await fetch(`${API_BASE}/api/products?featured=true`);
     const data = await res.json();
 
     if (!res.ok) throw new Error(data.message || "Error al cargar productos");
@@ -35,11 +34,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       catalogo.appendChild(card);
     });
   } catch (err) {
-    console.error("Error cargando productos:", err);
+    console.error("❌ Error cargando productos:", err);
     catalogo.innerHTML = "<p style='text-align:center; color:red;'>⚠️ No se pudieron cargar los productos.</p>";
   }
 
-  // 🎯 Actualizar número de productos en el carrito
+  // 🎯 Actualizar carrito flotante
   actualizarCarritoWidget();
 
   // 🌙 Activar modo oscuro si está guardado
@@ -47,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.body.classList.add("modo-oscuro");
   }
 
-  // 🌗 Botón para cambiar modo
+  // 🌗 Toggle de modo oscuro
   const toggleBtn = document.getElementById("modoOscuroBtn");
   toggleBtn?.addEventListener("click", () => {
     document.body.classList.toggle("modo-oscuro");
@@ -56,12 +55,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
-// === REDIRECCIÓN A DETALLE ===
+// 🔁 Redirección al detalle del producto
 function verDetalle(id) {
   window.location.href = `/detalle.html?id=${id}`;
 }
 
-// === ACTUALIZAR WIDGET DEL CARRITO ===
+// 🛒 Actualizar contador del carrito
 function actualizarCarritoWidget() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
   const total = carrito.reduce((sum, item) => sum + item.quantity, 0);

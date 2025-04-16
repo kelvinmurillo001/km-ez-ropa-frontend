@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Productos | KM & EZ ROPA</title>
+
+  <!-- SEO -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="author" content="KM & EZ ROPA">
+  <meta name="description" content="Panel para gestionar productos: crear, editar y eliminar.">
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/componentes.css" />
+  <link rel="stylesheet" href="/css/productos.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+  <link rel="stylesheet" href="/css/fondo.css" />
+
+  <!-- Script principal -->
+  <script type="module" src="/js/productos.js" defer></script>
+</head>
+<body>
+  <main class="panel-container fade-in">
+    <header class="header-panel">
+      <h1>🛍️ Gestión de Productos</h1>
+      <div>
+        <a href="/crear-producto.html" class="btn">➕ Crear Producto</a>
+        <a href="/panel.html" class="btn-secundario">🔙 Volver</a>
+      </div>
+    </header>
+
+    <!-- Mensajes -->
+    <div id="mensaje" class="admin-message oculto" role="status" aria-live="polite"></div>
+
+    <!-- Listado -->
+    <section class="menu-panel" id="listaProductos" aria-label="Listado de productos">
+      <!-- Se renderiza vía productos.js -->
+    </section>
+  </main>
+
+  <!-- No JS -->
+  <noscript>
+    <p style="color: red; text-align: center;">⚠️ Esta página requiere JavaScript para funcionar.</p>
+  </noscript>
+</body>
+</html>

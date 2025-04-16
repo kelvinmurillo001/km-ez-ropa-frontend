@@ -1,26 +1,26 @@
 "use strict";
 
+// 🔐 Importaciones necesarias
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
-
-// 🔐 Verificar sesión admin
-const token = verificarSesion();
-
 // 🔗 Endpoints
-const API_ORDERS = "https://km-ez-ropa-backend.onrender.com/api/orders";
+const API_ORDERS = `${API_BASE}/api/orders`;
 
-// DOM
+// 📌 Variables del DOM
 const listaPedidos = document.getElementById("listaPedidos");
 const filtroEstado = document.getElementById("filtroEstado");
+
+// 🛡️ Verificar sesión y obtener token
+const token = verificarSesion();
 
 document.addEventListener("DOMContentLoaded", () => {
   cargarPedidos();
 
-  filtroEstado.addEventListener("change", cargarPedidos);
+  filtroEstado?.addEventListener("change", cargarPedidos);
 });
 
-// === CARGAR TODOS LOS PEDIDOS ===
+// === 📦 Cargar Pedidos con Token ===
 async function cargarPedidos() {
   try {
     const res = await fetch(API_ORDERS, {
@@ -29,32 +29,56 @@ async function cargarPedidos() {
       }
     });
 
-    const pedidos = await res.json();
+    const data = await res.json();
 
-    if (!res.ok) throw new Error("Error al cargar pedidos");
+    if (!res.ok) throw new Error(data.message || "Error al cargar pedidos");
 
-    renderPedidos(filtrarPedidos(pedidos));
+    const pedidosFiltrados = aplicarFiltro(data);
+    renderPedidos(pedidosFiltrados);
+
   } catch (err) {
-    console.error("❌ Error cargando pedidos:", err);
-    listaPedidos.innerHTML = `<p style="color:red; text-align:center;">❌ Error al cargar pedidos</p>`;
+    console.error("❌ Error cargando pedidos:", err.message);
+    listaPedidos.innerHTML = `<p class="text-center" style="color:red;">❌ No se pudo cargar los pedidos</p>`;
   }
 }
 
-// === FILTRAR PEDIDOS POR ESTADO ===
-function filtrarPedidos(pedidos) {
+// === 🔍 Aplicar filtro por estado ===
+function aplicarFiltro(pedidos) {
   const estado = filtroEstado.value;
-  if (estado === "todos") return pedidos;
-  return pedidos.filter(p => p.estado === estado);
+  return estado === "todos" ? pedidos : pedidos.filter(p => p.estado === estado);
 }
 
-// === RENDER DE TABLA ===
+// === 🧾 Renderizar pedidos ===
 function renderPedidos(pedidos) {
   if (!pedidos.length) {
-    listaPedidos.innerHTML = "<p class='text-center'>🛑 No hay pedidos en este estado.</p>";
+    listaPedidos.innerHTML = `<p class="text-center">📭 No hay pedidos con este estado.</p>`;
     return;
   }
 
-  let html = `
+  const filas = pedidos.map(p => {
+    const productos = p.items?.map(i => `${i.name} (${i.quantity})`).join(", ") || "-";
+    const total = p.total?.toFixed(2) || "0.00";
+
+    return `
+      <tr>
+        <td>${p.nombre || "-"}</td>
+        <td>${p.email || "-"}</td>
+        <td>${productos}</td>
+        <td>$${total}</td>
+        <td>${formatearEstado(p.estado)}</td>
+        <td>
+          <select onchange="cambiarEstado('${p._id}', this.value)">
+            <option value="">Estado</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="en_proceso">En Proceso</option>
+            <option value="enviado">Enviado</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </td>
+      </tr>`;
+  }).join("");
+
+  listaPedidos.innerHTML = `
     <table>
       <thead>
         <tr>
@@ -67,35 +91,12 @@ function renderPedidos(pedidos) {
         </tr>
       </thead>
       <tbody>
-  `;
-
-  pedidos.forEach(p => {
-    const productos = p.items?.map(i => `${i.name} (${i.quantity})`).join(", ") || "-";
-    html += `
-      <tr>
-        <td>${p.nombre || "-"}</td>
-        <td>${p.email || "-"}</td>
-        <td>${productos}</td>
-        <td>$${p.total?.toFixed(2) || "0.00"}</td>
-        <td>${formatearEstado(p.estado)}</td>
-        <td>
-          <select onchange="cambiarEstado('${p._id}', this.value)">
-            <option value="">Estado</option>
-            <option value="pendiente">Pendiente</option>
-            <option value="en_proceso">En Proceso</option>
-            <option value="enviado">Enviado</option>
-            <option value="cancelado">Cancelado</option>
-          </select>
-        </td>
-      </tr>
-    `;
-  });
-
-  html += "</tbody></table>";
-  listaPedidos.innerHTML = html;
+        ${filas}
+      </tbody>
+    </table>`;
 }
 
-// === CAMBIAR ESTADO DE PEDIDO ===
+// === 🔁 Cambiar estado del pedido ===
 async function cambiarEstado(id, nuevoEstado) {
   if (!nuevoEstado) return;
 
@@ -111,27 +112,28 @@ async function cambiarEstado(id, nuevoEstado) {
 
     const data = await res.json();
 
-    if (!res.ok) throw new Error(data.message || "Error al actualizar");
+    if (!res.ok) throw new Error(data.message || "Error al actualizar el estado");
 
-    mostrarMensaje("✅ Pedido actualizado", "success");
+    mostrarMensaje("✅ Estado actualizado correctamente", "success");
     cargarPedidos();
+
   } catch (err) {
-    console.error("❌ Error actualizando estado:", err);
+    console.error("❌ Error actualizando pedido:", err.message);
     mostrarMensaje("❌ No se pudo cambiar el estado", "error");
   }
 }
 
-// === FORMATEAR NOMBRE DE ESTADO ===
+// === 🎨 Formato de estado visual ===
 function formatearEstado(estado) {
   switch (estado) {
     case "pendiente": return "⏳ Pendiente";
     case "en_proceso": return "⚙️ En Proceso";
     case "enviado": return "📦 Enviado";
     case "cancelado": return "❌ Cancelado";
-    default: return estado;
+    default: return estado || "Desconocido";
   }
 }
 
-// ✅ Botón de regreso
+// ✅ Exponer funciones globales
 window.goBack = goBack;
 window.cambiarEstado = cambiarEstado;

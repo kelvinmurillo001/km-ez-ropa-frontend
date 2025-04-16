@@ -1,7 +1,8 @@
-// ✅ IMPORTAR desde utils.js
+"use strict";
+
+// ✅ IMPORTAR utilidades
 import { registrarVisitaPublica } from "./utils.js";
 import { API_BASE } from "./config.js";
-
 
 document.addEventListener("DOMContentLoaded", () => {
   registrarVisitaPublica(); // 📊 Registrar la visita
@@ -21,21 +22,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // === CARGAR PRODUCTO POR ID ===
 async function cargarProducto(id) {
+  const detalle = document.getElementById("detalleProducto");
+
   try {
-    const res = await fetch(`/api/products/${id}`);
+    const res = await fetch(`${API_BASE}/api/products/${id}`);
     const producto = await res.json();
+
     if (!res.ok || !producto) throw new Error("Producto no encontrado");
 
     renderizarProducto(producto);
   } catch (err) {
-    console.error(err);
-    document.getElementById("detalleProducto").innerHTML = "<p style='color:red;'>⚠️ Error al cargar el producto.</p>";
+    console.error("❌ Error cargando producto:", err.message);
+    detalle.innerHTML = "<p style='color:red;'>⚠️ No se pudo cargar el producto.</p>";
   }
 }
 
 // === MOSTRAR PRODUCTO EN PANTALLA ===
 function renderizarProducto(p) {
   const detalle = document.getElementById("detalleProducto");
+
   detalle.innerHTML = `
     <div class="detalle-img">
       <img src="${p.image}" alt="${p.name}" />
@@ -48,7 +53,7 @@ function renderizarProducto(p) {
       <div class="selectores">
         <label for="tallaSelect">Talla:</label>
         <select id="tallaSelect" required>
-          ${p.sizes?.length ? p.sizes.map(t => `<option value="${t}">${t}</option>`).join('') : '<option value="Única">Única</option>'}
+          ${p.sizes?.length ? p.sizes.map(t => `<option value="${t}">${t}</option>`).join("") : '<option value="Única">Única</option>'}
         </select>
 
         <label for="cantidadInput">Cantidad:</label>
@@ -67,7 +72,7 @@ function agregarAlCarrito(id, nombre, imagen, precio) {
   const talla = document.getElementById("tallaSelect")?.value || "Única";
   const cantidad = parseInt(document.getElementById("cantidadInput")?.value) || 1;
 
-  const producto = {
+  const nuevoProducto = {
     id,
     name: nombre,
     image: imagen,
@@ -82,7 +87,7 @@ function agregarAlCarrito(id, nombre, imagen, precio) {
   if (index >= 0) {
     carrito[index].quantity += cantidad;
   } else {
-    carrito.push(producto);
+    carrito.push(nuevoProducto);
   }
 
   localStorage.setItem("km_ez_cart", JSON.stringify(carrito));
@@ -90,7 +95,7 @@ function agregarAlCarrito(id, nombre, imagen, precio) {
   mostrarToast("✅ Producto agregado al carrito");
 }
 
-// === CONTADOR DE CARRITO ===
+// === ACTUALIZAR WIDGET DEL CARRITO ===
 function actualizarCarritoWidget() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
   const total = carrito.reduce((sum, item) => sum + item.quantity, 0);
@@ -98,20 +103,22 @@ function actualizarCarritoWidget() {
   if (contador) contador.textContent = total;
 }
 
-// === TOAST MENSAJE ===
+// === TOAST PERSONALIZADO ===
 function mostrarToast(mensaje) {
   const toast = document.createElement("div");
   toast.textContent = mensaje;
-  toast.style.position = "fixed";
-  toast.style.bottom = "30px";
-  toast.style.right = "30px";
-  toast.style.background = "#ff6d00";
-  toast.style.color = "#fff";
-  toast.style.padding = "0.8rem 1.2rem";
-  toast.style.borderRadius = "8px";
-  toast.style.fontWeight = "bold";
-  toast.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
-  toast.style.zIndex = "999";
+  Object.assign(toast.style, {
+    position: "fixed",
+    bottom: "30px",
+    right: "30px",
+    background: "#ff6d00",
+    color: "#fff",
+    padding: "0.8rem 1.2rem",
+    borderRadius: "8px",
+    fontWeight: "bold",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+    zIndex: "999"
+  });
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 2500);
 }
