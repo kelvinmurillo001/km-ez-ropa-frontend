@@ -5,19 +5,31 @@ const carritoItems = document.getElementById("carritoItems");
 const carritoTotal = document.getElementById("carritoTotal");
 const btnIrCheckout = document.getElementById("btnIrCheckout");
 
-// Clave de localStorage usada en todo el sistema
+// Clave de localStorage
 const STORAGE_KEY = "km_ez_cart";
-
-// Obtener carrito desde localStorage
 let carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
-// ▶️ Inicializar
+// ▶️ Iniciar
 document.addEventListener("DOMContentLoaded", () => {
+  filtrarItemsInvalidos();
   renderizarCarrito();
   btnIrCheckout.addEventListener("click", irACheckout);
 });
 
-// 🧠 Mostrar productos en carrito
+// ✅ Eliminar productos con datos corruptos
+function filtrarItemsInvalidos() {
+  carrito = carrito.filter(p =>
+    p &&
+    typeof p.name === "string" &&
+    typeof p.price === "number" &&
+    typeof p.quantity === "number" &&
+    !isNaN(p.price) &&
+    !isNaN(p.quantity)
+  );
+  guardarCarrito();
+}
+
+// 🧠 Renderizar carrito
 function renderizarCarrito() {
   if (carrito.length === 0) {
     carritoItems.innerHTML = `<p class="text-center">🛍️ Tu carrito está vacío.</p>`;
@@ -29,22 +41,28 @@ function renderizarCarrito() {
   carritoItems.innerHTML = "";
 
   carrito.forEach((item, index) => {
+    const imagen = item.image || "/assets/logo.jpg";
+    const nombre = item.name || "Producto";
+    const talla = item.size || "Única";
+    const precio = isNaN(item.price) ? 0 : item.price;
+    const cantidad = isNaN(item.quantity) || item.quantity < 1 ? 1 : item.quantity;
+
+    const subtotal = (precio * cantidad).toFixed(2);
+
     const div = document.createElement("div");
     div.className = "carrito-item";
 
-    const imagen = item.image || "/assets/logo.jpg";
-
     div.innerHTML = `
-      <img src="${imagen}" alt="${item.name}" class="carrito-img" />
+      <img src="${imagen}" alt="${nombre}" class="carrito-img" />
       <div class="carrito-detalles">
-        <h4>${item.name}</h4>
-        <p><strong>Talla:</strong> ${item.size || "Única"}</p>
-        <p><strong>Precio:</strong> $${item.price}</p>
+        <h4>${nombre}</h4>
+        <p><strong>Talla:</strong> ${talla}</p>
+        <p><strong>Precio:</strong> $${precio.toFixed(2)}</p>
         <div class="carrito-cantidad">
           <label>Cantidad:</label>
-          <input type="number" min="1" value="${item.quantity}" data-index="${index}" />
+          <input type="number" min="1" value="${cantidad}" data-index="${index}" />
         </div>
-        <p><strong>Subtotal:</strong> $${(item.price * item.quantity).toFixed(2)}</p>
+        <p><strong>Subtotal:</strong> $${subtotal}</p>
         <button class="btn-eliminar" data-index="${index}">🗑️ Eliminar</button>
       </div>
     `;
@@ -53,19 +71,33 @@ function renderizarCarrito() {
   });
 
   actualizarTotal();
+  agregarListeners();
+}
 
-  // Listeners: cambio de cantidad
+// 💰 Calcular total
+function actualizarTotal() {
+  const total = carrito.reduce((acc, item) => {
+    const precio = isNaN(item.price) ? 0 : item.price;
+    const cantidad = isNaN(item.quantity) ? 0 : item.quantity;
+    return acc + precio * cantidad;
+  }, 0);
+
+  carritoTotal.textContent = `$${total.toFixed(2)}`;
+  btnIrCheckout.disabled = carrito.length === 0;
+}
+
+// 🎯 Eventos dinámicos
+function agregarListeners() {
   document.querySelectorAll(".carrito-cantidad input").forEach(input => {
     input.addEventListener("change", e => {
       const i = parseInt(e.target.dataset.index);
-      const nuevaCantidad = Math.max(1, parseInt(e.target.value));
+      const nuevaCantidad = Math.max(1, parseInt(e.target.value) || 1);
       carrito[i].quantity = nuevaCantidad;
       guardarCarrito();
       renderizarCarrito();
     });
   });
 
-  // Listeners: eliminar producto
   document.querySelectorAll(".btn-eliminar").forEach(btn => {
     btn.addEventListener("click", e => {
       const i = parseInt(e.target.dataset.index);
@@ -76,14 +108,7 @@ function renderizarCarrito() {
   });
 }
 
-// 💰 Calcular total
-function actualizarTotal() {
-  const total = carrito.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  carritoTotal.textContent = `$${total.toFixed(2)}`;
-  btnIrCheckout.disabled = carrito.length === 0;
-}
-
-// 💾 Guardar en localStorage
+// 💾 Guardar
 function guardarCarrito() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(carrito));
 }
