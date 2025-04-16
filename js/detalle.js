@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
 
-  // 🚨 Validación: ID ausente o mal formado
   if (!id || id === "undefined") {
     document.getElementById("detalleProducto").innerHTML = `
       <div style="color:red; text-align:center;">
@@ -53,20 +52,20 @@ async function cargarProducto(id) {
 function renderizarProducto(p) {
   const detalle = document.getElementById("detalleProducto");
 
-  const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
-  const nombre = p.name || "Producto sin nombre";
-  const descripcion = p.description || "Sin descripción disponible";
-  const precio = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
+  const image = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
+  const name = p.name || "Producto sin nombre";
+  const description = p.description || "Sin descripción disponible";
+  const price = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
   const id = p._id || "";
 
   detalle.innerHTML = `
     <div class="detalle-img">
-      <img src="${imagen}" alt="${nombre}" onerror="this.src='/assets/logo.jpg'" />
+      <img src="${image}" alt="${name}" onerror="this.src='/assets/logo.jpg'" />
     </div>
     <div class="detalle-info">
-      <h2>${nombre}</h2>
-      <p>${descripcion}</p>
-      <p class="precio">$${precio}</p>
+      <h2>${name}</h2>
+      <p>${description}</p>
+      <p class="precio">$${price}</p>
 
       <div class="selectores">
         <label for="tallaSelect">Talla:</label>
@@ -80,7 +79,7 @@ function renderizarProducto(p) {
         <input type="number" id="cantidadInput" value="1" min="1" max="10" />
       </div>
 
-      <button class="btn-agregar" onclick="agregarAlCarrito('${id}', \`${nombre}\`, \`${imagen}\`, ${p.price})">
+      <button class="btn-agregar" onclick="agregarAlCarrito('${id}', \`${name}\`, \`${image}\`, ${p.price})">
         🛒 Agregar al carrito
       </button>
     </div>
@@ -88,25 +87,25 @@ function renderizarProducto(p) {
 }
 
 // === 🛒 Agregar producto al carrito ===
-function agregarAlCarrito(id, nombre, imagen, precio) {
-  const talla = document.getElementById("tallaSelect")?.value || "Única";
-  const cantidad = parseInt(document.getElementById("cantidadInput")?.value) || 1;
+function agregarAlCarrito(id, name, image, price) {
+  const size = document.getElementById("tallaSelect")?.value || "Única";
+  const quantity = parseInt(document.getElementById("cantidadInput")?.value) || 1;
 
   const nuevoProducto = {
     id,
-    nombre,
-    imagen,
-    precio,
-    talla,
-    cantidad
+    name,
+    image,
+    price,
+    size,
+    quantity
   };
 
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
-  const key = `${id}_${talla}`.toLowerCase();
-  const index = carrito.findIndex(p => `${p.id}_${p.talla}`.toLowerCase() === key);
+  const key = `${id}_${size}`.toLowerCase();
+  const index = carrito.findIndex(p => `${p.id}_${p.size}`.toLowerCase() === key);
 
   if (index >= 0) {
-    carrito[index].cantidad += cantidad;
+    carrito[index].quantity += quantity;
   } else {
     carrito.push(nuevoProducto);
   }
@@ -119,7 +118,7 @@ function agregarAlCarrito(id, nombre, imagen, precio) {
 // === 🧮 Actualizar widget de carrito ===
 function actualizarCarritoWidget() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
-  const total = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+  const total = carrito.reduce((sum, item) => sum + item.quantity, 0);
   const contador = document.getElementById("cartCount");
   if (contador) contador.textContent = total;
 }
@@ -157,5 +156,5 @@ function activarModoOscuro() {
   });
 }
 
-// ✅ Hacer accesible la función al HTML (solución error onclick)
+// ✅ Hacer accesible la función desde el HTML
 window.agregarAlCarrito = agregarAlCarrito;
