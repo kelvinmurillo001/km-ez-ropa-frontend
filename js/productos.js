@@ -1,16 +1,16 @@
 "use strict";
 
-// 🔐 Utilidades comunes y constante de entorno
+// 🔐 Utilidades y constante del entorno
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
 // 📌 Token de sesión
 const token = verificarSesion();
 
-// 📦 Endpoints
+// 📦 Endpoint de productos
 const API_PRODUCTS = `${API_BASE}/api/products`;
 
-// 📍 DOM
+// 📍 Elementos del DOM
 const productosLista = document.getElementById("productosLista");
 const btnNuevoProducto = document.getElementById("btnNuevoProducto");
 
@@ -21,25 +21,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   cargarProductos();
 
-  // 🌙 Modo oscuro activado
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 });
 
 /**
- * 📦 Cargar productos del backend
+ * 📦 Cargar productos desde el backend
  */
 async function cargarProductos() {
   try {
     const res = await fetch(API_PRODUCTS, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      headers: { Authorization: `Bearer ${token}` }
     });
 
     const productos = await res.json();
-
     if (!res.ok) throw new Error(productos.message || "Error al obtener productos");
 
     if (!Array.isArray(productos) || productos.length === 0) {
@@ -59,18 +55,23 @@ async function cargarProductos() {
  * 🧾 Renderizar productos en tabla
  */
 function renderizarProductos(productos) {
-  const filas = productos.map(p => `
-    <tr>
-      <td><img src="${p.image}" alt="${p.name}" class="img-mini" /></td>
-      <td>${p.name}</td>
-      <td>$${p.price.toFixed(2)}</td>
-      <td>${p.category || '-'}</td>
-      <td>${p.stock || 0}</td>
-      <td>
-        <button class="btn-secundario" onclick="editarProducto('${p._id}')">✏️</button>
-        <button class="btn-danger" onclick="eliminarProducto('${p._id}')">🗑️</button>
-      </td>
-    </tr>`).join("");
+  const filas = productos.map(p => {
+    const imagen = p.image || "/assets/logo.jpg";
+    const precio = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
+
+    return `
+      <tr>
+        <td><img src="${imagen}" alt="${p.name}" class="img-mini" onerror="this.src='/assets/logo.jpg'" /></td>
+        <td>${p.name}</td>
+        <td>$${precio}</td>
+        <td>${p.category || "-"}</td>
+        <td>${p.stock || 0}</td>
+        <td>
+          <button class="btn-secundario" onclick="editarProducto('${p._id}')">✏️</button>
+          <button class="btn-danger" onclick="eliminarProducto('${p._id}')">🗑️</button>
+        </td>
+      </tr>`;
+  }).join("");
 
   productosLista.innerHTML = `
     <table class="tabla-productos">
@@ -89,14 +90,14 @@ function renderizarProductos(productos) {
 }
 
 /**
- * ✏️ Ir a editar producto
+ * ✏️ Redirigir a editar
  */
 function editarProducto(id) {
   window.location.href = `/crear-producto.html?id=${id}`;
 }
 
 /**
- * ❌ Eliminar producto con confirmación
+ * 🗑️ Eliminar producto
  */
 async function eliminarProducto(id) {
   const confirmar = confirm("⚠️ ¿Estás seguro de eliminar este producto?");
@@ -105,13 +106,10 @@ async function eliminarProducto(id) {
   try {
     const res = await fetch(`${API_PRODUCTS}/${id}`, {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      headers: { Authorization: `Bearer ${token}` }
     });
 
     const data = await res.json();
-
     if (!res.ok) throw new Error(data.message || "No se pudo eliminar");
 
     mostrarMensaje("✅ Producto eliminado correctamente", "success");
@@ -123,7 +121,7 @@ async function eliminarProducto(id) {
   }
 }
 
-// ✅ Exponer funciones al DOM (solo si tu HTML usa type="module")
+// 🌐 Exponer funciones globales
 window.goBack = goBack;
 window.editarProducto = editarProducto;
 window.eliminarProducto = eliminarProducto;

@@ -5,52 +5,60 @@ import { verificarSesion, goBack } from "./admin-utils.js";
 const token = verificarSesion();
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
 const productId = new URLSearchParams(window.location.search).get("id");
-const uploadEndpoint = `${API_BASE}/upload`;
-const productoEndpoint = `${API_BASE}/products/${productId}`;
+
+const API_UPLOAD = `${API_BASE}/uploads`;
+const API_PRODUCTO = `${API_BASE}/products/${productId}`;
+const API_CATEGORIAS = `${API_BASE}/categories`;
 
 const form = document.getElementById("formEditarProducto");
 const msgEstado = document.getElementById("msgEstado");
+const variantesDiv = document.getElementById("variantesExistentes");
 
 document.addEventListener("DOMContentLoaded", () => {
   cargarCategorias();
   cargarProducto();
-  document.getElementById("btnAgregarVariante").addEventListener("click", agregarVariante);
+
+  document.getElementById("btnAgregarVariante")?.addEventListener("click", agregarVariante);
 });
 
-// 🔄 Cargar categorías disponibles
+/* 📂 Cargar categorías del backend */
 async function cargarCategorias() {
-  const res = await fetch(`${API_BASE}/categories`);
-  const data = await res.json();
-  const select = document.getElementById("categoriaInput");
+  try {
+    const res = await fetch(API_CATEGORIAS);
+    const categorias = await res.json();
 
-  data.forEach(cat => {
-    const option = document.createElement("option");
-    option.value = cat._id;
-    option.textContent = cat.name;
-    select.appendChild(option);
-  });
+    const select = document.getElementById("categoriaInput");
+    categorias.forEach(cat => {
+      const option = document.createElement("option");
+      option.value = cat.name;
+      option.textContent = cat.name;
+      select.appendChild(option);
+    });
+  } catch (err) {
+    console.error("❌ Error al cargar categorías", err);
+  }
 }
 
-// 🔄 Cargar producto actual
+/* 🧾 Cargar datos del producto */
 async function cargarProducto() {
   try {
-    const res = await fetch(productoEndpoint);
+    const res = await fetch(API_PRODUCTO);
     const p = await res.json();
 
-    document.getElementById("nombreInput").value = p.name;
-    document.getElementById("descripcionInput").value = p.description;
-    document.getElementById("precioInput").value = p.price;
-    document.getElementById("stockInput").value = p.stock;
-    document.getElementById("categoriaInput").value = p.category;
-    document.getElementById("tallasInput").value = p.tallas?.join(", ") || "";
+    document.getElementById("nombreInput").value = p.name || "";
+    document.getElementById("descripcionInput").value = p.description || "";
+    document.getElementById("precioInput").value = p.price || "";
+    document.getElementById("stockInput").value = p.stock || 0;
+    document.getElementById("categoriaInput").value = p.category || "";
+    document.getElementById("tallasInput").value = p.sizes?.join(", ") || "";
     document.getElementById("colorInput").value = p.color || "#000000";
 
-    // Imagen principal actual
-    const cont = document.getElementById("imagenPrincipalActual");
-    cont.innerHTML = `<img src="${p.images[0].url}" class="preview-mini" />`;
+    if (Array.isArray(p.images) && p.images.length > 0) {
+      document.getElementById("imagenPrincipalActual").innerHTML = `
+        <img src="${p.images[0].url}" alt="Imagen actual" class="preview-mini" />
+      `;
+    }
 
-    // Variantes existentes
-    const variantesDiv = document.getElementById("variantesExistentes");
     p.variants?.forEach((v, i) => {
       const div = document.createElement("div");
       div.className = "variante-box";
@@ -73,27 +81,33 @@ async function cargarProducto() {
 
   } catch (err) {
     console.error("❌ Error al cargar producto:", err);
-    msgEstado.textContent = "❌ No se pudo cargar el producto.";
+    msgEstado.textContent = "❌ Error al cargar producto.";
   }
 }
 
-// ⬆️ Subir imagen
+/* 📤 Subir imagen a Cloudinary */
 async function subirImagen(file) {
   const fd = new FormData();
-  fd.append("file", file);
+  fd.append("image", file);
 
-  const res = await fetch(uploadEndpoint, {
+  const res = await fetch(API_UPLOAD, {
     method: "POST",
-    headers: { Authorization: `Bearer ${token}` },
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
     body: fd
   });
 
   const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "Error al subir imagen");
-  return { url: data.secure_url, cloudinaryId: data.public_id };
+  if (!res.ok) throw new Error(data.message || "Error subiendo imagen");
+
+  return {
+    url: data.url || data.secure_url,
+    cloudinaryId: data.public_id
+  };
 }
 
-// ➕ Añadir nueva variante
+/* ➕ Agregar variante */
 function agregarVariante() {
   const div = document.createElement("div");
   div.className = "variante-box";
@@ -109,11 +123,11 @@ function agregarVariante() {
     <input type="number" class="variante-stock" min="0" required />
     <hr />
   `;
-  document.getElementById("variantesExistentes").appendChild(div);
+  variantesDiv.appendChild(div);
 }
 
-// 💾 Guardar cambios
-form.addEventListener("submit", async e => {
+/* 💾 Guardar Cambios */
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
   msgEstado.textContent = "⏳ Guardando cambios...";
 
@@ -123,73 +137,78 @@ form.addEventListener("submit", async e => {
     const precio = parseFloat(document.getElementById("precioInput").value);
     const stock = parseInt(document.getElementById("stockInput").value);
     const categoria = document.getElementById("categoriaInput").value;
-    const tallas = document.getElementById("tallasInput").value.split(",").map(t => t.trim()).filter(Boolean);
     const color = document.getElementById("colorInput").value;
+    const sizes = document.getElementById("tallasInput").value.split(",").map(s => s.trim()).filter(Boolean);
 
-    const nuevaImagen = document.getElementById("imagenPrincipalNueva").files[0];
-    let imagen = null;
-
-    if (nuevaImagen) {
-      imagen = await subirImagen(nuevaImagen);
+    const nuevaImg = document.getElementById("imagenPrincipalNueva").files[0];
+    let nuevaImagen = null;
+    if (nuevaImg) {
+      nuevaImagen = await subirImagen(nuevaImg);
     }
 
     const variantes = [];
-    const bloques = document.querySelectorAll("#variantesExistentes .variante-box");
+    const bloques = document.querySelectorAll(".variante-box");
 
     for (const b of bloques) {
       const file = b.querySelector(".variante-img")?.files[0];
-      const color = b.querySelector(".variante-color").value;
-      const talla = b.querySelector(".variante-talla").value;
-      const stock = parseInt(b.querySelector(".variante-stock").value);
+      const color = b.querySelector(".variante-color")?.value || "#000";
+      const talla = b.querySelector(".variante-talla")?.value || "";
+      const stock = parseInt(b.querySelector(".variante-stock")?.value || "0");
       const cloudinaryId = b.querySelector(".variante-id")?.value;
 
-      let imagenVariante = { imageUrl: null, cloudinaryId: null };
+      let imageUrl = null;
+      let finalCloudinaryId = cloudinaryId;
+
       if (file) {
-        imagenVariante = await subirImagen(file);
+        const subida = await subirImagen(file);
+        imageUrl = subida.url;
+        finalCloudinaryId = subida.cloudinaryId;
       }
 
       variantes.push({
-        imageUrl: imagenVariante.url,
-        cloudinaryId: imagenVariante.cloudinaryId || cloudinaryId,
+        imageUrl,
+        cloudinaryId: finalCloudinaryId,
         color,
         talla,
         stock
       });
     }
 
-    const dataEnviar = {
+    const payload = {
       name: nombre,
       description: descripcion,
       price: precio,
       stock,
       category: categoria,
-      tallas,
       color,
-      ...(imagen && { images: [imagen] }),
+      sizes,
       variants: variantes
     };
 
-    const res = await fetch(productoEndpoint, {
+    if (nuevaImagen) {
+      payload.images = [nuevaImagen];
+    }
+
+    const res = await fetch(API_PRODUCTO, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify(dataEnviar)
+      body: JSON.stringify(payload)
     });
 
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message || "No se pudo actualizar");
-    }
+    const result = await res.json();
 
-    msgEstado.textContent = "✅ Producto actualizado correctamente.";
+    if (!res.ok) throw new Error(result.message || "No se pudo actualizar");
+
+    msgEstado.textContent = "✅ Producto actualizado con éxito.";
 
   } catch (err) {
     console.error("❌", err);
-    msgEstado.textContent = "❌ " + err.message;
+    msgEstado.textContent = `❌ ${err.message}`;
   }
 });
 
-// global
+// Global
 window.goBack = goBack;

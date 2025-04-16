@@ -3,14 +3,15 @@
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
-
-// 🔐 Verifica sesión admin
+// 🔐 Autenticación
 const token = verificarSesion();
 
-const API_PRODUCTS = "https://km-ez-ropa-backend.onrender.com/api/products";
-const API_CATEGORIES = "https://km-ez-ropa-backend.onrender.com/api/categories";
-const API_UPLOADS = "https://km-ez-ropa-backend.onrender.com/api/uploads";
+// Endpoints
+const API_PRODUCTS = `${API_BASE}/products`;
+const API_CATEGORIES = `${API_BASE}/categories`;
+const API_UPLOADS = `${API_BASE}/uploads`;
 
+// Elementos del DOM
 const form = document.getElementById("formProducto");
 const imagenInput = document.getElementById("imagenPrincipalInput");
 const previewPrincipal = document.getElementById("previewPrincipal");
@@ -21,36 +22,46 @@ const msgEstado = document.getElementById("msgEstado");
 
 let variantes = [];
 
-// === CARGA INICIAL ===
+// 🚀 Carga inicial
 document.addEventListener("DOMContentLoaded", async () => {
   await cargarCategorias();
-  agregarVariante(); // Mínimo 1 variante visible
+  agregarVariante();
+  restaurarModoOscuro();
 });
 
-// === PREVISUALIZAR IMAGEN ===
+// 🌗 Soporte para modo oscuro persistente
+function restaurarModoOscuro() {
+  if (localStorage.getItem("modoOscuro") === "true") {
+    document.body.classList.add("modo-oscuro");
+  }
+}
+
+// 📸 Previsualizar imagen principal
 imagenInput.addEventListener("change", () => {
   const file = imagenInput.files[0];
   if (!file) return;
   const url = URL.createObjectURL(file);
-  previewPrincipal.innerHTML = `<img src="${url}" alt="Preview Imagen" />`;
+  previewPrincipal.innerHTML = `<img src="${url}" alt="Vista previa" />`;
 });
 
-// === CARGAR CATEGORÍAS ===
+// 📂 Cargar categorías desde backend
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIES);
     const data = await res.json();
 
-    if (!res.ok) throw new Error("Error al cargar categorías");
+    if (!res.ok) throw new Error("No se pudieron obtener categorías");
 
-    categoriaInput.innerHTML += data.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+    categoriaInput.innerHTML += data
+      .map(c => `<option value="${c.name}">${c.name}</option>`)
+      .join("");
   } catch (err) {
-    console.error("❌", err);
+    console.error("❌ Error al cargar categorías:", err);
     mostrarMensaje("❌ No se pudieron cargar las categorías", "error");
   }
 }
 
-// === AÑADIR VARIANTE ===
+// ➕ Agregar variante de producto
 btnAgregarVariante.addEventListener("click", () => agregarVariante());
 
 function agregarVariante() {
@@ -74,7 +85,24 @@ function agregarVariante() {
   variantes.push(index);
 }
 
-// === GUARDAR PRODUCTO ===
+// 💾 Subir imagen a servidor
+async function subirImagen(file) {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const res = await fetch(API_UPLOADS, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: formData
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || "Error al subir imagen");
+
+  return data.url;
+}
+
+// ✅ Guardar producto
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -84,63 +112,43 @@ form.addEventListener("submit", async (e) => {
   const stock = parseInt(document.getElementById("stockInput").value);
   const categoria = categoriaInput.value;
   const color = document.getElementById("colorInput").value;
-  const tallas = document.getElementById("tallasInput").value.split(',').map(t => t.trim()).filter(Boolean);
+  const tallas = document.getElementById("tallasInput").value
+    .split(",")
+    .map(t => t.trim())
+    .filter(Boolean);
 
   const filePrincipal = imagenInput.files[0];
-  if (!filePrincipal) return mostrarMensaje("⚠️ Imagen principal es obligatoria", "error");
+  if (!filePrincipal) return mostrarMensaje("⚠️ La imagen principal es obligatoria", "error");
 
   try {
-    msgEstado.textContent = "⏳ Subiendo imagen...";
-    const formData = new FormData();
-    formData.append("image", filePrincipal);
+    msgEstado.textContent = "⏳ Subiendo imagen principal...";
+    const imagenURL = await subirImagen(filePrincipal);
 
-    const uploadRes = await fetch(API_UPLOADS, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData
-    });
-
-    const uploadData = await uploadRes.json();
-    if (!uploadRes.ok) throw new Error(uploadData.message || "Error al subir imagen");
-
-    const imagenURL = uploadData.url;
-
-    // Variantes procesadas
+    // 📦 Procesar variantes
     const variantesFinales = [];
-    for (let i = 0; i < variantesContainer.children.length; i++) {
-      const variante = variantesContainer.children[i];
+    const variantesElems = variantesContainer.querySelectorAll(".variante-item");
+
+    for (const variante of variantesElems) {
       const colorInput = variante.querySelector(`input[type="color"]`);
       const stockInput = variante.querySelector(`input[type="number"]`);
       const imgInput = variante.querySelector(`input[type="file"]`);
-      const varColor = colorInput?.value;
-      const varStock = parseInt(stockInput?.value) || 0;
 
       let varImgURL = "";
 
       if (imgInput?.files.length) {
-        const varFormData = new FormData();
-        varFormData.append("image", imgInput.files[0]);
-
-        const varRes = await fetch(API_UPLOADS, {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-          body: varFormData
-        });
-
-        const varData = await varRes.json();
-        if (!varRes.ok) throw new Error("Error subiendo imagen variante");
-        varImgURL = varData.url;
+        msgEstado.textContent = "⏳ Subiendo imagen de variante...";
+        varImgURL = await subirImagen(imgInput.files[0]);
       }
 
       variantesFinales.push({
-        color: varColor,
-        stock: varStock,
+        color: colorInput.value,
+        stock: parseInt(stockInput.value) || 0,
         image: varImgURL
       });
     }
 
-    // Crear producto final
-    const producto = {
+    // 📦 Crear producto final
+    const nuevoProducto = {
       name: nombre,
       description: descripcion,
       price: precio,
@@ -159,20 +167,20 @@ form.addEventListener("submit", async (e) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify(producto)
+      body: JSON.stringify(nuevoProducto)
     });
 
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || "No se pudo guardar el producto");
 
-    mostrarMensaje("✅ Producto creado exitosamente", "success");
+    mostrarMensaje("✅ Producto creado correctamente", "success");
     form.reset();
     previewPrincipal.innerHTML = "";
     variantesContainer.innerHTML = "";
     variantes = [];
     agregarVariante();
   } catch (err) {
-    console.error("❌", err);
+    console.error("❌ Error al crear producto:", err);
     mostrarMensaje("❌ " + err.message, "error");
   }
 });

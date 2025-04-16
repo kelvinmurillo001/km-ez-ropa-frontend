@@ -5,76 +5,84 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>➕ Crear Producto | KM & EZ ROPA</title>
 
+  <!-- Meta -->
   <meta name="robots" content="noindex, nofollow">
-  <meta name="description" content="Formulario avanzado para crear un producto en KM & EZ ROPA. Con variantes, tallas, colores e imágenes múltiples.">
+  <meta name="description" content="Formulario para crear un producto nuevo en KM & EZ ROPA con tallas, colores e imagen.">
 
+  <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/crear-producto.css" />
 
+  <!-- Script del módulo -->
   <script type="module" src="/js/crear-producto.js" defer></script>
 </head>
 <body>
 
-  <main class="formulario-container fade-in">
+  <main class="formulario-container fade-in" role="main" aria-label="Formulario de creación de producto">
     <h1 class="text-center">➕ Crear Nuevo Producto</h1>
 
-    <form id="formProducto" class="form-producto" enctype="multipart/form-data">
+    <form id="formProducto" class="form-producto" enctype="multipart/form-data" novalidate>
 
-      <!-- ✅ Imagen principal -->
-      <label>Imagen Principal:</label>
-      <input type="file" id="imagenPrincipalInput" accept="image/*" required />
-      <div id="previewPrincipal" class="preview-imagen"></div>
+      <!-- Imagen -->
+      <label for="imagenPrincipalInput">Imagen Principal:</label>
+      <input type="file" id="imagenPrincipalInput" accept="image/*" required aria-describedby="imagenHelp" />
+      <small id="imagenHelp" class="help-text">Formatos permitidos: JPG, PNG, SVG.</small>
+      <div id="previewPrincipal" class="preview-imagen" aria-live="polite"></div>
 
-      <!-- 🎯 Datos generales -->
-      <label>Nombre del Producto:</label>
-      <input type="text" id="nombreInput" placeholder="Ej: Hoodie urbana" required />
+      <!-- Nombre -->
+      <label for="nombreInput">Nombre del Producto:</label>
+      <input type="text" id="nombreInput" placeholder="Ej: Hoodie urbana" required maxlength="100" />
 
-      <label>Descripción:</label>
-      <textarea id="descripcionInput" placeholder="Detalles de tela, corte, estilo..." required></textarea>
+      <!-- Descripción -->
+      <label for="descripcionInput">Descripción:</label>
+      <textarea id="descripcionInput" placeholder="Detalles de tela, corte, estilo..." required maxlength="300"></textarea>
 
-      <label>Precio:</label>
+      <!-- Precio -->
+      <label for="precioInput">Precio:</label>
       <input type="number" id="precioInput" step="0.01" min="0" required />
 
-      <label>Stock base:</label>
+      <!-- Stock -->
+      <label for="stockInput">Stock base:</label>
       <input type="number" id="stockInput" min="0" required />
 
-      <label>Categoría:</label>
+      <!-- Categoría -->
+      <label for="categoriaInput">Categoría:</label>
       <select id="categoriaInput" required>
         <option value="">Selecciona una categoría</option>
-        <!-- JS insertará las opciones -->
+        <!-- Opciones insertadas desde JS -->
       </select>
 
-      <!-- 🎨 Variantes -->
+      <!-- Variantes -->
       <fieldset class="mt-2">
         <legend>Variantes (colores/tallas opcionales)</legend>
-        <div id="variantesContainer">
-          <!-- Variantes se agregan desde JS -->
+        <div id="variantesContainer" aria-live="polite">
+          <!-- Variantes dinámicas -->
         </div>
-        <button type="button" class="btn-secundario mt-1" id="btnAgregarVariante">➕ Añadir Variante</button>
+        <button type="button" class="btn-secundario mt-1" id="btnAgregarVariante" aria-label="Añadir variante de color o talla">➕ Añadir Variante</button>
       </fieldset>
 
-      <!-- 🧵 Tallas generales (opcional) -->
-      <label class="mt-2">Tallas disponibles (separadas por coma):</label>
+      <!-- Tallas -->
+      <label for="tallasInput" class="mt-2">Tallas disponibles (separadas por coma):</label>
       <input type="text" id="tallasInput" placeholder="Ej: S, M, L, XL" />
 
-      <!-- 🎯 Color base del producto -->
-      <label>Color Principal:</label>
-      <input type="color" id="colorInput" />
+      <!-- Color -->
+      <label for="colorInput">Color Principal:</label>
+      <input type="color" id="colorInput" value="#000000" />
 
-      <!-- ✅ Acciones -->
+      <!-- Acciones -->
       <div class="form-actions mt-3">
         <button type="submit" class="btn">✅ Guardar Producto</button>
         <button type="button" onclick="goBack()" class="btn-secundario">🔙 Cancelar</button>
+        <a href="/admin-productos.html" class="btn-secundario" style="margin-left: 10px;">⬅️ Volver a Productos</a>
       </div>
 
-      <p id="msgEstado" class="form-msg text-center mt-2"></p>
+      <p id="msgEstado" class="form-msg text-center mt-2" aria-live="assertive"></p>
     </form>
   </main>
 
-  <!-- ⚠️ JS fallback -->
   <noscript>
-    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar este formulario correctamente.</p>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar correctamente este formulario.</p>
   </noscript>
 
 </body>

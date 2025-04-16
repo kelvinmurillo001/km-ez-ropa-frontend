@@ -2,77 +2,81 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>✏️ Editar Producto | KM & EZ ROPA</title>
 
+  <!-- Meta seguridad y SEO -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="description" content="Editar detalles de un producto del catálogo. Imágenes, precios, stock, variantes.">
+  <meta name="description" content="Editar detalles de un producto en KM & EZ ROPA. Ajusta imágenes, precios, variantes y más.">
 
+  <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/crear-producto.css" />
 
+  <!-- JS -->
   <script type="module" src="/js/editar-producto.js" defer></script>
 </head>
 <body>
 
-  <main class="formulario-container fade-in">
+  <main class="formulario-container fade-in" role="main" aria-label="Formulario para editar producto">
     <h1 class="text-center">✏️ Editar Producto</h1>
 
-    <form id="formEditarProducto" class="form-producto">
+    <form id="formEditarProducto" class="form-producto" aria-label="Formulario de edición de producto">
 
-      <!-- 🔍 Imagen actual -->
-      <label>Imagen Principal Actual:</label>
-      <div id="imagenPrincipalActual" class="preview-imagen"></div>
+      <!-- 📷 Imagen actual -->
+      <label for="imagenPrincipalActual">Imagen Principal Actual:</label>
+      <div id="imagenPrincipalActual" class="preview-imagen" aria-live="polite"></div>
 
-      <!-- 🎯 Reemplazar imagen -->
-      <label>Cambiar Imagen Principal (opcional):</label>
-      <input type="file" id="imagenPrincipalNueva" accept="image/*" />
+      <!-- 📂 Nueva imagen -->
+      <label for="imagenPrincipalNueva">Cambiar Imagen Principal (opcional):</label>
+      <input type="file" id="imagenPrincipalNueva" accept="image/*" aria-label="Nueva imagen principal" />
 
-      <!-- 📝 Datos generales -->
-      <label>Nombre:</label>
-      <input type="text" id="nombreInput" required />
+      <!-- 📝 Datos del producto -->
+      <label for="nombreInput">Nombre del Producto:</label>
+      <input type="text" id="nombreInput" required aria-required="true" />
 
-      <label>Descripción:</label>
-      <textarea id="descripcionInput" required></textarea>
+      <label for="descripcionInput">Descripción:</label>
+      <textarea id="descripcionInput" required aria-required="true"></textarea>
 
-      <label>Precio:</label>
-      <input type="number" id="precioInput" step="0.01" min="0" required />
+      <label for="precioInput">Precio:</label>
+      <input type="number" id="precioInput" step="0.01" min="0" required aria-required="true" />
 
-      <label>Stock base:</label>
-      <input type="number" id="stockInput" min="0" required />
+      <label for="stockInput">Stock Base:</label>
+      <input type="number" id="stockInput" min="0" required aria-required="true" />
 
-      <label>Categoría:</label>
-      <select id="categoriaInput" required>
+      <label for="categoriaInput">Categoría:</label>
+      <select id="categoriaInput" required aria-required="true">
         <option value="">Selecciona categoría</option>
+        <!-- JS agregará opciones -->
       </select>
 
-      <label>Tallas (separadas por coma):</label>
-      <input type="text" id="tallasInput" />
+      <label for="tallasInput">Tallas (separadas por coma):</label>
+      <input type="text" id="tallasInput" placeholder="Ej: S, M, L, XL" />
 
-      <label>Color principal:</label>
+      <label for="colorInput">Color Principal:</label>
       <input type="color" id="colorInput" />
 
       <!-- 🎨 Variantes -->
       <fieldset class="mt-2">
         <legend>Variantes (editar o eliminar):</legend>
-        <div id="variantesExistentes"></div>
-        <button type="button" id="btnAgregarVariante" class="btn-secundario mt-1">➕ Añadir Variante</button>
+        <div id="variantesExistentes" aria-live="polite"></div>
+        <button type="button" id="btnAgregarVariante" class="btn-secundario mt-1" aria-label="Añadir variante">➕ Añadir Variante</button>
       </fieldset>
 
-      <!-- ✅ Acciones -->
+      <!-- 🧭 Acciones -->
       <div class="form-actions mt-3">
-        <button type="submit" class="btn">💾 Guardar Cambios</button>
-        <button type="button" onclick="goBack()" class="btn-secundario">🔙 Cancelar</button>
+        <button type="submit" class="btn" aria-label="Guardar cambios">💾 Guardar Cambios</button>
+        <button type="button" onclick="goBack()" class="btn-secundario" aria-label="Cancelar y volver">🔙 Cancelar</button>
       </div>
 
-      <p id="msgEstado" class="form-msg text-center mt-2"></p>
+      <p id="msgEstado" class="form-msg text-center mt-2" role="status" aria-live="polite"></p>
     </form>
   </main>
 
-  <!-- JS Fallback -->
+  <!-- Fallback sin JS -->
   <noscript>
-    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar esta función.</p>
+    <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
 
 </body>
