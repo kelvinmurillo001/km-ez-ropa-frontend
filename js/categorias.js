@@ -150,3 +150,6 @@ async function cargarPromocion() {
     console.warn("⚠️ No se pudo cargar promoción activa.");
   }
 }
+
+// ✅ Hacer accesible la función desde el HTML
+window.verDetalle = verDetalle;
