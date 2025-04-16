@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>✏️ Editar Producto | KM & EZ ROPA</title>
 
-  <!-- Meta seguridad y SEO -->
+  <!-- Meta -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Editar detalles de un producto en KM & EZ ROPA. Ajusta imágenes, precios, variantes y más.">
 
@@ -26,18 +26,20 @@
 
       <!-- 📷 Imagen actual -->
       <label for="imagenPrincipalActual">Imagen Principal Actual:</label>
-      <div id="imagenPrincipalActual" class="preview-imagen" aria-live="polite"></div>
+      <div id="imagenPrincipalActual" class="preview-imagen" aria-live="polite">
+        <!-- Vista previa desde JS -->
+      </div>
 
       <!-- 📂 Nueva imagen -->
       <label for="imagenPrincipalNueva">Cambiar Imagen Principal (opcional):</label>
       <input type="file" id="imagenPrincipalNueva" accept="image/*" aria-label="Nueva imagen principal" />
 
-      <!-- 📝 Datos del producto -->
+      <!-- 📝 Datos principales -->
       <label for="nombreInput">Nombre del Producto:</label>
-      <input type="text" id="nombreInput" required aria-required="true" />
+      <input type="text" id="nombreInput" required aria-required="true" placeholder="Ej: Camiseta oversize"/>
 
       <label for="descripcionInput">Descripción:</label>
-      <textarea id="descripcionInput" required aria-required="true"></textarea>
+      <textarea id="descripcionInput" required aria-required="true" placeholder="Descripción del producto..."></textarea>
 
       <label for="precioInput">Precio:</label>
       <input type="number" id="precioInput" step="0.01" min="0" required aria-required="true" />
@@ -48,10 +50,10 @@
       <label for="categoriaInput">Categoría:</label>
       <select id="categoriaInput" required aria-required="true">
         <option value="">Selecciona categoría</option>
-        <!-- JS agregará opciones -->
+        <!-- JS cargará opciones -->
       </select>
 
-      <label for="tallasInput">Tallas (separadas por coma):</label>
+      <label for="tallasInput">Tallas disponibles (separadas por coma):</label>
       <input type="text" id="tallasInput" placeholder="Ej: S, M, L, XL" />
 
       <label for="colorInput">Color Principal:</label>
@@ -59,24 +61,27 @@
 
       <!-- 🎨 Variantes -->
       <fieldset class="mt-2">
-        <legend>Variantes (editar o eliminar):</legend>
-        <div id="variantesExistentes" aria-live="polite"></div>
-        <button type="button" id="btnAgregarVariante" class="btn-secundario mt-1" aria-label="Añadir variante">➕ Añadir Variante</button>
+        <legend>Variantes (colores alternativos / edición):</legend>
+        <div id="variantesExistentes" aria-live="polite">
+          <!-- Insertado dinámicamente -->
+        </div>
+        <button type="button" id="btnAgregarVariante" class="btn-secundario mt-1" aria-label="Añadir nueva variante">➕ Añadir Variante</button>
       </fieldset>
 
       <!-- 🧭 Acciones -->
       <div class="form-actions mt-3">
         <button type="submit" class="btn" aria-label="Guardar cambios">💾 Guardar Cambios</button>
-        <button type="button" onclick="goBack()" class="btn-secundario" aria-label="Cancelar y volver">🔙 Cancelar</button>
+        <button type="button" onclick="goBack()" class="btn-secundario" aria-label="Cancelar y volver atrás">🔙 Cancelar</button>
+        <a href="/admin-productos.html" class="btn-secundario" style="margin-left: 10px;">⬅️ Volver a Productos</a>
       </div>
 
-      <p id="msgEstado" class="form-msg text-center mt-2" role="status" aria-live="polite"></p>
+      <p id="msgEstado" class="form-msg text-center mt-2" role="status" aria-live="assertive"></p>
     </form>
   </main>
 
-  <!-- Fallback sin JS -->
+  <!-- Sin JS -->
   <noscript>
-    <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para editar el producto correctamente.</p>
   </noscript>
 
 </body>

@@ -1,3 +1,4 @@
+/* === BASE === */
 body {
   background-color: #121212;
   color: #f5f5f5;
@@ -16,11 +17,13 @@ h1 {
   padding: 2rem;
 }
 
+/* === FILTRO === */
 .filtro-estado {
   display: flex;
   align-items: center;
   gap: 1rem;
   justify-content: center;
+  margin-bottom: 1rem;
 }
 
 .filtro-estado label {
@@ -128,4 +131,38 @@ h1 {
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+/* === MODO OSCURO === */
+body.modo-oscuro {
+  background-color: #121212;
+  color: #f5f5f5;
+}
+
+body.modo-oscuro .tabla-admin {
+  background-color: #1a1a1a;
+}
+
+body.modo-oscuro .tabla-admin tbody tr:hover {
+  background-color: #222;
+}
+
+body.modo-oscuro .tabla-admin td::before {
+  color: #ffa733;
+}
+
+body.modo-oscuro .filtro-estado select {
+  background-color: #222;
+  color: #f5f5f5;
+  border: 1px solid #555;
+}
+
+body.modo-oscuro .btn-secundario {
+  border-color: #ffa733;
+  color: #ffa733;
+}
+
+body.modo-oscuro .btn-secundario:hover {
+  background-color: #ffa733;
+  color: #121212;
 }

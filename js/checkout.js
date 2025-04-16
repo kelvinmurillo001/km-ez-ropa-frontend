@@ -1,6 +1,7 @@
 "use strict";
 
-const carrito = JSON.parse(localStorage.getItem("carritoKM")) || [];
+const STORAGE_KEY = "km_ez_cart";
+const carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 const resumenPedido = document.getElementById("resumenPedido");
 const totalFinal = document.getElementById("totalFinal");
 const form = document.getElementById("formCheckout");
@@ -19,11 +20,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let total = 0;
   resumenPedido.innerHTML = carrito.map(item => {
-    const subtotal = item.precio * item.cantidad;
+    const subtotal = item.price * item.quantity;
     total += subtotal;
     return `
       <div class="resumen-item">
-        <p>👕 <strong>${item.name}</strong> | Talla: ${item.talla} | Cant: ${item.cantidad} | $${subtotal.toFixed(2)}</p>
+        <p>👕 <strong>${item.name}</strong> | Talla: ${item.size || "Única"} | Cant: ${item.quantity} | $${subtotal.toFixed(2)}</p>
       </div>
     `;
   }).join("");
@@ -34,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // ✅ Confirmar pedido
 form.addEventListener("submit", async e => {
   e.preventDefault();
-  msgEstado.textContent = "Enviando pedido...";
+  msgEstado.textContent = "⏳ Enviando pedido...";
 
   const nombre = document.getElementById("nombreInput").value.trim();
   const email = document.getElementById("emailInput").value.trim();
@@ -46,7 +47,6 @@ form.addEventListener("submit", async e => {
     return;
   }
 
-  // Armar pedido
   const pedido = {
     nombre,
     email,
@@ -55,11 +55,11 @@ form.addEventListener("submit", async e => {
     items: carrito.map(item => ({
       productId: item.id,
       name: item.name,
-      talla: item.talla,
-      cantidad: item.cantidad,
-      precio: item.precio
+      talla: item.size,
+      cantidad: item.quantity,
+      precio: item.price
     })),
-    total: carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0)
+    total: carrito.reduce((acc, item) => acc + item.price * item.quantity, 0)
   };
 
   try {
@@ -72,7 +72,7 @@ form.addEventListener("submit", async e => {
     if (!res.ok) throw new Error("Error al enviar pedido");
 
     msgEstado.textContent = "✅ Pedido enviado con éxito. ¡Gracias por tu compra!";
-    localStorage.removeItem("carritoKM");
+    localStorage.removeItem(STORAGE_KEY);
 
     setTimeout(() => {
       window.location.href = "/index.html";

@@ -1,5 +1,7 @@
+"use strict";
+
+// ✅ Importar configuración
 import { API_BASE } from "./config.js";
-const API_BASE = "https://km-ez-ropa-backend.onrender.com";
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formLogin");
@@ -25,32 +27,48 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
 
       if (!res.ok) {
-        mostrarError(data.message || "❌ Error al iniciar sesión.");
+        if (res.status === 401) {
+          mostrarError("🔐 Credenciales incorrectas.");
+        } else {
+          mostrarError(data.message || "❌ Error al iniciar sesión.");
+        }
         return;
       }
 
-      // Guardar token y datos
+      // ✅ Ocultar errores si todo va bien
+      ocultarError();
+
+      // ✅ Guardar token y redirigir
       localStorage.setItem("km_ez_token", data.token);
       localStorage.setItem("km_ez_user", JSON.stringify(data.usuario));
-
-      // Redirigir
       window.location.href = "/panel.html";
+
     } catch (err) {
       console.error("❌ Error:", err);
-      mostrarError("❌ Error de red o servidor.");
+      mostrarError("❌ No se pudo conectar al servidor.");
     }
   });
 
-  // Modo oscuro
+  // 🌙 Modo oscuro
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 });
 
+// ⚠️ Mostrar mensaje de error
 function mostrarError(msg) {
   const div = document.getElementById("errorMensaje");
   if (div) {
     div.textContent = msg;
     div.style.display = "block";
+  }
+}
+
+// ✅ Ocultar mensaje de error
+function ocultarError() {
+  const div = document.getElementById("errorMensaje");
+  if (div) {
+    div.textContent = "";
+    div.style.display = "none";
   }
 }

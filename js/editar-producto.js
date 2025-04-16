@@ -2,26 +2,39 @@
 
 import { verificarSesion, goBack } from "./admin-utils.js";
 
+// 🔐 Autenticación
 const token = verificarSesion();
 const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
 const productId = new URLSearchParams(window.location.search).get("id");
 
+if (!productId) {
+  alert("❌ ID de producto no válido.");
+  goBack();
+}
+
+// Endpoints
 const API_UPLOAD = `${API_BASE}/uploads`;
 const API_PRODUCTO = `${API_BASE}/products/${productId}`;
 const API_CATEGORIAS = `${API_BASE}/categories`;
 
+// DOM
 const form = document.getElementById("formEditarProducto");
 const msgEstado = document.getElementById("msgEstado");
 const variantesDiv = document.getElementById("variantesExistentes");
 
+// 🌙 Modo oscuro si está activado
 document.addEventListener("DOMContentLoaded", () => {
+  if (localStorage.getItem("modoOscuro") === "true") {
+    document.body.classList.add("modo-oscuro");
+  }
+
   cargarCategorias();
   cargarProducto();
 
   document.getElementById("btnAgregarVariante")?.addEventListener("click", agregarVariante);
 });
 
-/* 📂 Cargar categorías del backend */
+/* 📂 Cargar categorías desde el backend */
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIAS);
@@ -35,11 +48,12 @@ async function cargarCategorias() {
       select.appendChild(option);
     });
   } catch (err) {
-    console.error("❌ Error al cargar categorías", err);
+    console.error("❌ Error cargando categorías:", err);
+    msgEstado.textContent = "❌ No se pudieron cargar las categorías.";
   }
 }
 
-/* 🧾 Cargar datos del producto */
+/* 🧾 Cargar datos actuales del producto */
 async function cargarProducto() {
   try {
     const res = await fetch(API_PRODUCTO);
@@ -53,18 +67,20 @@ async function cargarProducto() {
     document.getElementById("tallasInput").value = p.sizes?.join(", ") || "";
     document.getElementById("colorInput").value = p.color || "#000000";
 
+    // Imagen actual
     if (Array.isArray(p.images) && p.images.length > 0) {
       document.getElementById("imagenPrincipalActual").innerHTML = `
         <img src="${p.images[0].url}" alt="Imagen actual" class="preview-mini" />
       `;
     }
 
+    // Variantes
     p.variants?.forEach((v, i) => {
       const div = document.createElement("div");
       div.className = "variante-box";
       div.innerHTML = `
         <p><strong>Variante #${i + 1}</strong></p>
-        <img src="${v.imageUrl}" class="preview-mini" />
+        <img src="${v.imageUrl}" alt="Variante" class="preview-mini" />
         <label>Reemplazar imagen:</label>
         <input type="file" class="variante-img" accept="image/*" />
         <label>Color:</label>
@@ -85,17 +101,15 @@ async function cargarProducto() {
   }
 }
 
-/* 📤 Subir imagen a Cloudinary */
+/* 📤 Subir imagen al servidor */
 async function subirImagen(file) {
-  const fd = new FormData();
-  fd.append("image", file);
+  const formData = new FormData();
+  formData.append("image", file);
 
   const res = await fetch(API_UPLOAD, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`
-    },
-    body: fd
+    headers: { Authorization: `Bearer ${token}` },
+    body: formData
   });
 
   const data = await res.json();
@@ -107,7 +121,7 @@ async function subirImagen(file) {
   };
 }
 
-/* ➕ Agregar variante */
+/* ➕ Agregar variante manual */
 function agregarVariante() {
   const div = document.createElement("div");
   div.className = "variante-box";
@@ -126,7 +140,7 @@ function agregarVariante() {
   variantesDiv.appendChild(div);
 }
 
-/* 💾 Guardar Cambios */
+/* 💾 Guardar cambios del producto */
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   msgEstado.textContent = "⏳ Guardando cambios...";
@@ -138,7 +152,10 @@ form.addEventListener("submit", async (e) => {
     const stock = parseInt(document.getElementById("stockInput").value);
     const categoria = document.getElementById("categoriaInput").value;
     const color = document.getElementById("colorInput").value;
-    const sizes = document.getElementById("tallasInput").value.split(",").map(s => s.trim()).filter(Boolean);
+    const sizes = document.getElementById("tallasInput").value
+      .split(",")
+      .map(s => s.trim())
+      .filter(Boolean);
 
     const nuevaImg = document.getElementById("imagenPrincipalNueva").files[0];
     let nuevaImagen = null;
@@ -146,12 +163,13 @@ form.addEventListener("submit", async (e) => {
       nuevaImagen = await subirImagen(nuevaImg);
     }
 
+    // Procesar variantes
     const variantes = [];
     const bloques = document.querySelectorAll(".variante-box");
 
     for (const b of bloques) {
       const file = b.querySelector(".variante-img")?.files[0];
-      const color = b.querySelector(".variante-color")?.value || "#000";
+      const color = b.querySelector(".variante-color")?.value || "#000000";
       const talla = b.querySelector(".variante-talla")?.value || "";
       const stock = parseInt(b.querySelector(".variante-stock")?.value || "0");
       const cloudinaryId = b.querySelector(".variante-id")?.value;
@@ -174,6 +192,7 @@ form.addEventListener("submit", async (e) => {
       });
     }
 
+    // Crear payload
     const payload = {
       name: nombre,
       description: descripcion,
@@ -199,8 +218,7 @@ form.addEventListener("submit", async (e) => {
     });
 
     const result = await res.json();
-
-    if (!res.ok) throw new Error(result.message || "No se pudo actualizar");
+    if (!res.ok) throw new Error(result.message || "No se pudo actualizar el producto");
 
     msgEstado.textContent = "✅ Producto actualizado con éxito.";
 
@@ -210,5 +228,5 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-// Global
+// 🌐 Global back
 window.goBack = goBack;

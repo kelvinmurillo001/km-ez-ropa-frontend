@@ -1,69 +1,75 @@
-// 📥 Importar utilidades comunes
+"use strict";
+
+// 📥 Importar utilidades
 import { registrarVisitaPublica } from "./utils.js";
 import { API_BASE } from "./config.js";
 
-// === CARGAR PRODUCTOS DESTACADOS ===
 document.addEventListener("DOMContentLoaded", async () => {
-  // 📊 Registrar visita al sitio
-  registrarVisitaPublica();
+  registrarVisitaPublica(); // 📊 Registro
 
   const catalogo = document.getElementById("catalogo");
 
   try {
     const res = await fetch(`${API_BASE}/api/products?featured=true`);
-    const data = await res.json();
+    const productos = await res.json();
 
-    if (!res.ok) throw new Error(data.message || "Error al cargar productos");
+    if (!res.ok) throw new Error(productos.message || "Error al cargar productos destacados");
 
-    if (data.length === 0) {
+    if (!Array.isArray(productos) || productos.length === 0) {
       catalogo.innerHTML = "<p style='text-align:center;'>😢 No hay productos destacados en este momento.</p>";
       return;
     }
 
-    data.forEach(producto => {
+    productos.forEach(p => {
+      const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
+      const nombre = p.name || "Producto";
+      const precio = typeof p.price === "number" ? `$${p.price.toFixed(2)}` : "$--";
+
       const card = document.createElement("div");
       card.className = "product-card";
       card.innerHTML = `
-        <img src="${producto.image}" alt="${producto.name}" />
+        <img src="${imagen}" alt="${nombre}" loading="lazy" onerror="this.src='/assets/logo.jpg'" />
         <div class="product-info">
-          <h3>${producto.name}</h3>
-          <p>$${producto.price.toFixed(2)}</p>
-          <button onclick="verDetalle('${producto._id}')" class="btn-card">👁️ Ver</button>
+          <h3>${nombre}</h3>
+          <p>${precio}</p>
+          <button class="btn-card" onclick="verDetalle('${p._id}')">👁️ Ver</button>
         </div>
       `;
       catalogo.appendChild(card);
     });
+
   } catch (err) {
-    console.error("❌ Error cargando productos:", err);
-    catalogo.innerHTML = "<p style='text-align:center; color:red;'>⚠️ No se pudieron cargar los productos.</p>";
+    console.error("❌ Error cargando productos destacados:", err);
+    catalogo.innerHTML = `<p style="text-align:center; color:red;">⚠️ No se pudieron cargar los productos.</p>`;
   }
 
-  // 🎯 Actualizar carrito flotante
   actualizarCarritoWidget();
-
-  // 🌙 Activar modo oscuro si está guardado
-  if (localStorage.getItem("modoOscuro") === "true") {
-    document.body.classList.add("modo-oscuro");
-  }
-
-  // 🌗 Toggle de modo oscuro
-  const toggleBtn = document.getElementById("modoOscuroBtn");
-  toggleBtn?.addEventListener("click", () => {
-    document.body.classList.toggle("modo-oscuro");
-    const activo = document.body.classList.contains("modo-oscuro");
-    localStorage.setItem("modoOscuro", activo);
-  });
+  aplicarModoOscuro();
 });
 
-// 🔁 Redirección al detalle del producto
+// 🌙 Modo oscuro
+function aplicarModoOscuro() {
+  const dark = localStorage.getItem("modoOscuro") === "true";
+  if (dark) document.body.classList.add("modo-oscuro");
+
+  const toggle = document.getElementById("modoOscuroBtn");
+  toggle?.addEventListener("click", () => {
+    document.body.classList.toggle("modo-oscuro");
+    localStorage.setItem("modoOscuro", document.body.classList.contains("modo-oscuro"));
+  });
+}
+
+// 👁️ Navegar a detalle
 function verDetalle(id) {
+  if (!id) return;
   window.location.href = `/detalle.html?id=${id}`;
 }
+window.verDetalle = verDetalle; // 💡 Exponer función globalmente
 
 // 🛒 Actualizar contador del carrito
 function actualizarCarritoWidget() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
-  const total = carrito.reduce((sum, item) => sum + item.quantity, 0);
+  const total = carrito.reduce((acc, item) => acc + item.quantity, 0);
   const contador = document.getElementById("cartCount");
   if (contador) contador.textContent = total;
 }

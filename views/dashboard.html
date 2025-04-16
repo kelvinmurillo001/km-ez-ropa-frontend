@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>📊 Dashboard Analítico | KM & EZ ROPA</title>
 
   <!-- 🔐 Meta Seguridad y SEO -->
@@ -17,35 +17,37 @@
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- ✅ Script JS del Dashboard -->
+  <!-- ✅ Script del Dashboard -->
   <script type="module" src="/js/dashboard.js" defer></script>
 </head>
 <body>
-  <main class="dashboard-container fade-in" role="main" aria-label="Dashboard principal de analítica">
+
+  <!-- 🌍 Contenedor Principal -->
+  <main class="dashboard-container fade-in" role="main" aria-label="Panel de Analítica de KM & EZ ROPA">
     <h1 class="text-center">📊 Panel de Analítica</h1>
 
-    <!-- 🔢 Métricas -->
-    <section class="dashboard-grid" aria-label="Métricas generales del negocio">
-      <div class="card" id="ventas" role="region" aria-labelledby="ventasTotales">
+    <!-- 🔢 Métricas Globales -->
+    <section class="dashboard-grid" aria-label="Métricas del negocio">
+      <article class="card" id="ventas" role="region" aria-labelledby="ventasTotales">
         <h3>🛒 Ventas Totales</h3>
         <p><span id="ventasTotales" aria-live="polite">0</span></p>
-      </div>
-      <div class="card" role="region" aria-labelledby="visitasTotales">
+      </article>
+      <article class="card" role="region" aria-labelledby="visitasTotales">
         <h3>👥 Visitas</h3>
         <p><span id="visitasTotales" aria-live="polite">0</span></p>
-      </div>
-      <div class="card" role="region" aria-labelledby="totalProductos">
+      </article>
+      <article class="card" role="region" aria-labelledby="totalProductos">
         <h3>📦 Productos</h3>
         <p><span id="totalProductos" aria-live="polite">0</span></p>
-      </div>
-      <div class="card" role="region" aria-labelledby="promosActivas">
+      </article>
+      <article class="card" role="region" aria-labelledby="promosActivas">
         <h3>🎯 Promos Activas</h3>
         <p><span id="promosActivas" aria-live="polite">0</span></p>
-      </div>
+      </article>
     </section>
 
-    <!-- 🧾 Estado de Pedidos -->
-    <section class="analitica-extra mt-3" aria-label="Estado actual de los pedidos">
+    <!-- 📋 Estado de Pedidos -->
+    <section class="analitica-extra mt-3" aria-label="Estado de pedidos">
       <h2 class="text-center">🧾 Estado de Pedidos</h2>
       <ul class="listado-categorias">
         <li><strong>Totales:</strong> <span id="total">-</span></li>
@@ -57,17 +59,17 @@
       </ul>
     </section>
 
-    <!-- 📁 Top Categorías -->
-    <section class="analitica-extra mt-3" aria-label="Categorías más utilizadas">
+    <!-- 🗂️ Top Categorías -->
+    <section class="analitica-extra mt-3" aria-label="Categorías más frecuentes">
       <h2 class="text-center">📁 Top Categorías</h2>
       <ul id="topCategorias" class="listado-categorias" aria-live="polite">
-        <!-- JS insertará aquí -->
+        <!-- JS Insertará dinámicamente -->
       </ul>
     </section>
 
-    <!-- 📤 Botones de Acción -->
+    <!-- ⚙️ Acciones de usuario -->
     <div class="text-center mt-3">
-      <button type="button" onclick="exportarEstadisticas()" class="btn-secundario">
+      <button type="button" id="btnExportar" class="btn-secundario">
         📤 Exportar Estadísticas (CSV)
       </button>
     </div>
@@ -79,7 +81,7 @@
     </div>
   </main>
 
-  <!-- ⚠️ Fallback para JS -->
+  <!-- ⚠️ No JS -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
@@ -92,5 +94,6 @@
       }
     });
   </script>
+
 </body>
 </html>

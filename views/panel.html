@@ -5,39 +5,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🎛️ Panel Administrativo | KM & EZ ROPA</title>
 
+  <!-- Meta Seguridad y SEO -->
   <meta name="robots" content="noindex, nofollow" />
+  <meta name="author" content="KM & EZ ROPA" />
+  <meta name="description" content="Administra productos, pedidos, categorías, promociones y más desde este panel privado." />
+
+  <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/panel.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
 
+  <!-- JS -->
   <script type="module" src="/js/panel.js" defer></script>
 </head>
 <body>
-  <main class="panel-container fade-in">
+  <main class="panel-container fade-in" role="main" aria-label="Panel de administración principal">
+    
+    <!-- Encabezado del Panel -->
     <header class="header-panel">
-      <h1>🎛️ Panel de Administración</h1>
-      <button onclick="cerrarSesion()">🚪 Cerrar Sesión</button>
+      <h1 class="text-center">🎛️ Panel de Administración</h1>
+      <button onclick="cerrarSesion()" class="btn-secundario" aria-label="Cerrar sesión del panel">🚪 Cerrar Sesión</button>
     </header>
 
-    <section class="menu-panel">
-      <a href="productos.html">👕 Gestionar Productos</a>
-      <a href="pedidos.html">🧾 Ver Pedidos</a>
-      <a href="categorias.html">🗂️ Categorías/Subcategorías</a>
-      <a href="promociones.html">🎯 Promociones</a>
-      <a href="dashboard.html">📊 Analítica</a>
+    <!-- Menú de navegación del Panel -->
+    <section class="menu-panel" aria-label="Navegación administrativa">
+      <a href="/productos.html" class="btn-panel">👕 Gestionar Productos</a>
+      <a href="/pedidos.html" class="btn-panel">🧾 Ver Pedidos</a>
+      <a href="/categorias.html" class="btn-panel">🗂️ Categorías y Subcategorías</a>
+      <a href="/promociones.html" class="btn-panel">🎯 Promociones</a>
+      <a href="/dashboard.html" class="btn-panel">📊 Analítica</a>
     </section>
+
   </main>
 
+  <!-- Modo Oscuro Automático -->
   <script>
     if (localStorage.getItem("modoOscuro") === "true") {
       document.body.classList.add("modo-oscuro");
     }
   </script>
 
+  <!-- Fallback JS -->
   <noscript>
-    <p style="text-align:center; color:red;">⚠️ Activa JavaScript para usar este panel.</p>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para utilizar este panel administrativo.</p>
   </noscript>
 </body>
 </html>

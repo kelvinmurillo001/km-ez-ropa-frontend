@@ -3,7 +3,7 @@
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
-// 🔐 Autenticación
+// 🔐 Verificar autenticación
 const token = verificarSesion();
 
 // Endpoints
@@ -29,22 +29,28 @@ document.addEventListener("DOMContentLoaded", async () => {
   restaurarModoOscuro();
 });
 
-// 🌗 Soporte para modo oscuro persistente
+// 🌙 Restaurar modo oscuro
 function restaurarModoOscuro() {
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 }
 
-// 📸 Previsualizar imagen principal
+// 📸 Vista previa de imagen
 imagenInput.addEventListener("change", () => {
   const file = imagenInput.files[0];
   if (!file) return;
+  if (!file.type.startsWith("image/")) {
+    return mostrarMensaje("⚠️ Solo se permiten archivos de imagen", "error");
+  }
+  if (file.size > 2 * 1024 * 1024) {
+    return mostrarMensaje("⚠️ La imagen principal excede 2MB", "error");
+  }
   const url = URL.createObjectURL(file);
   previewPrincipal.innerHTML = `<img src="${url}" alt="Vista previa" />`;
 });
 
-// 📂 Cargar categorías desde backend
+// 📂 Cargar categorías del backend
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIES);
@@ -85,7 +91,7 @@ function agregarVariante() {
   variantes.push(index);
 }
 
-// 💾 Subir imagen a servidor
+// ☁️ Subir imagen al servidor
 async function subirImagen(file) {
   const formData = new FormData();
   formData.append("image", file);
@@ -120,6 +126,10 @@ form.addEventListener("submit", async (e) => {
   const filePrincipal = imagenInput.files[0];
   if (!filePrincipal) return mostrarMensaje("⚠️ La imagen principal es obligatoria", "error");
 
+  if (!nombre || !descripcion || !precio || !stock || !categoria) {
+    return mostrarMensaje("⚠️ Todos los campos obligatorios deben estar completos", "error");
+  }
+
   try {
     msgEstado.textContent = "⏳ Subiendo imagen principal...";
     const imagenURL = await subirImagen(filePrincipal);
@@ -136,8 +146,16 @@ form.addEventListener("submit", async (e) => {
       let varImgURL = "";
 
       if (imgInput?.files.length) {
+        const file = imgInput.files[0];
+        if (!file.type.startsWith("image/")) {
+          return mostrarMensaje("⚠️ Solo se permiten imágenes en variantes", "error");
+        }
+        if (file.size > 2 * 1024 * 1024) {
+          return mostrarMensaje("⚠️ Imagen de variante excede 2MB", "error");
+        }
+
         msgEstado.textContent = "⏳ Subiendo imagen de variante...";
-        varImgURL = await subirImagen(imgInput.files[0]);
+        varImgURL = await subirImagen(file);
       }
 
       variantesFinales.push({
@@ -147,7 +165,7 @@ form.addEventListener("submit", async (e) => {
       });
     }
 
-    // 📦 Crear producto final
+    // 🧾 Crear objeto producto
     const nuevoProducto = {
       name: nombre,
       description: descripcion,

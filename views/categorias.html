@@ -5,75 +5,97 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Categorías | KM & EZ ROPA</title>
 
-  <!-- SEO -->
+  <!-- 🔍 SEO -->
   <meta name="description" content="Explora todas las categorías de ropa urbana disponibles en KM & EZ ROPA." />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="KM & EZ ROPA" />
+
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/categorias.css" />
-  <script type="module" src="/js/categorias.js"></script>
+
+  <!-- ✅ Script principal -->
+  <script type="module" src="/js/categorias.js" defer></script>
 </head>
 <body>
 
-  <!-- 🔝 HEADER -->
+  <!-- 🔝 Encabezado -->
   <header class="main-header">
     <div class="logo">
-      <a href="/"><img src="/assets/logo.jpg" alt="Logo" /></a>
+      <a href="/" aria-label="Inicio">
+        <img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" />
+      </a>
       <div class="brand">
         <h1>KM & EZ ROPA</h1>
         <p>Explora tu estilo</p>
       </div>
     </div>
     <nav class="nav-links">
-      <a href="/">🏠 Inicio</a>
+      <a href="/index.html">🏠 Inicio</a>
       <a href="/carrito.html">🛒 Carrito</a>
-      <button id="modoOscuroBtn">🌙</button>
+      <button id="modoOscuroBtn" aria-label="Activar modo oscuro">🌙</button>
     </nav>
   </header>
 
-  <!-- 🔥 BANNER PROMOCIONAL -->
-  <section id="promoBanner" class="promo-banner">
-    <!-- Se llena dinámicamente desde JS -->
+  <!-- 🔥 Banner promocional -->
+  <section id="promoBanner" class="promo-banner" aria-label="Promoción activa">
+    <!-- Se rellena desde JS -->
   </section>
 
-  <!-- 🔍 FILTROS -->
-  <section class="filtros-section">
+  <!-- 🔍 Filtros -->
+  <section class="filtros-section" aria-label="Filtros de búsqueda">
     <div class="filtro">
       <label for="categoriaSelect">Categoría:</label>
-      <select id="categoriaSelect"><option value="">Todas</option></select>
+      <select id="categoriaSelect" name="categoria">
+        <option value="">Todas</option>
+      </select>
     </div>
     <div class="filtro">
       <label for="subcategoriaSelect">Subcategoría:</label>
-      <select id="subcategoriaSelect"><option value="">Todas</option></select>
+      <select id="subcategoriaSelect" name="subcategoria">
+        <option value="">Todas</option>
+      </select>
     </div>
     <div class="filtro">
-      <label for="precioSelect">Precio:</label>
-      <select id="precioSelect">
+      <label for="precioSelect">Ordenar por:</label>
+      <select id="precioSelect" name="precio">
         <option value="">Todos</option>
         <option value="low">Menor a mayor</option>
         <option value="high">Mayor a menor</option>
       </select>
     </div>
     <div class="filtro">
+      <label for="busquedaInput" class="sr-only">Buscar producto:</label>
       <input type="search" id="busquedaInput" placeholder="Buscar producto..." />
     </div>
   </section>
 
-  <!-- 🧾 CATÁLOGO -->
-  <main class="catalogo-section">
+  <!-- 🧾 Catálogo -->
+  <main class="catalogo-section" role="main">
     <h2 class="section-title">🧢 Productos disponibles</h2>
-    <div id="catalogo" class="product-grid">
-      <!-- JS renderiza productos aquí -->
+    <div id="catalogo" class="product-grid" aria-live="polite">
+      <!-- Render dinámico -->
     </div>
   </main>
 
-  <!-- 💬 WHATSAPP + CARRITO -->
+  <!-- 💬 Botones flotantes -->
   <div class="floating-buttons">
-    <a href="/carrito.html" class="cart-icon"><img src="/assets/cart-icon.svg" alt="Carrito" /><span id="cartCount">0</span></a>
-    <a href="https://wa.me/593990270864" class="whatsapp-icon" target="_blank"><img src="/assets/whatsapp.svg" alt="WhatsApp" /></a>
+    <a href="/carrito.html" class="cart-icon" aria-label="Ir al carrito">
+      <img src="/assets/cart-icon.svg" alt="Carrito" />
+      <span id="cartCount">0</span>
+    </a>
+    <a href="https://wa.me/593990270864" class="whatsapp-icon" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+      <img src="/assets/whatsapp.svg" alt="WhatsApp" />
+    </a>
   </div>
 
-  <!-- 🔚 FOOTER -->
+  <!-- 🔚 Pie de página -->
   <footer class="site-footer">
     <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
   </footer>
 
+  <!-- ⚠️ Fallback sin JS -->
+  <noscript>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para visualizar correctamente esta página.</p>
+  </noscript>
 </body>
 </html>

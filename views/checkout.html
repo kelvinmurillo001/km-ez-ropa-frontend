@@ -5,53 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>✅ Finalizar Compra | KM & EZ ROPA</title>
 
+  <!-- SEO -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Ingresa tus datos para completar tu pedido en KM & EZ ROPA.">
 
+  <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/checkout.css" />
 
+  <!-- JS -->
   <script type="module" src="/js/checkout.js" defer></script>
 </head>
 <body>
 
-  <main class="checkout-container fade-in">
+  <main class="checkout-container fade-in" role="main">
     <h1 class="text-center">✅ Finalizar Compra</h1>
 
-    <form id="formCheckout" class="form-checkout">
+    <form id="formCheckout" class="form-checkout" novalidate>
       <!-- 🧍 Datos del cliente -->
-      <fieldset>
-        <legend>🧍 Tus Datos</legend>
-        <label>Nombre Completo:</label>
+      <fieldset aria-labelledby="datosCliente">
+        <legend id="datosCliente">🧍 Tus Datos</legend>
+
+        <label for="nombreInput">Nombre Completo:</label>
         <input type="text" id="nombreInput" required />
 
-        <label>Correo Electrónico:</label>
+        <label for="emailInput">Correo Electrónico:</label>
         <input type="email" id="emailInput" required />
 
-        <label>Teléfono:</label>
+        <label for="telefonoInput">Teléfono:</label>
         <input type="tel" id="telefonoInput" required />
 
-        <label>Dirección de Entrega:</label>
+        <label for="direccionInput">Dirección de Entrega:</label>
         <textarea id="direccionInput" required></textarea>
       </fieldset>
 
       <!-- 🛍️ Resumen del pedido -->
-      <fieldset class="mt-3">
-        <legend>🛍️ Tu Pedido</legend>
+      <fieldset class="mt-3" aria-labelledby="resumenPedidoTitulo">
+        <legend id="resumenPedidoTitulo">🛍️ Tu Pedido</legend>
         <div id="resumenPedido">
-          <!-- JS insertará productos -->
+          <!-- JS insertará productos aquí -->
         </div>
         <h3>Total: <span id="totalFinal">$0.00</span></h3>
       </fieldset>
 
-      <!-- ✅ Botón de compra -->
+      <!-- ✅ Acciones -->
       <div class="form-actions mt-3">
-        <button type="submit" class="btn">🛒 Confirmar Pedido</button>
-        <button type="button" onclick="window.location.href='/views/carrito.html'" class="btn-secundario">🔙 Volver al Carrito</button>
+        <button type="submit" class="btn" aria-label="Confirmar pedido">🛒 Confirmar Pedido</button>
+        <button type="button" onclick="window.location.href='/carrito.html'" class="btn-secundario" aria-label="Volver al carrito">🔙 Volver al Carrito</button>
       </div>
 
-      <p id="msgEstado" class="form-msg text-center mt-2"></p>
+      <p id="msgEstado" class="form-msg text-center mt-2" role="alert"></p>
     </form>
   </main>
 

@@ -29,8 +29,8 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
   line-height: 1.6;
-  position: relative;
   transition: background-color 0.3s ease, color 0.3s ease;
+  position: relative;
 }
 
 .container {
@@ -64,9 +64,13 @@ input, select, textarea {
   outline: none;
   transition: border-color 0.2s, background-color 0.2s;
 }
-input:focus-visible, select:focus-visible, textarea:focus-visible {
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
   border-color: var(--color-acento);
   outline: 2px solid var(--color-acento);
+  outline-offset: 2px;
 }
 
 /* 🔘 Botones */
@@ -80,8 +84,14 @@ button, .btn {
   cursor: pointer;
   transition: all 0.2s ease;
 }
+
 button:hover, .btn:hover {
   background: #1a252f;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--color-secundario);
+  outline-offset: 3px;
 }
 
 /* 🎯 Utilidades */
@@ -177,6 +187,7 @@ body.modo-oscuro {
   background-color: #121212;
   color: #eee;
 }
+
 body.modo-oscuro .header,
 body.modo-oscuro .footer,
 body.modo-oscuro .promo-banner,
@@ -186,9 +197,11 @@ body.modo-oscuro .filtros-container {
   color: #eee;
   border-color: #444;
 }
+
 body.modo-oscuro a {
-  color: #90caf9;
+  color: #64b5f6;
 }
+
 body.modo-oscuro input,
 body.modo-oscuro select,
 body.modo-oscuro textarea {
@@ -196,6 +209,7 @@ body.modo-oscuro textarea {
   color: #fff;
   border-color: #444;
 }
+
 body.modo-oscuro button,
 body.modo-oscuro .btn {
   background-color: var(--color-secundario);
@@ -204,11 +218,16 @@ body.modo-oscuro .btn:hover {
   background-color: #1e88e5;
 }
 
-/* ✨ Fade-in Animación */
+/* ✨ Animaciones */
 .fade-in {
   animation: fadeIn 0.6s ease-in-out;
 }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 🎯 Accesibilidad adicional */
+img[alt=""] {
+  display: none;
 }

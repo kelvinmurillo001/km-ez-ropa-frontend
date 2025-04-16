@@ -19,20 +19,42 @@
   <script type="module" src="/js/login.js" defer></script>
 </head>
 <body>
-  <main class="login-container fade-in">
-    <h1 class="text-center">🔐 Iniciar Sesión</h1>
 
-    <form id="formLogin" class="formulario">
-      <label for="email">Correo Electrónico</label>
-      <input type="email" name="email" id="email" placeholder="correo@ejemplo.com" required />
+  <main class="login-container fade-in" role="main">
+    <h1 class="text-center" aria-label="Iniciar sesión">🔐 Iniciar Sesión</h1>
 
-      <label for="password">Contraseña</label>
-      <input type="password" name="password" id="password" placeholder="••••••••" required />
+    <form id="formLogin" class="formulario" aria-labelledby="formLogin">
+      <!-- Correo -->
+      <label for="email">Correo Electrónico:</label>
+      <input 
+        type="email"
+        name="email"
+        id="email"
+        placeholder="correo@ejemplo.com"
+        required
+        autocomplete="email"
+        aria-required="true"
+      />
 
-      <button type="submit" class="btn mt-2">🔓 Acceder</button>
+      <!-- Contraseña -->
+      <label for="password">Contraseña:</label>
+      <input 
+        type="password"
+        name="password"
+        id="password"
+        placeholder="••••••••"
+        required
+        autocomplete="current-password"
+        aria-required="true"
+      />
 
-      <div id="errorMensaje" style="display: none; color: red; margin-top: 1rem;"></div>
+      <!-- Botón de acceso -->
+      <button type="submit" class="btn mt-2" aria-label="Acceder al panel">🔓 Acceder</button>
 
+      <!-- Error -->
+      <div id="errorMensaje" role="alert" aria-live="assertive" style="display: none; color: red; margin-top: 1rem;"></div>
+
+      <!-- Volver -->
       <div class="text-center mt-2">
         <button type="button" onclick="window.location.href='/'" class="btn-secundario">
           🔙 Volver al Inicio

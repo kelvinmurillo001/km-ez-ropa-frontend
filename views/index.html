@@ -5,72 +5,80 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>KM & EZ ROPA | Moda Urbana Exclusiva</title>
 
-  <!-- SEO y Social -->
-  <meta name="description" content="Descubre moda urbana premium en KM & EZ ROPA. Prendas exclusivas, envíos rápidos y estilo garantizado." />
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="KM & EZ ROPA">
+  <!-- 🔍 SEO -->
+  <meta name="description" content="Descubre moda urbana premium en KM & EZ ROPA. Hoodies, oversize, conjuntos, envíos rápidos y estilo garantizado." />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="KM & EZ ROPA" />
+
+  <!-- 🌐 Social Media (Open Graph) -->
   <meta property="og:title" content="KM & EZ ROPA | Moda Urbana Exclusiva" />
   <meta property="og:description" content="Viste con estilo, compra con seguridad. Catálogo urbano moderno y promociones irresistibles." />
   <meta property="og:image" content="/assets/og-image.jpg" />
   <meta property="og:type" content="website" />
 
-  <!-- CSS -->
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/index.css" />
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/componentes.css" />
 
-  <!-- JS -->
+  <!-- ✅ JS -->
   <script type="module" src="/js/index.js" defer></script>
 </head>
 <body>
 
-  <!-- HEADER -->
+  <!-- 🔝 Encabezado -->
   <header class="main-header">
     <div class="logo">
-      <img src="/assets/logo.jpg" alt="KM & EZ ROPA Logo" />
+      <a href="/"><img src="/assets/logo.jpg" alt="KM & EZ ROPA Logo" /></a>
       <div class="brand-text">
         <h1>KM & EZ ROPA</h1>
         <p>Moda Urbana | Estilo Callejero</p>
       </div>
     </div>
+
     <nav class="nav-links">
       <a href="/categorias.html">🛍️ Catálogo</a>
       <a href="/login.html">🔐 Admin</a>
-      <button id="modoOscuroBtn">🌙</button>
+      <button id="modoOscuroBtn" aria-label="Modo Oscuro">🌙</button>
     </nav>
   </header>
 
-  <!-- HERO / PROMO -->
-  <section class="hero-banner">
-    <h2>🔥 Rebajas Urbanas</h2>
-    <p>Prendas exclusivas con descuentos únicos esta temporada</p>
-    <a href="/categorias.html" class="btn-hero">Ver Catálogo</a>
+  <!-- 🔥 HERO / PROMO -->
+  <section class="hero-banner" aria-label="Sección promocional">
+    <div class="hero-content">
+      <h2>🔥 Rebajas Urbanas</h2>
+      <p>Prendas exclusivas con descuentos únicos esta temporada</p>
+      <a href="/categorias.html" class="btn-hero" aria-label="Ver catálogo">Ver Catálogo</a>
+    </div>
   </section>
 
-  <!-- CATÁLOGO -->
-  <main class="main-section">
+  <!-- 🛍️ CATÁLOGO DESTACADO -->
+  <main class="main-section" role="main">
     <h2 class="section-title">🌟 Lo Más Popular</h2>
-    <div id="catalogo" class="product-grid">
-      <!-- Productos cargados con JS -->
+    <div id="catalogo" class="product-grid" aria-live="polite">
+      <!-- JS inyecta productos aquí -->
     </div>
   </main>
 
-  <!-- WHATSAPP & CARRITO -->
+  <!-- 🛒 BOTONES FLOTANTES -->
   <div class="floating-buttons">
     <a href="/carrito.html" class="cart-icon" aria-label="Ver carrito">
       <img src="/assets/cart-icon.svg" alt="Carrito" />
-      <span id="cartCount">0</span>
+      <span id="cartCount" role="status">0</span>
     </a>
-    <a href="https://wa.me/593990270864" class="whatsapp-icon" target="_blank" aria-label="WhatsApp">
+    <a href="https://wa.me/593990270864" class="whatsapp-icon" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
       <img src="/assets/whatsapp.svg" alt="WhatsApp" />
     </a>
   </div>
 
-  <!-- FOOTER -->
+  <!-- 🔚 FOOTER -->
   <footer class="site-footer">
     <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
   </footer>
 
+  <!-- ⚠️ Sin JS -->
   <noscript>
-    <p style="text-align:center; color:red;">⚠️ Este sitio requiere JavaScript para funcionar correctamente.</p>
+    <p style="text-align: center; color: red;">⚠️ Este sitio requiere JavaScript para funcionar correctamente.</p>
   </noscript>
 </body>
 </html>

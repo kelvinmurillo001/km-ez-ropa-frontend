@@ -15,20 +15,22 @@ const productosLista = document.getElementById("productosLista");
 const btnNuevoProducto = document.getElementById("btnNuevoProducto");
 
 document.addEventListener("DOMContentLoaded", () => {
+  // ➕ Crear producto
   btnNuevoProducto?.addEventListener("click", () => {
     window.location.href = "/crear-producto.html";
   });
 
+  // 🚀 Cargar productos al iniciar
   cargarProductos();
 
-  // 🌙 Modo oscuro activado
+  // 🌙 Modo oscuro persistente
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 });
 
 /**
- * 📦 Cargar productos del backend
+ * 📦 Cargar productos desde la API
  */
 async function cargarProductos() {
   try {
@@ -56,7 +58,7 @@ async function cargarProductos() {
 }
 
 /**
- * 🧾 Renderizar productos en tabla
+ * 🧾 Renderizar productos en una tabla dinámica
  */
 function renderizarProductos(productos) {
   const filas = productos.map(p => {
@@ -97,10 +99,10 @@ function renderizarProductos(productos) {
 }
 
 /**
- * ✏️ Ir a editar producto
+ * ✏️ Redirigir a edición de producto
  */
 function editarProducto(id) {
-  window.location.href = `/crear-producto.html?id=${id}`;
+  window.location.href = `/editar-producto.html?id=${id}`;
 }
 
 /**
@@ -131,7 +133,7 @@ async function eliminarProducto(id) {
   }
 }
 
-// ✅ Exponer funciones al DOM (solo si tu HTML usa type="module")
+// 🌐 Exponer funciones globales
 window.goBack = goBack;
 window.editarProducto = editarProducto;
 window.eliminarProducto = eliminarProducto;
