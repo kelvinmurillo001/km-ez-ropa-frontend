@@ -70,32 +70,34 @@ function renderizarProductos(productos) {
 
     return `
       <tr>
-        <td><img src="${imagen}" alt="${nombre}" class="img-mini" onerror="this.src='/assets/logo.jpg'" /></td>
+        <td><img src="${imagen}" alt="${nombre}" class="producto-img" onerror="this.src='/assets/logo.jpg'" /></td>
         <td>${nombre}</td>
         <td>$${precio}</td>
-        <td>${categoria}</td>
         <td>${stock}</td>
+        <td>${categoria}</td>
         <td>
-          <button class="btn-secundario" onclick="editarProducto('${p._id}')">✏️</button>
-          <button class="btn-danger" onclick="eliminarProducto('${p._id}')">🗑️</button>
+          <button class="btn-tabla editar" onclick="editarProducto('${p._id}')">✏️</button>
+          <button class="btn-tabla eliminar" onclick="eliminarProducto('${p._id}')">🗑️</button>
         </td>
       </tr>`;
   }).join("");
 
   productosLista.innerHTML = `
-    <table class="tabla-productos">
-      <thead>
-        <tr>
-          <th>Imagen</th>
-          <th>Nombre</th>
-          <th>Precio</th>
-          <th>Categoría</th>
-          <th>Stock</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>${filas}</tbody>
-    </table>`;
+    <div class="tabla-scroll">
+      <table class="tabla-admin fade-in">
+        <thead>
+          <tr>
+            <th>Imagen</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Categoría</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>${filas}</tbody>
+      </table>
+    </div>`;
 }
 
 /**

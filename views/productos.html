@@ -3,47 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>📦 Administración de Productos | KM & EZ ROPA</title>
+  <title>👕 Productos | Panel Admin | KM & EZ ROPA</title>
 
-  <!-- 🔐 Seguridad & SEO -->
+  <!-- Meta -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="description" content="Panel de administración para gestionar productos en KM & EZ ROPA." />
-  <meta name="author" content="KM & EZ ROPA" />
+  <meta name="description" content="Administra los productos de tu tienda. Agrega, edita y elimina artículos fácilmente." />
 
-  <!-- 🎨 Estilos -->
+  <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/productos.css" />
-  <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- ✅ Script -->
+  <!-- JS -->
   <script type="module" src="/js/productos.js" defer></script>
 </head>
 <body>
 
-  <main class="productos-container fade-in" role="main" aria-label="Panel de productos">
+  <main class="productos-container fade-in" role="main">
     <h1 class="text-center">👕 Gestión de Productos</h1>
 
-    <!-- Acción principal -->
+    <!-- 🟠 Botón principal -->
     <div class="text-center mt-2">
-      <button id="btnNuevoProducto" class="btn" aria-label="Crear nuevo producto">➕ Nuevo Producto</button>
+      <button id="btnNuevoProducto" class="btn" aria-label="Crear nuevo producto">
+        ➕ Nuevo Producto
+      </button>
     </div>
 
-    <!-- Zona dinámica de productos -->
-    <section id="productosLista" class="productos-lista mt-3" aria-label="Lista de productos disponibles">
-      <!-- JS insertará aquí la tabla de productos -->
+    <!-- 📋 Tabla de productos -->
+    <section id="productosLista" class="productos-lista mt-3" aria-label="Lista de productos">
+      <!-- JS insertará tabla aquí -->
     </section>
 
-    <!-- Acción secundaria -->
+    <!-- 🔙 Botón regreso -->
     <div class="text-center mt-3">
-      <button type="button" onclick="goBack()" class="btn-secundario" aria-label="Volver al panel de administración">
-        🔙 Volver al Panel
-      </button>
+      <button onclick="goBack()" class="btn-secundario">🔙 Volver al Panel</button>
     </div>
   </main>
 
-  <!-- 🌒 Soporte para modo oscuro -->
+  <!-- 📣 Mensaje flotante (estilo admin-utils.js) -->
+  <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="polite"></div>
+
+  <!-- 🌙 Activar modo oscuro -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("modoOscuro") === "true") {
@@ -52,10 +53,9 @@
     });
   </script>
 
-  <!-- 🚫 Fallback JS -->
+  <!-- 🛑 JS fallback -->
   <noscript>
-    <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+    <p style="text-align:center; color:red;">⚠️ Esta página requiere JavaScript para funcionar.</p>
   </noscript>
-
 </body>
 </html>
