@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Administrar Categorías | KM & EZ ROPA</title>
+
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/componentes.css" />
+  <link rel="stylesheet" href="/css/admin-categorias.css" />
+
+  <script type="module" src="/js/admin-categorias.js" defer></script>
+</head>
+<body>
+  <main class="categorias-admin-container">
+    <h1>📁 Gestión de Categorías</h1>
+
+    <!-- Crear Categoría -->
+    <section class="form-section">
+      <h2>➕ Nueva Categoría</h2>
+      <form id="formCrearCategoria">
+        <input type="text" id="categoriaInput" placeholder="Nombre de la categoría" required />
+        <button type="submit" class="btn">Crear</button>
+      </form>
+    </section>
+
+    <!-- Agregar Subcategoría -->
+    <section class="form-section">
+      <h2>➕ Subcategoría</h2>
+      <form id="formSubcategoria">
+        <select id="selectCategoria" required>
+          <option value="">Seleccionar categoría</option>
+        </select>
+        <input type="text" id="subcategoriaInput" placeholder="Nombre de subcategoría" required />
+        <button type="submit" class="btn">Agregar</button>
+      </form>
+    </section>
+
+    <!-- Lista de Categorías y Subcategorías -->
+    <section class="lista-categorias mt-4">
+      <h2>📋 Categorías Registradas</h2>
+      <ul id="listaCategorias" class="lista-render">
+        <!-- JS renderiza aquí -->
+      </ul>
+    </section>
+
+    <!-- Volver -->
+    <div class="text-center mt-4">
+      <button onclick="goBack()" class="btn-secundario">🔙 Volver al Panel</button>
+    </div>
+  </main>
+
+  <noscript>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar esta página.</p>
+  </noscript>
+</body>
+</html>
