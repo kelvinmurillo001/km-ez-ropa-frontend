@@ -8,9 +8,9 @@ import { API_BASE } from "./config.js";
 const token = verificarSesion();
 
 // 🌍 Endpoints corregidos
-const API_ORDERS = `${API_BASE}/orders`;
-const API_PRODUCTS = `${API_BASE}/products`;
-const API_RESUMEN = `${API_BASE}/orders/resumen`;
+const API_ORDERS = `${API_BASE}/api/orders`;
+const API_PRODUCTS = `${API_BASE}/api/products`;
+const API_RESUMEN = `${API_BASE}/api/orders/stats/ventas`;
 
 // 📦 Datos globales
 let resumenPedidos = null;
