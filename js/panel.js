@@ -1,26 +1,74 @@
 "use strict";
 
-// 📥 Importar utilidades de administración
-import { verificarSesion, cerrarSesion, getUsuarioActivo } from "./admin-utils.js";
+// ✅ Importar configuración
+import { API_BASE } from "./config.js";
 
-// ▶️ Al cargar el DOM
 document.addEventListener("DOMContentLoaded", () => {
-  // 🔒 Verificar sesión activa
-  const token = verificarSesion(); // Redirige si no hay token
+  const form = document.getElementById("formLogin");
 
-  // 👤 Mostrar nombre del administrador (opcional)
-  const user = getUsuarioActivo();
-  if (user?.nombre) {
-    console.log(`👤 Administrador: ${user.nombre}`);
-    // document.getElementById("adminNombre")?.textContent = user.nombre;
-  }
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  // 🌑 Aplicar modo oscuro si está activado
+    // ✅ Obtener valores del formulario
+    const username = form.username.value.trim();
+    const password = form.password.value.trim();
+
+    if (!username || !password) {
+      mostrarError("⚠️ Ingresa tu usuario y contraseña.");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }) // 👈 enviar username
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (res.status === 401) {
+          mostrarError("🔐 Credenciales incorrectas.");
+        } else {
+          mostrarError(data.message || "❌ Error al iniciar sesión.");
+        }
+        return;
+      }
+
+      // ✅ Guardar sesión correctamente para admin-utils.js
+      localStorage.setItem("admin_token", data.token);
+      localStorage.setItem("admin_user", JSON.stringify(data.user));
+
+      // ✅ Redirigir al panel
+      window.location.href = "/panel.html";
+
+    } catch (err) {
+      console.error("❌ Error:", err);
+      mostrarError("❌ No se pudo conectar al servidor.");
+    }
+  });
+
+  // 🌙 Activar modo oscuro si está guardado
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
-
-  // 🚪 Cerrar sesión al hacer clic
-  const cerrarBtn = document.querySelector("button[onclick='cerrarSesion()']");
-  cerrarBtn?.addEventListener("click", cerrarSesion);
 });
+
+// ⚠️ Mostrar mensaje de error
+function mostrarError(msg) {
+  const div = document.getElementById("errorMensaje");
+  if (div) {
+    div.textContent = msg;
+    div.style.display = "block";
+  }
+}
+
+// ✅ Ocultar mensaje de error
+function ocultarError() {
+  const div = document.getElementById("errorMensaje");
+  if (div) {
+    div.textContent = "";
+    div.style.display = "none";
+  }
+}
