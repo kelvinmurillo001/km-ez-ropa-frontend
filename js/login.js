@@ -9,11 +9,12 @@ document.addEventListener("DOMContentLoaded", () => {
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const email = form.email.value.trim();
+    // 👇 CAMBIO aquí
+    const username = form.username.value.trim();
     const password = form.password.value.trim();
 
-    if (!email || !password) {
-      mostrarError("⚠️ Ingresa tu correo y contraseña.");
+    if (!username || !password) {
+      mostrarError("⚠️ Ingresa tu usuario y contraseña.");
       return;
     }
 
@@ -21,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ username, password }) // 👈 CAMBIO aquí
       });
 
       const data = await res.json();
