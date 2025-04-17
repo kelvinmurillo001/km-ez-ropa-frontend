@@ -9,8 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // 👇 CAMBIO aquí
-    const username = form.username.value.trim();
+    // ✅ Obtener valores del formulario
+    const username = form.username.value.trim(); // 👈 CAMBIO: username
     const password = form.password.value.trim();
 
     if (!username || !password) {
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }) // 👈 CAMBIO aquí
+        body: JSON.stringify({ username, password }) // 👈 enviar username
       });
 
       const data = await res.json();
@@ -36,12 +36,10 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // ✅ Ocultar errores si todo va bien
-      ocultarError();
-
-      // ✅ Guardar token y redirigir
+      // ✅ Guardar sesión y redirigir
       localStorage.setItem("km_ez_token", data.token);
-      localStorage.setItem("km_ez_user", JSON.stringify(data.usuario));
+      localStorage.setItem("km_ez_user", JSON.stringify(data.user));
+
       window.location.href = "/panel.html";
 
     } catch (err) {
@@ -50,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 🌙 Modo oscuro
+  // 🌙 Activar modo oscuro si está guardado
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
