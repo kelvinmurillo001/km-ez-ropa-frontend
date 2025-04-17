@@ -1,226 +1,216 @@
-/* ============================ 
-   🎨 COMPONENTES REDISEÑADOS
+/* ============================
+   🎨 ESTILOS BASE DE COMPONENTES
    ============================ */
-   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-   :root {
-     --color-bg: #181818;
-     --color-text: #f1f1f1;
-     --color-primario: #d97706;
-     --color-acento: #f4a261;
-     --color-danger: #e53935;
-     --color-card: #1f1f1f;
-     --color-input: #2a2a2a;
-     --color-border: #444;
-   }
-   
-   /* ============================
-      ✨ BASE
-      ============================ */
    body {
-     font-family: 'Poppins', sans-serif;
-     margin: 0;
-     padding: 0;
-     background-color: var(--color-bg);
-     color: var(--color-text);
-   }
-   
-   /* ============================
-      🔠 TITULOS Y UTILIDADES
-      ============================ */
-   h1, h2, h3, h4 {
-     font-weight: bold;
-     color: var(--color-primario);
-     margin-bottom: 1rem;
-   }
-   
-   .text-center { text-align: center; }
-   .mt-2 { margin-top: 2rem; }
-   .mt-3 { margin-top: 3rem; }
-   
-   /* ============================
-      🔘 BOTONES
-      ============================ */
-   .btn {
-     background-color: var(--color-primario);
-     color: #fff;
-     padding: 0.7rem 1.5rem;
-     font-weight: bold;
-     border: none;
-     border-radius: 8px;
-     cursor: pointer;
-     font-size: 1rem;
-     transition: background-color 0.3s ease, transform 0.2s ease;
-   }
-   
-   .btn:hover {
-     background-color: var(--color-acento);
-     transform: scale(1.02);
-   }
-   
-   .btn-secundario {
-     background-color: #333;
-     color: var(--color-primario);
-     padding: 0.6rem 1.2rem;
-     border-radius: 6px;
-     font-size: 0.95rem;
-     font-weight: bold;
-     border: 1px solid var(--color-primario);
-   }
-   
-   .btn-secundario:hover {
-     background-color: var(--color-primario);
-     color: var(--color-bg);
-   }
-   
-   .btn-danger {
-     background-color: var(--color-danger);
-     color: white;
-     padding: 0.6rem 1rem;
-     border: none;
-     border-radius: 6px;
-     font-weight: bold;
-     cursor: pointer;
-     transition: background-color 0.3s ease;
-   }
-   
-   .btn-danger:hover {
-     background-color: #b71c1c;
-   }
-   
-   /* ============================
-      ✅ TABLAS
-      ============================ */
-   .tabla-admin {
-     width: 100%;
-     border-collapse: collapse;
-     margin-top: 1rem;
-     background-color: var(--color-card);
-     color: var(--color-text);
-   }
-   
-   .tabla-admin th,
-   .tabla-admin td {
-     padding: 1rem;
-     border-bottom: 1px solid var(--color-border);
-     text-align: left;
-     font-size: 0.95rem;
-   }
-   
-   .tabla-admin thead {
-     background-color: var(--color-primario);
-     color: #000;
-   }
-   
-   .tabla-admin tbody tr:hover {
-     background-color: #2c2c2c;
-   }
-   
-   /* ============================
-      🖼️ IMÁGENES MINI
-      ============================ */
-   .img-mini, .producto-img {
-     width: 60px;
-     height: 60px;
-     object-fit: cover;
-     border-radius: 8px;
-   }
-   
-   /* ============================
-      ⚠️ MENSAJES DE ESTADO
-      ============================ */
-   .admin-message {
-     text-align: center;
-     padding: 1rem;
-     font-weight: bold;
-     border-radius: 8px;
-     margin: 1rem auto;
-     max-width: 600px;
-   }
-   
-   .admin-message.success {
-     background-color: #2ecc71;
-     color: white;
-   }
-   
-   .admin-message.error {
-     background-color: #e74c3c;
-     color: white;
-   }
-   
-   .admin-message.info {
-     background-color: #3498db;
-     color: white;
-   }
-   
-   .oculto {
-     display: none;
-   }
-   
-   /* ============================
-      📝 FORMULARIOS
-      ============================ */
-   .formulario {
-     max-width: 600px;
-     margin: 2rem auto;
-     padding: 2rem;
-     background-color: var(--color-card);
-     border-radius: 10px;
-     box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
-   }
-   
-   .formulario label {
-     display: block;
-     margin-bottom: 0.5rem;
-     font-weight: bold;
-     color: var(--color-primario);
-   }
-   
-   .formulario input,
-   .formulario select,
-   .formulario textarea {
-     width: 100%;
-     padding: 0.6rem;
-     border: 1px solid var(--color-border);
-     border-radius: 6px;
-     background-color: var(--color-input);
-     color: #fff;
-     margin-bottom: 1.2rem;
-     transition: border 0.3s ease;
-   }
-   
-   .formulario input:focus,
-   .formulario select:focus,
-   .formulario textarea:focus {
-     outline: none;
-     border-color: var(--color-acento);
-     box-shadow: 0 0 5px rgba(244, 162, 97, 0.5);
-   }
-   
-   /* ============================
-      🌙 MODO OSCURO
-      ============================ */
-   body.modo-oscuro {
-     background-color: #121212;
-     color: var(--color-text);
-   }
-   
-   body.modo-oscuro .formulario {
-     background-color: #1f1f1f;
-   }
-   
-   body.modo-oscuro .btn,
-   body.modo-oscuro .btn-danger {
-     background-color: var(--color-primario);
-   }
-   
-   body.modo-oscuro .tabla-admin {
-     background-color: #1a1a1a;
-     color: #eaeaea;
-   }
-   
-   body.modo-oscuro .tabla-admin thead {
-     background-color: var(--color-primario);
-     color: #000;
-   }
-   
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #121212;
+    color: #eee;
+  }
+  
+  /* TITULOS Y TEXTOS */
+  h1, h2, h3, h4 {
+    font-weight: bold;
+    color: #ff6d00;
+    margin-bottom: 1rem;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  .mt-2 {
+    margin-top: 2rem;
+  }
+  
+  .mt-3 {
+    margin-top: 3rem;
+  }
+  
+  /* ============================
+     🔘 BOTONES
+     ============================ */
+  .btn {
+    background-color: #ff6d00;
+    color: #fff;
+    padding: 0.7rem 1.5rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn:hover {
+    background-color: #e65c00;
+  }
+  
+  .btn-secundario {
+    background-color: #444;
+    color: #fff;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+  }
+  
+  .btn-secundario:hover {
+    background-color: #666;
+  }
+  
+  .btn-danger {
+    background-color: #d32f2f;
+    color: white;
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .btn-danger:hover {
+    background-color: #b71c1c;
+  }
+  
+  /* ============================
+     ✅ TABLAS
+     ============================ */
+  .tabla-admin {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background-color: #1f1f1f;
+    color: #eee;
+  }
+  
+  .tabla-admin th,
+  .tabla-admin td {
+    padding: 1rem;
+    border-bottom: 1px solid #333;
+    text-align: left;
+    font-size: 0.95rem;
+  }
+  
+  .tabla-admin thead {
+    background-color: #ff6d00;
+    color: #000;
+  }
+  
+  .tabla-admin tbody tr:hover {
+    background-color: #2c2c2c;
+  }
+  
+  /* ============================
+     🖼️ IMÁGENES
+     ============================ */
+  .img-mini, .producto-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  /* ============================
+     ⚠️ MENSAJES
+     ============================ */
+  .admin-message {
+    text-align: center;
+    padding: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    margin: 1rem auto;
+    max-width: 600px;
+  }
+  
+  .admin-message.success {
+    background-color: #2e7d32;
+    color: #fff;
+  }
+  
+  .admin-message.error {
+    background-color: #c62828;
+    color: #fff;
+  }
+  
+  .admin-message.info {
+    background-color: #0277bd;
+    color: #fff;
+  }
+  
+  .oculto {
+    display: none;
+  }
+  
+  /* ============================
+     📝 FORMULARIOS
+     ============================ */
+  .formulario {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #1c1c1c;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+  }
+  
+  .formulario label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #ff6d00;
+  }
+  
+  .formulario input,
+  .formulario select,
+  .formulario textarea {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #444;
+    border-radius: 6px;
+    background-color: #2a2a2a;
+    color: #fff;
+    margin-bottom: 1.2rem;
+  }
+  
+  .formulario input:focus,
+  .formulario select:focus,
+  .formulario textarea:focus {
+    outline: none;
+    border-color: #ff6d00;
+  }
+  
+  /* ============================
+     🌙 MODO OSCURO
+     ============================ */
+  body.modo-oscuro {
+    background-color: #121212;
+    color: #f1f1f1;
+  }
+  
+  body.modo-oscuro .formulario {
+    background-color: #1f1f1f;
+  }
+  
+  body.modo-oscuro .btn {
+    background-color: #ff6d00;
+  }
+  
+  body.modo-oscuro .btn-secundario {
+    background-color: #333;
+  }
+  
+  body.modo-oscuro .tabla-admin {
+    background-color: #1a1a1a;
+    color: #eaeaea;
+  }
+  
+  body.modo-oscuro .tabla-admin thead {
+    background-color: #ff6d00;
+    color: #000;
+  }
+  
