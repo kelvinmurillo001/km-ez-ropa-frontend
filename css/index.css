@@ -1,9 +1,20 @@
 /* ========== BASE ========== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+:root {
+  --color-bg: #181818;
+  --color-text: #f1f1f1;
+  --color-primario: #d97706;
+  --color-acento: #f4a261;
+  --color-card-bg: #1f1f1f;
+  --color-hover: #ffd180;
+}
+
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #121212;
-  color: #f5f5f5;
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
   transition: background 0.3s ease, color 0.3s ease;
 }
 
@@ -14,7 +25,7 @@ a {
 
 a:focus,
 button:focus {
-  outline: 2px dashed #ff6d00;
+  outline: 2px dashed var(--color-acento);
   outline-offset: 2px;
 }
 
@@ -28,16 +39,10 @@ img {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #1a1a1a;
+  background-color: var(--color-card-bg);
   padding: 1rem 2rem;
-  border-bottom: 2px solid #ff6d00;
+  border-bottom: 2px solid var(--color-acento);
   flex-wrap: wrap;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
 }
 
 .logo img {
@@ -45,11 +50,11 @@ img {
   height: 60px;
   object-fit: cover;
   border-radius: 50%;
-  border: 2px solid #ff6d00;
+  border: 2px solid var(--color-primario);
 }
 
 .brand-text h1 {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   margin: 0;
 }
 
@@ -69,8 +74,8 @@ img {
 .nav-links a,
 .nav-links button {
   background-color: transparent;
-  border: 2px solid #ff6d00;
-  color: #ff6d00;
+  border: 2px solid var(--color-primario);
+  color: var(--color-primario);
   padding: 0.5rem 1rem;
   border-radius: 6px;
   font-weight: bold;
@@ -80,20 +85,20 @@ img {
 
 .nav-links a:hover,
 .nav-links button:hover {
-  background-color: #ff6d00;
-  color: #121212;
+  background-color: var(--color-primario);
+  color: var(--color-bg);
 }
 
 /* ========== HERO ========== */
 .hero-banner {
-  background: linear-gradient(90deg, #ff8a00, #ff6d00);
+  background: linear-gradient(90deg, #f4a261, #e76f51);
   text-align: center;
   padding: 3rem 1rem;
   color: #fff;
 }
 
 .hero-banner h2 {
-  font-size: 2rem;
+  font-size: 2.5rem;
   margin: 0;
 }
 
@@ -103,20 +108,20 @@ img {
 }
 
 .btn-hero {
-  display: inline-block;
   margin-top: 1rem;
-  padding: 0.7rem 1.5rem;
+  padding: 0.8rem 1.8rem;
   background-color: #fff;
-  color: #ff6d00;
+  color: var(--color-primario);
   border-radius: 30px;
   font-weight: bold;
   text-transform: uppercase;
   transition: all 0.3s ease;
+  border: none;
 }
 
 .btn-hero:hover {
   background-color: #f1f1f1;
-  color: #ff6d00;
+  color: var(--color-primario);
 }
 
 /* ========== MAIN ========== */
@@ -128,9 +133,9 @@ img {
 
 .section-title {
   text-align: center;
-  font-size: 1.8rem;
+  font-size: 2rem;
   margin-bottom: 2rem;
-  color: #ff6d00;
+  color: var(--color-primario);
 }
 
 .product-grid {
@@ -140,7 +145,7 @@ img {
 }
 
 .product-card {
-  background-color: #1a1a1a;
+  background-color: var(--color-card-bg);
   border: 1px solid #333;
   border-radius: 8px;
   overflow: hidden;
@@ -148,8 +153,8 @@ img {
 }
 
 .product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 20px rgba(255, 109, 0, 0.2);
+  transform: translateY(-6px);
+  box-shadow: 0 6px 20px rgba(255, 165, 0, 0.3);
 }
 
 .product-card img {
@@ -164,7 +169,7 @@ img {
 
 .product-info h3 {
   margin: 0.5rem 0;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 
 .product-info p {
@@ -173,10 +178,10 @@ img {
 }
 
 .btn-card {
-  background-color: #ff6d00;
+  background-color: var(--color-primario);
   color: #121212;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.2rem;
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
@@ -185,7 +190,7 @@ img {
 }
 
 .btn-card:hover {
-  background-color: #ffa733;
+  background-color: var(--color-acento);
 }
 
 /* ========== FLOATING BUTTONS ========== */
@@ -201,14 +206,14 @@ img {
 
 .cart-icon,
 .whatsapp-icon {
-  position: relative;
   width: 56px;
   height: 56px;
-  background: #ff6d00;
+  background: var(--color-primario);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
 .cart-icon img,
@@ -221,11 +226,12 @@ img {
   position: absolute;
   top: -6px;
   right: -6px;
-  background-color: red;
-  color: #fff;
+  background-color: crimson;
+  color: white;
   font-size: 0.75rem;
   padding: 2px 6px;
   border-radius: 50%;
+  font-weight: bold;
 }
 
 /* ========== FOOTER ========== */
@@ -233,31 +239,14 @@ img {
   text-align: center;
   padding: 2rem;
   font-size: 0.9rem;
-  background-color: #1a1a1a;
-  color: #999;
+  background-color: var(--color-card-bg);
+  color: #aaa;
 }
 
 /* ========== DARK MODE ========== */
 body.modo-oscuro {
-  background-color: #111;
-  color: #eee;
-}
-
-body.modo-oscuro .product-card {
-  background-color: #222;
-  border-color: #333;
-}
-
-body.modo-oscuro .nav-links a,
-body.modo-oscuro .nav-links button {
-  border-color: #FFD700;
-  color: #FFD700;
-}
-
-body.modo-oscuro .nav-links a:hover,
-body.modo-oscuro .nav-links button:hover {
-  background-color: #FFD700;
-  color: #111;
+  background-color: #101010;
+  color: #eaeaea;
 }
 
 /* ========== RESPONSIVE ========== */
@@ -278,5 +267,9 @@ body.modo-oscuro .nav-links button:hover {
 
   .product-card img {
     height: 220px;
+  }
+
+  .hero-banner h2 {
+    font-size: 1.8rem;
   }
 }

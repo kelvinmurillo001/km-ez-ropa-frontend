@@ -1,4 +1,21 @@
-/* 🌐 Reset general */
+/* 🌐 RESET GLOBAL + FUENTE */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+:root {
+  --color-bg: #181818;
+  --color-text: #f5f5f5;
+  --color-primario: #d97706;
+  --color-acento: #f4a261;
+  --color-secundario: #264653;
+  --color-success: #2ecc71;
+  --color-error: #e74c3c;
+  --color-border: #333;
+  --shadow-soft: 0 2px 6px rgba(0, 0, 0, 0.2);
+  --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.3);
+  --font-main: 'Poppins', sans-serif;
+}
+
+/* RESET */
 * {
   margin: 0;
   padding: 0;
@@ -9,21 +26,7 @@ html {
   scroll-behavior: smooth;
 }
 
-:root {
-  --color-bg: #1a1a1e;
-  --color-text: #f5f5f5;
-  --color-primario: #d4af37;
-  --color-acento: #4ba3c3;
-  --color-secundario: #2c3e50;
-  --color-success: #2ecc71;
-  --color-error: #e74c3c;
-  --color-border: #333;
-  --shadow-soft: 0 2px 6px rgba(0, 0, 0, 0.2);
-  --shadow-hover: 0 4px 12px rgba(255, 255, 255, 0.1);
-  --font-main: 'Segoe UI', sans-serif;
-}
-
-/* 🖥️ Base */
+/* BASE */
 body {
   font-family: var(--font-main);
   background-color: var(--color-bg);
@@ -33,27 +36,31 @@ body {
   position: relative;
 }
 
+/* CONTENEDORES */
 .container {
   max-width: 1200px;
   margin: auto;
   padding: 1rem;
 }
 
+/* TITULOS */
 h1, h2, h3 {
   color: var(--color-primario);
   margin-bottom: 0.5rem;
 }
 
+/* ENLACES */
 a {
-  color: var(--color-secundario);
+  color: var(--color-acento);
   text-decoration: none;
   transition: color 0.2s;
 }
 a:hover {
+  color: var(--color-primario);
   text-decoration: underline;
 }
 
-/* 🧮 Inputs */
+/* INPUTS */
 input, select, textarea {
   font-family: inherit;
   font-size: 1rem;
@@ -73,7 +80,7 @@ textarea:focus-visible {
   outline-offset: 2px;
 }
 
-/* 🔘 Botones */
+/* BOTONES */
 button, .btn {
   font-family: inherit;
   background: var(--color-primario);
@@ -86,7 +93,7 @@ button, .btn {
 }
 
 button:hover, .btn:hover {
-  background: #1a252f;
+  background: var(--color-acento);
 }
 
 button:focus-visible {
@@ -94,7 +101,7 @@ button:focus-visible {
   outline-offset: 3px;
 }
 
-/* 🎯 Utilidades */
+/* UTILIDADES */
 .text-center { text-align: center; }
 .mt-1 { margin-top: 0.5rem; }
 .mt-2 { margin-top: 1rem; }
@@ -105,7 +112,7 @@ button:focus-visible {
 .p-1 { padding: 0.5rem; }
 .p-2 { padding: 1rem; }
 
-/* 💬 Promo banner */
+/* PROMO */
 .promo-banner {
   background-color: #ffe082;
   padding: 0.75rem;
@@ -116,7 +123,7 @@ button:focus-visible {
   display: none;
 }
 
-/* 🛒 Widget carrito */
+/* CARRITO */
 #cart-widget {
   position: fixed;
   bottom: 20px;
@@ -142,7 +149,7 @@ button:focus-visible {
   border-radius: 50%;
 }
 
-/* 📞 WhatsApp flotante */
+/* WHATSAPP */
 .whatsapp-float {
   position: fixed;
   bottom: 20px;
@@ -156,7 +163,7 @@ button:focus-visible {
   box-shadow: var(--shadow-soft);
 }
 
-/* 🧱 Tarjetas de producto */
+/* CARDS */
 .card {
   background: #fff;
   padding: 16px;
@@ -182,12 +189,11 @@ button:focus-visible {
   background-color: #216a94;
 }
 
-/* 🌙 Modo oscuro */
+/* MODO OSCURO */
 body.modo-oscuro {
   background-color: #121212;
   color: #eee;
 }
-
 body.modo-oscuro .header,
 body.modo-oscuro .footer,
 body.modo-oscuro .promo-banner,
@@ -197,11 +203,9 @@ body.modo-oscuro .filtros-container {
   color: #eee;
   border-color: #444;
 }
-
 body.modo-oscuro a {
   color: #64b5f6;
 }
-
 body.modo-oscuro input,
 body.modo-oscuro select,
 body.modo-oscuro textarea {
@@ -209,7 +213,6 @@ body.modo-oscuro textarea {
   color: #fff;
   border-color: #444;
 }
-
 body.modo-oscuro button,
 body.modo-oscuro .btn {
   background-color: var(--color-secundario);
@@ -218,7 +221,7 @@ body.modo-oscuro .btn:hover {
   background-color: #1e88e5;
 }
 
-/* ✨ Animaciones */
+/* ANIMACIONES */
 .fade-in {
   animation: fadeIn 0.6s ease-in-out;
 }
@@ -227,7 +230,7 @@ body.modo-oscuro .btn:hover {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* 🎯 Accesibilidad adicional */
+/* ACCESIBILIDAD */
 img[alt=""] {
   display: none;
 }
