@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
 
     // ✅ Obtener valores del formulario
-    const username = form.username.value.trim(); // 👈 CAMBIO: username
+    const username = form.username.value.trim();
     const password = form.password.value.trim();
 
     if (!username || !password) {
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }) // 👈 enviar username
+        body: JSON.stringify({ username, password })
       });
 
       const data = await res.json();
@@ -36,10 +36,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // ✅ Guardar sesión y redirigir
-      localStorage.setItem("km_ez_token", data.token);
-      localStorage.setItem("km_ez_user", JSON.stringify(data.user));
+      // ✅ Guardar sesión (cambiar a claves admin_* y agregar isAdmin)
+      const userWithAdminFlag = { ...data.user, isAdmin: true };
+      localStorage.setItem("admin_token", data.token);
+      localStorage.setItem("admin_user", JSON.stringify(userWithAdminFlag));
 
+      // ✅ Redirigir al panel
       window.location.href = "/panel.html";
 
     } catch (err) {
