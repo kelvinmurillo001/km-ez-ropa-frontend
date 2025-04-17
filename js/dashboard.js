@@ -7,10 +7,10 @@ import { API_BASE } from "./config.js";
 // 🛡️ Verificar sesión activa
 const token = verificarSesion();
 
-// 🌍 Endpoints
+// 🌍 Endpoints corregidos
 const API_ORDERS = `${API_BASE}/orders`;
 const API_PRODUCTS = `${API_BASE}/products`;
-const API_RESUMEN = `${API_BASE}/stats/resumen`;
+const API_RESUMEN = `${API_BASE}/orders/resumen`;
 
 // 📦 Datos globales
 let resumenPedidos = null;
@@ -138,9 +138,9 @@ function exportarEstadisticas() {
 
   csv += "Resumen de Ventas\n";
   csv += `Ventas Totales,${resumenVentas.ventasTotales}\n`;
-  csv += `Visitas Totales,${resumenVentas.totalVisitas}\n`;
-  csv += `Productos Totales,${resumenVentas.totalProductos}\n`;
-  csv += `Promociones Activas,${resumenVentas.productosDestacados}\n\n`;
+  csv += `Visitas Totales,${resumenVentas.totalVisitas || 0}\n`;
+  csv += `Productos Totales,${resumenVentas.totalProductos || 0}\n`;
+  csv += `Promociones Activas,${resumenVentas.productosDestacados || 0}\n\n`;
 
   csv += "Resumen de Pedidos\n";
   csv += `Pedidos Totales,${resumenPedidos.total}\n`;
