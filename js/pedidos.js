@@ -46,7 +46,9 @@ async function cargarPedidos() {
 // === 🔍 Aplicar filtro por estado ===
 function aplicarFiltro(pedidos) {
   const estado = filtroEstado.value;
-  return estado === "todos" ? pedidos : pedidos.filter(p => (p.estado || "").toLowerCase() === estado);
+  return estado === "todos"
+    ? pedidos
+    : pedidos.filter(p => (p.estado || "").toLowerCase() === estado);
 }
 
 // === 🖼️ Renderizar pedidos en tabla ===
@@ -56,24 +58,29 @@ function renderPedidos(pedidos) {
     return;
   }
 
+  // Orden por fecha descendente
+  pedidos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
   const filas = pedidos.map(p => {
-    const productos = p.items?.map(i => `👕 ${i.name} (x${i.cantidad})`).join("<br>") || "-";
+    const productos = p.items?.map(i =>
+      `👕 <strong>${i.name}</strong> (${i.talla || "Única"}) x${i.cantidad}`
+    ).join("<br>") || "-";
+
     const total = typeof p.total === "number" ? `$${p.total.toFixed(2)}` : "$0.00";
-    const fecha = new Date(p.createdAt).toLocaleDateString("es-EC", {
-      day: "2-digit", month: "short", year: "numeric"
+    const fecha = new Date(p.createdAt).toLocaleString("es-EC", {
+      day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"
     });
 
     return `
       <tr>
-        <td>${p.nombre || "-"}</td>
-        <td>${p.email || "-"}</td>
-        <td>${p.telefono || "-"}</td>
+        <td>${p.nombreCliente || "-"}</td>
+        <td>${p.nota || "-"}</td>
         <td>${fecha}</td>
         <td>${productos}</td>
         <td>${total}</td>
         <td>${formatearEstado(p.estado)}</td>
         <td>
-          <select onchange="cambiarEstado('${p._id}', this.value)">
+          <select onchange="cambiarEstado('${p._id}', this.value)" class="select-estado">
             ${generarOpcionesEstado(p.estado)}
           </select>
         </td>
@@ -81,17 +88,16 @@ function renderPedidos(pedidos) {
   }).join("");
 
   listaPedidos.innerHTML = `
-    <table class="tabla-pedidos">
+    <table class="tabla-admin">
       <thead>
         <tr>
           <th>Cliente</th>
-          <th>Email</th>
-          <th>Teléfono</th>
+          <th>Nota</th>
           <th>Fecha</th>
           <th>Productos</th>
           <th>Total</th>
           <th>Estado</th>
-          <th>Acción</th>
+          <th>Actualizar</th>
         </tr>
       </thead>
       <tbody>${filas}</tbody>
@@ -132,7 +138,7 @@ function generarOpcionesEstado(actual) {
   ).join("");
 }
 
-// === 🎨 Formato visual de estado ===
+// === 🎨 Formato visual de estado
 function formatearEstado(estado) {
   switch ((estado || "").toLowerCase()) {
     case "pendiente": return "⏳ Pendiente";

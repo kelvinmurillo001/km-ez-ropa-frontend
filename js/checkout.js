@@ -49,6 +49,8 @@ form.addEventListener("submit", async e => {
 
   const pedido = {
     nombreCliente: nombre,
+    email,
+    telefono,
     nota: direccion,
     total: carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0),
     items: carrito.map(item => ({
