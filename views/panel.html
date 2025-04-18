@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
 
-  <!-- JS -->
+  <!-- JS del panel (módulo) -->
   <script type="module" src="/js/panel.js" defer></script>
 </head>
 <body>
@@ -26,7 +26,7 @@
     <!-- Encabezado del Panel -->
     <header class="header-panel">
       <h1 class="text-center">🎛️ Panel de Administración</h1>
-      <button onclick="cerrarSesion()" class="btn-secundario" aria-label="Cerrar sesión del panel">🚪 Cerrar Sesión</button>
+      <button id="btnCerrarSesion" class="btn-secundario" aria-label="Cerrar sesión del panel">🚪 Cerrar Sesión</button>
     </header>
 
     <!-- Menú de navegación del Panel -->
@@ -37,7 +37,6 @@
       <a href="/promociones.html" class="btn-panel">🎯 Promociones</a>
       <a href="/dashboard.html" class="btn-panel">📊 Analítica</a>
     </section>
-
   </main>
 
   <!-- Modo Oscuro Automático -->
@@ -47,9 +46,15 @@
     }
   </script>
 
-  <!-- Fallback JS -->
+  <!-- JS Fallback si JavaScript está deshabilitado -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Activa JavaScript para utilizar este panel administrativo.</p>
   </noscript>
+
+  <!-- Agrega esto para que el botón funcione incluso si prefieres no usar panel.js -->
+  <script type="module">
+    import { cerrarSesion } from "/js/admin-utils.js";
+    document.getElementById("btnCerrarSesion")?.addEventListener("click", cerrarSesion);
+  </script>
 </body>
 </html>
