@@ -5,7 +5,9 @@ import { API_BASE } from "./config.js";
 
 const token = verificarSesion();
 
-const API_PROMOS = `${API_BASE}/api/promotions`;
+// 🔄 CORREGIDA: Ruta correcta al backend
+const API_PROMOS = `${API_BASE}/api/promos`;
+
 const formPromo = document.getElementById("formPromo");
 const msgPromo = document.getElementById("msgPromo");
 
