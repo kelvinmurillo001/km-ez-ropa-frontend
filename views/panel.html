@@ -39,19 +39,19 @@
     </section>
   </main>
 
-  <!-- Modo Oscuro Automático -->
+  <!-- 🌙 Modo Oscuro Automático -->
   <script>
     if (localStorage.getItem("modoOscuro") === "true") {
       document.body.classList.add("modo-oscuro");
     }
   </script>
 
-  <!-- JS Fallback si JavaScript está deshabilitado -->
+  <!-- Fallback si JavaScript está deshabilitado -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Activa JavaScript para utilizar este panel administrativo.</p>
   </noscript>
 
-  <!-- Agrega esto para que el botón funcione incluso si prefieres no usar panel.js -->
+  <!-- Alternativa por si no se carga panel.js -->
   <script type="module">
     import { cerrarSesion } from "/js/admin-utils.js";
     document.getElementById("btnCerrarSesion")?.addEventListener("click", cerrarSesion);
