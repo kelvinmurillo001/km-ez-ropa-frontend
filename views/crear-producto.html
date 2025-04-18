@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="/css/crear-producto.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- JS del módulo -->
+  <!-- JS -->
   <script type="module" src="/js/crear-producto.js" defer></script>
 </head>
 <body>
@@ -59,13 +59,24 @@
         <option value="">Selecciona una subcategoría</option>
       </select>
 
+      <!-- Tipo de Talla -->
+      <label for="tallaTipoInput">Tipo de Talla: *</label>
+      <select id="tallaTipoInput" required>
+        <option value="">Selecciona tipo</option>
+        <option value="adulto">Adulto</option>
+        <option value="joven">Joven</option>
+        <option value="niño">Niño</option>
+        <option value="niña">Niña</option>
+        <option value="bebé">Bebé</option>
+      </select>
+
       <!-- Tallas -->
-      <label for="tallasInput" class="mt-2">Lista de tallas (separadas por coma):</label>
+      <label for="tallasInput" class="mt-2">Tallas disponibles:</label>
       <input type="text" id="tallasInput" placeholder="Ej: S, M, L, XL" />
 
       <!-- Color -->
-      <label for="colorInput">Color Principal (nombre o descripción): *</label>
-      <input type="text" id="colorInput" placeholder="Ej: rojo, negro, verde menta" required />
+      <label for="colorInput">Color Principal:</label>
+      <input type="text" id="colorInput" placeholder="Ej: negro, azul marino" />
 
       <!-- Producto destacado -->
       <div class="mt-2">
@@ -98,6 +109,7 @@
       if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
       }
+
       document.getElementById("btnCancelar")?.addEventListener("click", () => history.back());
     });
   </script>
