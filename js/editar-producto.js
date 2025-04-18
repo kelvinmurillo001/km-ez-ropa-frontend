@@ -11,12 +11,10 @@ if (!productId) {
   goBack();
 }
 
-// Endpoints
 const API_UPLOAD = `${API_BASE}/uploads`;
 const API_PRODUCTO = `${API_BASE}/products/${productId}`;
 const API_CATEGORIAS = `${API_BASE}/categories`;
 
-// DOM
 const form = document.getElementById("formEditarProducto");
 const msgEstado = document.getElementById("msgEstado");
 const variantesDiv = document.getElementById("variantesExistentes");
@@ -28,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   cargarCategorias();
   cargarProducto();
+
   document.getElementById("btnAgregarVariante")?.addEventListener("click", agregarVariante);
 });
 
@@ -62,8 +61,10 @@ async function cargarProducto() {
     document.getElementById("precioInput").value = p.price || "";
     document.getElementById("stockInput").value = p.stock || 0;
     document.getElementById("categoriaInput").value = p.category || "";
+    document.getElementById("subcategoriaInput").value = p.subcategory || "";
     document.getElementById("tallasInput").value = p.sizes?.join(", ") || "";
     document.getElementById("colorInput").value = p.color || "#000000";
+    document.getElementById("featuredInput").checked = !!p.featured;
 
     if (Array.isArray(p.images) && p.images.length > 0) {
       document.getElementById("imagenPrincipalActual").innerHTML = `
@@ -151,6 +152,8 @@ form.addEventListener("submit", async (e) => {
     const precio = parseFloat(form.precioInput.value);
     const stock = parseInt(form.stockInput.value);
     const categoria = form.categoriaInput.value;
+    const subcategoria = form.subcategoriaInput?.value?.trim() || null;
+    const destacado = form.featuredInput?.checked || false;
     const color = form.colorInput.value;
     const sizes = form.tallasInput.value.split(",").map(s => s.trim()).filter(Boolean);
 
@@ -193,8 +196,10 @@ form.addEventListener("submit", async (e) => {
       price: precio,
       stock,
       category: categoria,
+      subcategory,
       color,
       sizes,
+      featured: destacado,
       variants: variantes
     };
 

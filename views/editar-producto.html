@@ -25,17 +25,17 @@
 
     <form id="formEditarProducto" class="form-producto" aria-label="Formulario de edición de producto" enctype="multipart/form-data" novalidate>
 
-      <!-- 📷 Imagen actual -->
+      <!-- Imagen actual -->
       <label for="imagenPrincipalActual">Imagen Principal Actual:</label>
       <div id="imagenPrincipalActual" class="preview-imagen" aria-live="polite">
         <!-- Vista previa desde JS -->
       </div>
 
-      <!-- 📂 Nueva imagen -->
+      <!-- Nueva imagen -->
       <label for="imagenPrincipalNueva">Cambiar Imagen Principal (opcional):</label>
       <input type="file" id="imagenPrincipalNueva" accept="image/*" />
 
-      <!-- 📝 Datos principales -->
+      <!-- Campos principales -->
       <label for="nombreInput">Nombre del Producto: *</label>
       <input type="text" id="nombreInput" required placeholder="Ej: Camiseta oversize" />
 
@@ -54,13 +54,22 @@
         <!-- JS llenará dinámicamente -->
       </select>
 
+      <label for="subcategoriaInput">Subcategoría:</label>
+      <input type="text" id="subcategoriaInput" placeholder="Ej: Licras deportivas, Camisetas básicas..." maxlength="100" />
+
       <label for="tallasInput">Tallas disponibles (separadas por coma):</label>
       <input type="text" id="tallasInput" placeholder="Ej: S, M, L, XL" />
 
       <label for="colorInput">Color Principal:</label>
       <input type="color" id="colorInput" value="#000000" />
 
-      <!-- 🎨 Variantes -->
+      <!-- Producto destacado -->
+      <div class="mt-2">
+        <input type="checkbox" id="destacadoInput" />
+        <label for="destacadoInput">✅ Producto destacado</label>
+      </div>
+
+      <!-- Variantes -->
       <fieldset class="mt-2">
         <legend>Variantes (colores alternativos / tallas específicas)</legend>
         <div id="variantesExistentes" aria-live="polite">
@@ -71,7 +80,7 @@
         </button>
       </fieldset>
 
-      <!-- 🧭 Acciones -->
+      <!-- Acciones -->
       <div class="form-actions mt-3">
         <button type="submit" class="btn">💾 Guardar Cambios</button>
         <button type="button" id="btnCancelar" class="btn-secundario">🔙 Cancelar</button>
@@ -89,7 +98,6 @@
         document.body.classList.add("modo-oscuro");
       }
 
-      // Acción de cancelar
       document.getElementById("btnCancelar")?.addEventListener("click", () => history.back());
     });
   </script>

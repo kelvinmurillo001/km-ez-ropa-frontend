@@ -18,6 +18,8 @@ const previewPrincipal = document.getElementById("previewPrincipal");
 const variantesContainer = document.getElementById("variantesContainer");
 const btnAgregarVariante = document.getElementById("btnAgregarVariante");
 const categoriaInput = document.getElementById("categoriaInput");
+const subcategoriaInput = document.getElementById("subcategoriaInput");
+const featuredCheckbox = document.getElementById("featuredInput");
 const msgEstado = document.getElementById("msgEstado");
 
 let variantes = [];
@@ -50,7 +52,6 @@ async function cargarCategorias() {
 
     categoriaInput.innerHTML = `<option value="">Selecciona categoría</option>` +
       data.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join("");
-
   } catch (err) {
     console.error("❌ Error categorías:", err);
     mostrarMensaje("❌ No se pudieron cargar las categorías", "error");
@@ -68,8 +69,11 @@ function agregarVariante() {
     <label>Color Variante:</label>
     <input type="color" name="colorVariante${index}" required />
 
+    <label>Talla:</label>
+    <input type="text" name="tallaVariante${index}" placeholder="Ej: M" required />
+
     <label>Imagen:</label>
-    <input type="file" name="imagenVariante${index}" accept="image/*" />
+    <input type="file" name="imagenVariante${index}" accept="image/*" required />
 
     <label>Stock:</label>
     <input type="number" name="stockVariante${index}" min="0" value="0" required />
@@ -94,7 +98,10 @@ async function subirImagen(file) {
 
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || "Error al subir imagen");
-  return data.url || data.secure_url;
+  return {
+    url: data.url || data.secure_url,
+    public_id: data.public_id
+  };
 }
 
 // 📤 Envío del producto
@@ -106,6 +113,8 @@ form.addEventListener("submit", async e => {
   const precio = parseFloat(form.precioInput.value);
   const stock = parseInt(form.stockInput.value);
   const categoria = categoriaInput.value;
+  const subcategoria = subcategoriaInput?.value?.trim() || null;
+  const destacado = featuredCheckbox?.checked || false;
   const color = form.colorInput.value;
   const tallas = form.tallasInput.value.split(",").map(t => t.trim()).filter(Boolean);
   const filePrincipal = imagenInput.files[0];
@@ -116,48 +125,47 @@ form.addEventListener("submit", async e => {
 
   try {
     msgEstado.textContent = "⏳ Subiendo imagen principal...";
-    const imagenURL = await subirImagen(filePrincipal);
+    const imagenPrincipal = await subirImagen(filePrincipal);
 
     const variantesFinales = [];
 
     for (const v of variantesContainer.querySelectorAll(".variante-item")) {
       const colorInput = v.querySelector("input[type='color']");
+      const tallaInput = v.querySelector("input[name^='talla']");
       const stockInput = v.querySelector("input[type='number']");
       const fileInput = v.querySelector("input[type='file']");
 
-      let imageURL = "";
+      if (!fileInput.files.length) continue;
 
-      if (fileInput?.files.length) {
-        const file = fileInput.files[0];
-        if (!file.type.startsWith("image/")) {
-          return mostrarMensaje("⚠️ Imagen variante no válida", "error");
-        }
-        if (file.size > 2 * 1024 * 1024) {
-          return mostrarMensaje("⚠️ Variante excede tamaño máximo", "error");
-        }
+      const file = fileInput.files[0];
+      if (!file.type.startsWith("image/")) return mostrarMensaje("⚠️ Imagen variante no válida", "error");
+      if (file.size > 2 * 1024 * 1024) return mostrarMensaje("⚠️ Variante excede tamaño máximo", "error");
 
-        msgEstado.textContent = "⏳ Subiendo imagen de variante...";
-        imageURL = await subirImagen(file);
-      }
+      msgEstado.textContent = "⏳ Subiendo imagen de variante...";
+      const subida = await subirImagen(file);
 
       variantesFinales.push({
+        imageUrl: subida.url,
+        cloudinaryId: subida.public_id,
         color: colorInput.value,
-        stock: parseInt(stockInput.value) || 0,
-        imageUrl: imageURL || null
+        talla: tallaInput.value.trim(),
+        stock: parseInt(stockInput.value) || 0
       });
     }
 
-    // 📦 Enviar producto
+    // 🧾 Crear objeto producto
     const nuevoProducto = {
       name: nombre,
       description: descripcion,
       price: precio,
       stock,
-      image: imagenURL,
       category: categoria,
+      subcategory,
       color,
       sizes: tallas,
-      variants: variantesFinales
+      featured: destacado,
+      variants: variantesFinales,
+      images: [imagenPrincipal]
     };
 
     msgEstado.textContent = "⏳ Guardando producto...";

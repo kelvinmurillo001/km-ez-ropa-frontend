@@ -5,14 +5,16 @@ import { verificarSesion, mostrarMensaje, goBack } from "./admin-utils.js";
 
 const token = verificarSesion();
 
+// Formulario DOM
 const formCrear = document.getElementById("formCrearCategoria");
 const formSub = document.getElementById("formSubcategoria");
+
 const categoriaInput = document.getElementById("categoriaInput");
 const subcategoriaInput = document.getElementById("subcategoriaInput");
 const selectCategoria = document.getElementById("selectCategoria");
 const listaCategorias = document.getElementById("listaCategorias");
 
-// ✅ CORREGIDO: endpoint base correcto
+// Endpoint base
 const API = `${API_BASE}/api/categories`;
 
 document.addEventListener("DOMContentLoaded", cargarCategorias);
@@ -34,19 +36,19 @@ formCrear.addEventListener("submit", async (e) => {
       body: JSON.stringify({ name: nombre })
     });
 
-    if (!res.ok) throw new Error("Error al crear categoría");
-    const data = await res.json();
+    if (!res.ok) throw new Error("❌ Error al crear categoría");
+    await res.json();
 
     mostrarMensaje("✅ Categoría creada");
     categoriaInput.value = "";
-    categoriaInput.focus(); // UX: enfocar de nuevo
+    categoriaInput.focus();
     cargarCategorias();
   } catch (err) {
     mostrarMensaje(err.message, "error");
   }
 });
 
-// ➕ Agregar subcategoría
+// ➕ Agregar subcategoría a categoría existente
 formSub.addEventListener("submit", async (e) => {
   e.preventDefault();
   const id = selectCategoria.value;
@@ -64,35 +66,37 @@ formSub.addEventListener("submit", async (e) => {
       body: JSON.stringify({ subcategory: sub })
     });
 
-    if (!res.ok) throw new Error("Error al agregar subcategoría");
-    const data = await res.json();
+    if (!res.ok) throw new Error("❌ Error al agregar subcategoría");
+    await res.json();
 
     mostrarMensaje("✅ Subcategoría agregada");
     subcategoriaInput.value = "";
-    subcategoriaInput.focus(); // UX
+    subcategoriaInput.focus();
     cargarCategorias();
   } catch (err) {
     mostrarMensaje(err.message, "error");
   }
 });
 
-// 🔄 Cargar categorías
+// 🔄 Cargar categorías con subcategorías
 async function cargarCategorias() {
   try {
     const res = await fetch(API);
     if (!res.ok) throw new Error("❌ No se pudo cargar categorías");
 
     const categorias = await res.json();
+
     renderCategorias(categorias);
 
     selectCategoria.innerHTML = `<option value="">Seleccionar categoría</option>` +
       categorias.map(c => `<option value="${c._id}">${c.name}</option>`).join("");
+
   } catch (err) {
     mostrarMensaje(err.message, "error");
   }
 }
 
-// 🖼️ Renderizar lista
+// 📋 Renderizar lista de categorías y subcategorías
 function renderCategorias(categorias = []) {
   if (!categorias.length) {
     listaCategorias.innerHTML = "<p>⚠️ No hay categorías registradas.</p>";
@@ -109,7 +113,7 @@ function renderCategorias(categorias = []) {
             ${s}
             <button class="btn-danger" onclick="eliminarSubcategoria('${c._id}', '${s}')">🗑️</button>
           </li>
-        `).join("") || ""}
+        `).join("") || "<li><em>Sin subcategorías</em></li>"}
       </ul>
     </li>
   `).join("");
@@ -117,7 +121,7 @@ function renderCategorias(categorias = []) {
 
 // ❌ Eliminar categoría
 window.eliminarCategoria = async (id) => {
-  if (!confirm("⚠️ ¿Eliminar esta categoría?")) return;
+  if (!confirm("⚠️ ¿Eliminar esta categoría y todas sus subcategorías?")) return;
 
   try {
     const res = await fetch(`${API}/${id}`, {
@@ -125,8 +129,8 @@ window.eliminarCategoria = async (id) => {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    if (!res.ok) throw new Error("Error al eliminar categoría");
-    const data = await res.json();
+    if (!res.ok) throw new Error("❌ Error al eliminar categoría");
+    await res.json();
 
     mostrarMensaje("✅ Categoría eliminada");
     cargarCategorias();
@@ -135,7 +139,7 @@ window.eliminarCategoria = async (id) => {
   }
 };
 
-// ❌ Eliminar subcategoría
+// ❌ Eliminar subcategoría específica
 window.eliminarSubcategoria = async (categoryId, subcategory) => {
   if (!confirm("⚠️ ¿Eliminar esta subcategoría?")) return;
 
@@ -145,8 +149,8 @@ window.eliminarSubcategoria = async (categoryId, subcategory) => {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    if (!res.ok) throw new Error("Error al eliminar subcategoría");
-    const data = await res.json();
+    if (!res.ok) throw new Error("❌ Error al eliminar subcategoría");
+    await res.json();
 
     mostrarMensaje("✅ Subcategoría eliminada");
     cargarCategorias();

@@ -3,26 +3,33 @@
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
+// 🔐 Validación de sesión
 const token = verificarSesion();
+
+// 🌐 Endpoints
 const API_PRODUCTS = `${API_BASE}/api/products`;
 
+// 📍 DOM Elements
 const productosLista = document.getElementById("productosLista");
 const btnNuevoProducto = document.getElementById("btnNuevoProducto");
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Evento crear nuevo producto
   btnNuevoProducto?.addEventListener("click", () => {
     window.location.href = "/crear-producto.html";
   });
 
+  // Cargar productos al iniciar
   cargarProductos();
 
+  // 🌙 Aplicar modo oscuro si está activado
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 });
 
 /**
- * 🚀 Cargar todos los productos del backend
+ * 🚀 Obtener productos desde el backend
  */
 async function cargarProductos() {
   productosLista.innerHTML = `<p class='text-center'>⏳ Cargando productos...</p>`;
@@ -50,7 +57,7 @@ async function cargarProductos() {
 }
 
 /**
- * 🖼️ Renderiza una tabla con todos los productos
+ * 🧾 Renderizar tabla de productos
  */
 function renderizarProductos(productos) {
   const filas = productos.map(p => {
@@ -59,6 +66,9 @@ function renderizarProductos(productos) {
     const precio = isNaN(p.price) ? "0.00" : parseFloat(p.price).toFixed(2);
     const categoria = sanitize(p.category || "-");
     const stock = isNaN(p.stock) ? 0 : p.stock;
+    // Preparado si quieres agregar subcategoría y destacado
+    // const subcategoria = sanitize(p.subcategory || "-");
+    // const destacado = p.destacado ? "⭐" : "";
 
     return `
       <tr>
@@ -93,14 +103,14 @@ function renderizarProductos(productos) {
 }
 
 /**
- * 🔧 Redirigir a la edición de producto
+ * ✏️ Editar producto
  */
 function editarProducto(id) {
   window.location.href = `/editar-producto.html?id=${id}`;
 }
 
 /**
- * 🗑️ Eliminar producto de forma segura
+ * ❌ Eliminar producto
  */
 async function eliminarProducto(id, nombre = "") {
   const confirmar = confirm(`⚠️ ¿Eliminar el producto "${nombre}"?`);
@@ -124,7 +134,9 @@ async function eliminarProducto(id, nombre = "") {
   }
 }
 
-// 🧼 Sanitización básica para prevenir XSS o errores visuales
+/**
+ * 🔒 Limpieza básica HTML
+ */
 function sanitize(text) {
   const temp = document.createElement("div");
   temp.textContent = text;

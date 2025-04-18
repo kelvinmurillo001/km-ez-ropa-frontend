@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="/css/crear-producto.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- Script del módulo -->
+  <!-- JS del módulo -->
   <script type="module" src="/js/crear-producto.js" defer></script>
 </head>
 <body>
@@ -24,7 +24,7 @@
     <h1 class="text-center">➕ Crear Nuevo Producto</h1>
 
     <form id="formProducto" class="form-producto" enctype="multipart/form-data" novalidate>
-      
+
       <!-- Imagen -->
       <label for="imagenPrincipalInput">Imagen Principal: *</label>
       <input type="file" id="imagenPrincipalInput" accept="image/jpeg,image/png,image/svg+xml" required aria-describedby="imagenHelp" />
@@ -54,6 +54,10 @@
         <!-- Opciones dinámicas por JS -->
       </select>
 
+      <!-- Subcategoría -->
+      <label for="subcategoriaInput">Subcategoría:</label>
+      <input type="text" id="subcategoriaInput" placeholder="Ej: Licras deportivas, Jeans slim..." maxlength="100" />
+
       <!-- Tallas -->
       <label for="tallasInput" class="mt-2">Lista de tallas (separadas por coma):</label>
       <input type="text" id="tallasInput" placeholder="Ej: S, M, L, XL" />
@@ -62,8 +66,14 @@
       <label for="colorInput">Color Principal:</label>
       <input type="color" id="colorInput" value="#000000" />
 
+      <!-- Producto destacado -->
+      <div class="mt-2">
+        <input type="checkbox" id="destacadoInput" />
+        <label for="destacadoInput">✅ Producto destacado</label>
+      </div>
+
       <!-- Variantes -->
-      <fieldset class="mt-2">
+      <fieldset class="mt-3">
         <legend>Variantes (colores alternativos, imagen y stock):</legend>
         <div id="variantesContainer" aria-live="polite">
           <!-- Insertadas dinámicamente -->
@@ -84,7 +94,7 @@
     </form>
   </main>
 
-  <!-- 🌙 Activar modo oscuro -->
+  <!-- 🌙 Modo oscuro -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("modoOscuro") === "true") {
