@@ -5,7 +5,7 @@ import { API_BASE } from "./config.js";
 
 const token = verificarSesion();
 
-// 🔄 CORREGIDA: Ruta correcta al backend
+// ✅ Ruta corregida al endpoint correcto
 const API_PROMOS = `${API_BASE}/api/promos`;
 
 const formPromo = document.getElementById("formPromo");
@@ -35,16 +35,17 @@ async function cargarPromocion() {
     const fin = promo.endDate ? new Date(promo.endDate).toLocaleDateString() : "Sin fecha";
     const badgeTheme = promo.theme || "blue";
 
+    // ✅ Muestra segura sin undefined
     document.getElementById("estadoActual").innerHTML = `
       <div class="promo-actual">
         <p><strong>Estado:</strong> <span style="color:${estadoColor}">${estadoTexto}</span></p>
-        <p><strong>Mensaje:</strong> ${promo.message}</p>
+        <p><strong>Mensaje:</strong> ${promo.message ?? "Sin mensaje disponible"}</p>
         <p><strong>Vigencia:</strong> ${inicio} - ${fin}</p>
         <p><strong>Tema:</strong> <span class="badge ${badgeTheme}">${badgeTheme}</span></p>
       </div>
     `;
 
-    // Rellenar formulario
+    // ✅ Prellenar formulario con valores seguros
     document.getElementById("promoMensaje").value = promo.message || "";
     document.getElementById("promoActivo").checked = promo.active || false;
     document.getElementById("promoTema").value = promo.theme || "blue";
