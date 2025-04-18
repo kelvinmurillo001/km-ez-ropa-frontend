@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
       const nombre = p.name || "Producto";
       const precio = typeof p.price === "number" ? `$${p.price.toFixed(2)}` : "$--";
+      const id = p._id || "";
 
       const card = document.createElement("div");
       card.className = "product-card";
@@ -32,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="product-info">
           <h3>${nombre}</h3>
           <p>${precio}</p>
-          <button class="btn-card" onclick="verDetalle('${p._id}')">👁️ Ver</button>
+          ${id ? `<button class="btn-card" onclick="verDetalle('${id}')">👁️ Ver</button>` : ""}
         </div>
       `;
       catalogo.appendChild(card);
@@ -52,8 +53,8 @@ function aplicarModoOscuro() {
   const dark = localStorage.getItem("modoOscuro") === "true";
   if (dark) document.body.classList.add("modo-oscuro");
 
-  const toggle = document.getElementById("modoOscuroBtn");
-  toggle?.addEventListener("click", () => {
+  const toggleBtn = document.getElementById("modoOscuroBtn");
+  toggleBtn?.addEventListener("click", () => {
     document.body.classList.toggle("modo-oscuro");
     localStorage.setItem("modoOscuro", document.body.classList.contains("modo-oscuro"));
   });
@@ -69,7 +70,7 @@ window.verDetalle = verDetalle; // 💡 Exponer función globalmente
 // 🛒 Actualizar contador del carrito
 function actualizarCarritoWidget() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
-  const total = carrito.reduce((acc, item) => acc + item.quantity, 0);
+  const total = carrito.reduce((acc, item) => acc + (item.quantity || item.cantidad || 0), 0);
   const contador = document.getElementById("cartCount");
   if (contador) contador.textContent = total;
 }

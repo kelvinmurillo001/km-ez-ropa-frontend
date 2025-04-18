@@ -1,11 +1,11 @@
 "use strict";
 
-// DOM
+// 📦 DOM
 const carritoItems = document.getElementById("carritoItems");
 const carritoTotal = document.getElementById("carritoTotal");
 const btnIrCheckout = document.getElementById("btnIrCheckout");
 
-// Clave de localStorage
+// 🔐 Clave para localStorage
 const STORAGE_KEY = "km_ez_cart";
 let carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
@@ -13,10 +13,10 @@ let carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 document.addEventListener("DOMContentLoaded", () => {
   filtrarItemsInvalidos();
   renderizarCarrito();
-  btnIrCheckout.addEventListener("click", irACheckout);
+  btnIrCheckout?.addEventListener("click", irACheckout);
 });
 
-// ✅ Eliminar productos con datos corruptos
+// ✅ Eliminar productos corruptos
 function filtrarItemsInvalidos() {
   carrito = carrito.filter(p =>
     p &&
@@ -29,9 +29,9 @@ function filtrarItemsInvalidos() {
   guardarCarrito();
 }
 
-// 🧠 Renderizar carrito
+// 🧠 Renderizar carrito completo
 function renderizarCarrito() {
-  if (carrito.length === 0) {
+  if (!carrito.length) {
     carritoItems.innerHTML = `<p class="text-center">🛍️ Tu carrito está vacío.</p>`;
     carritoTotal.textContent = "$0.00";
     btnIrCheckout.disabled = true;
@@ -41,9 +41,9 @@ function renderizarCarrito() {
   carritoItems.innerHTML = "";
 
   carrito.forEach((item, index) => {
-    const imagen = item.imagen || "/assets/logo.jpg";
-    const nombre = item.nombre || "Producto";
-    const talla = item.talla || "Única";
+    const imagen = sanitizeURL(item.imagen || "/assets/logo.jpg");
+    const nombre = sanitizeText(item.nombre || "Producto");
+    const talla = sanitizeText(item.talla || "Única");
     const precio = isNaN(item.precio) ? 0 : item.precio;
     const cantidad = isNaN(item.cantidad) || item.cantidad < 1 ? 1 : item.cantidad;
 
@@ -51,7 +51,6 @@ function renderizarCarrito() {
 
     const div = document.createElement("div");
     div.className = "carrito-item";
-
     div.innerHTML = `
       <img src="${imagen}" alt="${nombre}" class="carrito-img" />
       <div class="carrito-detalles">
@@ -60,13 +59,12 @@ function renderizarCarrito() {
         <p><strong>Precio:</strong> $${precio.toFixed(2)}</p>
         <div class="carrito-cantidad">
           <label>Cantidad:</label>
-          <input type="number" min="1" value="${cantidad}" data-index="${index}" />
+          <input type="number" min="1" max="100" value="${cantidad}" data-index="${index}" />
         </div>
         <p><strong>Subtotal:</strong> $${subtotal}</p>
         <button class="btn-eliminar" data-index="${index}">🗑️ Eliminar</button>
       </div>
     `;
-
     carritoItems.appendChild(div);
   });
 
@@ -74,7 +72,7 @@ function renderizarCarrito() {
   agregarListeners();
 }
 
-// 💰 Calcular total
+// 💰 Calcular y mostrar total
 function actualizarTotal() {
   const total = carrito.reduce((acc, item) => {
     const precio = isNaN(item.precio) ? 0 : item.precio;
@@ -86,36 +84,56 @@ function actualizarTotal() {
   btnIrCheckout.disabled = carrito.length === 0;
 }
 
-// 🎯 Eventos dinámicos
+// 🎯 Listeners dinámicos
 function agregarListeners() {
+  // Cambiar cantidad
   document.querySelectorAll(".carrito-cantidad input").forEach(input => {
     input.addEventListener("change", e => {
       const i = parseInt(e.target.dataset.index);
-      const nuevaCantidad = Math.max(1, parseInt(e.target.value) || 1);
+      const nuevaCantidad = Math.max(1, Math.min(100, parseInt(e.target.value) || 1));
       carrito[i].cantidad = nuevaCantidad;
       guardarCarrito();
       renderizarCarrito();
     });
   });
 
+  // Eliminar producto
   document.querySelectorAll(".btn-eliminar").forEach(btn => {
     btn.addEventListener("click", e => {
       const i = parseInt(e.target.dataset.index);
-      carrito.splice(i, 1);
-      guardarCarrito();
-      renderizarCarrito();
+      if (confirm("¿Eliminar este producto del carrito?")) {
+        carrito.splice(i, 1);
+        guardarCarrito();
+        renderizarCarrito();
+      }
     });
   });
 }
 
-// 💾 Guardar
+// 💾 Guardar en localStorage
 function guardarCarrito() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(carrito));
 }
 
-// 🚀 Ir a checkout
+// 🚀 Navegar a checkout
 function irACheckout() {
   if (carrito.length > 0) {
     window.location.href = "/checkout.html";
+  }
+}
+
+// 🧼 Sanitizar texto
+function sanitizeText(str) {
+  const temp = document.createElement("div");
+  temp.textContent = str;
+  return temp.innerHTML;
+}
+
+// 🧼 Sanitizar URL
+function sanitizeURL(url) {
+  try {
+    return new URL(url).href;
+  } catch {
+    return "/assets/logo.jpg";
   }
 }

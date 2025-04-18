@@ -6,10 +6,18 @@
  */
 export function verificarSesion() {
   const token = localStorage.getItem("admin_token");
-  const user = JSON.parse(localStorage.getItem("admin_user") || "{}");
+  const userRaw = localStorage.getItem("admin_user");
+  let user = {};
+
+  try {
+    user = JSON.parse(userRaw);
+  } catch (e) {
+    console.warn("⚠️ admin_user malformado");
+  }
 
   if (!token || !user?.isAdmin) {
     alert("⚠️ Acceso denegado. Inicia sesión como administrador.");
+    localStorage.clear(); // Extra: limpia datos corruptos
     window.location.href = "/login.html";
     throw new Error("Usuario no autenticado o no autorizado");
   }
@@ -24,13 +32,21 @@ export function verificarSesion() {
  */
 export function mostrarMensaje(texto, tipo = "info") {
   const mensaje = document.getElementById("adminMensaje");
-  if (!mensaje) return;
 
-  mensaje.className = `admin-message ${tipo}`;
+  if (!mensaje) {
+    alert(texto); // Fallback para desarrollo si falta el contenedor
+    return;
+  }
+
+  // Asegura limpieza antes de aplicar clase
+  mensaje.className = "admin-message oculto"; 
+  mensaje.classList.add(tipo); // e.g., .success, .error
+
   mensaje.textContent = texto;
   mensaje.classList.remove("oculto");
 
-  setTimeout(() => {
+  clearTimeout(mensaje._timeout); // evita superposición
+  mensaje._timeout = setTimeout(() => {
     mensaje.classList.add("oculto");
   }, 4000);
 }
@@ -56,5 +72,9 @@ export function cerrarSesion() {
  * @returns {Object} usuario
  */
 export function getUsuarioActivo() {
-  return JSON.parse(localStorage.getItem("admin_user") || "{}");
+  try {
+    return JSON.parse(localStorage.getItem("admin_user") || "{}");
+  } catch {
+    return {};
+  }
 }

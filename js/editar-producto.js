@@ -1,10 +1,9 @@
 "use strict";
 
 import { verificarSesion, goBack } from "./admin-utils.js";
+import { API_BASE } from "./config.js";
 
-// 🔐 Autenticación
 const token = verificarSesion();
-const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
 const productId = new URLSearchParams(window.location.search).get("id");
 
 if (!productId) {
@@ -12,17 +11,14 @@ if (!productId) {
   goBack();
 }
 
-// Endpoints
 const API_UPLOAD = `${API_BASE}/uploads`;
 const API_PRODUCTO = `${API_BASE}/products/${productId}`;
 const API_CATEGORIAS = `${API_BASE}/categories`;
 
-// DOM
 const form = document.getElementById("formEditarProducto");
 const msgEstado = document.getElementById("msgEstado");
 const variantesDiv = document.getElementById("variantesExistentes");
 
-// 🌙 Modo oscuro si está activado
 document.addEventListener("DOMContentLoaded", () => {
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
@@ -34,13 +30,13 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnAgregarVariante")?.addEventListener("click", agregarVariante);
 });
 
-/* 📂 Cargar categorías desde el backend */
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIAS);
     const categorias = await res.json();
 
     const select = document.getElementById("categoriaInput");
+    select.innerHTML = '<option value="">Seleccionar categoría</option>';
     categorias.forEach(cat => {
       const option = document.createElement("option");
       option.value = cat.name;
@@ -53,11 +49,12 @@ async function cargarCategorias() {
   }
 }
 
-/* 🧾 Cargar datos actuales del producto */
 async function cargarProducto() {
   try {
     const res = await fetch(API_PRODUCTO);
     const p = await res.json();
+
+    if (!res.ok) throw new Error("Producto no encontrado");
 
     document.getElementById("nombreInput").value = p.name || "";
     document.getElementById("descripcionInput").value = p.description || "";
@@ -67,14 +64,12 @@ async function cargarProducto() {
     document.getElementById("tallasInput").value = p.sizes?.join(", ") || "";
     document.getElementById("colorInput").value = p.color || "#000000";
 
-    // Imagen actual
     if (Array.isArray(p.images) && p.images.length > 0) {
       document.getElementById("imagenPrincipalActual").innerHTML = `
         <img src="${p.images[0].url}" alt="Imagen actual" class="preview-mini" />
       `;
     }
 
-    // Variantes
     p.variants?.forEach((v, i) => {
       const div = document.createElement("div");
       div.className = "variante-box";
@@ -90,18 +85,22 @@ async function cargarProducto() {
         <label>Stock:</label>
         <input type="number" class="variante-stock" min="0" value="${v.stock}" />
         <input type="hidden" class="variante-id" value="${v.cloudinaryId}" />
+        <button type="button" class="btn-secundario btn-quitar-variante">🗑️ Quitar</button>
         <hr />
       `;
       variantesDiv.appendChild(div);
     });
 
+    variantesDiv.querySelectorAll(".btn-quitar-variante").forEach(btn => {
+      btn.addEventListener("click", () => btn.parentElement.remove());
+    });
+
   } catch (err) {
     console.error("❌ Error al cargar producto:", err);
-    msgEstado.textContent = "❌ Error al cargar producto.";
+    msgEstado.innerHTML = `❌ Error al cargar producto. <br /><button onclick="goBack()">🔙 Volver</button>`;
   }
 }
 
-/* 📤 Subir imagen al servidor */
 async function subirImagen(file) {
   const formData = new FormData();
   formData.append("image", file);
@@ -121,7 +120,6 @@ async function subirImagen(file) {
   };
 }
 
-/* ➕ Agregar variante manual */
 function agregarVariante() {
   const div = document.createElement("div");
   div.className = "variante-box";
@@ -135,12 +133,13 @@ function agregarVariante() {
     <input type="text" class="variante-talla" required />
     <label>Stock:</label>
     <input type="number" class="variante-stock" min="0" required />
+    <button type="button" class="btn-secundario btn-quitar-variante">🗑️ Quitar</button>
     <hr />
   `;
   variantesDiv.appendChild(div);
+  div.querySelector(".btn-quitar-variante").addEventListener("click", () => div.remove());
 }
 
-/* 💾 Guardar cambios del producto */
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   msgEstado.textContent = "⏳ Guardando cambios...";
@@ -153,17 +152,15 @@ form.addEventListener("submit", async (e) => {
     const categoria = document.getElementById("categoriaInput").value;
     const color = document.getElementById("colorInput").value;
     const sizes = document.getElementById("tallasInput").value
-      .split(",")
-      .map(s => s.trim())
-      .filter(Boolean);
+      .split(",").map(s => s.trim()).filter(Boolean);
 
     const nuevaImg = document.getElementById("imagenPrincipalNueva").files[0];
     let nuevaImagen = null;
+
     if (nuevaImg) {
       nuevaImagen = await subirImagen(nuevaImg);
     }
 
-    // Procesar variantes
     const variantes = [];
     const bloques = document.querySelectorAll(".variante-box");
 
@@ -181,6 +178,8 @@ form.addEventListener("submit", async (e) => {
         const subida = await subirImagen(file);
         imageUrl = subida.url;
         finalCloudinaryId = subida.cloudinaryId;
+      } else if (cloudinaryId) {
+        imageUrl = b.querySelector("img")?.src;
       }
 
       variantes.push({
@@ -192,7 +191,6 @@ form.addEventListener("submit", async (e) => {
       });
     }
 
-    // Crear payload
     const payload = {
       name: nombre,
       description: descripcion,
@@ -228,5 +226,4 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-// 🌐 Global back
 window.goBack = goBack;

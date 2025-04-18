@@ -15,7 +15,7 @@ const filtroEstado = document.getElementById("filtroEstado");
 const token = verificarSesion();
 
 document.addEventListener("DOMContentLoaded", () => {
-  cargarPedidos();
+  if (listaPedidos) cargarPedidos();
   filtroEstado?.addEventListener("change", cargarPedidos);
 
   // 🌙 Modo oscuro persistente
@@ -31,8 +31,8 @@ async function cargarPedidos() {
       headers: { Authorization: `Bearer ${token}` }
     });
 
+    if (!res.ok) throw new Error("Error al cargar pedidos");
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Error al cargar pedidos");
 
     const pedidosFiltrados = aplicarFiltro(data);
     renderPedidos(pedidosFiltrados);
@@ -44,21 +44,20 @@ async function cargarPedidos() {
 }
 
 // === 🔍 Aplicar filtro por estado ===
-function aplicarFiltro(pedidos) {
-  const estado = filtroEstado.value;
+function aplicarFiltro(pedidos = []) {
+  const estado = filtroEstado?.value || "todos";
   return estado === "todos"
     ? pedidos
     : pedidos.filter(p => (p.estado || "").toLowerCase() === estado);
 }
 
 // === 🖼️ Renderizar pedidos en tabla ===
-function renderPedidos(pedidos) {
+function renderPedidos(pedidos = []) {
   if (!pedidos.length) {
     listaPedidos.innerHTML = `<p class="text-center">📭 No hay pedidos con este estado.</p>`;
     return;
   }
 
-  // Orden por fecha descendente
   pedidos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const filas = pedidos.map(p => {
@@ -80,7 +79,7 @@ function renderPedidos(pedidos) {
         <td>${total}</td>
         <td>${formatearEstado(p.estado)}</td>
         <td>
-          <select onchange="cambiarEstado('${p._id}', this.value)" class="select-estado">
+          <select onchange="cambiarEstado('${p._id}', this)" class="select-estado">
             ${generarOpcionesEstado(p.estado)}
           </select>
         </td>
@@ -105,8 +104,11 @@ function renderPedidos(pedidos) {
 }
 
 // === 🔁 Cambiar estado del pedido ===
-async function cambiarEstado(id, nuevoEstado) {
+window.cambiarEstado = async (id, selectElem) => {
+  const nuevoEstado = selectElem.value;
   if (!nuevoEstado) return;
+
+  selectElem.disabled = true;
 
   try {
     const res = await fetch(`${API_ORDERS}/${id}`, {
@@ -118,17 +120,19 @@ async function cambiarEstado(id, nuevoEstado) {
       body: JSON.stringify({ estado: nuevoEstado })
     });
 
+    if (!res.ok) throw new Error("Error al actualizar el estado");
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Error al actualizar el estado");
 
     mostrarMensaje("✅ Estado actualizado correctamente", "success");
-    cargarPedidos();
+    cargarPedidos(); // Refrescar lista
 
   } catch (err) {
     console.error("❌ Error actualizando estado:", err.message);
     mostrarMensaje("❌ No se pudo cambiar el estado", "error");
+  } finally {
+    selectElem.disabled = false;
   }
-}
+};
 
 // === 🎨 Opciones dinámicas del estado
 function generarOpcionesEstado(actual) {
@@ -149,6 +153,5 @@ function formatearEstado(estado) {
   }
 }
 
-// ✅ Exponer funciones al HTML
+// ✅ Funciones expuestas
 window.goBack = goBack;
-window.cambiarEstado = cambiarEstado;

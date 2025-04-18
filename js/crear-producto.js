@@ -6,10 +6,10 @@ import { API_BASE } from "./config.js";
 // 🔐 Verificar autenticación
 const token = verificarSesion();
 
-// Endpoints
-const API_PRODUCTS = `${API_BASE}/products`;
-const API_CATEGORIES = `${API_BASE}/categories`;
-const API_UPLOADS = `${API_BASE}/uploads`;
+// ✅ Endpoints corregidos
+const API_PRODUCTS = `${API_BASE}/api/products`;
+const API_CATEGORIES = `${API_BASE}/api/categories`;
+const API_UPLOADS = `${API_BASE}/api/uploads`;
 
 // Elementos del DOM
 const form = document.getElementById("formProducto");
@@ -54,13 +54,13 @@ imagenInput.addEventListener("change", () => {
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIES);
-    const data = await res.json();
-
     if (!res.ok) throw new Error("No se pudieron obtener categorías");
 
-    categoriaInput.innerHTML += data
-      .map(c => `<option value="${c.name}">${c.name}</option>`)
-      .join("");
+    const data = await res.json();
+    categoriaInput.innerHTML = `<option value="">Seleccionar categoría</option>`;
+    data.forEach(c => {
+      categoriaInput.innerHTML += `<option value="${c.name}">${c.name}</option>`;
+    });
   } catch (err) {
     console.error("❌ Error al cargar categorías:", err);
     mostrarMensaje("❌ No se pudieron cargar las categorías", "error");

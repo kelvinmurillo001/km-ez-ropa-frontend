@@ -1,30 +1,39 @@
 "use strict";
 
+// ✅ Importar configuración
+import { API_BASE } from "./config.js";
+
 const STORAGE_KEY = "km_ez_cart";
-const carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+let carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
 const resumenPedido = document.getElementById("resumenPedido");
 const totalFinal = document.getElementById("totalFinal");
 const form = document.getElementById("formCheckout");
 const msgEstado = document.getElementById("msgEstado");
 
-const API_ORDERS = "https://km-ez-ropa-backend.onrender.com/api/orders";
+const API_ORDERS = `${API_BASE}/api/orders`;
 
 // ▶️ Mostrar resumen
 document.addEventListener("DOMContentLoaded", () => {
   if (carrito.length === 0) {
     resumenPedido.innerHTML = `<p>⚠️ Tu carrito está vacío.</p>`;
     totalFinal.textContent = "$0.00";
-    form.querySelector("button[type='submit']").disabled = true;
+    form?.querySelector("button[type='submit']").disabled = true;
     return;
   }
 
   let total = 0;
   resumenPedido.innerHTML = carrito.map(item => {
-    const subtotal = item.precio * item.cantidad;
+    const nombre = sanitizeText(item.nombre);
+    const talla = sanitizeText(item.talla || "Única");
+    const cantidad = parseInt(item.cantidad) || 0;
+    const precio = parseFloat(item.precio) || 0;
+    const subtotal = precio * cantidad;
     total += subtotal;
+
     return `
       <div class="resumen-item">
-        <p>👕 <strong>${item.nombre}</strong> | Talla: ${item.talla || "Única"} | Cant: ${item.cantidad} | $${subtotal.toFixed(2)}</p>
+        <p>👕 <strong>${nombre}</strong> | Talla: ${talla} | Cant: ${cantidad} | $${subtotal.toFixed(2)}</p>
       </div>
     `;
   }).join("");
@@ -33,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ✅ Confirmar pedido
-form.addEventListener("submit", async e => {
+form?.addEventListener("submit", async e => {
   e.preventDefault();
   msgEstado.textContent = "⏳ Enviando pedido...";
 
@@ -47,24 +56,36 @@ form.addEventListener("submit", async e => {
     return;
   }
 
+  if (!validarEmail(email)) {
+    msgEstado.textContent = "❌ Email inválido.";
+    return;
+  }
+
+  if (!/^[0-9+\-\s]{7,15}$/.test(telefono)) {
+    msgEstado.textContent = "❌ Teléfono inválido.";
+    return;
+  }
+
+  const total = carrito.reduce((acc, item) =>
+    acc + (parseFloat(item.precio) || 0) * (parseInt(item.cantidad) || 0), 0
+  );
+
   const pedido = {
-    nombreCliente: nombre,
+    nombreCliente: sanitizeText(nombre),
     email,
     telefono,
-    nota: direccion,
-    total: carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0),
+    nota: sanitizeText(direccion),
+    total,
     items: carrito.map(item => ({
       productId: item.id,
-      name: item.nombre,
-      talla: item.talla,
-      cantidad: item.cantidad,
-      precio: item.precio
+      name: sanitizeText(item.nombre),
+      talla: sanitizeText(item.talla),
+      cantidad: parseInt(item.cantidad) || 1,
+      precio: parseFloat(item.precio) || 0
     }))
   };
 
   try {
-    console.log("📦 Pedido a enviar:", JSON.stringify(pedido, null, 2)); // prueba
-
     const res = await fetch(API_ORDERS, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -85,3 +106,16 @@ form.addEventListener("submit", async e => {
     msgEstado.textContent = "❌ No se pudo enviar el pedido. Intenta nuevamente.";
   }
 });
+
+// === VALIDACIONES ===
+function validarEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  return regex.test(email);
+}
+
+// === Sanitización de texto
+function sanitizeText(text) {
+  const temp = document.createElement("div");
+  temp.textContent = text;
+  return temp.innerHTML;
+}

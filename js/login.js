@@ -1,15 +1,15 @@
 "use strict";
 
-// ✅ Importar configuración
 import { API_BASE } from "./config.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formLogin");
+  const btnSubmit = form?.querySelector("button[type='submit']");
 
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    ocultarError();
 
-    // ✅ Obtener valores del formulario
     const username = form.username.value.trim();
     const password = form.password.value.trim();
 
@@ -17,6 +17,10 @@ document.addEventListener("DOMContentLoaded", () => {
       mostrarError("⚠️ Ingresa tu usuario y contraseña.");
       return;
     }
+
+    // Bloquear botón
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = "🔐 Iniciando...";
 
     try {
       const res = await fetch(`${API_BASE}/api/auth/login`, {
@@ -36,21 +40,25 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // ✅ Guardar sesión (cambiar a claves admin_* y agregar isAdmin)
+      if (!data?.token || !data?.user) {
+        throw new Error("❌ Respuesta del servidor inválida");
+      }
+
       const userWithAdminFlag = { ...data.user, isAdmin: true };
       localStorage.setItem("admin_token", data.token);
       localStorage.setItem("admin_user", JSON.stringify(userWithAdminFlag));
 
-      // ✅ Redirigir al panel
       window.location.href = "/panel.html";
 
     } catch (err) {
       console.error("❌ Error:", err);
       mostrarError("❌ No se pudo conectar al servidor.");
+    } finally {
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = "Iniciar sesión";
     }
   });
 
-  // 🌙 Activar modo oscuro si está guardado
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }

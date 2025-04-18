@@ -3,11 +3,10 @@
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
-
 const token = verificarSesion();
 
-const API_PROMOS = "https://km-ez-ropa-backend.onrender.com/api/promos";
-const API_CATEGORIES = "https://km-ez-ropa-backend.onrender.com/api/categories";
+const API_PROMOS = `${API_BASE}/api/promos`;
+const API_CATEGORIES = `${API_BASE}/api/categories`;
 
 const formPromo = document.getElementById("formPromo");
 const promoImagen = document.getElementById("promoImagen");
@@ -20,16 +19,16 @@ document.addEventListener("DOMContentLoaded", () => {
   cargarCategorias();
   cargarPromociones();
 
-  formPromo.addEventListener("submit", crearPromocion);
+  formPromo?.addEventListener("submit", crearPromocion);
 });
 
 // === CARGAR CATEGORÍAS PARA SELECT ===
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIES);
-    const data = await res.json();
-
     if (!res.ok) throw new Error("❌ Error al obtener categorías");
+
+    const data = await res.json();
 
     promoCategoria.innerHTML += data.map(cat =>
       `<option value="${cat.name}">${cat.name}</option>`
@@ -47,6 +46,7 @@ async function crearPromocion(e) {
   const file = promoImagen.files[0];
   const titulo = promoTitulo.value.trim();
   const categoria = promoCategoria.value;
+  const btnSubmit = formPromo.querySelector("button[type='submit']");
 
   if (!file || !titulo || !categoria) {
     msgPromo.textContent = "⚠️ Todos los campos son obligatorios.";
@@ -55,6 +55,10 @@ async function crearPromocion(e) {
   }
 
   try {
+    btnSubmit.disabled = true;
+    msgPromo.textContent = "⏳ Subiendo promoción...";
+    msgPromo.style.color = "#888";
+
     const formData = new FormData();
     formData.append("image", file);
     formData.append("titulo", titulo);
@@ -68,9 +72,9 @@ async function crearPromocion(e) {
       body: formData
     });
 
-    const data = await res.json();
+    if (!res.ok) throw new Error("Error al crear promoción");
 
-    if (!res.ok) throw new Error(data.message || "Error al crear promoción");
+    const data = await res.json();
 
     msgPromo.textContent = "✅ Promoción creada con éxito.";
     msgPromo.style.color = "limegreen";
@@ -81,6 +85,8 @@ async function crearPromocion(e) {
     console.error("❌", err);
     msgPromo.textContent = "❌ Error al crear la promoción.";
     msgPromo.style.color = "red";
+  } finally {
+    btnSubmit.disabled = false;
   }
 }
 
@@ -88,9 +94,9 @@ async function crearPromocion(e) {
 async function cargarPromociones() {
   try {
     const res = await fetch(API_PROMOS);
-    const promos = await res.json();
-
     if (!res.ok) throw new Error("Error al cargar promociones");
+
+    const promos = await res.json();
 
     if (!Array.isArray(promos) || promos.length === 0) {
       listaPromos.innerHTML = "<p>No hay promociones activas.</p>";
@@ -102,7 +108,11 @@ async function cargarPromociones() {
         <img src="${promo.image}" alt="${promo.titulo}" />
         <h4>${promo.titulo}</h4>
         <p>Categoría: ${promo.categoria}</p>
-        <p>Estado: ${promo.activa ? '✅ Activa' : '⛔ Inactiva'}</p>
+        <p>Estado: 
+          <span style="color:${promo.activa ? 'green' : 'red'};">
+            ${promo.activa ? '✅ Activa' : '⛔ Inactiva'}
+          </span>
+        </p>
         <div class="promo-actions">
           <button onclick="cambiarEstadoPromo('${promo._id}', ${!promo.activa})">
             ${promo.activa ? 'Desactivar' : 'Activar'}
@@ -129,8 +139,8 @@ async function cambiarEstadoPromo(id, activa) {
       body: JSON.stringify({ activa })
     });
 
+    if (!res.ok) throw new Error("Error al actualizar estado");
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Error al actualizar estado");
 
     mostrarMensaje("✅ Estado actualizado", "success");
     cargarPromociones();
@@ -151,8 +161,8 @@ async function eliminarPromo(id) {
       headers: { Authorization: `Bearer ${token}` }
     });
 
+    if (!res.ok) throw new Error("Error al eliminar promoción");
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Error al eliminar promoción");
 
     mostrarMensaje("✅ Promoción eliminada", "success");
     cargarPromociones();

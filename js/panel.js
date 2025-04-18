@@ -8,10 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    ocultarError();
 
-    // ✅ Obtener valores del formulario
     const username = form.username.value.trim();
     const password = form.password.value.trim();
+    const btnSubmit = form.querySelector("button[type='submit']");
 
     if (!username || !password) {
       mostrarError("⚠️ Ingresa tu usuario y contraseña.");
@@ -19,10 +20,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = "🔐 Iniciando...";
+
       const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }) // 👈 enviar username
+        body: JSON.stringify({ username: username.toLowerCase(), password })
       });
 
       const data = await res.json();
@@ -36,16 +40,22 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // ✅ Guardar sesión correctamente para admin-utils.js
+      if (!data.token || !data.user) {
+        mostrarError("❌ Respuesta inválida del servidor.");
+        return;
+      }
+
       localStorage.setItem("admin_token", data.token);
       localStorage.setItem("admin_user", JSON.stringify(data.user));
 
-      // ✅ Redirigir al panel
       window.location.href = "/panel.html";
 
     } catch (err) {
       console.error("❌ Error:", err);
       mostrarError("❌ No se pudo conectar al servidor.");
+    } finally {
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = "Iniciar sesión";
     }
   });
 

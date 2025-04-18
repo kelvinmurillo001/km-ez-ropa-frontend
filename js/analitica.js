@@ -2,14 +2,14 @@
 
 // ✅ Importar utilidades comunes
 import { verificarSesion, goBack } from "./admin-utils.js";
+import { API_BASE } from "./config.js";
 
 // 🔐 Validar sesión
 const token = verificarSesion();
 
 // 🔗 API Endpoints
-const API_BASE = "https://km-ez-ropa-backend.onrender.com/api";
-const API_RESUMEN = `${API_BASE}/stats/resumen`;
-const API_PRODUCTS = `${API_BASE}/products`;
+const API_RESUMEN = `${API_BASE}/api/stats/resumen`;
+const API_PRODUCTS = `${API_BASE}/api/products`;
 
 // 🔄 Datos globales
 let estadisticas = null;
@@ -45,9 +45,6 @@ async function cargarEstadisticas() {
 
 /**
  * 🌐 Fetch genérico con/sin autorización
- * @param {string} url
- * @param {boolean} auth
- * @returns {Promise<any>}
  */
 async function fetchAPI(url, auth = false) {
   const res = await fetch(url, {
@@ -64,22 +61,20 @@ async function fetchAPI(url, auth = false) {
 
 /**
  * 🧾 Mostrar resumen en DOM
- * @param {object} data
  */
-function renderResumen(data) {
-  setTexto("totalProductos", data.totalProductos);
-  setTexto("promosActivas", data.productosDestacados);
-  setTexto("visitas", data.totalVisitas);
-  setTexto("ventasTotales", `$${data.ventasTotales}`);
-  setTexto("pedidosTotales", data.pedidosTotales);
-  setTexto("pedidosHoy", data.pedidosHoy);
+function renderResumen(data = {}) {
+  setTexto("totalProductos", data.totalProductos ?? 0);
+  setTexto("promosActivas", data.productosDestacados ?? 0);
+  setTexto("visitas", data.totalVisitas ?? 0);
+  setTexto("ventasTotales", `$${(data.ventasTotales ?? 0).toFixed(2)}`);
+  setTexto("pedidosTotales", data.pedidosTotales ?? 0);
+  setTexto("pedidosHoy", data.pedidosHoy ?? 0);
 }
 
 /**
  * 📁 Mostrar top categorías
- * @param {Array<object>} productos
  */
-function renderCategorias(productos) {
+function renderCategorias(productos = []) {
   const conteo = {};
 
   productos.forEach(p => {
@@ -88,6 +83,8 @@ function renderCategorias(productos) {
   });
 
   const lista = document.getElementById("topCategorias");
+  if (!lista) return;
+
   lista.innerHTML = "";
 
   Object.entries(conteo)
@@ -101,8 +98,6 @@ function renderCategorias(productos) {
 
 /**
  * 🔠 Establecer texto de un elemento
- * @param {string} id
- * @param {string|number} value
  */
 function setTexto(id, value) {
   const el = document.getElementById(id);
@@ -113,7 +108,7 @@ function setTexto(id, value) {
  * 📤 Exportar resumen como CSV
  */
 function exportarEstadisticas() {
-  if (!estadisticas || productos.length === 0) {
+  if (!estadisticas || !Array.isArray(productos) || productos.length === 0) {
     return alert("⚠️ Aún no se cargaron los datos.");
   }
 
@@ -121,12 +116,12 @@ function exportarEstadisticas() {
   let csv = `Estadísticas KM & EZ ROPA\nFecha:,${fecha}\n\n`;
 
   csv += "Resumen General\n";
-  csv += `Ventas Totales,${estadisticas.ventasTotales}\n`;
-  csv += `Pedidos Totales,${estadisticas.pedidosTotales}\n`;
-  csv += `Pedidos del Día,${estadisticas.pedidosHoy}\n`;
-  csv += `Total Productos,${estadisticas.totalProductos}\n`;
-  csv += `Promociones Activas,${estadisticas.productosDestacados}\n`;
-  csv += `Visitas al Sitio,${estadisticas.totalVisitas}\n\n`;
+  csv += `Ventas Totales,${estadisticas.ventasTotales ?? 0}\n`;
+  csv += `Pedidos Totales,${estadisticas.pedidosTotales ?? 0}\n`;
+  csv += `Pedidos del Día,${estadisticas.pedidosHoy ?? 0}\n`;
+  csv += `Total Productos,${estadisticas.totalProductos ?? 0}\n`;
+  csv += `Promociones Activas,${estadisticas.productosDestacados ?? 0}\n`;
+  csv += `Visitas al Sitio,${estadisticas.totalVisitas ?? 0}\n\n`;
 
   const categorias = {};
   productos.forEach(p => {
@@ -148,6 +143,6 @@ function exportarEstadisticas() {
   link.click();
 }
 
-// 🌐 Exponer funciones al global scope
+// 🌐 Exponer funciones globales
 window.exportarEstadisticas = exportarEstadisticas;
 window.goBack = goBack;

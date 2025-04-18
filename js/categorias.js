@@ -98,7 +98,7 @@ function renderizarCatalogo(productos) {
     const card = document.createElement("div");
     card.className = "product-card";
     card.innerHTML = `
-      <img src="${imagen}" alt="${nombre}" onerror="this.src='/assets/logo.jpg'" />
+      <img src="${imagen}" alt="${nombre}" loading="lazy" onerror="this.src='/assets/logo.jpg'" />
       <div class="product-info">
         <h3>${nombre}</h3>
         <p>$${precio}</p>
@@ -114,7 +114,7 @@ function verDetalle(id) {
   if (!id) return;
   window.location.href = `/detalle.html?id=${id}`;
 }
-window.verDetalle = verDetalle; // ✅ Hacerla accesible desde el HTML
+window.verDetalle = verDetalle;
 
 // === 📂 Llenar selectores de categorías ===
 function llenarSelects(productos) {

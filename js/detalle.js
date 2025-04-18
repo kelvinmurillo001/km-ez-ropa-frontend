@@ -49,7 +49,7 @@ async function cargarProducto(id) {
 }
 
 // === 🖼️ Renderizar producto en pantalla ===
-function renderizarProducto(p) {
+function renderizarProducto(p = {}) {
   const detalle = document.getElementById("detalleProducto");
 
   const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
@@ -60,7 +60,7 @@ function renderizarProducto(p) {
 
   detalle.innerHTML = `
     <div class="detalle-img">
-      <img src="${imagen}" alt="${nombre}" onerror="this.src='/assets/logo.jpg'" />
+      <img src="${imagen}" alt="${nombre}" loading="lazy" onerror="this.src='/assets/logo.jpg'" />
     </div>
     <div class="detalle-info">
       <h2>${nombre}</h2>
@@ -79,25 +79,25 @@ function renderizarProducto(p) {
         <input type="number" id="cantidadInput" value="1" min="1" max="10" />
       </div>
 
-      <button class="btn-agregar" onclick="agregarAlCarrito('${id}', \`${nombre}\`, \`${imagen}\`, ${p.price})">
+      <button class="btn-agregar" onclick="agregarAlCarrito('${id}', \`${nombre}\`, \`${imagen}\`, ${p.price || 0})">
         🛒 Agregar al carrito
       </button>
     </div>
   `;
 }
 
-// === 🛒 Agregar producto al carrito (con nombres esperados por el backend)
+// === 🛒 Agregar producto al carrito
 function agregarAlCarrito(id, nombre, imagen, precio) {
   const talla = document.getElementById("tallaSelect")?.value || "Única";
   const cantidad = parseInt(document.getElementById("cantidadInput")?.value) || 1;
 
   const nuevoProducto = {
     id,
-    nombre,      // ✅ nombre en lugar de name
-    imagen,      // ✅ imagen en lugar de image
-    precio,      // ✅ precio en lugar de price
-    talla,       // ✅ talla en lugar de size
-    cantidad     // ✅ cantidad en lugar de quantity
+    nombre,
+    imagen,
+    precio,
+    talla,
+    cantidad
   };
 
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
@@ -115,7 +115,7 @@ function agregarAlCarrito(id, nombre, imagen, precio) {
   mostrarToast("✅ Producto agregado al carrito");
 }
 
-// === 🧮 Actualizar widget de carrito ===
+// === 🧮 Actualizar widget de carrito
 function actualizarCarritoWidget() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
   const total = carrito.reduce((sum, item) => sum + item.cantidad, 0);
@@ -123,7 +123,7 @@ function actualizarCarritoWidget() {
   if (contador) contador.textContent = total;
 }
 
-// === ✅ Mensaje visual temporal ===
+// === ✅ Mensaje visual temporal
 function mostrarToast(mensaje) {
   const toast = document.createElement("div");
   toast.textContent = mensaje;
@@ -143,7 +143,7 @@ function mostrarToast(mensaje) {
   setTimeout(() => toast.remove(), 2500);
 }
 
-// === 🌙 Modo oscuro ===
+// === 🌙 Modo oscuro
 function activarModoOscuro() {
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
@@ -156,5 +156,5 @@ function activarModoOscuro() {
   });
 }
 
-// ✅ Hacer accesible desde el HTML
+// ✅ Exponer globalmente si es necesario
 window.agregarAlCarrito = agregarAlCarrito;

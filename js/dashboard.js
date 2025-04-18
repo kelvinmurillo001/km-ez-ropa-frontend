@@ -7,7 +7,7 @@ import { API_BASE } from "./config.js";
 // 🛡️ Verificar sesión activa
 const token = verificarSesion();
 
-// 🌍 Endpoints corregidos
+// ✅ Endpoints
 const API_ORDERS = `${API_BASE}/api/orders`;
 const API_PRODUCTS = `${API_BASE}/api/products`;
 const API_RESUMEN = `${API_BASE}/api/orders/stats/ventas`;
@@ -112,7 +112,7 @@ function renderTopCategorias(productos = []) {
 
   categoriasOrdenadas.forEach(([nombre, cantidad]) => {
     const li = document.createElement("li");
-    li.textContent = `📁 ${nombre}: ${cantidad}`;
+    li.textContent = `${nombre}: ${cantidad}`;
     lista.appendChild(li);
   });
 }
@@ -134,7 +134,7 @@ function exportarEstadisticas() {
   }
 
   const fecha = new Date().toLocaleString("es-ES");
-  let csv = `📊 Dashboard - KM & EZ ROPA\nFecha:,${fecha}\n\n`;
+  let csv = `Dashboard - KM & EZ ROPA\nFecha:,${fecha}\n\n`;
 
   csv += "Resumen de Ventas\n";
   csv += `Ventas Totales,${resumenVentas.ventasTotales}\n`;
