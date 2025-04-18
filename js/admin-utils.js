@@ -78,3 +78,4 @@ export function getUsuarioActivo() {
     return {};
   }
 }
+window.cerrarSesion = cerrarSesion;
