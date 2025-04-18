@@ -2,19 +2,20 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>✏️ Editar Producto | KM & EZ ROPA</title>
 
   <!-- Meta -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="description" content="Editar detalles de un producto en KM & EZ ROPA. Ajusta imágenes, precios, variantes y más.">
+  <meta name="description" content="Editar detalles de un producto en KM & EZ ROPA. Ajusta imágenes, precios, variantes y más." />
 
   <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/crear-producto.css" />
+  <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- JS -->
+  <!-- Script -->
   <script type="module" src="/js/editar-producto.js" defer></script>
 </head>
 <body>
@@ -22,7 +23,7 @@
   <main class="formulario-container fade-in" role="main" aria-label="Formulario para editar producto">
     <h1 class="text-center">✏️ Editar Producto</h1>
 
-    <form id="formEditarProducto" class="form-producto" aria-label="Formulario de edición de producto">
+    <form id="formEditarProducto" class="form-producto" aria-label="Formulario de edición de producto" enctype="multipart/form-data" novalidate>
 
       <!-- 📷 Imagen actual -->
       <label for="imagenPrincipalActual">Imagen Principal Actual:</label>
@@ -32,56 +33,70 @@
 
       <!-- 📂 Nueva imagen -->
       <label for="imagenPrincipalNueva">Cambiar Imagen Principal (opcional):</label>
-      <input type="file" id="imagenPrincipalNueva" accept="image/*" aria-label="Nueva imagen principal" />
+      <input type="file" id="imagenPrincipalNueva" accept="image/*" />
 
       <!-- 📝 Datos principales -->
-      <label for="nombreInput">Nombre del Producto:</label>
-      <input type="text" id="nombreInput" required aria-required="true" placeholder="Ej: Camiseta oversize"/>
+      <label for="nombreInput">Nombre del Producto: *</label>
+      <input type="text" id="nombreInput" required placeholder="Ej: Camiseta oversize" />
 
-      <label for="descripcionInput">Descripción:</label>
-      <textarea id="descripcionInput" required aria-required="true" placeholder="Descripción del producto..."></textarea>
+      <label for="descripcionInput">Descripción: *</label>
+      <textarea id="descripcionInput" required placeholder="Descripción del producto..."></textarea>
 
-      <label for="precioInput">Precio:</label>
-      <input type="number" id="precioInput" step="0.01" min="0" required aria-required="true" />
+      <label for="precioInput">Precio: *</label>
+      <input type="number" id="precioInput" step="0.01" min="0" required />
 
-      <label for="stockInput">Stock Base:</label>
-      <input type="number" id="stockInput" min="0" required aria-required="true" />
+      <label for="stockInput">Stock Base: *</label>
+      <input type="number" id="stockInput" min="0" required />
 
-      <label for="categoriaInput">Categoría:</label>
-      <select id="categoriaInput" required aria-required="true">
-        <option value="">Selecciona categoría</option>
-        <!-- JS cargará opciones -->
+      <label for="categoriaInput">Categoría: *</label>
+      <select id="categoriaInput" required>
+        <option value="">Selecciona una categoría</option>
+        <!-- JS llenará dinámicamente -->
       </select>
 
       <label for="tallasInput">Tallas disponibles (separadas por coma):</label>
       <input type="text" id="tallasInput" placeholder="Ej: S, M, L, XL" />
 
       <label for="colorInput">Color Principal:</label>
-      <input type="color" id="colorInput" />
+      <input type="color" id="colorInput" value="#000000" />
 
       <!-- 🎨 Variantes -->
       <fieldset class="mt-2">
-        <legend>Variantes (colores alternativos / edición):</legend>
+        <legend>Variantes (colores alternativos / tallas específicas)</legend>
         <div id="variantesExistentes" aria-live="polite">
-          <!-- Insertado dinámicamente -->
+          <!-- Variantes insertadas por JS -->
         </div>
-        <button type="button" id="btnAgregarVariante" class="btn-secundario mt-1" aria-label="Añadir nueva variante">➕ Añadir Variante</button>
+        <button type="button" id="btnAgregarVariante" class="btn-secundario mt-1">
+          ➕ Añadir Variante
+        </button>
       </fieldset>
 
       <!-- 🧭 Acciones -->
       <div class="form-actions mt-3">
-        <button type="submit" class="btn" aria-label="Guardar cambios">💾 Guardar Cambios</button>
-        <button type="button" onclick="goBack()" class="btn-secundario" aria-label="Cancelar y volver atrás">🔙 Cancelar</button>
-        <a href="/admin-productos.html" class="btn-secundario" style="margin-left: 10px;">⬅️ Volver a Productos</a>
+        <button type="submit" class="btn">💾 Guardar Cambios</button>
+        <button type="button" id="btnCancelar" class="btn-secundario">🔙 Cancelar</button>
+        <a href="/productos.html" class="btn-secundario" style="margin-left: 10px;">⬅️ Volver a Productos</a>
       </div>
 
       <p id="msgEstado" class="form-msg text-center mt-2" role="status" aria-live="assertive"></p>
     </form>
   </main>
 
+  <!-- 🌙 Modo oscuro -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("modoOscuro") === "true") {
+        document.body.classList.add("modo-oscuro");
+      }
+
+      // Acción de cancelar
+      document.getElementById("btnCancelar")?.addEventListener("click", () => history.back());
+    });
+  </script>
+
   <!-- Sin JS -->
   <noscript>
-    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para editar el producto correctamente.</p>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para editar correctamente el producto.</p>
   </noscript>
 
 </body>

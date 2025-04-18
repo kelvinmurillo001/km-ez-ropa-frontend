@@ -11,10 +11,12 @@ if (!productId) {
   goBack();
 }
 
+// Endpoints
 const API_UPLOAD = `${API_BASE}/uploads`;
 const API_PRODUCTO = `${API_BASE}/products/${productId}`;
 const API_CATEGORIAS = `${API_BASE}/categories`;
 
+// DOM
 const form = document.getElementById("formEditarProducto");
 const msgEstado = document.getElementById("msgEstado");
 const variantesDiv = document.getElementById("variantesExistentes");
@@ -26,7 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   cargarCategorias();
   cargarProducto();
-
   document.getElementById("btnAgregarVariante")?.addEventListener("click", agregarVariante);
 });
 
@@ -36,7 +37,7 @@ async function cargarCategorias() {
     const categorias = await res.json();
 
     const select = document.getElementById("categoriaInput");
-    select.innerHTML = '<option value="">Seleccionar categoría</option>';
+    select.innerHTML = '<option value="">Selecciona una categoría</option>';
     categorias.forEach(cat => {
       const option = document.createElement("option");
       option.value = cat.name;
@@ -97,7 +98,7 @@ async function cargarProducto() {
 
   } catch (err) {
     console.error("❌ Error al cargar producto:", err);
-    msgEstado.innerHTML = `❌ Error al cargar producto. <br /><button onclick="goBack()">🔙 Volver</button>`;
+    msgEstado.innerHTML = `❌ Error al cargar producto.<br><button onclick="goBack()">🔙 Volver</button>`;
   }
 }
 
@@ -145,26 +146,27 @@ form.addEventListener("submit", async (e) => {
   msgEstado.textContent = "⏳ Guardando cambios...";
 
   try {
-    const nombre = document.getElementById("nombreInput").value.trim();
-    const descripcion = document.getElementById("descripcionInput").value.trim();
-    const precio = parseFloat(document.getElementById("precioInput").value);
-    const stock = parseInt(document.getElementById("stockInput").value);
-    const categoria = document.getElementById("categoriaInput").value;
-    const color = document.getElementById("colorInput").value;
-    const sizes = document.getElementById("tallasInput").value
-      .split(",").map(s => s.trim()).filter(Boolean);
+    const nombre = form.nombreInput.value.trim();
+    const descripcion = form.descripcionInput.value.trim();
+    const precio = parseFloat(form.precioInput.value);
+    const stock = parseInt(form.stockInput.value);
+    const categoria = form.categoriaInput.value;
+    const color = form.colorInput.value;
+    const sizes = form.tallasInput.value.split(",").map(s => s.trim()).filter(Boolean);
 
-    const nuevaImg = document.getElementById("imagenPrincipalNueva").files[0];
+    if (!nombre || !descripcion || isNaN(precio) || isNaN(stock) || !categoria) {
+      msgEstado.textContent = "⚠️ Por favor completa todos los campos obligatorios.";
+      return;
+    }
+
+    const nuevaImg = form.imagenPrincipalNueva?.files[0];
     let nuevaImagen = null;
-
     if (nuevaImg) {
       nuevaImagen = await subirImagen(nuevaImg);
     }
 
-    const variantes = [];
     const bloques = document.querySelectorAll(".variante-box");
-
-    for (const b of bloques) {
+    const variantes = await Promise.all(Array.from(bloques).map(async (b) => {
       const file = b.querySelector(".variante-img")?.files[0];
       const color = b.querySelector(".variante-color")?.value || "#000000";
       const talla = b.querySelector(".variante-talla")?.value || "";
@@ -182,14 +184,8 @@ form.addEventListener("submit", async (e) => {
         imageUrl = b.querySelector("img")?.src;
       }
 
-      variantes.push({
-        imageUrl,
-        cloudinaryId: finalCloudinaryId,
-        color,
-        talla,
-        stock
-      });
-    }
+      return { imageUrl, cloudinaryId: finalCloudinaryId, color, talla, stock };
+    }));
 
     const payload = {
       name: nombre,

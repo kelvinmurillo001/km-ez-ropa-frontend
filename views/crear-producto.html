@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/crear-producto.css" />
+  <link rel="stylesheet" href="/css/fondo.css" />
 
   <!-- Script del módulo -->
   <script type="module" src="/js/crear-producto.js" defer></script>
@@ -25,32 +26,32 @@
     <form id="formProducto" class="form-producto" enctype="multipart/form-data" novalidate>
       
       <!-- Imagen -->
-      <label for="imagenPrincipalInput">Imagen Principal:</label>
+      <label for="imagenPrincipalInput">Imagen Principal: *</label>
       <input type="file" id="imagenPrincipalInput" accept="image/jpeg,image/png,image/svg+xml" required aria-describedby="imagenHelp" />
       <small id="imagenHelp" class="help-text">Máx. 2MB. Formatos: JPG, PNG, SVG.</small>
       <div id="previewPrincipal" class="preview-imagen" aria-live="polite"></div>
 
       <!-- Nombre -->
-      <label for="nombreInput">Nombre del Producto:</label>
+      <label for="nombreInput">Nombre del Producto: *</label>
       <input type="text" id="nombreInput" placeholder="Ej: Hoodie urbana" required maxlength="100" autofocus />
 
       <!-- Descripción -->
-      <label for="descripcionInput">Descripción:</label>
+      <label for="descripcionInput">Descripción: *</label>
       <textarea id="descripcionInput" placeholder="Detalles de tela, corte, estilo..." required maxlength="300"></textarea>
 
       <!-- Precio -->
-      <label for="precioInput">Precio:</label>
+      <label for="precioInput">Precio: *</label>
       <input type="number" id="precioInput" step="0.01" min="0" required />
 
       <!-- Stock -->
-      <label for="stockInput">Stock base:</label>
+      <label for="stockInput">Stock base: *</label>
       <input type="number" id="stockInput" min="0" required />
 
       <!-- Categoría -->
-      <label for="categoriaInput">Categoría:</label>
+      <label for="categoriaInput">Categoría: *</label>
       <select id="categoriaInput" required>
         <option value="">Selecciona una categoría</option>
-        <!-- Opciones dinámicas desde JS -->
+        <!-- Opciones dinámicas -->
       </select>
 
       <!-- Variantes -->
@@ -59,7 +60,7 @@
         <div id="variantesContainer" aria-live="polite">
           <!-- Variantes dinámicas -->
         </div>
-        <button type="button" class="btn-secundario mt-1" id="btnAgregarVariante" aria-label="Añadir variante de color o talla">
+        <button type="button" class="btn-secundario mt-1" id="btnAgregarVariante">
           ➕ Añadir Variante
         </button>
       </fieldset>
@@ -75,17 +76,29 @@
       <!-- Acciones -->
       <div class="form-actions mt-3">
         <button type="submit" class="btn">✅ Guardar Producto</button>
-        <button type="button" onclick="history.back()" class="btn-secundario">🔙 Cancelar</button>
-        <a href="/admin-productos.html" class="btn-secundario" style="margin-left: 10px;">⬅️ Volver a Productos</a>
+        <button type="button" id="btnCancelar" class="btn-secundario">🔙 Cancelar</button>
+        <a href="/productos.html" class="btn-secundario" style="margin-left: 10px;">⬅️ Volver a Productos</a>
       </div>
 
       <p id="msgEstado" class="form-msg text-center mt-2" aria-live="assertive"></p>
     </form>
   </main>
 
+  <!-- 🌙 Activar modo oscuro -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("modoOscuro") === "true") {
+        document.body.classList.add("modo-oscuro");
+      }
+
+      // Botón cancelar vuelve atrás
+      document.getElementById("btnCancelar")?.addEventListener("click", () => history.back());
+    });
+  </script>
+
+  <!-- No JS fallback -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar correctamente este formulario.</p>
   </noscript>
-
 </body>
 </html>

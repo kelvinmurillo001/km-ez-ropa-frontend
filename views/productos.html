@@ -14,9 +14,6 @@
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/productos.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
-
-  <!-- JS -->
-  <script type="module" src="/js/productos.js" defer></script>
 </head>
 <body>
 
@@ -37,20 +34,26 @@
 
     <!-- 🔙 Botón regreso -->
     <div class="text-center mt-3">
-      <button onclick="goBack()" class="btn-secundario">🔙 Volver al Panel</button>
+      <button id="btnVolverPanel" class="btn-secundario">🔙 Volver al Panel</button>
     </div>
   </main>
 
-  <!-- 📣 Mensaje flotante (estilo admin-utils.js) -->
+  <!-- 📣 Mensaje flotante -->
   <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="polite"></div>
 
   <!-- 🌙 Activar modo oscuro -->
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      if (localStorage.getItem("modoOscuro") === "true") {
-        document.body.classList.add("modo-oscuro");
-      }
-    });
+    if (localStorage.getItem("modoOscuro") === "true") {
+      document.body.classList.add("modo-oscuro");
+    }
+  </script>
+
+  <!-- ✅ JS principal y utilidades -->
+  <script type="module">
+    import { goBack } from "/js/admin-utils.js";
+    import "/js/productos.js";
+
+    document.getElementById("btnVolverPanel").addEventListener("click", goBack);
   </script>
 
   <!-- 🛑 JS fallback -->
