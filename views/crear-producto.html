@@ -1,210 +1,109 @@
-"use strict";
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>➕ Crear Producto | KM & EZ ROPA</title>
 
-import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
-import { API_BASE } from "./config.js";
+  <!-- Meta -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="Formulario para crear un producto nuevo en KM & EZ ROPA con tallas, colores e imagen." />
 
-// 🔐 Verificar sesión
-const token = verificarSesion();
+  <!-- Estilos -->
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/componentes.css" />
+  <link rel="stylesheet" href="/css/crear-producto.css" />
+  <link rel="stylesheet" href="/css/fondo.css" />
 
-// Endpoints
-const API_PRODUCTS = `${API_BASE}/api/products`;
-const API_CATEGORIES = `${API_BASE}/api/categories`;
-const API_UPLOADS = `${API_BASE}/api/uploads`;
+  <!-- JS del módulo -->
+  <script type="module" src="/js/crear-producto.js" defer></script>
+</head>
+<body>
 
-// DOM Elements
-const form = document.getElementById("formProducto");
-const imagenInput = document.getElementById("imagenPrincipalInput");
-const previewPrincipal = document.getElementById("previewPrincipal");
-const variantesContainer = document.getElementById("variantesContainer");
-const btnAgregarVariante = document.getElementById("btnAgregarVariante");
-const categoriaInput = document.getElementById("categoriaInput");
-const subcategoriaInput = document.getElementById("subcategoriaInput");
-const msgEstado = document.getElementById("msgEstado");
+  <main class="formulario-container fade-in" role="main" aria-label="Formulario de creación de producto">
+    <h1 class="text-center">➕ Crear Nuevo Producto</h1>
 
-let variantes = [];
-let categoriasConSubcategorias = [];
+    <form id="formProducto" class="form-producto" enctype="multipart/form-data" novalidate>
 
-document.addEventListener("DOMContentLoaded", async () => {
-  await cargarCategorias();
-  agregarVariante();
-  if (localStorage.getItem("modoOscuro") === "true") {
-    document.body.classList.add("modo-oscuro");
-  }
-});
+      <!-- Imagen -->
+      <label for="imagenPrincipalInput">Imagen Principal: *</label>
+      <input type="file" id="imagenPrincipalInput" accept="image/jpeg,image/png,image/svg+xml" required aria-describedby="imagenHelp" />
+      <small id="imagenHelp" class="help-text">Máx. 2MB. Formatos: JPG, PNG, SVG.</small>
+      <div id="previewPrincipal" class="preview-imagen" aria-live="polite"></div>
 
-// 📷 Vista previa de imagen
-imagenInput.addEventListener("change", () => {
-  const file = imagenInput.files[0];
-  if (!file) return;
-  if (!file.type.startsWith("image/")) return mostrarMensaje("⚠️ Archivo no válido", "error");
-  if (file.size > 2 * 1024 * 1024) return mostrarMensaje("⚠️ Imagen supera 2MB", "error");
+      <!-- Nombre -->
+      <label for="nombreInput">Nombre del Producto: *</label>
+      <input type="text" id="nombreInput" placeholder="Ej: Hoodie urbana" required maxlength="100" autofocus />
 
-  const url = URL.createObjectURL(file);
-  previewPrincipal.innerHTML = `<img src="${url}" alt="Vista previa imagen" style="max-width:200px; border-radius:8px;"/>`;
-});
+      <!-- Descripción -->
+      <label for="descripcionInput">Descripción: *</label>
+      <textarea id="descripcionInput" placeholder="Detalles de tela, corte, estilo..." required maxlength="300"></textarea>
 
-// 📦 Cargar categorías y subcategorías
-async function cargarCategorias() {
-  try {
-    const res = await fetch(API_CATEGORIES);
-    const data = await res.json();
-    if (!res.ok || !Array.isArray(data)) throw new Error();
+      <!-- Precio -->
+      <label for="precioInput">Precio: *</label>
+      <input type="number" id="precioInput" step="0.01" min="0" required />
 
-    categoriasConSubcategorias = data;
+      <!-- Stock -->
+      <label for="stockInput">Stock base: *</label>
+      <input type="number" id="stockInput" min="0" required />
 
-    categoriaInput.innerHTML = `<option value="">Selecciona categoría</option>` +
-      data.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join("");
+      <!-- Categoría -->
+      <label for="categoriaInput">Categoría: *</label>
+      <select id="categoriaInput" required>
+        <option value="">Selecciona una categoría</option>
+      </select>
 
-    categoriaInput.addEventListener("change", () => {
-      const seleccionada = categoriaInput.value;
-      const categoria = categoriasConSubcategorias.find(cat => cat.name === seleccionada);
+      <!-- Subcategoría -->
+      <label for="subcategoriaInput">Subcategoría:</label>
+      <select id="subcategoriaInput" disabled>
+        <option value="">Selecciona una subcategoría</option>
+      </select>
 
-      if (categoria?.subcategories?.length) {
-        subcategoriaInput.innerHTML = `<option value="">Selecciona subcategoría</option>` +
-          categoria.subcategories.map(sub => `<option value="${sub}">${sub}</option>`).join("");
-        subcategoriaInput.disabled = false;
-      } else {
-        subcategoriaInput.innerHTML = `<option value="">Sin subcategorías</option>`;
-        subcategoriaInput.disabled = true;
+      <!-- Tallas -->
+      <label for="tallasInput" class="mt-2">Lista de tallas (separadas por coma):</label>
+      <input type="text" id="tallasInput" placeholder="Ej: S, M, L, XL" />
+
+      <!-- Color -->
+      <label for="colorInput">Color Principal:</label>
+      <input type="color" id="colorInput" value="#000000" />
+
+      <!-- Producto destacado -->
+      <div class="mt-2">
+        <input type="checkbox" id="destacadoInput" />
+        <label for="destacadoInput">✅ Producto destacado</label>
+      </div>
+
+      <!-- Variantes -->
+      <fieldset class="mt-3">
+        <legend>Variantes (colores alternativos, imagen y stock):</legend>
+        <div id="variantesContainer" aria-live="polite"></div>
+        <button type="button" class="btn-secundario mt-1" id="btnAgregarVariante">
+          ➕ Añadir Variante
+        </button>
+      </fieldset>
+
+      <!-- Acciones -->
+      <div class="form-actions mt-3">
+        <button type="submit" class="btn">✅ Guardar Producto</button>
+        <button type="button" id="btnCancelar" class="btn-secundario">🔙 Cancelar</button>
+        <a href="/productos.html" class="btn-secundario" style="margin-left: 10px;">⬅️ Volver a Productos</a>
+      </div>
+
+      <p id="msgEstado" class="form-msg text-center mt-2" role="status" aria-live="assertive"></p>
+    </form>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("modoOscuro") === "true") {
+        document.body.classList.add("modo-oscuro");
       }
+      document.getElementById("btnCancelar")?.addEventListener("click", () => history.back());
     });
+  </script>
 
-  } catch (err) {
-    console.error("❌ Error al cargar categorías:", err);
-    mostrarMensaje("❌ No se pudieron cargar las categorías", "error");
-  }
-}
-
-// ➕ Variantes
-btnAgregarVariante.addEventListener("click", () => agregarVariante());
-
-function agregarVariante() {
-  const index = variantes.length;
-  const div = document.createElement("div");
-  div.className = "variante-item";
-  div.innerHTML = `
-    <label>Color Variante:</label>
-    <input type="color" name="colorVariante${index}" required />
-    <label>Talla:</label>
-    <input type="text" name="tallaVariante${index}" placeholder="Ej: M" required />
-    <label>Imagen:</label>
-    <input type="file" name="imagenVariante${index}" accept="image/*" required />
-    <label>Stock:</label>
-    <input type="number" name="stockVariante${index}" min="0" value="0" required />
-    <button type="button" class="btn-secundario" onclick="this.parentElement.remove()">❌ Quitar</button>
-    <hr />
-  `;
-  variantesContainer.appendChild(div);
-  variantes.push(index);
-}
-
-// ☁️ Subida
-async function subirImagen(file) {
-  const formData = new FormData();
-  formData.append("image", file);
-
-  const res = await fetch(API_UPLOADS, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}` },
-    body: formData
-  });
-
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "Error al subir imagen");
-
-  return {
-    url: data.url || data.secure_url,
-    public_id: data.public_id
-  };
-}
-
-// 📤 Guardar producto
-form.addEventListener("submit", async e => {
-  e.preventDefault();
-
-  const nombre = form.nombreInput.value.trim();
-  const descripcion = form.descripcionInput.value.trim();
-  const precio = parseFloat(form.precioInput.value);
-  const stock = parseInt(form.stockInput.value);
-  const categoria = categoriaInput.value;
-  const subcategoria = subcategoriaInput?.value || null;
-  const destacado = document.getElementById("destacadoInput")?.checked || false;
-  const color = form.colorInput.value;
-  const tallas = form.tallasInput.value.split(",").map(t => t.trim()).filter(Boolean);
-  const filePrincipal = imagenInput.files[0];
-
-  if (!filePrincipal) return mostrarMensaje("⚠️ Imagen principal requerida", "error");
-  if (!nombre || !descripcion || isNaN(precio) || isNaN(stock) || !categoria)
-    return mostrarMensaje("⚠️ Completa todos los campos obligatorios", "error");
-
-  try {
-    msgEstado.textContent = "⏳ Subiendo imagen principal...";
-    const imagenPrincipal = await subirImagen(filePrincipal);
-
-    const variantesFinales = [];
-
-    for (const v of variantesContainer.querySelectorAll(".variante-item")) {
-      const colorInput = v.querySelector("input[type='color']");
-      const tallaInput = v.querySelector("input[name^='talla']");
-      const stockInput = v.querySelector("input[type='number']");
-      const fileInput = v.querySelector("input[type='file']");
-
-      if (!fileInput.files.length) continue;
-
-      const file = fileInput.files[0];
-      if (!file.type.startsWith("image/")) return mostrarMensaje("⚠️ Imagen variante no válida", "error");
-      if (file.size > 2 * 1024 * 1024) return mostrarMensaje("⚠️ Variante excede tamaño máximo", "error");
-
-      msgEstado.textContent = "⏳ Subiendo imagen de variante...";
-      const subida = await subirImagen(file);
-
-      variantesFinales.push({
-        imageUrl: subida.url,
-        cloudinaryId: subida.public_id,
-        color: colorInput.value,
-        talla: tallaInput.value.trim(),
-        stock: parseInt(stockInput.value) || 0
-      });
-    }
-
-    const nuevoProducto = {
-      name: nombre,
-      description: descripcion,
-      price: precio,
-      stock,
-      category: categoria,
-      subcategory: subcategoria,
-      color,
-      sizes: tallas,
-      featured: destacado,
-      variants: variantesFinales,
-      images: [imagenPrincipal]
-    };
-
-    msgEstado.textContent = "⏳ Guardando producto...";
-    const res = await fetch(API_PRODUCTS, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(nuevoProducto)
-    });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "No se pudo crear el producto");
-
-    mostrarMensaje("✅ Producto creado correctamente", "success");
-    form.reset();
-    previewPrincipal.innerHTML = "";
-    variantesContainer.innerHTML = "";
-    variantes = [];
-    agregarVariante();
-
-  } catch (err) {
-    console.error("❌ Error al crear producto:", err);
-    mostrarMensaje("❌ " + err.message, "error");
-  }
-});
-
-window.goBack = goBack;
+  <noscript>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar correctamente este formulario.</p>
+  </noscript>
+</body>
+</html>

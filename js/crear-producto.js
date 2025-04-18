@@ -3,15 +3,12 @@
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
-// 🔐 Verificar sesión
 const token = verificarSesion();
 
-// Endpoints
 const API_PRODUCTS = `${API_BASE}/api/products`;
 const API_CATEGORIES = `${API_BASE}/api/categories`;
 const API_UPLOADS = `${API_BASE}/api/uploads`;
 
-// DOM Elements
 const form = document.getElementById("formProducto");
 const imagenInput = document.getElementById("imagenPrincipalInput");
 const previewPrincipal = document.getElementById("previewPrincipal");
@@ -19,20 +16,20 @@ const variantesContainer = document.getElementById("variantesContainer");
 const btnAgregarVariante = document.getElementById("btnAgregarVariante");
 const categoriaInput = document.getElementById("categoriaInput");
 const subcategoriaInput = document.getElementById("subcategoriaInput");
-const featuredCheckbox = document.getElementById("featuredInput");
 const msgEstado = document.getElementById("msgEstado");
 
 let variantes = [];
+let categoriasConSubcategorias = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
   await cargarCategorias();
-  agregarVariante(); // inicial
+  agregarVariante();
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 });
 
-// 📷 Vista previa corregida
+// Vista previa imagen
 imagenInput.addEventListener("change", () => {
   const file = imagenInput.files[0];
   if (!file) return;
@@ -40,76 +37,65 @@ imagenInput.addEventListener("change", () => {
   if (file.size > 2 * 1024 * 1024) return mostrarMensaje("⚠️ Imagen supera 2MB", "error");
 
   const url = URL.createObjectURL(file);
-  previewPrincipal.innerHTML = "";
-
-  const img = document.createElement("img");
-  img.src = url;
-  img.alt = "Vista previa imagen";
-  img.className = "preview-mini";
-  previewPrincipal.appendChild(img);
+  previewPrincipal.innerHTML = `<img src="${url}" alt="Vista previa imagen" style="max-width:200px; border-radius:8px;"/>`;
 });
 
-// 🗂️ Cargar categorías
+// Cargar categorías y subcategorías
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIES);
     const data = await res.json();
     if (!res.ok || !Array.isArray(data)) throw new Error();
 
+    categoriasConSubcategorias = data;
+
     categoriaInput.innerHTML = `<option value="">Selecciona categoría</option>` +
       data.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join("");
+
+    categoriaInput.addEventListener("change", () => {
+      const seleccionada = categoriaInput.value;
+      const categoria = categoriasConSubcategorias.find(cat => cat.name === seleccionada);
+
+      if (categoria?.subcategories?.length) {
+        subcategoriaInput.innerHTML = `<option value="">Selecciona subcategoría</option>` +
+          categoria.subcategories.map(sub => `<option value="${sub}">${sub}</option>`).join("");
+        subcategoriaInput.disabled = false;
+      } else {
+        subcategoriaInput.innerHTML = `<option value="">Sin subcategorías</option>`;
+        subcategoriaInput.disabled = true;
+      }
+    });
+
   } catch (err) {
-    console.error("❌ Error categorías:", err);
+    console.error("❌ Error al cargar categorías:", err);
     mostrarMensaje("❌ No se pudieron cargar las categorías", "error");
   }
 }
 
-// ➕ Agregar nueva variante con vista previa incluida
+// Añadir variante
 btnAgregarVariante.addEventListener("click", () => agregarVariante());
 
 function agregarVariante() {
   const index = variantes.length;
   const div = document.createElement("div");
   div.className = "variante-item";
-  const idInput = `imagenVariante${index}`;
-  const idPreview = `previewVariante${index}`;
-
   div.innerHTML = `
     <label>Color Variante:</label>
     <input type="color" name="colorVariante${index}" required />
-
     <label>Talla:</label>
     <input type="text" name="tallaVariante${index}" placeholder="Ej: M" required />
-
     <label>Imagen:</label>
-    <input type="file" id="${idInput}" name="imagenVariante${index}" accept="image/*" required />
-    <div id="${idPreview}" class="preview-imagen"></div>
-
+    <input type="file" name="imagenVariante${index}" accept="image/*" required />
     <label>Stock:</label>
     <input type="number" name="stockVariante${index}" min="0" value="0" required />
-
     <button type="button" class="btn-secundario" onclick="this.parentElement.remove()">❌ Quitar</button>
     <hr />
   `;
-
   variantesContainer.appendChild(div);
   variantes.push(index);
-
-  // Previsualización para la variante
-  const fileInput = div.querySelector(`#${idInput}`);
-  const previewDiv = div.querySelector(`#${idPreview}`);
-  fileInput.addEventListener("change", () => {
-    const file = fileInput.files[0];
-    if (!file) return;
-    if (!file.type.startsWith("image/")) return mostrarMensaje("⚠️ Imagen no válida", "error");
-    if (file.size > 2 * 1024 * 1024) return mostrarMensaje("⚠️ Imagen supera 2MB", "error");
-
-    const url = URL.createObjectURL(file);
-    previewDiv.innerHTML = `<img src="${url}" alt="Vista previa variante" class="preview-mini" />`;
-  });
 }
 
-// ☁️ Subida de imagen
+// Subir imagen
 async function subirImagen(file) {
   const formData = new FormData();
   formData.append("image", file);
@@ -122,13 +108,14 @@ async function subirImagen(file) {
 
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || "Error al subir imagen");
+
   return {
     url: data.url || data.secure_url,
     public_id: data.public_id
   };
 }
 
-// 📤 Envío del producto
+// Guardar producto
 form.addEventListener("submit", async e => {
   e.preventDefault();
 
@@ -137,8 +124,8 @@ form.addEventListener("submit", async e => {
   const precio = parseFloat(form.precioInput.value);
   const stock = parseInt(form.stockInput.value);
   const categoria = categoriaInput.value;
-  const subcategoria = subcategoriaInput?.value?.trim() || null;
-  const destacado = featuredCheckbox?.checked || false;
+  const subcategoria = subcategoriaInput?.value || null;
+  const destacado = document.getElementById("destacadoInput")?.checked || false;
   const color = form.colorInput.value;
   const tallas = form.tallasInput.value.split(",").map(t => t.trim()).filter(Boolean);
   const filePrincipal = imagenInput.files[0];
@@ -177,14 +164,13 @@ form.addEventListener("submit", async e => {
       });
     }
 
-    // 🧾 Crear objeto producto
     const nuevoProducto = {
       name: nombre,
       description: descripcion,
       price: precio,
       stock,
       category: categoria,
-      subcategory,
+      subcategory: subcategoria,
       color,
       sizes: tallas,
       featured: destacado,
@@ -218,3 +204,4 @@ form.addEventListener("submit", async e => {
   }
 });
 
+window.goBack = goBack;
