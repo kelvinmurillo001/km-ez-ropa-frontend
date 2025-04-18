@@ -5,174 +5,107 @@ import { API_BASE } from "./config.js";
 
 const token = verificarSesion();
 
-const API_PROMOS = `${API_BASE}/api/promos`;
-const API_CATEGORIES = `${API_BASE}/api/categories`;
-
+const API_PROMOS = `${API_BASE}/api/promotions`;
 const formPromo = document.getElementById("formPromo");
-const promoImagen = document.getElementById("promoImagen");
-const promoTitulo = document.getElementById("promoTitulo");
-const promoCategoria = document.getElementById("promoCategoria");
-const listaPromos = document.getElementById("listaPromos");
 const msgPromo = document.getElementById("msgPromo");
 
 document.addEventListener("DOMContentLoaded", () => {
-  cargarCategorias();
-  cargarPromociones();
-
-  formPromo?.addEventListener("submit", crearPromocion);
+  cargarPromocion();
+  formPromo?.addEventListener("submit", guardarPromocion);
 });
 
-// === CARGAR CATEGORÍAS PARA SELECT ===
-async function cargarCategorias() {
+/**
+ * ✅ Cargar promoción activa actual
+ */
+async function cargarPromocion() {
   try {
-    const res = await fetch(API_CATEGORIES);
-    if (!res.ok) throw new Error("❌ Error al obtener categorías");
+    const res = await fetch(API_PROMOS);
+    const promo = await res.json();
 
-    const data = await res.json();
+    if (!promo) {
+      document.getElementById("estadoActual").innerHTML = "<p>📭 No hay promociones activas.</p>";
+      return;
+    }
 
-    promoCategoria.innerHTML += data.map(cat =>
-      `<option value="${cat.name}">${cat.name}</option>`
-    ).join('');
+    const estadoColor = promo.active ? "green" : "red";
+    const estadoTexto = promo.active ? "✅ Activa" : "⛔ Inactiva";
+    const inicio = promo.startDate ? new Date(promo.startDate).toLocaleDateString() : "No definido";
+    const fin = promo.endDate ? new Date(promo.endDate).toLocaleDateString() : "Sin fecha";
+    const badgeTheme = promo.theme || "blue";
+
+    document.getElementById("estadoActual").innerHTML = `
+      <div class="promo-actual">
+        <p><strong>Estado:</strong> <span style="color:${estadoColor}">${estadoTexto}</span></p>
+        <p><strong>Mensaje:</strong> ${promo.message}</p>
+        <p><strong>Vigencia:</strong> ${inicio} - ${fin}</p>
+        <p><strong>Tema:</strong> <span class="badge ${badgeTheme}">${badgeTheme}</span></p>
+      </div>
+    `;
+
+    // Rellenar formulario
+    document.getElementById("promoMensaje").value = promo.message || "";
+    document.getElementById("promoActivo").checked = promo.active || false;
+    document.getElementById("promoTema").value = promo.theme || "blue";
+    document.getElementById("promoInicio").value = promo.startDate?.substring(0, 10) || "";
+    document.getElementById("promoFin").value = promo.endDate?.substring(0, 10) || "";
+
   } catch (err) {
-    console.error(err);
-    mostrarMensaje("⚠️ Error al cargar categorías", "error");
+    console.error("❌ Error cargando promoción:", err);
+    document.getElementById("estadoActual").innerHTML = "<p style='color:red;'>❌ Error al cargar promoción.</p>";
   }
 }
 
-// === CREAR NUEVA PROMOCIÓN ===
-async function crearPromocion(e) {
+/**
+ * 📝 Crear o actualizar promoción
+ */
+async function guardarPromocion(e) {
   e.preventDefault();
+  msgPromo.textContent = "";
+  const btn = formPromo.querySelector("button[type='submit']");
+  btn.disabled = true;
 
-  const file = promoImagen.files[0];
-  const titulo = promoTitulo.value.trim();
-  const categoria = promoCategoria.value;
-  const btnSubmit = formPromo.querySelector("button[type='submit']");
+  const payload = {
+    message: document.getElementById("promoMensaje").value.trim(),
+    active: document.getElementById("promoActivo").checked,
+    theme: document.getElementById("promoTema").value,
+    startDate: document.getElementById("promoInicio").value || null,
+    endDate: document.getElementById("promoFin").value || null
+  };
 
-  if (!file || !titulo || !categoria) {
-    msgPromo.textContent = "⚠️ Todos los campos son obligatorios.";
+  if (!payload.message || payload.message.length < 3) {
+    msgPromo.textContent = "⚠️ El mensaje debe tener al menos 3 caracteres.";
     msgPromo.style.color = "orange";
+    btn.disabled = false;
     return;
   }
 
   try {
-    btnSubmit.disabled = true;
-    msgPromo.textContent = "⏳ Subiendo promoción...";
+    msgPromo.textContent = "⏳ Guardando promoción...";
     msgPromo.style.color = "#888";
 
-    const formData = new FormData();
-    formData.append("image", file);
-    formData.append("titulo", titulo);
-    formData.append("categoria", categoria);
-
     const res = await fetch(API_PROMOS, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      body: formData
-    });
-
-    if (!res.ok) throw new Error("Error al crear promoción");
-
-    const data = await res.json();
-
-    msgPromo.textContent = "✅ Promoción creada con éxito.";
-    msgPromo.style.color = "limegreen";
-
-    formPromo.reset();
-    cargarPromociones();
-  } catch (err) {
-    console.error("❌", err);
-    msgPromo.textContent = "❌ Error al crear la promoción.";
-    msgPromo.style.color = "red";
-  } finally {
-    btnSubmit.disabled = false;
-  }
-}
-
-// === CARGAR PROMOCIONES EXISTENTES ===
-async function cargarPromociones() {
-  try {
-    const res = await fetch(API_PROMOS);
-    if (!res.ok) throw new Error("Error al cargar promociones");
-
-    const promos = await res.json();
-
-    if (!Array.isArray(promos) || promos.length === 0) {
-      listaPromos.innerHTML = "<p>No hay promociones activas.</p>";
-      return;
-    }
-
-    listaPromos.innerHTML = promos.map(promo => `
-      <div class="promo-card">
-        <img src="${promo.image}" alt="${promo.titulo}" />
-        <h4>${promo.titulo}</h4>
-        <p>Categoría: ${promo.categoria}</p>
-        <p>Estado: 
-          <span style="color:${promo.activa ? 'green' : 'red'};">
-            ${promo.activa ? '✅ Activa' : '⛔ Inactiva'}
-          </span>
-        </p>
-        <div class="promo-actions">
-          <button onclick="cambiarEstadoPromo('${promo._id}', ${!promo.activa})">
-            ${promo.activa ? 'Desactivar' : 'Activar'}
-          </button>
-          <button onclick="eliminarPromo('${promo._id}')">🗑️ Eliminar</button>
-        </div>
-      </div>
-    `).join('');
-  } catch (err) {
-    console.error("❌ Error cargando promociones:", err);
-    listaPromos.innerHTML = "<p style='color:red;'>❌ No se pudieron cargar promociones.</p>";
-  }
-}
-
-// === CAMBIAR ESTADO DE PROMOCIÓN ===
-async function cambiarEstadoPromo(id, activa) {
-  try {
-    const res = await fetch(`${API_PROMOS}/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ activa })
+      body: JSON.stringify(payload)
     });
 
-    if (!res.ok) throw new Error("Error al actualizar estado");
     const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Error");
 
-    mostrarMensaje("✅ Estado actualizado", "success");
-    cargarPromociones();
+    msgPromo.textContent = "✅ Promoción guardada correctamente.";
+    msgPromo.style.color = "limegreen";
+
+    await cargarPromocion();
   } catch (err) {
     console.error("❌", err);
-    mostrarMensaje("❌ No se pudo cambiar el estado", "error");
+    msgPromo.textContent = "❌ No se pudo guardar la promoción.";
+    msgPromo.style.color = "red";
+  } finally {
+    btn.disabled = false;
   }
 }
 
-// === ELIMINAR PROMOCIÓN ===
-async function eliminarPromo(id) {
-  const confirmar = confirm("⚠️ ¿Deseas eliminar esta promoción?");
-  if (!confirmar) return;
-
-  try {
-    const res = await fetch(`${API_PROMOS}/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` }
-    });
-
-    if (!res.ok) throw new Error("Error al eliminar promoción");
-    const data = await res.json();
-
-    mostrarMensaje("✅ Promoción eliminada", "success");
-    cargarPromociones();
-  } catch (err) {
-    console.error("❌", err);
-    mostrarMensaje("❌ No se pudo eliminar", "error");
-  }
-}
-
-// 🌐 Exponer funciones globales
 window.goBack = goBack;
-window.cambiarEstadoPromo = cambiarEstadoPromo;
-window.eliminarPromo = eliminarPromo;

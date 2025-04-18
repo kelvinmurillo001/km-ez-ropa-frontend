@@ -5,55 +5,67 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🎯 Promociones | KM & EZ ROPA</title>
 
+  <!-- Meta Seguridad -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="description" content="Administra las promociones activas de la tienda: crea, activa, desactiva o elimina.">
+  <meta name="description" content="Administra la promoción destacada de la tienda. Cambia mensaje, colores, fechas y activa o desactiva.">
 
+  <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/promociones.css" />
 
+  <!-- JS -->
   <script type="module" src="/js/promociones.js" defer></script>
 </head>
 <body>
 
   <main class="promociones-container fade-in">
-    <h1 class="text-center">🎯 Gestión de Promociones</h1>
+    <h1 class="text-center">🎯 Gestión de Promoción Destacada</h1>
 
-    <!-- 📤 Crear nueva promoción -->
-    <section class="form-nueva-promo mt-2">
-      <h3>➕ Nueva Promoción</h3>
-      <form id="formPromo" enctype="multipart/form-data">
-        <label>Imagen (Banner):</label>
-        <input type="file" id="promoImagen" accept="image/*" required />
+    <!-- 🔎 Estado actual de promoción -->
+    <section class="promo-actual mt-2" id="estadoActual">
+      <!-- JS inserta aquí la promo activa -->
+    </section>
 
-        <label>Título de la Promoción:</label>
-        <input type="text" id="promoTitulo" required />
+    <!-- 📝 Formulario -->
+    <section class="form-editar-promo mt-3">
+      <h3>✏️ Editar Promoción</h3>
 
-        <label>Categoría asociada:</label>
-        <select id="promoCategoria" required>
-          <option value="">Selecciona categoría</option>
-          <!-- JS inserta dinámicamente -->
+      <form id="formPromo" novalidate>
+        <label for="promoMensaje">Mensaje de la promoción: *</label>
+        <input type="text" id="promoMensaje" placeholder="Ej: ¡20% OFF en toda la tienda!" required />
+
+        <label for="promoTema">Tema de color:</label>
+        <select id="promoTema">
+          <option value="blue">Azul</option>
+          <option value="orange">Naranja</option>
+          <option value="green">Verde</option>
+          <option value="red">Rojo</option>
         </select>
 
-        <button type="submit" class="btn mt-1">✅ Crear Promoción</button>
+        <label for="promoInicio">Fecha de inicio:</label>
+        <input type="date" id="promoInicio" />
+
+        <label for="promoFin">Fecha de fin:</label>
+        <input type="date" id="promoFin" />
+
+        <label>
+          <input type="checkbox" id="promoActivo" />
+          Activar promoción
+        </label>
+
+        <button type="submit" class="btn mt-1">💾 Guardar promoción</button>
         <p id="msgPromo" class="form-msg text-center mt-2"></p>
       </form>
     </section>
 
-    <!-- 📋 Promociones activas -->
-    <section class="listado-promos mt-4">
-      <h3>📋 Promociones Actuales</h3>
-      <div id="listaPromos" class="grid-promos">
-        <!-- JS carga promos aquí -->
-      </div>
-    </section>
-
-    <!-- 🔙 Botón volver -->
+    <!-- 🔙 Regresar -->
     <div class="text-center mt-3">
       <button onclick="goBack()" class="btn-secundario">🔙 Volver al panel</button>
     </div>
   </main>
 
+  <!-- No JS fallback -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar esta función.</p>
   </noscript>
