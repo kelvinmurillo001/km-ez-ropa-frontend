@@ -51,19 +51,8 @@
       <label for="categoriaInput">Categoría: *</label>
       <select id="categoriaInput" required>
         <option value="">Selecciona una categoría</option>
-        <!-- Opciones dinámicas -->
+        <!-- Opciones dinámicas por JS -->
       </select>
-
-      <!-- Variantes -->
-      <fieldset class="mt-2">
-        <legend>Variantes (colores/tallas opcionales)</legend>
-        <div id="variantesContainer" aria-live="polite">
-          <!-- Variantes dinámicas -->
-        </div>
-        <button type="button" class="btn-secundario mt-1" id="btnAgregarVariante">
-          ➕ Añadir Variante
-        </button>
-      </fieldset>
 
       <!-- Tallas -->
       <label for="tallasInput" class="mt-2">Lista de tallas (separadas por coma):</label>
@@ -73,6 +62,17 @@
       <label for="colorInput">Color Principal:</label>
       <input type="color" id="colorInput" value="#000000" />
 
+      <!-- Variantes -->
+      <fieldset class="mt-2">
+        <legend>Variantes (colores alternativos, imagen y stock):</legend>
+        <div id="variantesContainer" aria-live="polite">
+          <!-- Insertadas dinámicamente -->
+        </div>
+        <button type="button" class="btn-secundario mt-1" id="btnAgregarVariante">
+          ➕ Añadir Variante
+        </button>
+      </fieldset>
+
       <!-- Acciones -->
       <div class="form-actions mt-3">
         <button type="submit" class="btn">✅ Guardar Producto</button>
@@ -80,7 +80,7 @@
         <a href="/productos.html" class="btn-secundario" style="margin-left: 10px;">⬅️ Volver a Productos</a>
       </div>
 
-      <p id="msgEstado" class="form-msg text-center mt-2" aria-live="assertive"></p>
+      <p id="msgEstado" class="form-msg text-center mt-2" role="status" aria-live="assertive"></p>
     </form>
   </main>
 
@@ -91,7 +91,6 @@
         document.body.classList.add("modo-oscuro");
       }
 
-      // Botón cancelar vuelve atrás
       document.getElementById("btnCancelar")?.addEventListener("click", () => history.back());
     });
   </script>
