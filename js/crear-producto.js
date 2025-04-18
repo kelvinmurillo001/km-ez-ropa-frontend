@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// 📷 Vista previa
+// 📷 Vista previa corregida
 imagenInput.addEventListener("change", () => {
   const file = imagenInput.files[0];
   if (!file) return;
@@ -40,7 +40,13 @@ imagenInput.addEventListener("change", () => {
   if (file.size > 2 * 1024 * 1024) return mostrarMensaje("⚠️ Imagen supera 2MB", "error");
 
   const url = URL.createObjectURL(file);
-  previewPrincipal.innerHTML = `<img src="${url}" alt="Vista previa imagen" />`;
+  previewPrincipal.innerHTML = "";
+
+  const img = document.createElement("img");
+  img.src = url;
+  img.alt = "Vista previa imagen";
+  img.className = "preview-mini";
+  previewPrincipal.appendChild(img);
 });
 
 // 🗂️ Cargar categorías
@@ -58,13 +64,16 @@ async function cargarCategorias() {
   }
 }
 
-// ➕ Agregar nueva variante
+// ➕ Agregar nueva variante con vista previa incluida
 btnAgregarVariante.addEventListener("click", () => agregarVariante());
 
 function agregarVariante() {
   const index = variantes.length;
   const div = document.createElement("div");
   div.className = "variante-item";
+  const idInput = `imagenVariante${index}`;
+  const idPreview = `previewVariante${index}`;
+
   div.innerHTML = `
     <label>Color Variante:</label>
     <input type="color" name="colorVariante${index}" required />
@@ -73,7 +82,8 @@ function agregarVariante() {
     <input type="text" name="tallaVariante${index}" placeholder="Ej: M" required />
 
     <label>Imagen:</label>
-    <input type="file" name="imagenVariante${index}" accept="image/*" required />
+    <input type="file" id="${idInput}" name="imagenVariante${index}" accept="image/*" required />
+    <div id="${idPreview}" class="preview-imagen"></div>
 
     <label>Stock:</label>
     <input type="number" name="stockVariante${index}" min="0" value="0" required />
@@ -81,8 +91,22 @@ function agregarVariante() {
     <button type="button" class="btn-secundario" onclick="this.parentElement.remove()">❌ Quitar</button>
     <hr />
   `;
+
   variantesContainer.appendChild(div);
   variantes.push(index);
+
+  // Previsualización para la variante
+  const fileInput = div.querySelector(`#${idInput}`);
+  const previewDiv = div.querySelector(`#${idPreview}`);
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return mostrarMensaje("⚠️ Imagen no válida", "error");
+    if (file.size > 2 * 1024 * 1024) return mostrarMensaje("⚠️ Imagen supera 2MB", "error");
+
+    const url = URL.createObjectURL(file);
+    previewDiv.innerHTML = `<img src="${url}" alt="Vista previa variante" class="preview-mini" />`;
+  });
 }
 
 // ☁️ Subida de imagen
@@ -193,3 +217,4 @@ form.addEventListener("submit", async e => {
     mostrarMensaje("❌ " + err.message, "error");
   }
 });
+

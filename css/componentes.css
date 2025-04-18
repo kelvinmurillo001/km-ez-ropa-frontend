@@ -214,3 +214,17 @@
     color: #000;
   }
   
+  /* ============================
+     🖼️ IMAGEN PRINCIPAL PREVIEW
+     ============================ */
+  .imagen-preview-principal {
+    max-width: 260px;
+    max-height: 260px;
+    display: block;
+    margin: 1.5rem auto;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #ff6d00;
+    box-shadow: 0 0 12px rgba(255, 109, 0, 0.3);
+  }
+  
