@@ -51,12 +51,14 @@
       <label for="categoriaInput">Categoría: *</label>
       <select id="categoriaInput" required>
         <option value="">Selecciona una categoría</option>
+        <!-- Se llena dinámicamente -->
       </select>
 
       <!-- Subcategoría -->
       <label for="subcategoriaInput">Subcategoría:</label>
       <select id="subcategoriaInput" disabled>
         <option value="">Selecciona una subcategoría</option>
+        <!-- Se llena dinámicamente -->
       </select>
 
       <!-- Tallas -->
@@ -64,8 +66,8 @@
       <input type="text" id="tallasInput" placeholder="Ej: S, M, L, XL" />
 
       <!-- Color -->
-      <label for="colorInput">Color Principal:</label>
-      <input type="color" id="colorInput" value="#000000" />
+      <label for="colorInput">Color Principal (nombre o #HEX):</label>
+      <input type="text" id="colorInput" value="#000000" placeholder="#ff6d00 o red" maxlength="20" />
 
       <!-- Producto destacado -->
       <div class="mt-2">

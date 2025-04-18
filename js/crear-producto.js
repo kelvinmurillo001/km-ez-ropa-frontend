@@ -3,12 +3,15 @@
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
+// 🔐 Verificar sesión
 const token = verificarSesion();
 
+// Endpoints
 const API_PRODUCTS = `${API_BASE}/api/products`;
 const API_CATEGORIES = `${API_BASE}/api/categories`;
 const API_UPLOADS = `${API_BASE}/api/uploads`;
 
+// DOM Elements
 const form = document.getElementById("formProducto");
 const imagenInput = document.getElementById("imagenPrincipalInput");
 const previewPrincipal = document.getElementById("previewPrincipal");
@@ -29,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// Vista previa imagen
+// 📷 Vista previa
 imagenInput.addEventListener("change", () => {
   const file = imagenInput.files[0];
   if (!file) return;
@@ -37,10 +40,10 @@ imagenInput.addEventListener("change", () => {
   if (file.size > 2 * 1024 * 1024) return mostrarMensaje("⚠️ Imagen supera 2MB", "error");
 
   const url = URL.createObjectURL(file);
-  previewPrincipal.innerHTML = `<img src="${url}" alt="Vista previa imagen" style="max-width:200px; border-radius:8px;"/>`;
+  previewPrincipal.innerHTML = `<img src="${url}" alt="Vista previa imagen" style="max-width:200px; border-radius:8px;" />`;
 });
 
-// Cargar categorías y subcategorías
+// 📦 Cargar categorías y subcategorías
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIES);
@@ -72,7 +75,7 @@ async function cargarCategorias() {
   }
 }
 
-// Añadir variante
+// ➕ Variantes
 btnAgregarVariante.addEventListener("click", () => agregarVariante());
 
 function agregarVariante() {
@@ -81,13 +84,17 @@ function agregarVariante() {
   div.className = "variante-item";
   div.innerHTML = `
     <label>Color Variante:</label>
-    <input type="color" name="colorVariante${index}" required />
+    <input type="text" name="colorVariante${index}" placeholder="#ff0000 o red" required />
+
     <label>Talla:</label>
     <input type="text" name="tallaVariante${index}" placeholder="Ej: M" required />
+
     <label>Imagen:</label>
     <input type="file" name="imagenVariante${index}" accept="image/*" required />
+
     <label>Stock:</label>
     <input type="number" name="stockVariante${index}" min="0" value="0" required />
+
     <button type="button" class="btn-secundario" onclick="this.parentElement.remove()">❌ Quitar</button>
     <hr />
   `;
@@ -95,7 +102,7 @@ function agregarVariante() {
   variantes.push(index);
 }
 
-// Subir imagen
+// ☁️ Subida de imagen
 async function subirImagen(file) {
   const formData = new FormData();
   formData.append("image", file);
@@ -115,7 +122,7 @@ async function subirImagen(file) {
   };
 }
 
-// Guardar producto
+// 📤 Guardar producto
 form.addEventListener("submit", async e => {
   e.preventDefault();
 
@@ -126,7 +133,7 @@ form.addEventListener("submit", async e => {
   const categoria = categoriaInput.value;
   const subcategoria = subcategoriaInput?.value || null;
   const destacado = document.getElementById("destacadoInput")?.checked || false;
-  const color = form.colorInput.value;
+  const color = form.colorInput.value.trim();
   const tallas = form.tallasInput.value.split(",").map(t => t.trim()).filter(Boolean);
   const filePrincipal = imagenInput.files[0];
 
@@ -141,7 +148,7 @@ form.addEventListener("submit", async e => {
     const variantesFinales = [];
 
     for (const v of variantesContainer.querySelectorAll(".variante-item")) {
-      const colorInput = v.querySelector("input[type='color']");
+      const colorInput = v.querySelector("input[name^='color']");
       const tallaInput = v.querySelector("input[name^='talla']");
       const stockInput = v.querySelector("input[type='number']");
       const fileInput = v.querySelector("input[type='file']");
@@ -158,7 +165,7 @@ form.addEventListener("submit", async e => {
       variantesFinales.push({
         imageUrl: subida.url,
         cloudinaryId: subida.public_id,
-        color: colorInput.value,
+        color: colorInput.value.trim(),
         talla: tallaInput.value.trim(),
         stock: parseInt(stockInput.value) || 0
       });
