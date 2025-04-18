@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// 📷 Vista previa
+// 📷 Vista previa de imagen principal
 imagenInput.addEventListener("change", () => {
   const file = imagenInput.files[0];
   if (!file) return;
@@ -75,7 +75,7 @@ async function cargarCategorias() {
   }
 }
 
-// ➕ Variantes
+// ➕ Agregar variante
 btnAgregarVariante.addEventListener("click", () => agregarVariante());
 
 function agregarVariante() {
@@ -83,8 +83,8 @@ function agregarVariante() {
   const div = document.createElement("div");
   div.className = "variante-item";
   div.innerHTML = `
-    <label>Color Variante:</label>
-    <input type="text" name="colorVariante${index}" placeholder="#ff0000 o red" required />
+    <label>Color Variante (nombre):</label>
+    <input type="text" name="colorVariante${index}" placeholder="Ej: rojo, gris" required />
 
     <label>Talla:</label>
     <input type="text" name="tallaVariante${index}" placeholder="Ej: M" required />
@@ -102,7 +102,7 @@ function agregarVariante() {
   variantes.push(index);
 }
 
-// ☁️ Subida de imagen
+// ☁️ Subir imagen a servidor
 async function subirImagen(file) {
   const formData = new FormData();
   formData.append("image", file);
@@ -122,7 +122,7 @@ async function subirImagen(file) {
   };
 }
 
-// 📤 Guardar producto
+// 📤 Enviar formulario
 form.addEventListener("submit", async e => {
   e.preventDefault();
 
