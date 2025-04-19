@@ -1,4 +1,4 @@
-/* === BASE === */
+/* === BASE === */ 
 body {
   background-color: #121212;
   color: #f5f5f5;
@@ -171,6 +171,45 @@ form select:focus {
   color: red;
   background-color: #2a0000;
   border: 1px solid red;
+}
+
+/* === MENSAJES ADMIN (💬 mostrarMensaje) === */
+#adminMensaje {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  background-color: #222;
+  color: #fff;
+  border: 2px solid transparent;
+  z-index: 1000;
+  transition: opacity 0.4s ease;
+}
+
+#adminMensaje.success {
+  border-color: limegreen;
+  background-color: #163f16;
+  color: #adffad;
+}
+
+#adminMensaje.error {
+  border-color: red;
+  background-color: #4a1212;
+  color: #ffc1c1;
+}
+
+#adminMensaje.info {
+  border-color: #ffa733;
+  background-color: #2e1a00;
+  color: #fff5d1;
+}
+
+#adminMensaje.oculto {
+  display: none;
 }
 
 /* === RESPONSIVE === */

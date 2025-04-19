@@ -12,12 +12,13 @@ export function verificarSesion() {
   try {
     user = JSON.parse(userRaw);
   } catch (e) {
-    console.warn("⚠️ admin_user malformado");
+    console.warn("⚠️ admin_user malformado, limpiando localStorage...");
+    localStorage.clear();
   }
 
   if (!token || !user?.isAdmin) {
     alert("⚠️ Acceso denegado. Inicia sesión como administrador.");
-    localStorage.clear(); // 🔄 Limpia datos corruptos
+    localStorage.clear();
     window.location.href = "/login.html";
     throw new Error("Usuario no autenticado o no autorizado");
   }
@@ -28,18 +29,21 @@ export function verificarSesion() {
 /**
  * 💬 Mostrar mensaje flotante en el elemento con ID 'adminMensaje'
  * @param {string} texto - Texto del mensaje
- * @param {'success'|'error'|'info'} tipo - Tipo de mensaje (default: 'info')
+ * @param {'success'|'error'|'info'} tipo - Tipo de mensaje
  */
 export function mostrarMensaje(texto, tipo = "info") {
   const mensaje = document.getElementById("adminMensaje");
 
   if (!mensaje) {
-    console.warn("⚠️ adminMensaje no encontrado. Usando alert.");
+    console.warn("⚠️ adminMensaje no encontrado. Usando alert como fallback.");
     alert(texto);
     return;
   }
 
+  // Limpieza previa
   mensaje.className = `admin-message oculto ${tipo}`;
+  mensaje.setAttribute("role", "status");
+  mensaje.setAttribute("aria-live", "polite");
   mensaje.textContent = texto;
   mensaje.classList.remove("oculto");
 
@@ -57,7 +61,7 @@ export function goBack() {
 }
 
 /**
- * 🚪 Cierra la sesión eliminando el token y redirigiendo a login
+ * 🚪 Cierra la sesión limpiando tokens y redirigiendo
  */
 export function cerrarSesion() {
   localStorage.removeItem("admin_token");
@@ -66,8 +70,8 @@ export function cerrarSesion() {
 }
 
 /**
- * 🙋‍♂️ Retorna la información del usuario autenticado
- * @returns {Object} usuario
+ * 🙋‍♂️ Devuelve el usuario autenticado (o {} si falla)
+ * @returns {Object}
  */
 export function getUsuarioActivo() {
   try {
@@ -77,5 +81,5 @@ export function getUsuarioActivo() {
   }
 }
 
-// 🌐 Expone cerrarSesion globalmente por si se usa en HTML
+// 🌍 Exponer cerrarSesion por si se invoca desde HTML
 window.cerrarSesion = cerrarSesion;
