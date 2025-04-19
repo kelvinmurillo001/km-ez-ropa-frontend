@@ -19,10 +19,21 @@ const variantesContainer = document.getElementById("variantesContainer");
 const btnAgregarVariante = document.getElementById("btnAgregarVariante");
 const categoriaInput = document.getElementById("categoriaInput");
 const subcategoriaInput = document.getElementById("subcategoriaInput");
+const tallaTipoInput = document.getElementById("tallaTipoInput");
+const tallasInput = document.getElementById("tallasInput");
 const msgEstado = document.getElementById("msgEstado");
 
 let variantes = [];
 let categoriasConSubcategorias = [];
+
+// Tallas automáticas por tipo
+const tallasPorTipo = {
+  adulto: ["S", "M", "L", "XL", "XXL", "XXXL"],
+  joven: ["S", "M", "L", "XL"],
+  niño: ["1", "2", "3", "4", "5", "6", "8", "10", "12"],
+  niña: ["1", "2", "3", "4", "5", "6", "8", "10", "12"],
+  bebé: ["0-3", "3-6", "6-9", "9-12", "12-18", "18-24"]
+};
 
 document.addEventListener("DOMContentLoaded", async () => {
   await cargarCategorias();
@@ -32,7 +43,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// 📷 Vista previa de imagen principal
+// Auto completar tallas según tipo
+tallaTipoInput.addEventListener("change", () => {
+  const tipo = tallaTipoInput.value.toLowerCase();
+  tallasInput.value = tallasPorTipo[tipo]?.join(", ") || "";
+});
+
+// Imagen principal preview
 imagenInput.addEventListener("change", () => {
   const file = imagenInput.files[0];
   if (!file) return;
@@ -43,7 +60,7 @@ imagenInput.addEventListener("change", () => {
   previewPrincipal.innerHTML = `<img src="${url}" alt="Vista previa imagen" style="max-width:200px; border-radius:8px;" />`;
 });
 
-// 📦 Cargar categorías y subcategorías
+// Cargar categorías
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIES);
@@ -51,7 +68,6 @@ async function cargarCategorias() {
     if (!res.ok || !Array.isArray(data)) throw new Error();
 
     categoriasConSubcategorias = data;
-
     categoriaInput.innerHTML = `<option value="">Selecciona categoría</option>` +
       data.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join("");
 
@@ -68,14 +84,13 @@ async function cargarCategorias() {
         subcategoriaInput.disabled = true;
       }
     });
-
   } catch (err) {
     console.error("❌ Error al cargar categorías:", err);
     mostrarMensaje("❌ No se pudieron cargar las categorías", "error");
   }
 }
 
-// ➕ Agregar variante
+// Agregar variante
 btnAgregarVariante.addEventListener("click", () => agregarVariante());
 
 function agregarVariante() {
@@ -102,7 +117,7 @@ function agregarVariante() {
   variantes.push(index);
 }
 
-// ☁️ Subir imagen a servidor
+// Subir imagen a servidor
 async function subirImagen(file) {
   const formData = new FormData();
   formData.append("image", file);
@@ -122,7 +137,7 @@ async function subirImagen(file) {
   };
 }
 
-// 📤 Enviar formulario
+// Enviar formulario
 form.addEventListener("submit", async e => {
   e.preventDefault();
 
@@ -132,13 +147,14 @@ form.addEventListener("submit", async e => {
   const stock = parseInt(form.stockInput.value);
   const categoria = categoriaInput.value;
   const subcategoria = subcategoriaInput?.value || null;
-  const destacado = document.getElementById("destacadoInput")?.checked || false;
+  const tallaTipo = tallaTipoInput?.value || "";
   const color = form.colorInput.value.trim();
   const tallas = form.tallasInput.value.split(",").map(t => t.trim()).filter(Boolean);
+  const destacado = document.getElementById("destacadoInput")?.checked || false;
   const filePrincipal = imagenInput.files[0];
 
   if (!filePrincipal) return mostrarMensaje("⚠️ Imagen principal requerida", "error");
-  if (!nombre || !descripcion || isNaN(precio) || isNaN(stock) || !categoria)
+  if (!nombre || !descripcion || isNaN(precio) || isNaN(stock) || !categoria || !tallaTipo)
     return mostrarMensaje("⚠️ Completa todos los campos obligatorios", "error");
 
   try {
@@ -178,11 +194,17 @@ form.addEventListener("submit", async e => {
       stock,
       category: categoria,
       subcategory: subcategoria,
+      tallaTipo,
       color,
       sizes: tallas,
       featured: destacado,
       variants: variantesFinales,
-      images: [imagenPrincipal]
+      images: [{
+        url: imagenPrincipal.url,
+        cloudinaryId: imagenPrincipal.public_id,
+        talla: tallas[0] || "única",
+        color: color
+      }]
     };
 
     msgEstado.textContent = "⏳ Guardando producto...";
