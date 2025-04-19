@@ -1,6 +1,6 @@
 "use strict";
 
-// ✅ Importar configuración base
+// ✅ Configuración base
 import { API_BASE } from "./config.js";
 
 const STORAGE_KEY = "km_ez_cart";
@@ -10,10 +10,11 @@ const resumenPedido = document.getElementById("resumenPedido");
 const totalFinal = document.getElementById("totalFinal");
 const form = document.getElementById("formCheckout");
 const msgEstado = document.getElementById("msgEstado");
+const metodoPagoInputs = document.querySelectorAll("input[name='metodoPago']");
 
 const API_ORDERS = `${API_BASE}/api/orders`;
 
-// ▶️ Mostrar resumen de pedido
+// ▶️ Renderizar resumen de carrito
 document.addEventListener("DOMContentLoaded", () => {
   if (!Array.isArray(carrito) || carrito.length === 0) {
     resumenPedido.innerHTML = `<p>⚠️ Tu carrito está vacío.</p>`;
@@ -50,8 +51,9 @@ form?.addEventListener("submit", async e => {
   const email = document.getElementById("emailInput").value.trim();
   const telefono = document.getElementById("telefonoInput").value.trim();
   const direccion = document.getElementById("direccionInput").value.trim();
+  const metodoPago = getMetodoPagoSeleccionado();
 
-  if (!nombre || !email || !telefono || !direccion) {
+  if (!nombre || !email || !telefono || !direccion || !metodoPago) {
     msgEstado.textContent = "❌ Todos los campos son obligatorios.";
     return;
   }
@@ -76,6 +78,7 @@ form?.addEventListener("submit", async e => {
     telefono,
     nota: sanitizeText(direccion),
     total,
+    metodoPago,
     items: carrito.map(item => ({
       productId: item.id || null,
       name: sanitizeText(item.nombre || ""),
@@ -106,6 +109,12 @@ form?.addEventListener("submit", async e => {
     msgEstado.textContent = "❌ No se pudo enviar el pedido. Intenta nuevamente.";
   }
 });
+
+// ✅ Obtener método de pago seleccionado
+function getMetodoPagoSeleccionado() {
+  const seleccionado = Array.from(metodoPagoInputs).find(input => input.checked);
+  return seleccionado?.value || null;
+}
 
 // ✅ Validar formato de email
 function validarEmail(email) {

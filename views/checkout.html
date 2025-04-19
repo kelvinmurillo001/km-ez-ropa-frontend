@@ -40,6 +40,26 @@
         <textarea id="direccionInput" name="direccion" required placeholder="Calle 123, Ciudad, Región" autocomplete="street-address"></textarea>
       </fieldset>
 
+      <!-- 💳 Método de Pago -->
+      <fieldset aria-labelledby="metodoPagoTitulo" class="mt-3">
+        <legend id="metodoPagoTitulo">💳 Método de Pago</legend>
+
+        <div class="radio-group">
+          <label>
+            <input type="radio" name="metodoPago" value="transferencia" checked />
+            📎 Transferencia Bancaria
+          </label>
+          <label>
+            <input type="radio" name="metodoPago" value="tarjeta" />
+            💳 Tarjeta de Crédito / Débito
+          </label>
+          <label>
+            <input type="radio" name="metodoPago" value="paypal" />
+            🅿️ PayPal
+          </label>
+        </div>
+      </fieldset>
+
       <!-- 🛍️ Resumen del pedido -->
       <fieldset class="mt-3" aria-labelledby="resumenPedidoTitulo">
         <legend id="resumenPedidoTitulo">🛍️ Tu Pedido</legend>
