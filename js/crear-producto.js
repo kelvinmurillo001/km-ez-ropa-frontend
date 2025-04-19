@@ -1,10 +1,11 @@
 "use strict";
 
-import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
+import { verificarSesion, goBack, mostrarMensaje, getUsuarioActivo } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
 // 🔐 Verificar sesión
 const token = verificarSesion();
+const user = getUsuarioActivo();
 
 // Endpoints
 const API_PRODUCTS = `${API_BASE}/api/products`;
@@ -26,7 +27,6 @@ const msgEstado = document.getElementById("msgEstado");
 let variantes = [];
 let categoriasConSubcategorias = [];
 
-// Tallas automáticas por tipo
 const tallasPorTipo = {
   adulto: ["S", "M", "L", "XL", "XXL", "XXXL"],
   joven: ["S", "M", "L", "XL"],
@@ -43,13 +43,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// Auto completar tallas según tipo
 tallaTipoInput.addEventListener("change", () => {
   const tipo = tallaTipoInput.value.toLowerCase();
   tallasInput.value = tallasPorTipo[tipo]?.join(", ") || "";
 });
 
-// Imagen principal preview
 imagenInput.addEventListener("change", () => {
   const file = imagenInput.files[0];
   if (!file) return;
@@ -60,7 +58,6 @@ imagenInput.addEventListener("change", () => {
   previewPrincipal.innerHTML = `<img src="${url}" alt="Vista previa imagen" style="max-width:200px; border-radius:8px;" />`;
 });
 
-// Cargar categorías
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIES);
@@ -90,7 +87,6 @@ async function cargarCategorias() {
   }
 }
 
-// Agregar variante
 btnAgregarVariante.addEventListener("click", () => agregarVariante());
 
 function agregarVariante() {
@@ -100,16 +96,12 @@ function agregarVariante() {
   div.innerHTML = `
     <label>Color Variante (nombre):</label>
     <input type="text" name="colorVariante${index}" placeholder="Ej: rojo, gris" required />
-
     <label>Talla:</label>
     <input type="text" name="tallaVariante${index}" placeholder="Ej: M" required />
-
     <label>Imagen:</label>
     <input type="file" name="imagenVariante${index}" accept="image/*" required />
-
     <label>Stock:</label>
     <input type="number" name="stockVariante${index}" min="0" value="0" required />
-
     <button type="button" class="btn-secundario" onclick="this.parentElement.remove()">❌ Quitar</button>
     <hr />
   `;
@@ -117,7 +109,6 @@ function agregarVariante() {
   variantes.push(index);
 }
 
-// Subir imagen a servidor
 async function subirImagen(file) {
   const formData = new FormData();
   formData.append("image", file);
@@ -137,7 +128,6 @@ async function subirImagen(file) {
   };
 }
 
-// Enviar formulario
 form.addEventListener("submit", async e => {
   e.preventDefault();
 
@@ -204,7 +194,8 @@ form.addEventListener("submit", async e => {
         cloudinaryId: imagenPrincipal.public_id,
         talla: tallas[0] || "única",
         color: color
-      }]
+      }],
+      createdBy: user?.name || "admin"
     };
 
     msgEstado.textContent = "⏳ Guardando producto...";

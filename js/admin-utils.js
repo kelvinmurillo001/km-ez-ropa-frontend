@@ -17,7 +17,7 @@ export function verificarSesion() {
 
   if (!token || !user?.isAdmin) {
     alert("⚠️ Acceso denegado. Inicia sesión como administrador.");
-    localStorage.clear(); // Extra: limpia datos corruptos
+    localStorage.clear(); // 🔄 Limpia datos corruptos
     window.location.href = "/login.html";
     throw new Error("Usuario no autenticado o no autorizado");
   }
@@ -34,25 +34,23 @@ export function mostrarMensaje(texto, tipo = "info") {
   const mensaje = document.getElementById("adminMensaje");
 
   if (!mensaje) {
-    alert(texto); // Fallback para desarrollo si falta el contenedor
+    console.warn("⚠️ adminMensaje no encontrado. Usando alert.");
+    alert(texto);
     return;
   }
 
-  // Asegura limpieza antes de aplicar clase
-  mensaje.className = "admin-message oculto"; 
-  mensaje.classList.add(tipo); // e.g., .success, .error
-
+  mensaje.className = `admin-message oculto ${tipo}`;
   mensaje.textContent = texto;
   mensaje.classList.remove("oculto");
 
-  clearTimeout(mensaje._timeout); // evita superposición
+  clearTimeout(mensaje._timeout);
   mensaje._timeout = setTimeout(() => {
     mensaje.classList.add("oculto");
   }, 4000);
 }
 
 /**
- * 🔙 Regresar al panel de administración
+ * 🔙 Regresa al panel de administración
  */
 export function goBack() {
   window.location.href = "/panel.html";
@@ -78,4 +76,6 @@ export function getUsuarioActivo() {
     return {};
   }
 }
+
+// 🌐 Expone cerrarSesion globalmente por si se usa en HTML
 window.cerrarSesion = cerrarSesion;
