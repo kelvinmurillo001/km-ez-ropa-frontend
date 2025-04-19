@@ -5,36 +5,36 @@ const carritoItems = document.getElementById("carritoItems");
 const carritoTotal = document.getElementById("carritoTotal");
 const btnIrCheckout = document.getElementById("btnIrCheckout");
 
-// 🔐 Clave para localStorage
+// 🔐 Clave de almacenamiento
 const STORAGE_KEY = "km_ez_cart";
 let carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
-// ▶️ Iniciar
+// ▶️ Inicializar al cargar
 document.addEventListener("DOMContentLoaded", () => {
-  filtrarItemsInvalidos();
+  limpiarItemsInvalidos();
   renderizarCarrito();
   btnIrCheckout?.addEventListener("click", irACheckout);
 });
 
-// ✅ Eliminar productos corruptos
-function filtrarItemsInvalidos() {
-  carrito = carrito.filter(p =>
-    p &&
-    typeof p.nombre === "string" &&
-    typeof p.precio === "number" &&
-    typeof p.cantidad === "number" &&
-    !isNaN(p.precio) &&
-    !isNaN(p.cantidad)
+// ✅ Filtrar y eliminar productos corruptos
+function limpiarItemsInvalidos() {
+  carrito = carrito.filter(item =>
+    item &&
+    typeof item.nombre === "string" &&
+    typeof item.precio === "number" &&
+    typeof item.cantidad === "number" &&
+    !isNaN(item.precio) &&
+    !isNaN(item.cantidad)
   );
   guardarCarrito();
 }
 
-// 🧠 Renderizar carrito completo
+// 🧠 Mostrar carrito
 function renderizarCarrito() {
   if (!carrito.length) {
     carritoItems.innerHTML = `<p class="text-center">🛍️ Tu carrito está vacío.</p>`;
     carritoTotal.textContent = "$0.00";
-    btnIrCheckout.disabled = true;
+    if (btnIrCheckout) btnIrCheckout.disabled = true;
     return;
   }
 
@@ -46,7 +46,6 @@ function renderizarCarrito() {
     const talla = sanitizeText(item.talla || "Única");
     const precio = isNaN(item.precio) ? 0 : item.precio;
     const cantidad = isNaN(item.cantidad) || item.cantidad < 1 ? 1 : item.cantidad;
-
     const subtotal = (precio * cantidad).toFixed(2);
 
     const div = document.createElement("div");
@@ -58,8 +57,8 @@ function renderizarCarrito() {
         <p><strong>Talla:</strong> ${talla}</p>
         <p><strong>Precio:</strong> $${precio.toFixed(2)}</p>
         <div class="carrito-cantidad">
-          <label>Cantidad:</label>
-          <input type="number" min="1" max="100" value="${cantidad}" data-index="${index}" />
+          <label for="cantidad_${index}">Cantidad:</label>
+          <input type="number" id="cantidad_${index}" min="1" max="100" value="${cantidad}" data-index="${index}" />
         </div>
         <p><strong>Subtotal:</strong> $${subtotal}</p>
         <button class="btn-eliminar" data-index="${index}">🗑️ Eliminar</button>
@@ -72,7 +71,7 @@ function renderizarCarrito() {
   agregarListeners();
 }
 
-// 💰 Calcular y mostrar total
+// 💰 Calcular total
 function actualizarTotal() {
   const total = carrito.reduce((acc, item) => {
     const precio = isNaN(item.precio) ? 0 : item.precio;
@@ -81,19 +80,21 @@ function actualizarTotal() {
   }, 0);
 
   carritoTotal.textContent = `$${total.toFixed(2)}`;
-  btnIrCheckout.disabled = carrito.length === 0;
+  if (btnIrCheckout) btnIrCheckout.disabled = carrito.length === 0;
 }
 
-// 🎯 Listeners dinámicos
+// 🎯 Listeners de cantidad y eliminar
 function agregarListeners() {
   // Cambiar cantidad
   document.querySelectorAll(".carrito-cantidad input").forEach(input => {
     input.addEventListener("change", e => {
       const i = parseInt(e.target.dataset.index);
       const nuevaCantidad = Math.max(1, Math.min(100, parseInt(e.target.value) || 1));
-      carrito[i].cantidad = nuevaCantidad;
-      guardarCarrito();
-      renderizarCarrito();
+      if (!isNaN(i) && carrito[i]) {
+        carrito[i].cantidad = nuevaCantidad;
+        guardarCarrito();
+        renderizarCarrito();
+      }
     });
   });
 
@@ -101,10 +102,13 @@ function agregarListeners() {
   document.querySelectorAll(".btn-eliminar").forEach(btn => {
     btn.addEventListener("click", e => {
       const i = parseInt(e.target.dataset.index);
-      if (confirm("¿Eliminar este producto del carrito?")) {
-        carrito.splice(i, 1);
-        guardarCarrito();
-        renderizarCarrito();
+      if (!isNaN(i) && carrito[i]) {
+        const confirmar = confirm("¿Eliminar este producto del carrito?");
+        if (confirmar) {
+          carrito.splice(i, 1);
+          guardarCarrito();
+          renderizarCarrito();
+        }
       }
     });
   });
@@ -115,24 +119,24 @@ function guardarCarrito() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(carrito));
 }
 
-// 🚀 Navegar a checkout
+// 🚀 Ir a checkout
 function irACheckout() {
   if (carrito.length > 0) {
     window.location.href = "/checkout.html";
   }
 }
 
-// 🧼 Sanitizar texto
+// 🔐 Sanitizar texto
 function sanitizeText(str) {
   const temp = document.createElement("div");
   temp.textContent = str;
   return temp.innerHTML;
 }
 
-// 🧼 Sanitizar URL
+// 🔐 Sanitizar URL
 function sanitizeURL(url) {
   try {
-    return new URL(url).href;
+    return new URL(url, window.location.origin).href;
   } catch {
     return "/assets/logo.jpg";
   }

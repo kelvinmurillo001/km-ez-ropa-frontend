@@ -19,31 +19,31 @@
 </head>
 <body>
 
-  <main class="checkout-container fade-in" role="main">
+  <main class="checkout-container fade-in" role="main" aria-label="Formulario de finalización de compra">
     <h1 class="text-center">✅ Finalizar Compra</h1>
 
-    <form id="formCheckout" class="form-checkout" novalidate>
+    <form id="formCheckout" class="form-checkout" novalidate autocomplete="on">
       <!-- 🧍 Datos del cliente -->
       <fieldset aria-labelledby="datosCliente">
         <legend id="datosCliente">🧍 Tus Datos</legend>
 
         <label for="nombreInput">Nombre Completo:</label>
-        <input type="text" id="nombreInput" required />
+        <input type="text" id="nombreInput" name="nombre" required placeholder="Ej: Juan Pérez" autocomplete="name" />
 
         <label for="emailInput">Correo Electrónico:</label>
-        <input type="email" id="emailInput" required />
+        <input type="email" id="emailInput" name="email" required placeholder="ejemplo@correo.com" autocomplete="email" />
 
         <label for="telefonoInput">Teléfono:</label>
-        <input type="tel" id="telefonoInput" required />
+        <input type="tel" id="telefonoInput" name="telefono" required placeholder="Ej: +56912345678" autocomplete="tel" />
 
         <label for="direccionInput">Dirección de Entrega:</label>
-        <textarea id="direccionInput" required></textarea>
+        <textarea id="direccionInput" name="direccion" required placeholder="Calle 123, Ciudad, Región" autocomplete="street-address"></textarea>
       </fieldset>
 
       <!-- 🛍️ Resumen del pedido -->
       <fieldset class="mt-3" aria-labelledby="resumenPedidoTitulo">
         <legend id="resumenPedidoTitulo">🛍️ Tu Pedido</legend>
-        <div id="resumenPedido">
+        <div id="resumenPedido" aria-live="polite">
           <!-- JS insertará productos aquí -->
         </div>
         <h3>Total: <span id="totalFinal">$0.00</span></h3>
@@ -55,7 +55,7 @@
         <button type="button" onclick="window.location.href='/carrito.html'" class="btn-secundario" aria-label="Volver al carrito">🔙 Volver al Carrito</button>
       </div>
 
-      <p id="msgEstado" class="form-msg text-center mt-2" role="alert"></p>
+      <p id="msgEstado" class="form-msg text-center mt-2" role="alert" aria-live="assertive"></p>
     </form>
   </main>
 

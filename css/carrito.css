@@ -1,15 +1,22 @@
+/* === BASE === */
 body {
   background-color: #121212;
   color: #e0e0e0;
   font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
 }
 
+/* === TÍTULO === */
 h1 {
   color: #ff6d00;
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
 }
 
+/* === CONTENEDOR PRINCIPAL === */
 .carrito-container {
   max-width: 1000px;
   margin: auto;
@@ -31,6 +38,7 @@ h1 {
   padding: 1rem;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(255, 109, 0, 0.1);
+  flex-wrap: wrap;
 }
 
 .carrito-img {
@@ -41,6 +49,7 @@ h1 {
   border: 2px solid #ff6d00;
 }
 
+/* === DETALLES === */
 .carrito-detalles {
   flex-grow: 1;
   display: flex;
@@ -54,6 +63,7 @@ h1 {
   color: #ffa733;
 }
 
+/* === CANTIDAD === */
 .carrito-cantidad {
   display: flex;
   align-items: center;
@@ -62,26 +72,33 @@ h1 {
 
 .carrito-cantidad input {
   width: 60px;
-  padding: 0.3rem;
+  padding: 0.4rem;
   background-color: #222;
   color: #fff;
   border: 1px solid #444;
   border-radius: 4px;
   text-align: center;
+  font-size: 1rem;
 }
 
-/* === BOTONES === */
+.carrito-cantidad input:focus {
+  outline: none;
+  border-color: #ff6d00;
+  box-shadow: 0 0 5px rgba(255, 109, 0, 0.4);
+}
+
+/* === BOTÓN ELIMINAR === */
 .btn-eliminar {
   background-color: transparent;
   border: 2px solid #ff3d00;
   color: #ff3d00;
-  padding: 0.4rem 0.8rem;
+  padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;
-  width: fit-content;
-  min-width: 100px;
   text-align: center;
+  font-weight: bold;
+  font-size: 0.95rem;
 }
 
 .btn-eliminar:hover {
@@ -92,28 +109,31 @@ h1 {
 /* === RESUMEN TOTAL === */
 .carrito-resumen {
   margin-top: 2rem;
-  padding: 1rem;
+  padding: 1.5rem;
   background-color: #1a1a1a;
   border: 1px solid #333;
   border-radius: 8px;
   text-align: center;
+  box-shadow: 0 0 15px rgba(255, 109, 0, 0.1);
 }
 
 .carrito-resumen h3 {
   font-size: 1.4rem;
   margin-bottom: 1rem;
-  font-weight: bold;
+  color: #00e676;
 }
 
+/* === BOTONES === */
 .botones-carrito {
   display: flex;
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
+  margin-top: 1.2rem;
 }
 
 .btn, .btn-secundario {
-  padding: 0.7rem 1.5rem;
+  padding: 0.8rem 1.6rem;
   font-size: 1rem;
   font-weight: bold;
   border-radius: 6px;
@@ -147,6 +167,7 @@ h1 {
   .carrito-item {
     flex-direction: column;
     align-items: center;
+    text-align: center;
   }
 
   .carrito-img {
@@ -160,5 +181,6 @@ h1 {
 
   .botones-carrito {
     flex-direction: column;
+    align-items: center;
   }
 }

@@ -1,6 +1,6 @@
 "use strict";
 
-// ✅ Importar configuración
+// ✅ Importar configuración base
 import { API_BASE } from "./config.js";
 
 const STORAGE_KEY = "km_ez_cart";
@@ -13,18 +13,18 @@ const msgEstado = document.getElementById("msgEstado");
 
 const API_ORDERS = `${API_BASE}/api/orders`;
 
-// ▶️ Mostrar resumen
+// ▶️ Mostrar resumen de pedido
 document.addEventListener("DOMContentLoaded", () => {
-  if (carrito.length === 0) {
+  if (!Array.isArray(carrito) || carrito.length === 0) {
     resumenPedido.innerHTML = `<p>⚠️ Tu carrito está vacío.</p>`;
     totalFinal.textContent = "$0.00";
-    form?.querySelector("button[type='submit']").disabled = true;
+    form?.querySelector("button[type='submit']")?.setAttribute("disabled", "true");
     return;
   }
 
   let total = 0;
   resumenPedido.innerHTML = carrito.map(item => {
-    const nombre = sanitizeText(item.nombre);
+    const nombre = sanitizeText(item.nombre || "Producto sin nombre");
     const talla = sanitizeText(item.talla || "Única");
     const cantidad = parseInt(item.cantidad) || 0;
     const precio = parseFloat(item.precio) || 0;
@@ -62,7 +62,7 @@ form?.addEventListener("submit", async e => {
   }
 
   if (!/^[0-9+\-\s]{7,15}$/.test(telefono)) {
-    msgEstado.textContent = "❌ Teléfono inválido.";
+    msgEstado.textContent = "❌ Teléfono inválido. Usa solo dígitos, espacios, + o -";
     return;
   }
 
@@ -77,9 +77,9 @@ form?.addEventListener("submit", async e => {
     nota: sanitizeText(direccion),
     total,
     items: carrito.map(item => ({
-      productId: item.id,
-      name: sanitizeText(item.nombre),
-      talla: sanitizeText(item.talla),
+      productId: item.id || null,
+      name: sanitizeText(item.nombre || ""),
+      talla: sanitizeText(item.talla || ""),
       cantidad: parseInt(item.cantidad) || 1,
       precio: parseFloat(item.precio) || 0
     }))
@@ -92,7 +92,7 @@ form?.addEventListener("submit", async e => {
       body: JSON.stringify(pedido)
     });
 
-    if (!res.ok) throw new Error("Error al enviar pedido");
+    if (!res.ok) throw new Error("Error al enviar el pedido");
 
     msgEstado.textContent = "✅ Pedido enviado con éxito. ¡Gracias por tu compra!";
     localStorage.removeItem(STORAGE_KEY);
@@ -107,13 +107,13 @@ form?.addEventListener("submit", async e => {
   }
 });
 
-// === VALIDACIONES ===
+// ✅ Validar formato de email
 function validarEmail(email) {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   return regex.test(email);
 }
 
-// === Sanitización de texto
+// ✅ Sanitizar texto para prevenir XSS
 function sanitizeText(text) {
   const temp = document.createElement("div");
   temp.textContent = text;
