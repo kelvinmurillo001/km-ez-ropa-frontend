@@ -10,11 +10,10 @@ const resumenPedido = document.getElementById("resumenPedido");
 const totalFinal = document.getElementById("totalFinal");
 const form = document.getElementById("formCheckout");
 const msgEstado = document.getElementById("msgEstado");
-const metodoPagoInputs = document.querySelectorAll("input[name='metodoPago']");
 
 const API_ORDERS = `${API_BASE}/api/orders`;
 
-// ▶️ Renderizar resumen de carrito
+// ▶️ Mostrar resumen del pedido
 document.addEventListener("DOMContentLoaded", () => {
   if (!Array.isArray(carrito) || carrito.length === 0) {
     resumenPedido.innerHTML = `<p>⚠️ Tu carrito está vacío.</p>`;
@@ -51,7 +50,7 @@ form?.addEventListener("submit", async e => {
   const email = document.getElementById("emailInput").value.trim();
   const telefono = document.getElementById("telefonoInput").value.trim();
   const direccion = document.getElementById("direccionInput").value.trim();
-  const metodoPago = getMetodoPagoSeleccionado();
+  const metodoPago = document.querySelector("input[name='metodoPago']:checked")?.value;
 
   if (!nombre || !email || !telefono || !direccion || !metodoPago) {
     msgEstado.textContent = "❌ Todos los campos son obligatorios.";
@@ -64,7 +63,7 @@ form?.addEventListener("submit", async e => {
   }
 
   if (!/^[0-9+\-\s]{7,15}$/.test(telefono)) {
-    msgEstado.textContent = "❌ Teléfono inválido. Usa solo dígitos, espacios, + o -";
+    msgEstado.textContent = "❌ Teléfono inválido.";
     return;
   }
 
@@ -76,9 +75,9 @@ form?.addEventListener("submit", async e => {
     nombreCliente: sanitizeText(nombre),
     email,
     telefono,
-    nota: sanitizeText(direccion),
-    total,
+    direccion: sanitizeText(direccion),
     metodoPago,
+    total,
     items: carrito.map(item => ({
       productId: item.id || null,
       name: sanitizeText(item.nombre || ""),
@@ -110,21 +109,47 @@ form?.addEventListener("submit", async e => {
   }
 });
 
-// ✅ Obtener método de pago seleccionado
-function getMetodoPagoSeleccionado() {
-  const seleccionado = Array.from(metodoPagoInputs).find(input => input.checked);
-  return seleccionado?.value || null;
-}
-
 // ✅ Validar formato de email
 function validarEmail(email) {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   return regex.test(email);
 }
 
-// ✅ Sanitizar texto para prevenir XSS
+// ✅ Sanitizar texto
 function sanitizeText(text) {
   const temp = document.createElement("div");
   temp.textContent = text;
   return temp.innerHTML;
 }
+
+// 🌍 Obtener ubicación del cliente
+function obtenerUbicacion() {
+  if (!navigator.geolocation) {
+    msgEstado.textContent = "⚠️ Tu navegador no soporta geolocalización.";
+    return;
+  }
+
+  msgEstado.textContent = "📍 Obteniendo ubicación...";
+
+  navigator.geolocation.getCurrentPosition(
+    async position => {
+      const { latitude, longitude } = position.coords;
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
+        const data = await res.json();
+        const direccion = data.display_name || `${latitude}, ${longitude}`;
+        document.getElementById("direccionInput").value = direccion;
+        msgEstado.textContent = "✅ Dirección sugerida completada automáticamente.";
+      } catch (err) {
+        console.error("Error al obtener dirección:", err);
+        msgEstado.textContent = "❌ No se pudo obtener la dirección.";
+      }
+    },
+    () => {
+      msgEstado.textContent = "❌ No se pudo acceder a la ubicación.";
+    }
+  );
+}
+
+// ✅ Exponer al HTML
+window.obtenerUbicacion = obtenerUbicacion;
