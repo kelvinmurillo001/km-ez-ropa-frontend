@@ -63,7 +63,7 @@ form?.addEventListener("submit", async e => {
   }
 
   if (!/^[0-9+\-\s]{7,15}$/.test(telefono)) {
-    msgEstado.textContent = "❌ Teléfono inválido.";
+    msgEstado.textContent = "❌ Teléfono inválido. Usa solo dígitos, espacios, + o -";
     return;
   }
 
@@ -151,5 +151,5 @@ function obtenerUbicacion() {
   );
 }
 
-// ✅ Exponer al HTML
+// ✅ Exponer para botón en HTML
 window.obtenerUbicacion = obtenerUbicacion;

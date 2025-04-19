@@ -15,7 +15,7 @@
 </head>
 <body>
 
-<main class="checkout-container fade-in">
+<main class="checkout-container fade-in" role="main">
   <h1 class="text-center">✅ Finalizar Compra</h1>
 
   <form id="formCheckout" class="form-checkout" novalidate autocomplete="on">
@@ -23,6 +23,7 @@
     <!-- 🔖 DATOS DE FACTURACIÓN -->
     <fieldset>
       <legend>🧾 Datos de Facturación</legend>
+
       <label for="nombreInput">Nombre Completo:</label>
       <input type="text" id="nombreInput" name="nombre" required placeholder="Ej: Juan Pérez" autocomplete="name" />
 
@@ -33,37 +34,44 @@
       <input type="tel" id="telefonoInput" name="telefono" required placeholder="Ej: +56912345678" autocomplete="tel" />
     </fieldset>
 
-    <!-- 📦 DATOS DE ENTREGA -->
+    <!-- 🚚 DATOS DE ENTREGA -->
     <fieldset>
       <legend>🚚 Dirección de Entrega</legend>
+
       <label for="direccionInput">Dirección:</label>
       <textarea id="direccionInput" name="direccion" required placeholder="Calle 123, Ciudad, Región" autocomplete="street-address"></textarea>
-      <button type="button" class="btn-secundario" onclick="obtenerUbicacion()">📍 Usar mi ubicación</button>
+
+      <button type="button" class="btn-secundario" id="btnUbicacion">📍 Usar mi ubicación</button>
     </fieldset>
 
     <!-- 💳 MÉTODO DE PAGO -->
     <fieldset>
       <legend>💳 Método de Pago</legend>
-      <div class="metodo-pago-selector">
-        <label class="pago-btn">
+
+      <div class="metodo-pago-opciones">
+        <label class="opcion-pago">
           <input type="radio" name="metodoPago" value="transferencia" required />
-          💸 Transferencia Bancaria
+          <span>🪙 Transferencia Bancaria</span>
         </label>
-        <label class="pago-btn">
+
+        <label class="opcion-pago">
           <input type="radio" name="metodoPago" value="tarjeta" />
-          💳 Tarjeta de Crédito / Débito
+          <span>💳 Tarjeta de Crédito / Débito</span>
         </label>
-        <label class="pago-btn">
+
+        <label class="opcion-pago">
           <input type="radio" name="metodoPago" value="paypal" />
-          🅿️ PayPal
+          <span>🅿️ PayPal</span>
         </label>
       </div>
     </fieldset>
 
-    <!-- 🛒 RESUMEN DEL PEDIDO -->
+    <!-- 🛍️ RESUMEN DEL PEDIDO -->
     <fieldset>
       <legend>🛍️ Tu Pedido</legend>
-      <div id="resumenPedido" aria-live="polite"></div>
+      <div id="resumenPedido" aria-live="polite">
+        <!-- Productos aquí -->
+      </div>
       <h3>Total: <span id="totalFinal">$0.00</span></h3>
     </fieldset>
 
