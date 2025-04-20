@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("promoTipo")?.addEventListener("change", mostrarCampoMultimedia);
 });
 
-// 🧠 Mostrar campo multimedia dinámico
+// Mostrar campos según tipo
 function mostrarCampoMultimedia() {
   const tipo = document.getElementById("promoTipo").value;
   const container = document.getElementById("mediaUploadContainer");
@@ -34,7 +34,7 @@ function mostrarCampoMultimedia() {
   }
 }
 
-// ✅ Cargar promoción activa
+// Cargar promoción activa
 async function cargarPromocion() {
   try {
     const res = await fetch(API_PROMOS);
@@ -52,6 +52,7 @@ async function cargarPromocion() {
     const fin = promo.endDate ? new Date(promo.endDate).toLocaleDateString() : "Sin fecha";
     const badgeTheme = promo.theme || "blue";
 
+    // Vista previa multimedia
     let mediaPreview = "";
     if (promo.mediaType === "image" && promo.mediaUrl) {
       mediaPreview = `<img src="${promo.mediaUrl}" alt="Promo" style="max-width:100%; border-radius:6px;" />`;
@@ -76,7 +77,6 @@ async function cargarPromocion() {
       </div>
     `;
 
-    // Prellenar campos
     document.getElementById("promoMensaje").value = promo.message || "";
     document.getElementById("promoActivo").checked = promo.active || false;
     document.getElementById("promoTema").value = promo.theme || "blue";
@@ -90,7 +90,7 @@ async function cargarPromocion() {
       document.getElementById("promoVideo").value = promo.mediaUrl;
     }
 
-    // Marcar checkboxes de páginas
+    // Checkboxes
     if (Array.isArray(promo.pages)) {
       promo.pages.forEach(p => {
         const cb = document.querySelector(`input[name='promoPages'][value='${p}']`);
@@ -104,7 +104,7 @@ async function cargarPromocion() {
   }
 }
 
-// ✅ Guardar promoción
+// Guardar promoción
 async function guardarPromocion(e) {
   e.preventDefault();
   msgPromo.textContent = "";
@@ -146,6 +146,7 @@ async function guardarPromocion(e) {
     }
   }
 
+  // Subir imagen si aplica
   if (tipo === "imagen") {
     const file = document.getElementById("promoImagen")?.files[0];
     if (file && file.type.startsWith("image/")) {
@@ -155,9 +156,7 @@ async function guardarPromocion(e) {
 
         const resImg = await fetch(`${API_BASE}/api/uploads`, {
           method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
+          headers: { Authorization: `Bearer ${token}` },
           body: formData
         });
 
@@ -175,7 +174,7 @@ async function guardarPromocion(e) {
     }
   }
 
-  // ✅ Payload limpio y solo con lo necesario
+  // Payload final limpio
   const payload = {
     message: mensaje,
     active: activo,
@@ -183,10 +182,18 @@ async function guardarPromocion(e) {
     startDate: inicio,
     endDate: fin,
     pages,
-    position,
-    ...(tipo !== "texto" && { mediaType: tipo }),
-    ...(tipo !== "texto" && { mediaUrl })
+    position
   };
+
+  if (tipo === "video" && mediaUrl) {
+    payload.mediaType = "video";
+    payload.mediaUrl = mediaUrl;
+  }
+
+  if (tipo === "imagen" && mediaUrl) {
+    payload.mediaType = "image";
+    payload.mediaUrl = mediaUrl;
+  }
 
   try {
     msgPromo.textContent = "⏳ Guardando promoción...";

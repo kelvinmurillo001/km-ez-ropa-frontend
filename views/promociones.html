@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🎯 Promociones | KM & EZ ROPA</title>
 
+  <!-- Meta -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Administra la promoción destacada de la tienda. Cambia mensaje, ubicación, fechas y activa o desactiva.">
 
@@ -21,21 +22,22 @@
 <main class="promociones-container fade-in">
   <h1 class="text-center">🎯 Gestión de Promoción Destacada</h1>
 
-  <!-- 🔎 Estado actual de promoción -->
+  <!-- 🔎 Estado actual -->
   <section class="promo-actual mt-2" id="estadoActual">
-    <!-- JS inserta aquí la promo activa -->
+    <!-- Se muestra la promoción activa aquí -->
   </section>
 
-  <!-- 📝 Formulario -->
+  <!-- 📝 Formulario de edición -->
   <section class="form-editar-promo mt-3">
     <h3>✏️ Editar Promoción</h3>
 
     <form id="formPromo" enctype="multipart/form-data" novalidate>
-      <!-- Texto promocional -->
+      
+      <!-- Mensaje -->
       <label for="promoMensaje">Mensaje de la promoción: *</label>
-      <input type="text" id="promoMensaje" placeholder="Ej: ¡20% OFF en toda la tienda!" required />
+      <input type="text" id="promoMensaje" required placeholder="Ej: ¡Envío gratis todo el mes!" />
 
-      <!-- Color / Tema -->
+      <!-- Tema -->
       <label for="promoTema">Tema de color:</label>
       <select id="promoTema">
         <option value="blue">Azul</option>
@@ -44,7 +46,7 @@
         <option value="red">Rojo</option>
       </select>
 
-      <!-- Páginas donde se muestra -->
+      <!-- Páginas donde mostrar -->
       <label>¿Dónde se mostrará esta promoción?</label>
       <div class="checkbox-group">
         <label><input type="checkbox" name="promoPages" value="home" /> 🏠 Página Principal</label>
@@ -57,9 +59,9 @@
       <!-- Posición -->
       <label for="promoPosition">Ubicación dentro de la página:</label>
       <select id="promoPosition" required>
-        <option value="top">🔝 Arriba</option>
+        <option value="top">🔝 Parte superior</option>
         <option value="middle">📍 Medio</option>
-        <option value="bottom">🔻 Abajo</option>
+        <option value="bottom">🔻 Parte inferior</option>
       </select>
 
       <!-- Tipo de contenido -->
@@ -71,9 +73,9 @@
         <option value="video">🎬 Video</option>
       </select>
 
-      <!-- Subida de archivo o video -->
+      <!-- Multimedia -->
       <div id="mediaUploadContainer" class="mt-1">
-        <!-- JS decide qué campo mostrar aquí -->
+        <!-- Aquí aparecerán los inputs de imagen o video según selección -->
       </div>
 
       <!-- Fechas -->
@@ -91,7 +93,7 @@
 
       <!-- Guardar -->
       <button type="submit" class="btn mt-1">💾 Guardar promoción</button>
-      <p id="msgPromo" class="form-msg text-center mt-2"></p>
+      <p id="msgPromo" class="form-msg text-center mt-2" role="alert" aria-live="polite"></p>
     </form>
   </section>
 
@@ -102,7 +104,7 @@
 </main>
 
 <noscript>
-  <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar esta función.</p>
+  <p style="text-align:center; color:red;">⚠️ Activa JavaScript para usar esta sección.</p>
 </noscript>
 
 </body>

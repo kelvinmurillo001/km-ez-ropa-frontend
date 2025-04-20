@@ -4,54 +4,46 @@ body {
   font-family: 'Segoe UI', sans-serif;
 }
 
+/* === TITULARES === */
 h1, h3 {
   color: #ff6d00;
   text-align: center;
   margin-bottom: 1rem;
 }
 
+/* === CONTENEDOR PRINCIPAL === */
 .promociones-container {
   max-width: 900px;
   margin: auto;
   padding: 2rem;
 }
 
-/* === PROMOCIÓN ACTUAL (Visual & Destacada) === */
+/* === PROMOCIÓN ACTUAL === */
 .promo-actual {
   background-color: #1e1e1e;
   padding: 1.5rem;
   border: 2px dashed #ff9800;
   border-radius: 10px;
   margin-bottom: 2rem;
-  text-align: center;
   font-size: 1rem;
+  text-align: center;
   box-shadow: 0 0 10px rgba(255, 109, 0, 0.15);
   transition: background-color 0.3s ease;
 }
 
-.promo-box {
-  padding: 1rem;
-  border-left: 4px solid #ff6d00;
-  text-align: left;
-  background-color: #1a1a1a;
-  border-radius: 6px;
+.promo-actual img,
+.promo-actual video {
+  margin-top: 1rem;
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(255, 109, 0, 0.2);
 }
 
-.promo-box p {
-  margin: 0.4rem 0;
-  font-size: 0.95rem;
-  color: #ccc;
+.promo-actual video {
+  max-height: 400px;
 }
 
-.promo-box h3 {
-  margin-bottom: 0.5rem;
-  font-size: 1.2rem;
-}
-
-.promo-box strong {
-  color: #ffa726;
-}
-
+/* === BADGES DE COLOR === */
 .badge {
   display: inline-block;
   padding: 0.3rem 0.8rem;
@@ -62,24 +54,12 @@ h1, h3 {
   text-transform: uppercase;
 }
 
-.badge.blue {
-  background-color: #2196f3;
-  color: #fff;
-}
-.badge.orange {
-  background-color: #fb8c00;
-  color: #fff;
-}
-.badge.green {
-  background-color: #43a047;
-  color: #fff;
-}
-.badge.red {
-  background-color: #e53935;
-  color: #fff;
-}
+.badge.blue { background-color: #2196f3; color: #fff; }
+.badge.orange { background-color: #fb8c00; color: #fff; }
+.badge.green { background-color: #43a047; color: #fff; }
+.badge.red { background-color: #e53935; color: #fff; }
 
-/* === FORMULARIO DE EDICIÓN === */
+/* === FORMULARIO DE PROMO === */
 .form-editar-promo {
   background-color: #1a1a1a;
   padding: 1.5rem;
@@ -94,7 +74,8 @@ h1, h3 {
 }
 
 .form-editar-promo input,
-.form-editar-promo select {
+.form-editar-promo select,
+.form-editar-promo textarea {
   background-color: #222;
   color: #f5f5f5;
   border: 1px solid #444;
@@ -105,7 +86,8 @@ h1, h3 {
 }
 
 .form-editar-promo input:focus,
-.form-editar-promo select:focus {
+.form-editar-promo select:focus,
+.form-editar-promo textarea:focus {
   border-color: #ff6d00;
   outline: none;
 }
@@ -121,10 +103,24 @@ h1, h3 {
 }
 
 .form-msg {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   text-align: center;
   font-weight: bold;
   margin-top: 0.5rem;
+}
+
+/* === CHECKBOX GROUP === */
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 /* === BOTONES === */
@@ -166,7 +162,11 @@ button.btn-secundario:hover {
     gap: 0.8rem;
   }
 
-  .promo-box {
-    font-size: 0.95rem;
+  .checkbox-group {
+    flex-direction: column;
+  }
+
+  .promo-actual video {
+    max-height: 250px;
   }
 }
