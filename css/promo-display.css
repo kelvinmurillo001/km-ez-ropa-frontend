@@ -1,24 +1,72 @@
-.promo-banner {
+/* 📦 Estilo base para contenedor promocional */
+.promo-display {
+  padding: 1.2rem;
+  border-radius: 10px;
+  margin: 1rem auto;
+  max-width: 960px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1rem;
+  line-height: 1.6;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s ease-in-out;
+}
+
+.promo-display p.promo-msg {
+  margin-bottom: 0.8rem;
+  font-size: 1.1rem;
+}
+
+/* 📸 Imagen y video */
+.promo-display img,
+.promo-display video {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* 🎨 Colores temáticos */
+.promo-blue {
+  background-color: #2196f3;
+  color: #fff;
+}
+.promo-orange {
+  background-color: #fb8c00;
+  color: #fff;
+}
+.promo-green {
+  background-color: #43a047;
+  color: #fff;
+}
+.promo-red {
+  background-color: #e53935;
+  color: #fff;
+}
+
+/* 🧭 Posicionamiento */
+.promo-top {
+  margin-top: 0;
+}
+.promo-middle {
+  margin-top: 2rem;
+}
+.promo-bottom {
+  margin-bottom: 2rem;
+}
+
+/* 📱 Responsive */
+@media (max-width: 600px) {
+  .promo-display {
+    font-size: 0.95rem;
     padding: 1rem;
-    background: linear-gradient(90deg, #ff8a00, #e65100);
-    color: white;
-    text-align: center;
-    font-weight: bold;
-    border-radius: 6px;
-    margin: 1rem 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    animation: fadeIn 0.6s ease-in-out;
   }
-  
-  .promo-banner video,
-  .promo-banner img {
-    max-width: 100%;
-    border-radius: 8px;
+
+  .promo-display img,
+  .promo-display video {
+    max-height: 280px;
+    object-fit: cover;
   }
-  
-  /* ✨ Fade-in */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  
+}

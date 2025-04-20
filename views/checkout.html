@@ -8,86 +8,94 @@
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Ingresa tus datos para completar tu pedido en KM & EZ ROPA.">
 
+  <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/checkout.css" />
+  <link rel="stylesheet" href="/css/promo-display.css" />
+
+  <!-- Scripts -->
+  <script src="/js/promo-display.js" defer></script>
   <script type="module" src="/js/checkout.js" defer></script>
 </head>
 <body>
 
-<main class="checkout-container fade-in" role="main">
-  <h1 class="text-center">✅ Finalizar Compra</h1>
+  <!-- 🔥 PROMOCIONES DINÁMICAS -->
+  <div id="promo-display-container" data-page="checkout"></div>
 
-  <form id="formCheckout" class="form-checkout" novalidate autocomplete="on">
-    
-    <!-- 🔖 DATOS DE FACTURACIÓN -->
-    <fieldset>
-      <legend>🧾 Datos de Facturación</legend>
+  <main class="checkout-container fade-in" role="main">
+    <h1 class="text-center">✅ Finalizar Compra</h1>
 
-      <label for="nombreInput">Nombre Completo:</label>
-      <input type="text" id="nombreInput" name="nombre" required placeholder="Ej: Juan Pérez" autocomplete="name" />
+    <form id="formCheckout" class="form-checkout" novalidate autocomplete="on">
+      
+      <!-- 🔖 DATOS DE FACTURACIÓN -->
+      <fieldset>
+        <legend>🧾 Datos de Facturación</legend>
 
-      <label for="emailInput">Correo Electrónico:</label>
-      <input type="email" id="emailInput" name="email" required placeholder="ejemplo@correo.com" autocomplete="email" />
+        <label for="nombreInput">Nombre Completo:</label>
+        <input type="text" id="nombreInput" name="nombre" required placeholder="Ej: Juan Pérez" autocomplete="name" />
 
-      <label for="telefonoInput">Teléfono:</label>
-      <input type="tel" id="telefonoInput" name="telefono" required placeholder="Ej: +56912345678" autocomplete="tel" />
-    </fieldset>
+        <label for="emailInput">Correo Electrónico:</label>
+        <input type="email" id="emailInput" name="email" required placeholder="ejemplo@correo.com" autocomplete="email" />
 
-    <!-- 🚚 DATOS DE ENTREGA -->
-    <fieldset>
-      <legend>🚚 Dirección de Entrega</legend>
+        <label for="telefonoInput">Teléfono:</label>
+        <input type="tel" id="telefonoInput" name="telefono" required placeholder="Ej: +56912345678" autocomplete="tel" />
+      </fieldset>
 
-      <label for="direccionInput">Dirección:</label>
-      <textarea id="direccionInput" name="direccion" required placeholder="Calle 123, Ciudad, Región" autocomplete="street-address"></textarea>
+      <!-- 🚚 DATOS DE ENTREGA -->
+      <fieldset>
+        <legend>🚚 Dirección de Entrega</legend>
 
-      <button type="button" class="btn-secundario" id="btnUbicacion">📍 Usar mi ubicación</button>
-    </fieldset>
+        <label for="direccionInput">Dirección:</label>
+        <textarea id="direccionInput" name="direccion" required placeholder="Calle 123, Ciudad, Región" autocomplete="street-address"></textarea>
 
-    <!-- 💳 MÉTODO DE PAGO -->
-    <fieldset>
-      <legend>💳 Método de Pago</legend>
+        <button type="button" class="btn-secundario" id="btnUbicacion">📍 Usar mi ubicación</button>
+      </fieldset>
 
-      <div class="metodo-pago-opciones">
-        <label class="opcion-pago">
-          <input type="radio" name="metodoPago" value="transferencia" required />
-          <span>🪙 Transferencia Bancaria</span>
-        </label>
+      <!-- 💳 MÉTODO DE PAGO -->
+      <fieldset>
+        <legend>💳 Método de Pago</legend>
 
-        <label class="opcion-pago">
-          <input type="radio" name="metodoPago" value="tarjeta" />
-          <span>💳 Tarjeta de Crédito / Débito</span>
-        </label>
+        <div class="metodo-pago-opciones">
+          <label class="opcion-pago">
+            <input type="radio" name="metodoPago" value="transferencia" required />
+            <span>🪙 Transferencia Bancaria</span>
+          </label>
 
-        <label class="opcion-pago">
-          <input type="radio" name="metodoPago" value="paypal" />
-          <span>🅿️ PayPal</span>
-        </label>
+          <label class="opcion-pago">
+            <input type="radio" name="metodoPago" value="tarjeta" />
+            <span>💳 Tarjeta de Crédito / Débito</span>
+          </label>
+
+          <label class="opcion-pago">
+            <input type="radio" name="metodoPago" value="paypal" />
+            <span>🅿️ PayPal</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- 🛍️ RESUMEN DEL PEDIDO -->
+      <fieldset>
+        <legend>🛍️ Tu Pedido</legend>
+        <div id="resumenPedido" aria-live="polite">
+          <!-- Productos aquí -->
+        </div>
+        <h3>Total: <span id="totalFinal">$0.00</span></h3>
+      </fieldset>
+
+      <!-- ✅ ACCIONES -->
+      <div class="form-actions mt-3">
+        <button type="submit" class="btn">🛒 Confirmar Pedido</button>
+        <button type="button" onclick="window.location.href='/carrito.html'" class="btn-secundario">🔙 Volver al Carrito</button>
       </div>
-    </fieldset>
 
-    <!-- 🛍️ RESUMEN DEL PEDIDO -->
-    <fieldset>
-      <legend>🛍️ Tu Pedido</legend>
-      <div id="resumenPedido" aria-live="polite">
-        <!-- Productos aquí -->
-      </div>
-      <h3>Total: <span id="totalFinal">$0.00</span></h3>
-    </fieldset>
+      <p id="msgEstado" class="form-msg text-center mt-2" role="alert" aria-live="assertive"></p>
+    </form>
+  </main>
 
-    <!-- ✅ ACCIONES -->
-    <div class="form-actions mt-3">
-      <button type="submit" class="btn">🛒 Confirmar Pedido</button>
-      <button type="button" onclick="window.location.href='/carrito.html'" class="btn-secundario">🔙 Volver al Carrito</button>
-    </div>
-
-    <p id="msgEstado" class="form-msg text-center mt-2" role="alert" aria-live="assertive"></p>
-  </form>
-</main>
-
-<noscript>
-  <p style="text-align:center; color:red;">⚠️ Activa JavaScript para usar esta sección.</p>
-</noscript>
+  <noscript>
+    <p style="text-align:center; color:red;">⚠️ Activa JavaScript para usar esta sección.</p>
+  </noscript>
 
 </body>
 </html>

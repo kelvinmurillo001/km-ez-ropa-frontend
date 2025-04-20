@@ -14,11 +14,15 @@
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/productos.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
+  <link rel="stylesheet" href="/css/promo-display.css" />
 </head>
 <body>
 
   <main class="productos-container fade-in" role="main">
     <h1 class="text-center">👕 Gestión de Productos</h1>
+
+    <!-- 🔥 PROMOCIÓN DESTACADA -->
+    <div id="promo-display-container" data-page="productos"></div>
 
     <!-- 🟠 Botón principal -->
     <div class="text-center mt-2">
@@ -52,6 +56,7 @@
   <script type="module">
     import { goBack } from "/js/admin-utils.js";
     import "/js/productos.js";
+    import "/js/promo-display.js";
 
     document.getElementById("btnVolverPanel").addEventListener("click", goBack);
   </script>
