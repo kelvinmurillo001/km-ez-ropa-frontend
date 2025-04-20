@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
         <p>Por favor regresa al catálogo.</p>
         <a href="/categorias.html" class="btn-secundario">🔙 Volver al catálogo</a>
       </div>`;
-    console.warn("⚠️ ID del producto no proporcionado o inválido.");
     return;
   }
 
@@ -35,7 +34,6 @@ async function cargarProducto(id) {
     const producto = await res.json();
 
     if (!res.ok || !producto) throw new Error("Producto no encontrado");
-
     renderizarProducto(producto);
   } catch (err) {
     console.error("❌ Error cargando producto:", err.message);
@@ -86,7 +84,7 @@ function renderizarProducto(p = {}) {
   `;
 }
 
-// === 🛒 Agregar producto al carrito
+// === 🛒 Agregar al carrito
 function agregarAlCarrito(id, nombre, imagen, precio) {
   const talla = document.getElementById("tallaSelect")?.value || "Única";
   const cantidad = parseInt(document.getElementById("cantidadInput")?.value) || 1;
@@ -115,7 +113,7 @@ function agregarAlCarrito(id, nombre, imagen, precio) {
   mostrarToast("✅ Producto agregado al carrito");
 }
 
-// === 🧮 Actualizar widget de carrito
+// === 🛒 Contador de productos en el widget
 function actualizarCarritoWidget() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
   const total = carrito.reduce((sum, item) => sum + item.cantidad, 0);
@@ -123,7 +121,7 @@ function actualizarCarritoWidget() {
   if (contador) contador.textContent = total;
 }
 
-// === ✅ Mensaje visual temporal
+// === ✅ Toast visual
 function mostrarToast(mensaje) {
   const toast = document.createElement("div");
   toast.textContent = mensaje;
@@ -156,5 +154,4 @@ function activarModoOscuro() {
   });
 }
 
-// ✅ Exponer globalmente si es necesario
 window.agregarAlCarrito = agregarAlCarrito;
