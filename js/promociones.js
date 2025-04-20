@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("promoTipo")?.addEventListener("change", mostrarCampoMultimedia);
 });
 
-// 🧠 Mostrar campo dinámico según tipo (imagen/video)
+// 🧠 Mostrar campo multimedia dinámico
 function mostrarCampoMultimedia() {
   const tipo = document.getElementById("promoTipo").value;
   const container = document.getElementById("mediaUploadContainer");
@@ -34,7 +34,7 @@ function mostrarCampoMultimedia() {
   }
 }
 
-// ✅ Cargar promoción activa actual
+// ✅ Cargar promoción activa
 async function cargarPromocion() {
   try {
     const res = await fetch(API_PROMOS);
@@ -52,7 +52,6 @@ async function cargarPromocion() {
     const fin = promo.endDate ? new Date(promo.endDate).toLocaleDateString() : "Sin fecha";
     const badgeTheme = promo.theme || "blue";
 
-    // Vista previa multimedia
     let mediaPreview = "";
     if (promo.mediaType === "image" && promo.mediaUrl) {
       mediaPreview = `<img src="${promo.mediaUrl}" alt="Promo" style="max-width:100%; border-radius:6px;" />`;
@@ -77,7 +76,7 @@ async function cargarPromocion() {
       </div>
     `;
 
-    // Prellenar
+    // Prellenar campos
     document.getElementById("promoMensaje").value = promo.message || "";
     document.getElementById("promoActivo").checked = promo.active || false;
     document.getElementById("promoTema").value = promo.theme || "blue";
@@ -105,7 +104,7 @@ async function cargarPromocion() {
   }
 }
 
-// 📝 Guardar promoción
+// ✅ Guardar promoción
 async function guardarPromocion(e) {
   e.preventDefault();
   msgPromo.textContent = "";
@@ -119,8 +118,6 @@ async function guardarPromocion(e) {
   const fin = document.getElementById("promoFin").value || null;
   const tema = document.getElementById("promoTema").value;
   const position = document.getElementById("promoPosition").value;
-
-  // Leer múltiples páginas
   const pages = Array.from(document.querySelectorAll("input[name='promoPages']:checked")).map(cb => cb.value);
 
   if (!mensaje || mensaje.length < 3) {
@@ -149,20 +146,6 @@ async function guardarPromocion(e) {
     }
   }
 
-  // Armado de payload inicial
-  const payload = {
-    message: mensaje,
-    active: activo,
-    theme: tema,
-    startDate: inicio,
-    endDate: fin,
-    mediaType: tipo !== "texto" ? tipo : null,
-    mediaUrl: tipo === "video" ? mediaUrl : null,
-    pages,
-    position
-  };
-
-  // Subida de imagen si aplica
   if (tipo === "imagen") {
     const file = document.getElementById("promoImagen")?.files[0];
     if (file && file.type.startsWith("image/")) {
@@ -181,7 +164,7 @@ async function guardarPromocion(e) {
         const imgData = await resImg.json();
         if (!resImg.ok) throw new Error("Error al subir imagen");
 
-        payload.mediaUrl = imgData.secure_url || imgData.url;
+        mediaUrl = imgData.secure_url || imgData.url;
       } catch (err) {
         console.error("❌ Error al subir imagen", err);
         msgPromo.textContent = "❌ No se pudo subir la imagen.";
@@ -192,7 +175,19 @@ async function guardarPromocion(e) {
     }
   }
 
-  // Envío final
+  // ✅ Payload limpio y solo con lo necesario
+  const payload = {
+    message: mensaje,
+    active: activo,
+    theme: tema,
+    startDate: inicio,
+    endDate: fin,
+    pages,
+    position,
+    ...(tipo !== "texto" && { mediaType: tipo }),
+    ...(tipo !== "texto" && { mediaUrl })
+  };
+
   try {
     msgPromo.textContent = "⏳ Guardando promoción...";
     msgPromo.style.color = "#888";
