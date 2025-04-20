@@ -1,0 +1,24 @@
+.promo-banner {
+    padding: 1rem;
+    background: linear-gradient(90deg, #ff8a00, #e65100);
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 6px;
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.6s ease-in-out;
+  }
+  
+  .promo-banner video,
+  .promo-banner img {
+    max-width: 100%;
+    border-radius: 8px;
+  }
+  
+  /* ✨ Fade-in */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  
