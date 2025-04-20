@@ -1,4 +1,4 @@
-body {
+body { 
   background-color: #121212;
   color: #f5f5f5;
   font-family: 'Segoe UI', sans-serif;
@@ -169,4 +169,24 @@ button.btn-secundario:hover {
   .promo-actual video {
     max-height: 250px;
   }
+}
+
+/* === 🔍 FILTROS (NUEVO BLOQUE) === */
+.filtros-promos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1rem 0;
+  justify-content: center;
+}
+
+.filtros-promos input,
+.filtros-promos select {
+  background-color: #222;
+  color: #fff;
+  border: 1px solid #444;
+  padding: 0.6rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  min-width: 220px;
 }

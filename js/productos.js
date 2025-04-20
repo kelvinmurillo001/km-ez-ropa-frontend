@@ -12,17 +12,29 @@ const API_PRODUCTS = `${API_BASE}/api/products`;
 // 📍 DOM Elements
 const productosLista = document.getElementById("productosLista");
 const btnNuevoProducto = document.getElementById("btnNuevoProducto");
+const inputBuscar = document.getElementById("buscarProducto");
+const filtroCategoria = document.getElementById("filtroCategoria");
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Evento crear nuevo producto
+  // Crear producto
   btnNuevoProducto?.addEventListener("click", () => {
     window.location.href = "/crear-producto.html";
   });
 
-  // Cargar productos al iniciar
+  // Cargar productos
   cargarProductos();
 
-  // 🌙 Aplicar modo oscuro si está activado
+  // Buscar por nombre
+  inputBuscar?.addEventListener("input", () => {
+    cargarProductos();
+  });
+
+  // Filtro por categoría
+  filtroCategoria?.addEventListener("change", () => {
+    cargarProductos();
+  });
+
+  // 🌙 Modo oscuro
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
@@ -35,7 +47,14 @@ async function cargarProductos() {
   productosLista.innerHTML = `<p class='text-center'>⏳ Cargando productos...</p>`;
 
   try {
-    const res = await fetch(API_PRODUCTS, {
+    const nombre = inputBuscar?.value?.trim() || "";
+    const categoria = filtroCategoria?.value || "";
+
+    const params = new URLSearchParams();
+    if (nombre) params.append("nombre", nombre);
+    if (categoria) params.append("categoria", categoria);
+
+    const res = await fetch(`${API_PRODUCTS}?${params.toString()}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
@@ -44,7 +63,7 @@ async function cargarProductos() {
     if (!res.ok) throw new Error(productos.message || "Error al obtener productos");
 
     if (!Array.isArray(productos) || productos.length === 0) {
-      productosLista.innerHTML = "<p class='text-center'>📭 No hay productos aún.</p>";
+      productosLista.innerHTML = "<p class='text-center'>📭 No se encontraron productos.</p>";
       return;
     }
 
@@ -66,9 +85,6 @@ function renderizarProductos(productos) {
     const precio = isNaN(p.price) ? "0.00" : parseFloat(p.price).toFixed(2);
     const categoria = sanitize(p.category || "-");
     const stock = isNaN(p.stock) ? 0 : p.stock;
-    // Preparado si quieres agregar subcategoría y destacado
-    // const subcategoria = sanitize(p.subcategory || "-");
-    // const destacado = p.destacado ? "⭐" : "";
 
     return `
       <tr>

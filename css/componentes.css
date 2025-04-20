@@ -227,57 +227,76 @@
     border: 2px solid #ff6d00;
     box-shadow: 0 0 12px rgba(255, 109, 0, 0.3);
   }
+  
   /* ==== MODAL (Edición Rápida) ==== */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0,0,0,0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-.modal {
-  background-color: #1f1f1f;
-  color: #eee;
-  padding: 2rem;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 500px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
-  position: relative;
-}
-
-.modal h3 {
-  color: #ff6d00;
-  margin-top: 0;
-}
-
-.modal-cerrar {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #d32f2f;
-  border: none;
-  color: white;
-  font-weight: bold;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.modal input,
-.modal select {
-  width: 100%;
-  margin-bottom: 1rem;
-  padding: 0.5rem;
-  border: 1px solid #444;
-  border-radius: 5px;
-  background-color: #2a2a2a;
-  color: #fff;
-}
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  
+  .modal {
+    background-color: #1f1f1f;
+    color: #eee;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    position: relative;
+  }
+  
+  .modal h3 {
+    color: #ff6d00;
+    margin-top: 0;
+  }
+  
+  .modal-cerrar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #d32f2f;
+    border: none;
+    color: white;
+    font-weight: bold;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  .modal input,
+  .modal select {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #2a2a2a;
+    color: #fff;
+  }
+  
+  /* ==== INPUT DE BÚSQUEDA (Extra útil para paneles) ==== */
+  .input-busqueda {
+    background-color: #222;
+    color: #eee;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    border: 1px solid #444;
+    font-size: 1rem;
+    min-width: 240px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .input-busqueda:focus {
+    outline: none;
+    border-color: #ff6d00;
+  }
+  

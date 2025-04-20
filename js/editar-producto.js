@@ -53,7 +53,6 @@ async function cargarProducto() {
   try {
     const res = await fetch(API_PRODUCTO);
     const p = await res.json();
-
     if (!res.ok) throw new Error("Producto no encontrado");
 
     document.getElementById("nombreInput").value = p.name || "";
@@ -64,11 +63,11 @@ async function cargarProducto() {
     document.getElementById("subcategoriaInput").value = p.subcategory || "";
     document.getElementById("tallasInput").value = p.sizes?.join(", ") || "";
     document.getElementById("colorInput").value = p.color || "#000000";
-    document.getElementById("featuredInput").checked = !!p.featured;
+    document.getElementById("destacadoInput").checked = !!p.featured;
 
     if (Array.isArray(p.images) && p.images.length > 0) {
       document.getElementById("imagenPrincipalActual").innerHTML = `
-        <img src="${p.images[0].url}" alt="Imagen actual" class="preview-mini" />
+        <img src="${p.images[0].url}" alt="Imagen actual" class="imagen-preview-principal" />
       `;
     }
 
@@ -123,6 +122,11 @@ async function subirImagen(file) {
 }
 
 function agregarVariante() {
+  if (document.querySelectorAll(".variante-box").length >= 4) {
+    mostrarMensaje("⚠️ Máximo 4 variantes permitidas", "warning");
+    return;
+  }
+
   const div = document.createElement("div");
   div.className = "variante-box";
   div.innerHTML = `
@@ -142,9 +146,15 @@ function agregarVariante() {
   div.querySelector(".btn-quitar-variante").addEventListener("click", () => div.remove());
 }
 
+function mostrarMensaje(msg, tipo = "info") {
+  msgEstado.textContent = msg;
+  msgEstado.style.color = tipo === "success" ? "limegreen" : tipo === "error" ? "red" : "orange";
+  msgEstado.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  msgEstado.textContent = "⏳ Guardando cambios...";
+  mostrarMensaje("⏳ Guardando cambios...", "info");
 
   try {
     const nombre = form.nombreInput.value.trim();
@@ -153,12 +163,12 @@ form.addEventListener("submit", async (e) => {
     const stock = parseInt(form.stockInput.value);
     const categoria = form.categoriaInput.value;
     const subcategoria = form.subcategoriaInput?.value?.trim() || null;
-    const destacado = form.featuredInput?.checked || false;
+    const destacado = form.destacadoInput?.checked || false;
     const color = form.colorInput.value;
     const sizes = form.tallasInput.value.split(",").map(s => s.trim()).filter(Boolean);
 
     if (!nombre || !descripcion || isNaN(precio) || isNaN(stock) || !categoria) {
-      msgEstado.textContent = "⚠️ Por favor completa todos los campos obligatorios.";
+      mostrarMensaje("⚠️ Por favor completa todos los campos obligatorios.", "warning");
       return;
     }
 
@@ -172,9 +182,11 @@ form.addEventListener("submit", async (e) => {
     const variantes = await Promise.all(Array.from(bloques).map(async (b) => {
       const file = b.querySelector(".variante-img")?.files[0];
       const color = b.querySelector(".variante-color")?.value || "#000000";
-      const talla = b.querySelector(".variante-talla")?.value || "";
+      const talla = b.querySelector(".variante-talla")?.value?.trim().toLowerCase();
       const stock = parseInt(b.querySelector(".variante-stock")?.value || "0");
       const cloudinaryId = b.querySelector(".variante-id")?.value;
+
+      if (!talla) throw new Error("⚠️ Talla obligatoria en variante");
 
       let imageUrl = null;
       let finalCloudinaryId = cloudinaryId;
@@ -190,6 +202,13 @@ form.addEventListener("submit", async (e) => {
       return { imageUrl, cloudinaryId: finalCloudinaryId, color, talla, stock };
     }));
 
+    const claves = new Set();
+    for (const v of variantes) {
+      const clave = `${v.talla}-${v.color}`;
+      if (claves.has(clave)) throw new Error("⚠️ Hay variantes duplicadas (talla + color)");
+      claves.add(clave);
+    }
+
     const payload = {
       name: nombre,
       description: descripcion,
@@ -200,7 +219,7 @@ form.addEventListener("submit", async (e) => {
       color,
       sizes,
       featured: destacado,
-      variants: variantes
+      variants
     };
 
     if (nuevaImagen) {
@@ -219,11 +238,11 @@ form.addEventListener("submit", async (e) => {
     const result = await res.json();
     if (!res.ok) throw new Error(result.message || "No se pudo actualizar el producto");
 
-    msgEstado.textContent = "✅ Producto actualizado con éxito.";
+    mostrarMensaje("✅ Producto actualizado con éxito.", "success");
 
   } catch (err) {
     console.error("❌", err);
-    msgEstado.textContent = `❌ ${err.message}`;
+    mostrarMensaje(`❌ ${err.message}`, "error");
   }
 });
 

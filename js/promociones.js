@@ -5,9 +5,13 @@ import { API_BASE } from "./config.js";
 
 const token = verificarSesion();
 const API_PROMOS = `${API_BASE}/api/promos`;
+const API_UPLOAD = `${API_BASE}/api/uploads`;
 
 const formPromo = document.getElementById("formPromo");
 const msgPromo = document.getElementById("msgPromo");
+const estadoActual = document.getElementById("estadoActual");
+
+let promocionId = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   cargarPromocion();
@@ -15,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("promoTipo")?.addEventListener("change", mostrarCampoMultimedia);
 });
 
-// Mostrar campos según tipo
+// Mostrar campo multimedia
 function mostrarCampoMultimedia() {
   const tipo = document.getElementById("promoTipo").value;
   const container = document.getElementById("mediaUploadContainer");
@@ -42,9 +46,11 @@ async function cargarPromocion() {
     const promo = Array.isArray(promos) ? promos[0] : promos;
 
     if (!promo) {
-      document.getElementById("estadoActual").innerHTML = "<p>📭 No hay promociones activas.</p>";
+      estadoActual.innerHTML = "<p>📭 No hay promociones activas.</p>";
       return;
     }
+
+    promocionId = promo._id;
 
     const estadoColor = promo.active ? "green" : "red";
     const estadoTexto = promo.active ? "✅ Activa" : "⛔ Inactiva";
@@ -52,7 +58,6 @@ async function cargarPromocion() {
     const fin = promo.endDate ? new Date(promo.endDate).toLocaleDateString() : "Sin fecha";
     const badgeTheme = promo.theme || "blue";
 
-    // Vista previa multimedia
     let mediaPreview = "";
     if (promo.mediaType === "image" && promo.mediaUrl) {
       mediaPreview = `<img src="${promo.mediaUrl}" alt="Promo" style="max-width:100%; border-radius:6px;" />`;
@@ -64,7 +69,7 @@ async function cargarPromocion() {
         </video>`;
     }
 
-    document.getElementById("estadoActual").innerHTML = `
+    estadoActual.innerHTML = `
       <div class="promo-actual">
         <p><strong>Estado:</strong> <span style="color:${estadoColor}">${estadoTexto}</span></p>
         <p><strong>Mensaje:</strong> ${promo.message ?? "Sin mensaje disponible"}</p>
@@ -77,6 +82,7 @@ async function cargarPromocion() {
       </div>
     `;
 
+    // Llenar formulario
     document.getElementById("promoMensaje").value = promo.message || "";
     document.getElementById("promoActivo").checked = promo.active || false;
     document.getElementById("promoTema").value = promo.theme || "blue";
@@ -90,17 +96,15 @@ async function cargarPromocion() {
       document.getElementById("promoVideo").value = promo.mediaUrl;
     }
 
-    // Checkboxes
-    if (Array.isArray(promo.pages)) {
-      promo.pages.forEach(p => {
-        const cb = document.querySelector(`input[name='promoPages'][value='${p}']`);
-        if (cb) cb.checked = true;
-      });
-    }
+    document.querySelectorAll("input[name='promoPages']").forEach(cb => cb.checked = false);
+    promo.pages?.forEach(p => {
+      const cb = document.querySelector(`input[name='promoPages'][value='${p}']`);
+      if (cb) cb.checked = true;
+    });
 
   } catch (err) {
-    console.error("❌ Error cargando promoción:", err);
-    document.getElementById("estadoActual").innerHTML = "<p style='color:red;'>❌ Error al cargar promoción.</p>";
+    console.error("❌ Error al cargar promoción:", err);
+    estadoActual.innerHTML = "<p style='color:red;'>❌ Error al cargar promoción.</p>";
   }
 }
 
@@ -111,42 +115,25 @@ async function guardarPromocion(e) {
   const btn = formPromo.querySelector("button[type='submit']");
   btn.disabled = true;
 
-  const mensaje = document.getElementById("promoMensaje").value.trim();
-  const tipo = document.getElementById("promoTipo").value;
-  const activo = document.getElementById("promoActivo").checked;
-  const inicio = document.getElementById("promoInicio").value || null;
-  const fin = document.getElementById("promoFin").value || null;
-  const tema = document.getElementById("promoTema").value;
-  const position = document.getElementById("promoPosition").value;
+  const mensaje = formPromo.promoMensaje.value.trim();
+  const tipo = formPromo.promoTipo.value;
+  const activo = formPromo.promoActivo.checked;
+  const inicio = formPromo.promoInicio.value || null;
+  const fin = formPromo.promoFin.value || null;
+  const tema = formPromo.promoTema.value;
+  const position = formPromo.promoPosition.value;
   const pages = Array.from(document.querySelectorAll("input[name='promoPages']:checked")).map(cb => cb.value);
 
-  if (!mensaje || mensaje.length < 3) {
-    msgPromo.textContent = "⚠️ El mensaje debe tener al menos 3 caracteres.";
-    msgPromo.style.color = "orange";
-    btn.disabled = false;
-    return;
-  }
-
-  if (!tipo || pages.length === 0) {
-    msgPromo.textContent = "⚠️ Debes seleccionar tipo y al menos una página.";
-    msgPromo.style.color = "orange";
-    btn.disabled = false;
-    return;
-  }
+  if (!mensaje || mensaje.length < 3) return mostrarError("⚠️ El mensaje debe tener al menos 3 caracteres.");
+  if (!tipo || pages.length === 0) return mostrarError("⚠️ Debes seleccionar tipo y al menos una página.");
 
   let mediaUrl = "";
 
   if (tipo === "video") {
     mediaUrl = document.getElementById("promoVideo")?.value?.trim() || "";
-    if (!mediaUrl.startsWith("http")) {
-      msgPromo.textContent = "⚠️ URL del video inválida.";
-      msgPromo.style.color = "orange";
-      btn.disabled = false;
-      return;
-    }
+    if (!mediaUrl.startsWith("http")) return mostrarError("⚠️ URL del video inválida.");
   }
 
-  // Subir imagen si aplica
   if (tipo === "imagen") {
     const file = document.getElementById("promoImagen")?.files[0];
     if (file && file.type.startsWith("image/")) {
@@ -154,7 +141,7 @@ async function guardarPromocion(e) {
         const formData = new FormData();
         formData.append("image", file);
 
-        const resImg = await fetch(`${API_BASE}/api/uploads`, {
+        const resImg = await fetch(API_UPLOAD, {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },
           body: formData
@@ -162,19 +149,14 @@ async function guardarPromocion(e) {
 
         const imgData = await resImg.json();
         if (!resImg.ok) throw new Error("Error al subir imagen");
-
         mediaUrl = imgData.secure_url || imgData.url;
       } catch (err) {
-        console.error("❌ Error al subir imagen", err);
-        msgPromo.textContent = "❌ No se pudo subir la imagen.";
-        msgPromo.style.color = "red";
-        btn.disabled = false;
-        return;
+        console.error("❌", err);
+        return mostrarError("❌ No se pudo subir la imagen.");
       }
     }
   }
 
-  // Payload final limpio
   const payload = {
     message: mensaje,
     active: activo,
@@ -199,8 +181,9 @@ async function guardarPromocion(e) {
     msgPromo.textContent = "⏳ Guardando promoción...";
     msgPromo.style.color = "#888";
 
+    const method = promocionId ? "PUT" : "POST";
     const res = await fetch(API_PROMOS, {
-      method: "PUT",
+      method,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
@@ -216,11 +199,16 @@ async function guardarPromocion(e) {
     await cargarPromocion();
   } catch (err) {
     console.error("❌", err);
-    msgPromo.textContent = "❌ No se pudo guardar la promoción.";
-    msgPromo.style.color = "red";
+    mostrarError("❌ No se pudo guardar la promoción.");
   } finally {
     btn.disabled = false;
   }
+}
+
+function mostrarError(msg) {
+  msgPromo.textContent = msg;
+  msgPromo.style.color = "orange";
+  formPromo.querySelector("button[type='submit']").disabled = false;
 }
 
 window.goBack = goBack;
