@@ -13,17 +13,27 @@
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/promociones.css" />
+  <link rel="stylesheet" href="/css/promos-admin-panel.css" /> <!-- ✅ NUEVO -->
 
   <!-- JS -->
   <script type="module" src="/js/promociones.js" defer></script>
+  <script src="/js/promos-admin-panel.js" defer></script> <!-- ✅ NUEVO -->
 </head>
 <body>
 
 <main class="promociones-container fade-in">
   <h1 class="text-center">🎯 Gestión de Promoción Destacada</h1>
 
+  <!-- ✅ NUEVO: Mini dashboard y lista de promos activas/inactivas -->
+  <section class="promo-dashboard mt-2">
+    <h2>📋 Todas las Promociones</h2>
+    <div id="promo-container" class="promo-grid">
+      <!-- Aquí se insertarán dinámicamente las tarjetas de promociones -->
+    </div>
+  </section>
+
   <!-- 🔎 Estado actual -->
-  <section class="promo-actual mt-2" id="estadoActual">
+  <section class="promo-actual mt-3" id="estadoActual">
     <!-- Se muestra la promoción activa aquí -->
   </section>
 
