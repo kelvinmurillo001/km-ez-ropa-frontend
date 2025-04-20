@@ -12,30 +12,35 @@ body {
   min-height: 100vh;
 }
 
-/* 🧱 Capa de opacidad con transición según modo */
+/* 🧱 Capa de opacidad para mejor contraste */
 body::before {
   content: "";
   position: fixed;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.85); /* ligeramente más clara para contraste */
+  background: rgba(255, 255, 255, 0.85); /* Claro por defecto */
   z-index: -1;
   transition: background 0.3s ease;
   pointer-events: none;
 }
 
-/* 🌙 Modo oscuro con fondo más tenue */
+/* 🌙 Modo oscuro - más tenue */
 body.modo-oscuro::before {
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.65);
 }
 
-/* ✨ Animación suave al cargar */
+/* ✨ Animación al cargar */
 .fade-in {
   animation: fadeIn 0.6s ease-in;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

@@ -1,302 +1,225 @@
-/* ============================
-   🎨 ESTILOS BASE DE COMPONENTES
-   ============================ */
+:root {
+  --color-bg: #121212;
+  --color-text: #f5f5f5;
+  --color-acento: #ff6d00;
+  --color-acento-secundario: #ff9800;
+  --color-panel: #1a1a1a;
+  --color-borde: #444;
+  --color-badge-blue: #2196f3;
+  --color-badge-orange: #fb8c00;
+  --color-badge-green: #43a047;
+  --color-badge-red: #e53935;
+}
 
-   body {
-    font-family: "Segoe UI", sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #121212;
-    color: #eee;
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* ========================
+   🎯 TITULARES Y CONTENEDOR
+======================== */
+h1, h3 {
+  color: var(--color-acento);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.promociones-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem;
+}
+
+/* ========================
+   🟠 PROMOCIÓN ACTUAL
+======================== */
+.promo-actual {
+  background-color: #1e1e1e;
+  padding: 1.5rem;
+  border: 2px dashed var(--color-acento-secundario);
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(255, 109, 0, 0.15);
+  transition: background-color 0.3s ease;
+}
+
+.promo-actual img,
+.promo-actual video {
+  margin-top: 1rem;
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(255, 109, 0, 0.2);
+}
+
+.promo-actual video {
+  max-height: 400px;
+}
+
+/* ========================
+   🏷️ BADGES
+======================== */
+.badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  margin: 0 5px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.badge.blue    { background-color: var(--color-badge-blue); color: white; }
+.badge.orange  { background-color: var(--color-badge-orange); color: white; }
+.badge.green   { background-color: var(--color-badge-green); color: white; }
+.badge.red     { background-color: var(--color-badge-red); color: white; }
+
+/* ========================
+   📝 FORMULARIO PROMO
+======================== */
+.form-editar-promo {
+  background-color: var(--color-panel);
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255, 109, 0, 0.15);
+}
+
+.form-editar-promo form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-editar-promo label {
+  font-size: 0.95rem;
+  color: #ddd;
+}
+
+.form-editar-promo input,
+.form-editar-promo select,
+.form-editar-promo textarea {
+  background-color: #222;
+  color: var(--color-text);
+  border: 1px solid var(--color-borde);
+  padding: 0.65rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-editar-promo input:focus,
+.form-editar-promo select:focus,
+.form-editar-promo textarea:focus {
+  border-color: var(--color-acento);
+  outline: none;
+}
+
+.form-editar-promo input[type="checkbox"] {
+  transform: scale(1.2);
+  margin-right: 8px;
+}
+
+/* ========================
+   ✅ MENSAJE DE FORMULARIO
+======================== */
+.form-msg {
+  font-size: 0.95rem;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+/* ========================
+   🔘 GRUPO DE CHECKBOXES
+======================== */
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* ========================
+   🔘 BOTONES
+======================== */
+button.btn {
+  background-color: var(--color-acento);
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button.btn:hover {
+  background-color: #ff8a00;
+}
+
+button.btn-secundario {
+  background-color: transparent;
+  border: 2px solid var(--color-acento);
+  color: var(--color-acento);
+  padding: 0.5rem 1.1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.25s ease;
+}
+
+button.btn-secundario:hover {
+  background-color: var(--color-acento);
+  color: var(--color-bg);
+}
+
+/* ========================
+   📱 RESPONSIVE
+======================== */
+@media (max-width: 600px) {
+  .form-editar-promo form {
+    gap: 0.8rem;
   }
-  
-  /* TITULOS Y TEXTOS */
-  h1, h2, h3, h4 {
-    font-weight: bold;
-    color: #ff6d00;
-    margin-bottom: 1rem;
+
+  .checkbox-group {
+    flex-direction: column;
   }
-  
-  .text-center {
-    text-align: center;
+
+  .promo-actual video {
+    max-height: 250px;
   }
-  
-  .mt-2 {
-    margin-top: 2rem;
-  }
-  
-  .mt-3 {
-    margin-top: 3rem;
-  }
-  
-  /* ============================
-     🔘 BOTONES
-     ============================ */
-  .btn {
-    background-color: #ff6d00;
-    color: #fff;
-    padding: 0.7rem 1.5rem;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-  }
-  
-  .btn:hover {
-    background-color: #e65c00;
-  }
-  
-  .btn-secundario {
-    background-color: #444;
-    color: #fff;
-    padding: 0.6rem 1.2rem;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    font-weight: bold;
-    cursor: pointer;
-    border: none;
-  }
-  
-  .btn-secundario:hover {
-    background-color: #666;
-  }
-  
-  .btn-danger {
-    background-color: #d32f2f;
-    color: white;
-    padding: 0.6rem 1rem;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  
-  .btn-danger:hover {
-    background-color: #b71c1c;
-  }
-  
-  /* ============================
-     ✅ TABLAS
-     ============================ */
-  .tabla-admin {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-    background-color: #1f1f1f;
-    color: #eee;
-  }
-  
-  .tabla-admin th,
-  .tabla-admin td {
-    padding: 1rem;
-    border-bottom: 1px solid #333;
-    text-align: left;
-    font-size: 0.95rem;
-  }
-  
-  .tabla-admin thead {
-    background-color: #ff6d00;
-    color: #000;
-  }
-  
-  .tabla-admin tbody tr:hover {
-    background-color: #2c2c2c;
-  }
-  
-  /* ============================
-     🖼️ IMÁGENES
-     ============================ */
-  .img-mini, .producto-img {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-  
-  /* ============================
-     ⚠️ MENSAJES
-     ============================ */
-  .admin-message {
-    text-align: center;
-    padding: 1rem;
-    font-weight: bold;
-    border-radius: 8px;
-    margin: 1rem auto;
-    max-width: 600px;
-  }
-  
-  .admin-message.success {
-    background-color: #2e7d32;
-    color: #fff;
-  }
-  
-  .admin-message.error {
-    background-color: #c62828;
-    color: #fff;
-  }
-  
-  .admin-message.info {
-    background-color: #0277bd;
-    color: #fff;
-  }
-  
-  .oculto {
-    display: none;
-  }
-  
-  /* ============================
-     📝 FORMULARIOS
-     ============================ */
-  .formulario {
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background-color: #1c1c1c;
-    border-radius: 10px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
-  }
-  
-  .formulario label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-    color: #ff6d00;
-  }
-  
-  .formulario input,
-  .formulario select,
-  .formulario textarea {
-    width: 100%;
-    padding: 0.6rem;
-    border: 1px solid #444;
-    border-radius: 6px;
-    background-color: #2a2a2a;
-    color: #fff;
-    margin-bottom: 1.2rem;
-  }
-  
-  .formulario input:focus,
-  .formulario select:focus,
-  .formulario textarea:focus {
-    outline: none;
-    border-color: #ff6d00;
-  }
-  
-  /* ============================
-     🌙 MODO OSCURO
-     ============================ */
-  body.modo-oscuro {
-    background-color: #121212;
-    color: #f1f1f1;
-  }
-  
-  body.modo-oscuro .formulario {
-    background-color: #1f1f1f;
-  }
-  
-  body.modo-oscuro .btn {
-    background-color: #ff6d00;
-  }
-  
-  body.modo-oscuro .btn-secundario {
-    background-color: #333;
-  }
-  
-  body.modo-oscuro .tabla-admin {
-    background-color: #1a1a1a;
-    color: #eaeaea;
-  }
-  
-  body.modo-oscuro .tabla-admin thead {
-    background-color: #ff6d00;
-    color: #000;
-  }
-  
-  /* ============================
-     🖼️ IMAGEN PRINCIPAL PREVIEW
-     ============================ */
-  .imagen-preview-principal {
-    max-width: 260px;
-    max-height: 260px;
-    display: block;
-    margin: 1.5rem auto;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 2px solid #ff6d00;
-    box-shadow: 0 0 12px rgba(255, 109, 0, 0.3);
-  }
-  
-  /* ==== MODAL (Edición Rápida) ==== */
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0,0,0,0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  }
-  
-  .modal {
-    background-color: #1f1f1f;
-    color: #eee;
-    padding: 2rem;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    position: relative;
-  }
-  
-  .modal h3 {
-    color: #ff6d00;
-    margin-top: 0;
-  }
-  
-  .modal-cerrar {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #d32f2f;
-    border: none;
-    color: white;
-    font-weight: bold;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
-  }
-  
-  .modal input,
-  .modal select {
-    width: 100%;
-    margin-bottom: 1rem;
-    padding: 0.5rem;
-    border: 1px solid #444;
-    border-radius: 5px;
-    background-color: #2a2a2a;
-    color: #fff;
-  }
-  
-  /* ==== INPUT DE BÚSQUEDA (Extra útil para paneles) ==== */
-  .input-busqueda {
-    background-color: #222;
-    color: #eee;
-    padding: 0.6rem 1rem;
-    border-radius: 6px;
-    border: 1px solid #444;
-    font-size: 1rem;
-    min-width: 240px;
-    transition: border-color 0.3s ease;
-  }
-  
-  .input-busqueda:focus {
-    outline: none;
-    border-color: #ff6d00;
-  }
-  
+}
+
+/* ========================
+   🔍 FILTROS DE BÚSQUEDA
+======================== */
+.filtros-promos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1rem 0;
+  justify-content: center;
+}
+
+.filtros-promos input,
+.filtros-promos select {
+  background-color: #222;
+  color: white;
+  border: 1px solid #444;
+  padding: 0.6rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  min-width: 220px;
+}

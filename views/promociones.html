@@ -10,10 +10,12 @@
   <meta name="description" content="Administra la promoción destacada de la tienda. Cambia mensaje, ubicación, fechas y activa o desactiva.">
 
   <!-- Estilos -->
+  <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/promociones.css" />
   <link rel="stylesheet" href="/css/promos-admin-panel.css" />
+  <link rel="stylesheet" href="/css/adminMensaje.css" /> <!-- ✅ Nuevo para mensajes -->
 
   <!-- JS -->
   <script type="module" src="/js/promociones.js" defer></script>
@@ -25,9 +27,9 @@
   <h1 class="text-center">🎯 Gestión de Promoción Destacada</h1>
 
   <!-- 🔍 Filtros -->
-  <section class="mt-2">
-    <input type="text" id="buscarPromo" placeholder="🔎 Buscar por mensaje..." style="padding: 0.5rem; width: 60%; max-width: 400px;" />
-    <select id="filtroEstado" style="padding: 0.5rem;">
+  <section class="mt-2 filtros-promos">
+    <input type="text" id="buscarPromo" placeholder="🔎 Buscar por mensaje..." />
+    <select id="filtroEstado">
       <option value="">Todos</option>
       <option value="activa">✅ Activa</option>
       <option value="inactiva">⛔ Inactiva</option>
@@ -92,7 +94,9 @@
         <option value="video">🎬 Video</option>
       </select>
 
-      <div id="mediaUploadContainer" class="mt-1"></div>
+      <div id="mediaUploadContainer" class="mt-1">
+        <!-- Render de imagen o video -->
+      </div>
 
       <label for="promoInicio">Fecha de inicio:</label>
       <input type="date" id="promoInicio" />
@@ -112,6 +116,9 @@
     <button onclick="goBack()" class="btn-secundario">🔙 Volver al panel</button>
   </div>
 </main>
+
+<!-- ✅ Contenedor de mensaje flotante -->
+<div id="adminMensaje" class="admin-message oculto" role="status" aria-live="polite"></div>
 
 <noscript>
   <p style="text-align:center; color:red;">⚠️ Activa JavaScript para usar esta sección.</p>

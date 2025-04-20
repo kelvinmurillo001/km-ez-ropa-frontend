@@ -1,38 +1,51 @@
-/* === BASE === */ 
+:root {
+  --bg-main: #121212;
+  --bg-panel: #1a1a1a;
+  --bg-box: #1e1e1e;
+  --text-main: #f5f5f5;
+  --text-muted: #ccc;
+  --accent: #ff6d00;
+  --accent-light: #ffa733;
+  --border: #444;
+}
+
+/* === BASE === */
 body {
-  background-color: #121212;
-  color: #f5f5f5;
+  background-color: var(--bg-main);
+  color: var(--text-main);
   font-family: 'Segoe UI', sans-serif;
 }
 
 /* === TITULO === */
 h1 {
   text-align: center;
-  color: #ff6d00;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
 }
 
 /* === CONTENEDOR === */
 .formulario-container {
-  max-width: 800px;
+  max-width: 850px;
   margin: auto;
   padding: 2rem;
 }
 
 /* === FORMULARIO === */
 form.form-producto {
-  background-color: #1a1a1a;
+  background-color: var(--bg-panel);
   padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 0 20px rgba(255, 109, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(255, 109, 0, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
 form label {
   font-weight: bold;
   margin-top: 0.5rem;
-  color: #ffa733;
+  color: var(--accent-light);
+  display: block;
 }
 
 form label::after {
@@ -48,13 +61,13 @@ form input[type="file"],
 form select,
 form textarea {
   background-color: #222;
-  color: #f5f5f5;
-  border: 1px solid #444;
+  color: var(--text-main);
+  border: 1px solid var(--border);
   padding: 0.7rem;
   border-radius: 6px;
-  width: 100%;
   font-size: 1rem;
-  transition: border 0.2s ease;
+  width: 100%;
+  transition: border-color 0.3s ease;
 }
 
 form textarea {
@@ -66,11 +79,11 @@ form input:focus,
 form textarea:focus,
 form select:focus {
   outline: none;
-  border-color: #ff6d00;
+  border-color: var(--accent);
   box-shadow: 0 0 5px rgba(255, 109, 0, 0.5);
 }
 
-/* === IMAGENES === */
+/* === IMÁGENES === */
 .preview-imagen,
 .preview-imagenes {
   display: flex;
@@ -84,27 +97,29 @@ form select:focus {
   height: 80px;
   object-fit: cover;
   border-radius: 6px;
-  border: 2px solid #ff6d00;
+  border: 2px solid var(--accent);
 }
 
 /* === VARIANTES === */
 .variante-box {
-  border: 1px solid #444;
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 1rem;
   margin-top: 1rem;
-  background-color: #1e1e1e;
+  background-color: var(--bg-box);
 }
 
 .variante-box:not(:last-child) {
   border-bottom: 1px dashed #333;
-  padding-bottom: 1rem;
   margin-bottom: 1rem;
 }
 
 .variante-box label {
-  color: #ccc;
+  color: var(--text-muted);
   font-size: 0.9rem;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 0.3rem;
 }
 
 .variante-box input[type="text"],
@@ -118,40 +133,41 @@ form select:focus {
 .form-actions {
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  margin-top: 1rem;
   flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
 }
 
 /* === BOTONES === */
-.btn, .btn-secundario {
+.btn,
+.btn-secundario {
   padding: 0.8rem 1.5rem;
   font-weight: bold;
   font-size: 1rem;
-  border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3s, color 0.3s;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .btn {
-  background-color: #ff6d00;
+  background-color: var(--accent);
   color: #121212;
+  border: none;
 }
 
 .btn:hover {
-  background-color: #ffa733;
+  background-color: var(--accent-light);
 }
 
 .btn-secundario {
   background-color: transparent;
-  color: #ff6d00;
-  border: 2px solid #ff6d00;
+  color: var(--accent);
+  border: 2px solid var(--accent);
 }
 
 .btn-secundario:hover {
-  background-color: #ff6d00;
-  color: #121212;
+  background-color: var(--accent);
+  color: var(--bg-main);
 }
 
 /* === MENSAJE ESTADO === */
@@ -162,9 +178,9 @@ form select:focus {
   margin-top: 1rem;
   padding: 0.8rem;
   border-radius: 6px;
-  background-color: #1a1a1a;
+  background-color: var(--bg-panel);
   color: limegreen;
-  border: 1px solid #444;
+  border: 1px solid var(--border);
 }
 
 .form-msg.error {
@@ -203,7 +219,7 @@ form select:focus {
 }
 
 #adminMensaje.info {
-  border-color: #ffa733;
+  border-color: var(--accent-light);
   background-color: #2e1a00;
   color: #fff5d1;
 }
@@ -221,5 +237,9 @@ form select:focus {
   .preview-mini {
     width: 100%;
     height: auto;
+  }
+
+  form.form-producto {
+    padding: 1.2rem;
   }
 }

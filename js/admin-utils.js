@@ -1,8 +1,9 @@
 "use strict";
 
 /**
- * 🔐 Verifica si hay un token válido
- * Redirige a login si no está autenticado o no es admin
+ * 🔐 Verifica si el token y el usuario son válidos.
+ * Redirige a login si no está autenticado o no es administrador.
+ * @returns {string} token
  */
 export function verificarSesion() {
   const token = localStorage.getItem("admin_token");
@@ -27,9 +28,9 @@ export function verificarSesion() {
 }
 
 /**
- * 💬 Mostrar mensaje flotante en el elemento con ID 'adminMensaje'
- * @param {string} texto - Texto del mensaje
- * @param {'success'|'error'|'info'} tipo - Tipo de mensaje
+ * 💬 Muestra un mensaje flotante con estilos y accesibilidad.
+ * @param {string} texto - Contenido del mensaje.
+ * @param {"success"|"error"|"info"} tipo - Tipo visual.
  */
 export function mostrarMensaje(texto, tipo = "info") {
   const mensaje = document.getElementById("adminMensaje");
@@ -40,11 +41,11 @@ export function mostrarMensaje(texto, tipo = "info") {
     return;
   }
 
-  // Limpieza previa
-  mensaje.className = `admin-message oculto ${tipo}`;
-  mensaje.setAttribute("role", "status");
-  mensaje.setAttribute("aria-live", "polite");
+  mensaje.className = `admin-message ${tipo}`;
+  mensaje.setAttribute("role", "alert");
+  mensaje.setAttribute("aria-live", "assertive");
   mensaje.textContent = texto;
+
   mensaje.classList.remove("oculto");
 
   clearTimeout(mensaje._timeout);
@@ -54,14 +55,14 @@ export function mostrarMensaje(texto, tipo = "info") {
 }
 
 /**
- * 🔙 Regresa al panel de administración
+ * 🔙 Regresa al panel principal de administración.
  */
 export function goBack() {
   window.location.href = "/panel.html";
 }
 
 /**
- * 🚪 Cierra la sesión limpiando tokens y redirigiendo
+ * 🚪 Cierra sesión, limpia localStorage y redirige.
  */
 export function cerrarSesion() {
   localStorage.removeItem("admin_token");
@@ -70,7 +71,7 @@ export function cerrarSesion() {
 }
 
 /**
- * 🙋‍♂️ Devuelve el usuario autenticado (o {} si falla)
+ * 🙋‍♂️ Devuelve el usuario autenticado o un objeto vacío.
  * @returns {Object}
  */
 export function getUsuarioActivo() {
@@ -81,5 +82,5 @@ export function getUsuarioActivo() {
   }
 }
 
-// 🌍 Exponer cerrarSesion por si se invoca desde HTML
+// 🌍 Exponer cerrarSesion globalmente
 window.cerrarSesion = cerrarSesion;

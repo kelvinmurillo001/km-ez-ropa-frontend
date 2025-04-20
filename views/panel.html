@@ -16,11 +16,13 @@
   <link rel="stylesheet" href="/css/panel.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
+  <link rel="stylesheet" href="/css/adminMensaje.css" /> <!-- ✅ Mensajes flotantes -->
 
   <!-- JS del panel (módulo) -->
   <script type="module" src="/js/panel.js" defer></script>
 </head>
 <body>
+
   <main class="panel-container fade-in" role="main" aria-label="Panel de administración principal">
     
     <!-- Encabezado del Panel -->
@@ -39,6 +41,9 @@
     </section>
   </main>
 
+  <!-- 🔔 Mensaje flotante -->
+  <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="polite"></div>
+
   <!-- 🌙 Modo Oscuro Automático -->
   <script>
     if (localStorage.getItem("modoOscuro") === "true") {
@@ -56,5 +61,6 @@
     import { cerrarSesion } from "/js/admin-utils.js";
     document.getElementById("btnCerrarSesion")?.addEventListener("click", cerrarSesion);
   </script>
+
 </body>
 </html>
