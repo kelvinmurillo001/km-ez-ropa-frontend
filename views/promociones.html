@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🎯 Promociones | KM & EZ ROPA</title>
 
-  <!-- Meta Seguridad -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="description" content="Administra la promoción destacada de la tienda. Cambia mensaje, colores, fechas y activa o desactiva.">
+  <meta name="description" content="Administra la promoción destacada de la tienda. Cambia mensaje, ubicación, fechas y activa o desactiva.">
 
   <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -19,56 +18,92 @@
 </head>
 <body>
 
-  <main class="promociones-container fade-in">
-    <h1 class="text-center">🎯 Gestión de Promoción Destacada</h1>
+<main class="promociones-container fade-in">
+  <h1 class="text-center">🎯 Gestión de Promoción Destacada</h1>
 
-    <!-- 🔎 Estado actual de promoción -->
-    <section class="promo-actual mt-2" id="estadoActual">
-      <!-- JS inserta aquí la promo activa -->
-    </section>
+  <!-- 🔎 Estado actual de promoción -->
+  <section class="promo-actual mt-2" id="estadoActual">
+    <!-- JS inserta aquí la promo activa -->
+  </section>
 
-    <!-- 📝 Formulario -->
-    <section class="form-editar-promo mt-3">
-      <h3>✏️ Editar Promoción</h3>
+  <!-- 📝 Formulario -->
+  <section class="form-editar-promo mt-3">
+    <h3>✏️ Editar Promoción</h3>
 
-      <form id="formPromo" novalidate>
-        <label for="promoMensaje">Mensaje de la promoción: *</label>
-        <input type="text" id="promoMensaje" placeholder="Ej: ¡20% OFF en toda la tienda!" required />
+    <form id="formPromo" enctype="multipart/form-data" novalidate>
+      <!-- Texto promocional -->
+      <label for="promoMensaje">Mensaje de la promoción: *</label>
+      <input type="text" id="promoMensaje" placeholder="Ej: ¡20% OFF en toda la tienda!" required />
 
-        <label for="promoTema">Tema de color:</label>
-        <select id="promoTema">
-          <option value="blue">Azul</option>
-          <option value="orange">Naranja</option>
-          <option value="green">Verde</option>
-          <option value="red">Rojo</option>
-        </select>
+      <!-- Color / Tema -->
+      <label for="promoTema">Tema de color:</label>
+      <select id="promoTema">
+        <option value="blue">Azul</option>
+        <option value="orange">Naranja</option>
+        <option value="green">Verde</option>
+        <option value="red">Rojo</option>
+      </select>
 
-        <label for="promoInicio">Fecha de inicio:</label>
-        <input type="date" id="promoInicio" />
+      <!-- Páginas donde se muestra -->
+      <label>¿Dónde se mostrará esta promoción?</label>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="promoPages" value="home" /> 🏠 Página Principal</label>
+        <label><input type="checkbox" name="promoPages" value="categorias" /> 📂 Categorías</label>
+        <label><input type="checkbox" name="promoPages" value="productos" /> 🛍️ Productos</label>
+        <label><input type="checkbox" name="promoPages" value="detalle" /> 📄 Detalle</label>
+        <label><input type="checkbox" name="promoPages" value="checkout" /> 🧾 Checkout</label>
+      </div>
 
-        <label for="promoFin">Fecha de fin:</label>
-        <input type="date" id="promoFin" />
+      <!-- Posición -->
+      <label for="promoPosition">Ubicación dentro de la página:</label>
+      <select id="promoPosition" required>
+        <option value="top">🔝 Arriba</option>
+        <option value="middle">📍 Medio</option>
+        <option value="bottom">🔻 Abajo</option>
+      </select>
 
-        <label>
-          <input type="checkbox" id="promoActivo" />
-          Activar promoción
-        </label>
+      <!-- Tipo de contenido -->
+      <label for="promoTipo">Tipo de contenido:</label>
+      <select id="promoTipo" required>
+        <option value="">Selecciona tipo</option>
+        <option value="texto">📢 Solo Texto</option>
+        <option value="imagen">🖼️ Imagen</option>
+        <option value="video">🎬 Video</option>
+      </select>
 
-        <button type="submit" class="btn mt-1">💾 Guardar promoción</button>
-        <p id="msgPromo" class="form-msg text-center mt-2"></p>
-      </form>
-    </section>
+      <!-- Subida de archivo o video -->
+      <div id="mediaUploadContainer" class="mt-1">
+        <!-- JS decide qué campo mostrar aquí -->
+      </div>
 
-    <!-- 🔙 Regresar -->
-    <div class="text-center mt-3">
-      <button onclick="goBack()" class="btn-secundario">🔙 Volver al panel</button>
-    </div>
-  </main>
+      <!-- Fechas -->
+      <label for="promoInicio">Fecha de inicio:</label>
+      <input type="date" id="promoInicio" />
 
-  <!-- No JS fallback -->
-  <noscript>
-    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar esta función.</p>
-  </noscript>
+      <label for="promoFin">Fecha de fin:</label>
+      <input type="date" id="promoFin" />
+
+      <!-- Activación -->
+      <label>
+        <input type="checkbox" id="promoActivo" />
+        Activar promoción
+      </label>
+
+      <!-- Guardar -->
+      <button type="submit" class="btn mt-1">💾 Guardar promoción</button>
+      <p id="msgPromo" class="form-msg text-center mt-2"></p>
+    </form>
+  </section>
+
+  <!-- 🔙 Volver -->
+  <div class="text-center mt-3">
+    <button onclick="goBack()" class="btn-secundario">🔙 Volver al panel</button>
+  </div>
+</main>
+
+<noscript>
+  <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar esta función.</p>
+</noscript>
 
 </body>
 </html>
