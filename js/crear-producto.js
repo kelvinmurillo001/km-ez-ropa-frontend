@@ -134,6 +134,7 @@ form.addEventListener("submit", async e => {
   const nombre = form.nombreInput.value.trim();
   const descripcion = form.descripcionInput.value.trim();
   const precio = parseFloat(form.precioInput.value);
+  const stock = parseInt(form.stockInput.value || "0"); // ✅ Stock base
   const categoria = categoriaInput.value;
   const subcategoria = subcategoriaInput?.value || null;
   const tallaTipo = tallaTipoInput?.value || "";
@@ -180,6 +181,7 @@ form.addEventListener("submit", async e => {
       name: nombre,
       description: descripcion,
       price: precio,
+      stock: stock, // ✅ Incluido
       category: categoria,
       subcategory: subcategoria,
       tallaTipo,
@@ -191,7 +193,7 @@ form.addEventListener("submit", async e => {
         url: imagenPrincipal.url,
         cloudinaryId: imagenPrincipal.public_id,
         talla: tallas[0] || "única",
-        color: color // 👈 texto plano como color principal
+        color: color
       }],
       createdBy: user?.name || "admin"
     };

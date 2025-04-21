@@ -59,6 +59,7 @@ async function cargarProducto() {
     document.getElementById("nombreInput").value = p.name || "";
     document.getElementById("descripcionInput").value = p.description || "";
     document.getElementById("precioInput").value = p.price || "";
+    document.getElementById("stockInput").value = p.stock ?? 0; // 🟢 stock base
     document.getElementById("categoriaInput").value = p.category || "";
     document.getElementById("subcategoriaInput").value = p.subcategory || "";
     document.getElementById("tallasInput").value = p.sizes?.join(", ") || "";
@@ -160,6 +161,7 @@ form.addEventListener("submit", async (e) => {
     const nombre = form.nombreInput.value.trim();
     const descripcion = form.descripcionInput.value.trim();
     const precio = parseFloat(form.precioInput.value);
+    const stockBase = parseInt(form.stockInput.value || "0"); // ✅ stock base
     const categoria = form.categoriaInput.value;
     const subcategoria = form.subcategoriaInput?.value?.trim() || null;
     const destacado = form.destacadoInput?.checked || false;
@@ -222,6 +224,10 @@ form.addEventListener("submit", async (e) => {
 
     if (nuevaImagen) {
       payload.images = [nuevaImagen];
+    }
+
+    if (variantes.length === 0) {
+      payload.stock = stockBase;
     }
 
     const res = await fetch(API_PRODUCTO, {
