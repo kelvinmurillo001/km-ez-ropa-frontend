@@ -22,15 +22,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // === 📦 Cargar producto por ID ===
 async function cargarProducto(id) {
-  const detalle = document.getElementById("detalleProducto");
-
   try {
     const res = await fetch(`${API_BASE}/api/products/${id}`);
     const data = await res.json();
-    const producto = data.producto; // ✅ FIX: acceso correcto
 
-    if (!res.ok || !producto) throw new Error("Producto no encontrado");
-    renderizarProducto(producto);
+    if (!res.ok || !data?.producto) throw new Error("Producto no encontrado");
+
+    renderizarProducto(data.producto);
   } catch (err) {
     console.error("❌ Error cargando producto:", err.message);
     mostrarError("⚠️ No se pudo cargar el producto.");
@@ -47,13 +45,26 @@ function renderizarProducto(p = {}) {
   const precio = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
   const id = p._id || "";
 
-  const stockTotal = Array.isArray(p.variants)
-    ? p.variants.reduce((acc, v) => acc + (v.stock || 0), 0)
-    : 1;
+  // 🔍 TALLAS Y STOCK
+  let tallasDisponibles = [];
+  let maxCantidad = 1;
 
-  const tallasDisponibles = Array.isArray(p.variants)
-    ? [...new Set(p.variants.filter(v => v.stock > 0).map(v => v.talla?.toUpperCase()))]
-    : p.sizes || [];
+  // Si hay variantes con stock
+  if (Array.isArray(p.variants) && p.variants.length > 0) {
+    const variantesConStock = p.variants.filter(v => v.stock > 0);
+    tallasDisponibles = [...new Set(variantesConStock.map(v => v.talla?.toUpperCase()))];
+    maxCantidad = variantesConStock.reduce((acc, v) => acc + (v.stock || 0), 0);
+  } else {
+    // No hay variantes, usar la talla principal
+    if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+      tallasDisponibles = p.sizes.map(t => t.toUpperCase());
+    } else if (p.images?.[0]?.talla) {
+      tallasDisponibles = [p.images[0].talla.toUpperCase()];
+    } else {
+      tallasDisponibles = ["Única"];
+    }
+    maxCantidad = p.stock || 1; // stock de la imagen principal
+  }
 
   const tallasHTML = tallasDisponibles.length
     ? tallasDisponibles.map(t => `<option value="${t}">${t}</option>`).join("")
@@ -79,7 +90,7 @@ function renderizarProducto(p = {}) {
         <select id="tallaSelect" required>${tallasHTML}</select>
 
         <label for="cantidadInput">Cantidad:</label>
-        <input type="number" id="cantidadInput" value="1" min="1" max="${stockTotal}" />
+        <input type="number" id="cantidadInput" value="1" min="1" max="${maxCantidad}" />
       </div>
 
       <button class="btn-agregar" onclick="agregarAlCarrito('${id}', \`${nombre}\`, \`${imagen}\`, ${p.price || 0})">
@@ -154,7 +165,7 @@ function mostrarToast(mensaje = "✅ Acción realizada") {
   setTimeout(() => toast.remove(), 2500);
 }
 
-// === ❌ Error general
+// === 🧯 Error general
 function mostrarError(texto = "❌ Error desconocido") {
   document.getElementById("detalleProducto").innerHTML = `
     <div style="color:red; text-align:center;">
