@@ -16,25 +16,20 @@ const inputBuscar = document.getElementById("buscarProducto");
 const filtroCategoria = document.getElementById("filtroCategoria");
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Crear producto
   btnNuevoProducto?.addEventListener("click", () => {
     window.location.href = "/crear-producto.html";
   });
 
-  // Cargar productos
   cargarProductos();
 
-  // Buscar por nombre
   inputBuscar?.addEventListener("input", () => {
     cargarProductos();
   });
 
-  // Filtro por categoría
   filtroCategoria?.addEventListener("change", () => {
     cargarProductos();
   });
 
-  // 🌙 Modo oscuro
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
@@ -84,14 +79,18 @@ function renderizarProductos(productos) {
     const nombre = sanitize(p.name || "Producto sin nombre");
     const precio = isNaN(p.price) ? "0.00" : parseFloat(p.price).toFixed(2);
     const categoria = sanitize(p.category || "-");
-    const stock = isNaN(p.stock) ? 0 : p.stock;
+
+    // 🔄 Calcular stock total sumando variantes
+    const stockTotal = Array.isArray(p.variants)
+      ? p.variants.reduce((acc, v) => acc + (v.stock || 0), 0)
+      : 0;
 
     return `
       <tr>
         <td><img src="${imagen}" alt="${nombre}" class="producto-img" onerror="this.src='/assets/logo.jpg'" /></td>
         <td>${nombre}</td>
         <td>$${precio}</td>
-        <td>${stock}</td>
+        <td>${stockTotal}</td>
         <td>${categoria}</td>
         <td>
           <button class="btn-tabla editar" onclick="editarProducto('${p._id}')">✏️</button>

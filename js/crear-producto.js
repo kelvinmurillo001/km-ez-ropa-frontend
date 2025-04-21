@@ -134,7 +134,6 @@ form.addEventListener("submit", async e => {
   const nombre = form.nombreInput.value.trim();
   const descripcion = form.descripcionInput.value.trim();
   const precio = parseFloat(form.precioInput.value);
-  const stock = parseInt(form.stockInput.value);
   const categoria = categoriaInput.value;
   const subcategoria = subcategoriaInput?.value || null;
   const tallaTipo = tallaTipoInput?.value || "";
@@ -144,7 +143,7 @@ form.addEventListener("submit", async e => {
   const filePrincipal = imagenInput.files[0];
 
   if (!filePrincipal) return mostrarMensaje("⚠️ Imagen principal requerida", "error");
-  if (!nombre || !descripcion || isNaN(precio) || isNaN(stock) || !categoria || !tallaTipo)
+  if (!nombre || !descripcion || isNaN(precio) || !categoria || !tallaTipo)
     return mostrarMensaje("⚠️ Completa todos los campos obligatorios", "error");
 
   try {
@@ -181,7 +180,6 @@ form.addEventListener("submit", async e => {
       name: nombre,
       description: descripcion,
       price: precio,
-      stock,
       category: categoria,
       subcategory: subcategoria,
       tallaTipo,

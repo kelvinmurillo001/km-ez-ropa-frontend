@@ -58,7 +58,6 @@ async function cargarProducto() {
     document.getElementById("nombreInput").value = p.name || "";
     document.getElementById("descripcionInput").value = p.description || "";
     document.getElementById("precioInput").value = p.price || "";
-    document.getElementById("stockInput").value = p.stock || 0;
     document.getElementById("categoriaInput").value = p.category || "";
     document.getElementById("subcategoriaInput").value = p.subcategory || "";
     document.getElementById("tallasInput").value = p.sizes?.join(", ") || "";
@@ -160,14 +159,13 @@ form.addEventListener("submit", async (e) => {
     const nombre = form.nombreInput.value.trim();
     const descripcion = form.descripcionInput.value.trim();
     const precio = parseFloat(form.precioInput.value);
-    const stock = parseInt(form.stockInput.value);
     const categoria = form.categoriaInput.value;
     const subcategoria = form.subcategoriaInput?.value?.trim() || null;
     const destacado = form.destacadoInput?.checked || false;
     const color = form.colorInput.value;
     const sizes = form.tallasInput.value.split(",").map(s => s.trim()).filter(Boolean);
 
-    if (!nombre || !descripcion || isNaN(precio) || isNaN(stock) || !categoria) {
+    if (!nombre || !descripcion || isNaN(precio) || !categoria) {
       mostrarMensaje("⚠️ Por favor completa todos los campos obligatorios.", "warning");
       return;
     }
@@ -213,7 +211,6 @@ form.addEventListener("submit", async (e) => {
       name: nombre,
       description: descripcion,
       price: precio,
-      stock,
       category: categoria,
       subcategory,
       color,
