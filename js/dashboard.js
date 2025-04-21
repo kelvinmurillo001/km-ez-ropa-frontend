@@ -3,18 +3,24 @@
 import { verificarSesion, goBack } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
+// 🔐 Verificar sesión activa
 const token = verificarSesion();
 
+// 🌐 Endpoints
 const API_ORDERS = `${API_BASE}/api/orders`;
 const API_PRODUCTS = `${API_BASE}/api/products`;
 const API_RESUMEN = `${API_BASE}/api/orders/stats/ventas`;
 
+// 📦 Datos globales
 let resumenPedidos = null;
 let resumenVentas = null;
 let categoriasOrdenadas = [];
 
 document.addEventListener("DOMContentLoaded", loadDashboard);
 
+/**
+ * 🚀 Cargar todo el dashboard
+ */
 async function loadDashboard() {
   try {
     const [pedidos, productos, resumen] = await Promise.all([
@@ -34,6 +40,9 @@ async function loadDashboard() {
   }
 }
 
+/**
+ * 🌐 Petición a la API con o sin token
+ */
 async function fetchData(url, necesitaToken = false) {
   const headers = necesitaToken ? { Authorization: `Bearer ${token}` } : {};
   const res = await fetch(url, { headers });
@@ -47,6 +56,9 @@ async function fetchData(url, necesitaToken = false) {
   return await res.json();
 }
 
+/**
+ * 📊 Calcular resumen de pedidos
+ */
 function contarPedidos(pedidos = []) {
   const hoy = new Date().setHours(0, 0, 0, 0);
   const resumen = {
@@ -72,8 +84,11 @@ function contarPedidos(pedidos = []) {
   return resumen;
 }
 
+/**
+ * 📈 Mostrar métricas generales
+ */
 function renderMetrics(pedidos, resumen) {
-  setText("ventasTotales", `$${resumen.ventasTotales?.toFixed(2) || "0.00"}`);
+  setText("ventasTotales", `$${parseFloat(resumen.ventasTotales || 0).toFixed(2)}`);
   setText("visitasTotales", resumen.totalVisitas || 0);
   setText("totalProductos", resumen.totalProductos || 0);
   setText("promosActivas", resumen.productosDestacados || 0);
@@ -86,6 +101,9 @@ function renderMetrics(pedidos, resumen) {
   setText("hoy", pedidos.hoy);
 }
 
+/**
+ * 🏷️ Mostrar categorías más utilizadas
+ */
 function renderTopCategorias(productos = []) {
   const conteo = {};
 
@@ -106,11 +124,17 @@ function renderTopCategorias(productos = []) {
   });
 }
 
+/**
+ * ✏️ Asignar texto a elementos por ID
+ */
 function setText(id, value) {
   const el = document.getElementById(id);
   if (el) el.textContent = value;
 }
 
+/**
+ * 📤 Exportar estadísticas como CSV
+ */
 function exportarEstadisticas() {
   if (!resumenVentas || !resumenPedidos) {
     return alert("⚠️ Datos incompletos. Intenta recargar la página.");
@@ -146,6 +170,6 @@ function exportarEstadisticas() {
   a.click();
 }
 
-// Exponer funciones globales
+// 🌐 Exponer funciones globales
 window.exportarEstadisticas = exportarEstadisticas;
 window.goBack = goBack;
