@@ -32,6 +32,8 @@ async function loadDashboard() {
     resumenPedidos = contarPedidos(pedidos || []);
     resumenVentas = resumen || {};
 
+    console.log("📦 Resumen de ventas:", resumenVentas);
+
     renderMetrics(resumenPedidos, resumenVentas);
     renderTopCategorias(productos || []);
   } catch (err) {
@@ -88,9 +90,12 @@ function contarPedidos(pedidos = []) {
  * 📈 Mostrar métricas generales
  */
 function renderMetrics(pedidos, resumen) {
-  setText("ventasTotales", `$${parseFloat(resumen.ventasTotales || 0).toFixed(2)}`);
+  const ventas = parseFloat(resumen.ventasTotales ?? 0);
+  const totalProductos = typeof resumen.totalProductos === "number" ? resumen.totalProductos : 0;
+
+  setText("ventasTotales", `$${ventas.toFixed(2)}`);
   setText("visitasTotales", resumen.totalVisitas || 0);
-  setText("totalProductos", resumen.totalProductos || 0);
+  setText("totalProductos", totalProductos);
   setText("promosActivas", resumen.productosDestacados || 0);
 
   setText("total", pedidos.total);
