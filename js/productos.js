@@ -92,7 +92,7 @@ function renderizarProductos(productos) {
     // 🔄 Calcular stock total: si tiene variants, sumar, si no, usar p.stock
     const stockTotal = Array.isArray(p.variants) && p.variants.length > 0
       ? p.variants.reduce((acc, v) => acc + (v.stock || 0), 0)
-      : (p.stock ?? 0);
+      : (typeof p.stock === "number" ? p.stock : 0);
 
     const claseSinStock = stockTotal === 0 ? "sin-stock" : "";
 

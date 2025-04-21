@@ -1,28 +1,20 @@
 "use strict";
 
-// 🔐 Importar utilidades comunes
 import { verificarSesion, goBack } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
-// 🛡️ Verificar sesión activa
 const token = verificarSesion();
 
-// ✅ Endpoints
 const API_ORDERS = `${API_BASE}/api/orders`;
 const API_PRODUCTS = `${API_BASE}/api/products`;
 const API_RESUMEN = `${API_BASE}/api/orders/stats/ventas`;
 
-// 📦 Datos globales
 let resumenPedidos = null;
 let resumenVentas = null;
 let categoriasOrdenadas = [];
 
-// ▶️ Inicialización
 document.addEventListener("DOMContentLoaded", loadDashboard);
 
-/**
- * 🚀 Cargar todo el dashboard
- */
 async function loadDashboard() {
   try {
     const [pedidos, productos, resumen] = await Promise.all([
@@ -31,31 +23,30 @@ async function loadDashboard() {
       fetchData(API_RESUMEN, true)
     ]);
 
-    resumenPedidos = contarPedidos(pedidos);
-    resumenVentas = resumen;
+    resumenPedidos = contarPedidos(pedidos || []);
+    resumenVentas = resumen || {};
 
     renderMetrics(resumenPedidos, resumenVentas);
-    renderTopCategorias(productos);
+    renderTopCategorias(productos || []);
   } catch (err) {
     console.error("❌ Error al cargar dashboard:", err);
     alert("❌ No se pudieron cargar los datos del dashboard.");
   }
 }
 
-/**
- * 🌐 Petición a la API con o sin token
- */
 async function fetchData(url, necesitaToken = false) {
   const headers = necesitaToken ? { Authorization: `Bearer ${token}` } : {};
   const res = await fetch(url, { headers });
 
-  if (!res.ok) throw new Error(`❌ Fallo en fetch: ${url}`);
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.warn(`⚠️ Error en ${url}: ${errorText}`);
+    throw new Error(`❌ Fallo al consultar: ${url}`);
+  }
+
   return await res.json();
 }
 
-/**
- * 📊 Calcular resumen de pedidos
- */
 function contarPedidos(pedidos = []) {
   const hoy = new Date().setHours(0, 0, 0, 0);
   const resumen = {
@@ -64,24 +55,25 @@ function contarPedidos(pedidos = []) {
     enviado: 0,
     cancelado: 0,
     hoy: 0,
-    total: 0
+    total: pedidos.length
   };
 
   pedidos.forEach(p => {
     const estado = (p.estado || "pendiente").toLowerCase();
-    if (resumen.hasOwnProperty(estado)) resumen[estado]++;
-    if (new Date(p.createdAt).setHours(0, 0, 0, 0) === hoy) resumen.hoy++;
+    if (estado.includes("pend")) resumen.pendiente++;
+    else if (estado.includes("proceso")) resumen.en_proceso++;
+    else if (estado.includes("env")) resumen.enviado++;
+    else if (estado.includes("cancel")) resumen.cancelado++;
+
+    const fechaPedido = new Date(p.createdAt).setHours(0, 0, 0, 0);
+    if (fechaPedido === hoy) resumen.hoy++;
   });
 
-  resumen.total = pedidos.length;
   return resumen;
 }
 
-/**
- * 📈 Mostrar métricas generales
- */
 function renderMetrics(pedidos, resumen) {
-  setText("ventasTotales", `$${resumen.ventasTotales || 0}`);
+  setText("ventasTotales", `$${resumen.ventasTotales?.toFixed(2) || "0.00"}`);
   setText("visitasTotales", resumen.totalVisitas || 0);
   setText("totalProductos", resumen.totalProductos || 0);
   setText("promosActivas", resumen.productosDestacados || 0);
@@ -94,14 +86,11 @@ function renderMetrics(pedidos, resumen) {
   setText("hoy", pedidos.hoy);
 }
 
-/**
- * 🏷️ Mostrar categorías más utilizadas
- */
 function renderTopCategorias(productos = []) {
   const conteo = {};
 
   productos.forEach(p => {
-    const cat = p.category || "Sin categoría";
+    const cat = p.category?.toLowerCase() || "Sin categoría";
     conteo[cat] = (conteo[cat] || 0) + 1;
   });
 
@@ -117,17 +106,11 @@ function renderTopCategorias(productos = []) {
   });
 }
 
-/**
- * ✏️ Asignar texto a elementos por ID
- */
 function setText(id, value) {
   const el = document.getElementById(id);
   if (el) el.textContent = value;
 }
 
-/**
- * 📤 Exportar estadísticas como CSV
- */
 function exportarEstadisticas() {
   if (!resumenVentas || !resumenPedidos) {
     return alert("⚠️ Datos incompletos. Intenta recargar la página.");
@@ -163,6 +146,6 @@ function exportarEstadisticas() {
   a.click();
 }
 
-// 🌐 Exponer funciones globales
+// Exponer funciones globales
 window.exportarEstadisticas = exportarEstadisticas;
 window.goBack = goBack;
