@@ -11,9 +11,9 @@ if (!productId) {
   goBack();
 }
 
-const API_UPLOAD = `${API_BASE}/uploads`;
-const API_PRODUCTO = `${API_BASE}/products/${productId}`;
-const API_CATEGORIAS = `${API_BASE}/categories`;
+const API_UPLOAD = `${API_BASE}/api/uploads`;
+const API_PRODUCTO = `${API_BASE}/api/products/${productId}`;
+const API_CATEGORIAS = `${API_BASE}/api/categories`;
 
 const form = document.getElementById("formEditarProducto");
 const msgEstado = document.getElementById("msgEstado");
@@ -34,6 +34,7 @@ async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIAS);
     const categorias = await res.json();
+    if (!res.ok || !Array.isArray(categorias)) throw new Error("Respuesta inválida");
 
     const select = document.getElementById("categoriaInput");
     select.innerHTML = '<option value="">Selecciona una categoría</option>';
@@ -53,7 +54,7 @@ async function cargarProducto() {
   try {
     const res = await fetch(API_PRODUCTO);
     const p = await res.json();
-    if (!res.ok) throw new Error("Producto no encontrado");
+    if (!res.ok || !p || p._id !== productId) throw new Error("Producto no encontrado");
 
     document.getElementById("nombreInput").value = p.name || "";
     document.getElementById("descripcionInput").value = p.description || "";

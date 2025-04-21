@@ -14,6 +14,7 @@ const productosLista = document.getElementById("productosLista");
 const btnNuevoProducto = document.getElementById("btnNuevoProducto");
 const inputBuscar = document.getElementById("buscarProducto");
 const filtroCategoria = document.getElementById("filtroCategoria");
+const contadorProductos = document.getElementById("contadorProductos");
 
 document.addEventListener("DOMContentLoaded", () => {
   btnNuevoProducto?.addEventListener("click", () => {
@@ -40,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
  */
 async function cargarProductos() {
   productosLista.innerHTML = `<p class='text-center'>⏳ Cargando productos...</p>`;
+  if (contadorProductos) contadorProductos.textContent = "";
 
   try {
     const nombre = inputBuscar?.value?.trim() || "";
@@ -62,11 +64,16 @@ async function cargarProductos() {
       return;
     }
 
+    // 🧮 Mostrar contador de productos encontrados
+    if (contadorProductos) {
+      contadorProductos.textContent = `Mostrando ${productos.length} producto(s)`;
+    }
+
     renderizarProductos(productos);
 
   } catch (err) {
     console.error("❌ Error al cargar productos:", err);
-    productosLista.innerHTML = `<p class="text-center" style="color:red;">❌ Error al cargar productos.</p>`;
+    productosLista.innerHTML = `<p class="text-center" style="color:red;">❌ ${err.message}</p>`;
   }
 }
 
@@ -74,6 +81,9 @@ async function cargarProductos() {
  * 🧾 Renderizar tabla de productos
  */
 function renderizarProductos(productos) {
+  // Opcional: orden alfabético
+  productos.sort((a, b) => a.name.localeCompare(b.name));
+
   const filas = productos.map(p => {
     const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
     const nombre = sanitize(p.name || "Producto sin nombre");
@@ -85,8 +95,11 @@ function renderizarProductos(productos) {
       ? p.variants.reduce((acc, v) => acc + (v.stock || 0), 0)
       : 0;
 
+    // 🚨 Clase si no hay stock
+    const claseSinStock = stockTotal === 0 ? "sin-stock" : "";
+
     return `
-      <tr>
+      <tr class="${claseSinStock}">
         <td><img src="${imagen}" alt="${nombre}" class="producto-img" onerror="this.src='/assets/logo.jpg'" /></td>
         <td>${nombre}</td>
         <td>$${precio}</td>
