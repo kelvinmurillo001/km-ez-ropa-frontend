@@ -81,7 +81,6 @@ async function cargarProductos() {
  * 🧾 Renderizar tabla de productos
  */
 function renderizarProductos(productos) {
-  // Opcional: orden alfabético
   productos.sort((a, b) => a.name.localeCompare(b.name));
 
   const filas = productos.map(p => {
@@ -90,12 +89,11 @@ function renderizarProductos(productos) {
     const precio = isNaN(p.price) ? "0.00" : parseFloat(p.price).toFixed(2);
     const categoria = sanitize(p.category || "-");
 
-    // 🔄 Calcular stock total sumando variantes
-    const stockTotal = Array.isArray(p.variants)
+    // 🔄 Calcular stock total: si tiene variants, sumar, si no, usar p.stock
+    const stockTotal = Array.isArray(p.variants) && p.variants.length > 0
       ? p.variants.reduce((acc, v) => acc + (v.stock || 0), 0)
-      : 0;
+      : (p.stock ?? 0);
 
-    // 🚨 Clase si no hay stock
     const claseSinStock = stockTotal === 0 ? "sin-stock" : "";
 
     return `
@@ -114,7 +112,7 @@ function renderizarProductos(productos) {
 
   productosLista.innerHTML = `
     <div class="tabla-scroll">
-      <table class="tabla-admin fade-in">
+      <table class="tabla-admin fade-in productos-table">
         <thead>
           <tr>
             <th>Imagen</th>
