@@ -26,7 +26,8 @@ async function cargarProducto(id) {
 
   try {
     const res = await fetch(`${API_BASE}/api/products/${id}`);
-    const producto = await res.json();
+    const data = await res.json();
+    const producto = data.producto; // ✅ FIX: acceso correcto
 
     if (!res.ok || !producto) throw new Error("Producto no encontrado");
     renderizarProducto(producto);
@@ -48,12 +49,11 @@ function renderizarProducto(p = {}) {
 
   const stockTotal = Array.isArray(p.variants)
     ? p.variants.reduce((acc, v) => acc + (v.stock || 0), 0)
-    : 0;
-  const maxCantidad = Math.max(stockTotal, 1);
+    : 1;
 
   const tallasDisponibles = Array.isArray(p.variants)
     ? [...new Set(p.variants.filter(v => v.stock > 0).map(v => v.talla?.toUpperCase()))]
-    : [];
+    : p.sizes || [];
 
   const tallasHTML = tallasDisponibles.length
     ? tallasDisponibles.map(t => `<option value="${t}">${t}</option>`).join("")
@@ -79,7 +79,7 @@ function renderizarProducto(p = {}) {
         <select id="tallaSelect" required>${tallasHTML}</select>
 
         <label for="cantidadInput">Cantidad:</label>
-        <input type="number" id="cantidadInput" value="1" min="1" max="${maxCantidad}" />
+        <input type="number" id="cantidadInput" value="1" min="1" max="${stockTotal}" />
       </div>
 
       <button class="btn-agregar" onclick="agregarAlCarrito('${id}', \`${nombre}\`, \`${imagen}\`, ${p.price || 0})">
@@ -154,7 +154,7 @@ function mostrarToast(mensaje = "✅ Acción realizada") {
   setTimeout(() => toast.remove(), 2500);
 }
 
-// === 🧯 Error general
+// === ❌ Error general
 function mostrarError(texto = "❌ Error desconocido") {
   document.getElementById("detalleProducto").innerHTML = `
     <div style="color:red; text-align:center;">
