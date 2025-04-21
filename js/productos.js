@@ -82,9 +82,15 @@ function renderizarProductos(productos) {
     const precio = isNaN(p.price) ? "0.00" : parseFloat(p.price).toFixed(2);
     const categoria = sanitize(p.category || "-");
 
-    const stockTotal = Array.isArray(p.variants) && p.variants.length > 0
-      ? p.variants.reduce((acc, v) => acc + (v.stock || 0), 0)
-      : (typeof p.stock === "number" ? p.stock : 0);
+    // 🧠 Calcular stock total
+    let stockTotal = 0;
+    if (Array.isArray(p.variants) && p.variants.length > 0) {
+      stockTotal = p.variants.reduce((acc, v) => acc + (v.stock || 0), 0);
+    } else if (typeof p.stock === "number") {
+      stockTotal = p.stock;
+    } else {
+      stockTotal = 1; // Asumimos 1 si no tiene variantes ni campo específico
+    }
 
     const claseSinStock = stockTotal === 0 ? "sin-stock" : "";
 
