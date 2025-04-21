@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>👕 Productos | Panel Admin | KM & EZ ROPA</title>
 
   <!-- Meta -->
@@ -22,7 +22,7 @@
     <h1 class="text-center">👕 Gestión de Productos</h1>
 
     <!-- 🔥 PROMOCIÓN DESTACADA -->
-    <div id="promo-display-container" data-page="productos"></div>
+    <div id="promo-display-container" data-page="productos" role="region" aria-label="Promoción activa"></div>
 
     <!-- 🟠 Botón principal -->
     <div class="text-center mt-2">
@@ -32,9 +32,9 @@
     </div>
 
     <!-- 🔍 Filtros -->
-    <div class="filtros text-center mt-2">
-      <input type="text" id="buscarProducto" placeholder="🔎 Buscar por nombre..." />
-      <select id="filtroCategoria">
+    <div class="filtros text-center mt-2" role="search">
+      <input type="text" id="buscarProducto" placeholder="🔎 Buscar por nombre..." aria-label="Buscar producto por nombre" />
+      <select id="filtroCategoria" aria-label="Filtrar por categoría">
         <option value="">📂 Todas las categorías</option>
         <option value="mujer">👩 Mujer</option>
         <option value="hombre">👨 Hombre</option>
@@ -45,21 +45,21 @@
     </div>
 
     <!-- ✅ Contador de productos -->
-    <p id="contadorProductos" class="text-center mt-2" style="font-weight: bold; color: #ccc;"></p>
+    <p id="contadorProductos" class="text-center mt-2" style="font-weight: bold; color: #ccc;" aria-live="polite"></p>
 
     <!-- 📋 Tabla de productos -->
     <section id="productosLista" class="productos-lista mt-3" aria-label="Lista de productos">
-      <!-- JS insertará tabla aquí -->
+      <!-- JS insertará la tabla aquí -->
     </section>
 
     <!-- 🔙 Botón regreso -->
     <div class="text-center mt-3">
-      <button id="btnVolverPanel" class="btn-secundario">🔙 Volver al Panel</button>
+      <button id="btnVolverPanel" class="btn-secundario" aria-label="Volver al panel principal">🔙 Volver al Panel</button>
     </div>
   </main>
 
   <!-- 📣 Mensaje flotante -->
-  <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="polite"></div>
+  <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
 
   <!-- 🌙 Activar modo oscuro -->
   <script>

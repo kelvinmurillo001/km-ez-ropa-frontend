@@ -5,11 +5,13 @@ body {
   background-color: #121212;
   color: #f5f5f5;
   line-height: 1.6;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 img {
@@ -26,6 +28,7 @@ img {
   background-color: #1a1a1a;
   padding: 1rem 2rem;
   border-bottom: 2px solid #ff6d00;
+  flex-wrap: wrap;
 }
 
 .logo {
@@ -39,6 +42,7 @@ img {
   height: 60px;
   border-radius: 50%;
   border: 2px solid #ff6d00;
+  object-fit: cover;
 }
 
 .brand h1 {
@@ -57,6 +61,7 @@ img {
   display: flex;
   gap: 1rem;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .nav-links a,
@@ -68,7 +73,7 @@ img {
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .nav-links a:hover,
@@ -79,7 +84,7 @@ img {
 
 /* === 🧾 DETALLE DE PRODUCTO === */
 .detalle-container {
-  padding: 2rem;
+  padding: 2rem 1rem;
   max-width: 1100px;
   margin: auto;
 }
@@ -88,15 +93,19 @@ img {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2rem;
-  align-items: center;
+  align-items: flex-start;
   margin-top: 2rem;
 }
 
 .detalle-img img {
-  width: 100%;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(255, 109, 0, 0.2);
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.detalle-img img:hover {
+  transform: scale(1.02);
 }
 
 .detalle-info h2 {
@@ -111,7 +120,7 @@ img {
 }
 
 .precio {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   color: #fff;
   margin: 1rem 0;
   font-weight: bold;
@@ -140,7 +149,7 @@ img {
   background-color: #1a1a1a;
   color: white;
   outline: none;
-  transition: border 0.3s, box-shadow 0.3s;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg fill='%23ff6d00' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -186,18 +195,16 @@ img {
 .detalles-extra p[data-type="talla"]::before {
   content: "📏";
 }
-
 .detalles-extra p[data-type="categoria"]::before {
   content: "📁";
 }
-
 .detalles-extra p[data-type="subcategoria"]::before {
   content: "🧷";
 }
 
 /* === 🛒 BOTÓN AGREGAR AL CARRITO === */
 .btn-agregar {
-  padding: 0.8rem 1.5rem;
+  padding: 0.9rem 1.6rem;
   font-size: 1rem;
   background-color: #ff6d00;
   color: #121212;
@@ -206,6 +213,7 @@ img {
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  text-transform: uppercase;
 }
 
 .btn-agregar:hover {
@@ -274,12 +282,13 @@ img {
     gap: 0.5rem;
   }
 
-  .btn-agregar {
-    width: 100%;
-  }
-
+  .btn-agregar,
   .selectores select,
   .selectores input {
     width: 100%;
+  }
+
+  .detalle-container {
+    padding: 1rem;
   }
 }

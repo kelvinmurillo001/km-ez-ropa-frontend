@@ -23,13 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   cargarProductos();
 
-  inputBuscar?.addEventListener("input", () => {
-    cargarProductos();
-  });
-
-  filtroCategoria?.addEventListener("change", () => {
-    cargarProductos();
-  });
+  inputBuscar?.addEventListener("input", cargarProductos);
+  filtroCategoria?.addEventListener("change", cargarProductos);
 
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
@@ -56,7 +51,6 @@ async function cargarProductos() {
     });
 
     const productos = await res.json();
-
     if (!res.ok) throw new Error(productos.message || "Error al obtener productos");
 
     if (!Array.isArray(productos) || productos.length === 0) {
@@ -64,7 +58,6 @@ async function cargarProductos() {
       return;
     }
 
-    // 🧮 Mostrar contador de productos encontrados
     if (contadorProductos) {
       contadorProductos.textContent = `Mostrando ${productos.length} producto(s)`;
     }
@@ -89,7 +82,6 @@ function renderizarProductos(productos) {
     const precio = isNaN(p.price) ? "0.00" : parseFloat(p.price).toFixed(2);
     const categoria = sanitize(p.category || "-");
 
-    // 🔄 Calcular stock total: si tiene variants, sumar, si no, usar p.stock
     const stockTotal = Array.isArray(p.variants) && p.variants.length > 0
       ? p.variants.reduce((acc, v) => acc + (v.stock || 0), 0)
       : (typeof p.stock === "number" ? p.stock : 0);

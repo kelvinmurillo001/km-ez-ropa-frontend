@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>✅ Finalizar Compra | KM & EZ ROPA</title>
 
+  <!-- Meta Seguridad & SEO -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="description" content="Ingresa tus datos para completar tu pedido en KM & EZ ROPA.">
+  <meta name="description" content="Ingresa tus datos para completar tu pedido en KM & EZ ROPA. Compra segura, rápida y con estilo." />
+  <meta name="author" content="KM & EZ ROPA" />
 
   <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -21,36 +23,37 @@
 </head>
 <body>
 
-  <!-- 🔥 PROMOCIONES DINÁMICAS -->
+  <!-- 🔥 BANNER PROMOCIONAL -->
   <div id="promo-display-container" data-page="checkout"></div>
 
+  <!-- 🧾 CONTENEDOR PRINCIPAL -->
   <main class="checkout-container fade-in" role="main">
     <h1 class="text-center">✅ Finalizar Compra</h1>
 
     <form id="formCheckout" class="form-checkout" novalidate autocomplete="on">
       
-      <!-- 🔖 DATOS DE FACTURACIÓN -->
+      <!-- 🧾 DATOS DE FACTURACIÓN -->
       <fieldset>
         <legend>🧾 Datos de Facturación</legend>
 
-        <label for="nombreInput">Nombre Completo:</label>
+        <label for="nombreInput">Nombre Completo: *</label>
         <input type="text" id="nombreInput" name="nombre" required placeholder="Ej: Juan Pérez" autocomplete="name" />
 
-        <label for="emailInput">Correo Electrónico:</label>
+        <label for="emailInput">Correo Electrónico: *</label>
         <input type="email" id="emailInput" name="email" required placeholder="ejemplo@correo.com" autocomplete="email" />
 
-        <label for="telefonoInput">Teléfono:</label>
-        <input type="tel" id="telefonoInput" name="telefono" required placeholder="Ej: +56912345678" autocomplete="tel" />
+        <label for="telefonoInput">Teléfono / WhatsApp: *</label>
+        <input type="tel" id="telefonoInput" name="telefono" required placeholder="+593..." autocomplete="tel" />
       </fieldset>
 
       <!-- 🚚 DATOS DE ENTREGA -->
       <fieldset>
         <legend>🚚 Dirección de Entrega</legend>
 
-        <label for="direccionInput">Dirección:</label>
-        <textarea id="direccionInput" name="direccion" required placeholder="Calle 123, Ciudad, Región" autocomplete="street-address"></textarea>
+        <label for="direccionInput">Dirección completa: *</label>
+        <textarea id="direccionInput" name="direccion" required placeholder="Ej: Av. Amazonas y NNUU, Quito - Pichincha" autocomplete="street-address"></textarea>
 
-        <button type="button" class="btn-secundario" id="btnUbicacion">📍 Usar mi ubicación</button>
+        <button type="button" class="btn-secundario" id="btnUbicacion">📍 Usar mi ubicación actual</button>
       </fieldset>
 
       <!-- 💳 MÉTODO DE PAGO -->
@@ -65,7 +68,7 @@
 
           <label class="opcion-pago">
             <input type="radio" name="metodoPago" value="tarjeta" />
-            <span>💳 Tarjeta de Crédito / Débito</span>
+            <span>💳 Tarjeta / Débito</span>
           </label>
 
           <label class="opcion-pago">
@@ -78,13 +81,13 @@
       <!-- 🛍️ RESUMEN DEL PEDIDO -->
       <fieldset>
         <legend>🛍️ Tu Pedido</legend>
-        <div id="resumenPedido" aria-live="polite">
-          <!-- Productos aquí -->
+        <div id="resumenPedido" aria-live="polite" aria-relevant="all">
+          <!-- Productos del carrito insertados por JS -->
         </div>
-        <h3>Total: <span id="totalFinal">$0.00</span></h3>
+        <h3>Total a pagar: <span id="totalFinal">$0.00</span></h3>
       </fieldset>
 
-      <!-- ✅ ACCIONES -->
+      <!-- 🎯 BOTONES DE ACCIÓN -->
       <div class="form-actions mt-3">
         <button type="submit" class="btn">🛒 Confirmar Pedido</button>
         <button type="button" onclick="window.location.href='/carrito.html'" class="btn-secundario">🔙 Volver al Carrito</button>
@@ -94,8 +97,9 @@
     </form>
   </main>
 
+  <!-- 🔒 JS fallback -->
   <noscript>
-    <p style="text-align:center; color:red;">⚠️ Activa JavaScript para usar esta sección.</p>
+    <p style="text-align:center; color:red;">⚠️ Activa JavaScript para completar tu pedido.</p>
   </noscript>
 
 </body>

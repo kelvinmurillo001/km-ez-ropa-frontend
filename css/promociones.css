@@ -18,26 +18,29 @@ body {
   font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 0;
+  line-height: 1.6;
+  scroll-behavior: smooth;
 }
 
-/* ========================
-   🎯 TITULARES Y CONTENEDOR
-======================== */
-h1, h3 {
+/* 🎯 Encabezados */
+h1, h2, h3 {
   color: var(--accent);
   text-align: center;
   margin-bottom: 1rem;
+  letter-spacing: 0.5px;
 }
 
+/* Contenedor principal */
 .promociones-container {
-  max-width: 900px;
+  max-width: 960px;
   margin: auto;
   padding: 2rem;
+  background: linear-gradient(180deg, #161616, #1e1e1e);
+  border-radius: 12px;
+  box-shadow: 0 0 30px rgba(255, 109, 0, 0.08);
 }
 
-/* ========================
-   🧡 PROMOCIÓN ACTUAL
-======================== */
+/* 📋 Promoción actual */
 .promo-actual {
   background-color: #1e1e1e;
   padding: 1.5rem;
@@ -62,9 +65,7 @@ h1, h3 {
   max-height: 400px;
 }
 
-/* ========================
-   🏷️ BADGES DE TEMA
-======================== */
+/* 🔷 Badge */
 .badge {
   display: inline-block;
   padding: 0.3rem 0.8rem;
@@ -80,25 +81,24 @@ h1, h3 {
 .badge.green   { background-color: var(--badge-green); color: #fff; }
 .badge.red     { background-color: var(--badge-red); color: #fff; }
 
-/* ========================
-   📝 FORMULARIO
-======================== */
+/* ✏️ Formulario */
 .form-editar-promo {
   background-color: var(--panel-color);
-  padding: 1.5rem;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(255, 109, 0, 0.15);
+  padding: 1.8rem;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(255, 109, 0, 0.12);
 }
 
 .form-editar-promo form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
 .form-editar-promo label {
   font-size: 0.95rem;
-  color: #ddd;
+  color: #ccc;
+  font-weight: 500;
 }
 
 .form-editar-promo input,
@@ -113,9 +113,9 @@ h1, h3 {
   transition: border-color 0.3s ease;
 }
 
-.form-editar-promo input:focus,
-.form-editar-promo select:focus,
-.form-editar-promo textarea:focus {
+.form-editar-promo input:focus-visible,
+.form-editar-promo select:focus-visible,
+.form-editar-promo textarea:focus-visible {
   border-color: var(--accent);
   outline: none;
 }
@@ -125,19 +125,7 @@ h1, h3 {
   margin-right: 8px;
 }
 
-/* ========================
-   ⚠️ MENSAJES
-======================== */
-.form-msg {
-  font-size: 0.95rem;
-  text-align: center;
-  font-weight: bold;
-  margin-top: 0.5rem;
-}
-
-/* ========================
-   ✅ CHECKBOX GROUP
-======================== */
+/* ✅ Checkbox Group */
 .checkbox-group {
   display: flex;
   flex-wrap: wrap;
@@ -151,9 +139,15 @@ h1, h3 {
   gap: 0.4rem;
 }
 
-/* ========================
-   🔘 BOTONES
-======================== */
+/* ⚠️ Mensajes */
+.form-msg {
+  font-size: 0.95rem;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+/* 🔘 Botones */
 button.btn {
   background-color: var(--accent);
   color: white;
@@ -186,26 +180,7 @@ button.btn-secundario:hover {
   color: var(--bg-color);
 }
 
-/* ========================
-   📱 RESPONSIVE
-======================== */
-@media (max-width: 600px) {
-  .form-editar-promo form {
-    gap: 0.8rem;
-  }
-
-  .checkbox-group {
-    flex-direction: column;
-  }
-
-  .promo-actual video {
-    max-height: 250px;
-  }
-}
-
-/* ========================
-   🔍 FILTROS DE BÚSQUEDA
-======================== */
+/* 🔍 Filtros */
 .filtros-promos {
   display: flex;
   flex-wrap: wrap;
@@ -223,4 +198,19 @@ button.btn-secundario:hover {
   border-radius: 6px;
   font-size: 1rem;
   min-width: 220px;
+}
+
+/* 📱 Responsive */
+@media (max-width: 600px) {
+  .form-editar-promo form {
+    gap: 1rem;
+  }
+
+  .checkbox-group {
+    flex-direction: column;
+  }
+
+  .promo-actual video {
+    max-height: 250px;
+  }
 }

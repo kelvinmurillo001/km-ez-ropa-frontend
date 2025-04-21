@@ -13,7 +13,7 @@ export function verificarSesion() {
   try {
     user = JSON.parse(userRaw);
   } catch (e) {
-    console.warn("⚠️ admin_user malformado, limpiando localStorage...");
+    console.warn("⚠️ admin_user malformado. Limpiando localStorage...");
     localStorage.clear();
   }
 
@@ -28,9 +28,9 @@ export function verificarSesion() {
 }
 
 /**
- * 💬 Muestra un mensaje flotante con estilos y accesibilidad.
+ * 💬 Muestra un mensaje flotante con accesibilidad ARIA.
  * @param {string} texto - Contenido del mensaje.
- * @param {"success"|"error"|"info"} tipo - Tipo visual.
+ * @param {"success"|"error"|"info"} tipo - Tipo visual (CSS).
  */
 export function mostrarMensaje(texto, tipo = "info") {
   const mensaje = document.getElementById("adminMensaje");
@@ -72,15 +72,16 @@ export function cerrarSesion() {
 
 /**
  * 🙋‍♂️ Devuelve el usuario autenticado o un objeto vacío.
- * @returns {Object}
+ * @returns {Object} Usuario
  */
 export function getUsuarioActivo() {
   try {
-    return JSON.parse(localStorage.getItem("admin_user") || "{}");
+    const raw = localStorage.getItem("admin_user");
+    return raw ? JSON.parse(raw) : {};
   } catch {
     return {};
   }
 }
 
-// 🌍 Exponer cerrarSesion globalmente
+// 🌍 Exponer logout globalmente (por si hay botón de cierre)
 window.cerrarSesion = cerrarSesion;

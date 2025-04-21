@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="/css/dashboard.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
+  <link rel="stylesheet" href="/css/adminMensaje.css" />
 
   <!-- ✅ Script del Dashboard -->
   <script type="module" src="/js/dashboard.js" defer></script>
@@ -28,7 +29,7 @@
 
     <!-- 🔢 Métricas Globales -->
     <section class="dashboard-grid" aria-label="Métricas del negocio">
-      <article class="card" id="ventas" role="region" aria-labelledby="ventasTotales">
+      <article class="card" role="region" aria-labelledby="ventasTotales">
         <h3>🛒 Ventas Totales</h3>
         <p><span id="ventasTotales" aria-live="polite">0</span></p>
       </article>
@@ -63,17 +64,18 @@
     <section class="analitica-extra mt-3" aria-label="Categorías más frecuentes">
       <h2 class="text-center">📁 Top Categorías</h2>
       <ul id="topCategorias" class="listado-categorias" aria-live="polite">
-        <!-- JS Insertará dinámicamente -->
+        <!-- Se insertará dinámicamente -->
       </ul>
     </section>
 
-    <!-- ⚙️ Acciones de usuario -->
+    <!-- ⚙️ Acciones -->
     <div class="text-center mt-3">
       <button type="button" id="btnExportar" class="btn-secundario">
         📤 Exportar Estadísticas (CSV)
       </button>
     </div>
 
+    <!-- 🔙 Volver -->
     <div class="text-center mt-2">
       <button type="button" onclick="goBack()" class="btn">
         🔙 Volver al Panel
@@ -81,12 +83,15 @@
     </div>
   </main>
 
+  <!-- 💬 Mensaje flotante -->
+  <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="polite"></div>
+
   <!-- ⚠️ No JS -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
 
-  <!-- 🌙 Modo oscuro automático -->
+  <!-- 🌙 Activar Modo Oscuro -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("modoOscuro") === "true") {
@@ -94,6 +99,5 @@
       }
     });
   </script>
-
 </body>
 </html>

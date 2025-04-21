@@ -5,7 +5,7 @@ import { registrarVisitaPublica } from "./utils.js";
 import { API_BASE } from "./config.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  registrarVisitaPublica(); // 📊 Registro
+  registrarVisitaPublica(); // 📊 Registro de visita
 
   const catalogo = document.getElementById("catalogo");
 
@@ -13,21 +13,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     const res = await fetch(`${API_BASE}/api/products?featured=true`);
     const productos = await res.json();
 
-    if (!res.ok) throw new Error(productos.message || "Error al cargar productos destacados");
+    if (!res.ok || !Array.isArray(productos)) {
+      throw new Error(productos.message || "Error al cargar productos destacados");
+    }
 
-    if (!Array.isArray(productos) || productos.length === 0) {
+    if (productos.length === 0) {
       catalogo.innerHTML = "<p style='text-align:center;'>😢 No hay productos destacados en este momento.</p>";
       return;
     }
 
-    productos.forEach(p => {
-      const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
-      const nombre = p.name || "Producto";
-      const precio = typeof p.price === "number" ? `$${p.price.toFixed(2)}` : "$--";
-      const id = p._id || "";
+    productos.forEach(producto => {
+      const imagen = producto.image || producto.images?.[0]?.url || "/assets/logo.jpg";
+      const nombre = producto.name || "Producto sin nombre";
+      const precio = typeof producto.price === "number" ? `$${producto.price.toFixed(2)}` : "$ --";
+      const id = producto._id || "";
 
       const card = document.createElement("div");
-      card.className = "product-card";
+      card.className = "product-card fade-in";
+
       card.innerHTML = `
         <img src="${imagen}" alt="${nombre}" loading="lazy" onerror="this.src='/assets/logo.jpg'" />
         <div class="product-info">
@@ -36,11 +39,12 @@ document.addEventListener("DOMContentLoaded", async () => {
           ${id ? `<button class="btn-card" onclick="verDetalle('${id}')">👁️ Ver</button>` : ""}
         </div>
       `;
+
       catalogo.appendChild(card);
     });
 
-  } catch (err) {
-    console.error("❌ Error cargando productos destacados:", err);
+  } catch (error) {
+    console.error("❌ Error cargando productos destacados:", error);
     catalogo.innerHTML = `<p style="text-align:center; color:red;">⚠️ No se pudieron cargar los productos.</p>`;
   }
 
@@ -50,27 +54,33 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // 🌙 Modo oscuro
 function aplicarModoOscuro() {
+  const btn = document.getElementById("modoOscuroBtn");
   const dark = localStorage.getItem("modoOscuro") === "true";
+
   if (dark) document.body.classList.add("modo-oscuro");
 
-  const toggleBtn = document.getElementById("modoOscuroBtn");
-  toggleBtn?.addEventListener("click", () => {
-    document.body.classList.toggle("modo-oscuro");
-    localStorage.setItem("modoOscuro", document.body.classList.contains("modo-oscuro"));
+  btn?.addEventListener("click", () => {
+    const isDark = document.body.classList.toggle("modo-oscuro");
+    localStorage.setItem("modoOscuro", isDark);
+    btn.textContent = isDark ? "☀️" : "🌙";
   });
+
+  // Icono inicial
+  if (btn) btn.textContent = dark ? "☀️" : "🌙";
 }
 
-// 👁️ Navegar a detalle
+// 👁️ Ver detalle
 function verDetalle(id) {
-  if (!id) return;
+  if (!id || typeof id !== "string") return;
   window.location.href = `/detalle.html?id=${id}`;
 }
-window.verDetalle = verDetalle; // 💡 Exponer función globalmente
+window.verDetalle = verDetalle; // Globalizar función
 
 // 🛒 Actualizar contador del carrito
 function actualizarCarritoWidget() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
-  const total = carrito.reduce((acc, item) => acc + (item.quantity || item.cantidad || 0), 0);
+  const total = carrito.reduce((sum, item) => sum + (item.quantity || item.cantidad || 0), 0);
+
   const contador = document.getElementById("cartCount");
   if (contador) contador.textContent = total;
 }

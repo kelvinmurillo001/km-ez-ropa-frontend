@@ -1,3 +1,5 @@
+/* === 🎛️ PANEL ADMINISTRATIVO CSS COMPLETO === */
+
 /* 🎛️ CONTENEDOR PRINCIPAL DEL PANEL */
 .panel-container {
   max-width: 1000px;
@@ -8,6 +10,7 @@
   color: #333;
   animation: fadeIn 0.4s ease;
   border-radius: 12px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body.modo-oscuro .panel-container {
@@ -27,6 +30,7 @@ body.modo-oscuro .panel-container {
   margin-bottom: 2rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   transition: background-color 0.3s ease;
+  animation: fadeIn 0.4s ease;
 }
 
 .header-panel h1 {
@@ -78,11 +82,17 @@ body.modo-oscuro .panel-container {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
 }
 
+.menu-panel a:focus {
+  outline: 2px dashed #1976d2;
+  outline-offset: 4px;
+}
+
 /* 🌙 MODO OSCURO PARA MENÚ */
 body.modo-oscuro .menu-panel a {
   background-color: #1e1e1e;
   color: #eee;
   border: 1px solid #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 body.modo-oscuro .menu-panel a:hover {

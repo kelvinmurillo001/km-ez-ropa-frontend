@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🎛️ Panel Administrativo | KM & EZ ROPA</title>
 
   <!-- Meta Seguridad y SEO -->
@@ -17,9 +17,6 @@
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/adminMensaje.css" /> <!-- ✅ Mensajes flotantes -->
-
-  <!-- JS del panel (módulo) -->
-  <script type="module" src="/js/panel.js" defer></script>
 </head>
 <body>
 
@@ -33,11 +30,11 @@
 
     <!-- Menú de navegación del Panel -->
     <section class="menu-panel" aria-label="Navegación administrativa">
-      <a href="/productos.html" class="btn-panel">👕 Gestionar Productos</a>
-      <a href="/pedidos.html" class="btn-panel">🧾 Ver Pedidos</a>
-      <a href="/admin-categorias.html" class="btn-panel">🗂️ Categorías y Subcategorías</a>
-      <a href="/promociones.html" class="btn-panel">🎯 Promociones</a>
-      <a href="/dashboard.html" class="btn-panel">📊 Analítica</a>
+      <a href="/productos.html" class="btn-panel" aria-label="Ir a gestión de productos">👕 Gestionar Productos</a>
+      <a href="/pedidos.html" class="btn-panel" aria-label="Ver pedidos de clientes">🧾 Ver Pedidos</a>
+      <a href="/admin-categorias.html" class="btn-panel" aria-label="Gestionar categorías">🗂️ Categorías y Subcategorías</a>
+      <a href="/promociones.html" class="btn-panel" aria-label="Gestionar promociones activas">🎯 Promociones</a>
+      <a href="/dashboard.html" class="btn-panel" aria-label="Ver estadísticas del sistema">📊 Analítica</a>
     </section>
   </main>
 
@@ -56,9 +53,11 @@
     <p style="text-align: center; color: red;">⚠️ Activa JavaScript para utilizar este panel administrativo.</p>
   </noscript>
 
-  <!-- Alternativa por si no se carga panel.js -->
+  <!-- Verificación de sesión y cierre -->
   <script type="module">
-    import { cerrarSesion } from "/js/admin-utils.js";
+    import { cerrarSesion, verificarSesion } from "/js/admin-utils.js";
+
+    verificarSesion(); // 🔐 Protección del panel
     document.getElementById("btnCerrarSesion")?.addEventListener("click", cerrarSesion);
   </script>
 

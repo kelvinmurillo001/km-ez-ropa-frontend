@@ -56,7 +56,6 @@ form label::after {
 
 form input[type="text"],
 form input[type="number"],
-form input[type="color"],
 form input[type="file"],
 form select,
 form textarea {
@@ -124,7 +123,6 @@ form select:focus {
 
 .variante-box input[type="text"],
 .variante-box input[type="number"],
-.variante-box input[type="color"],
 .variante-box input[type="file"] {
   margin-bottom: 0.5rem;
 }

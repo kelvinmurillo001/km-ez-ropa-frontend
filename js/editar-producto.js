@@ -62,7 +62,7 @@ async function cargarProducto() {
     document.getElementById("categoriaInput").value = p.category || "";
     document.getElementById("subcategoriaInput").value = p.subcategory || "";
     document.getElementById("tallasInput").value = p.sizes?.join(", ") || "";
-    document.getElementById("colorInput").value = p.color || "#000000";
+    document.getElementById("colorInput").value = p.color || "";
     document.getElementById("destacadoInput").checked = !!p.featured;
 
     if (Array.isArray(p.images) && p.images.length > 0) {
@@ -80,7 +80,7 @@ async function cargarProducto() {
         <label>Reemplazar imagen:</label>
         <input type="file" class="variante-img" accept="image/*" />
         <label>Color:</label>
-        <input type="color" class="variante-color" value="${v.color}" />
+        <input type="text" class="variante-color" value="${v.color}" />
         <label>Talla:</label>
         <input type="text" class="variante-talla" value="${v.talla}" />
         <label>Stock:</label>
@@ -134,7 +134,7 @@ function agregarVariante() {
     <label>Imagen:</label>
     <input type="file" class="variante-img" accept="image/*" required />
     <label>Color:</label>
-    <input type="color" class="variante-color" required />
+    <input type="text" class="variante-color" placeholder="Ej: blanco, vino, mostaza" required />
     <label>Talla:</label>
     <input type="text" class="variante-talla" required />
     <label>Stock:</label>
@@ -163,7 +163,7 @@ form.addEventListener("submit", async (e) => {
     const categoria = form.categoriaInput.value;
     const subcategoria = form.subcategoriaInput?.value?.trim() || null;
     const destacado = form.destacadoInput?.checked || false;
-    const color = form.colorInput.value;
+    const color = form.colorInput.value.trim();
     const sizes = form.tallasInput.value.split(",").map(s => s.trim()).filter(Boolean);
 
     if (!nombre || !descripcion || isNaN(precio) || !categoria) {
@@ -180,12 +180,12 @@ form.addEventListener("submit", async (e) => {
     const bloques = document.querySelectorAll(".variante-box");
     const variantes = await Promise.all(Array.from(bloques).map(async (b) => {
       const file = b.querySelector(".variante-img")?.files[0];
-      const color = b.querySelector(".variante-color")?.value || "#000000";
-      const talla = b.querySelector(".variante-talla")?.value?.trim().toLowerCase();
+      const color = b.querySelector(".variante-color")?.value?.trim();
+      const talla = b.querySelector(".variante-talla")?.value?.trim();
       const stock = parseInt(b.querySelector(".variante-stock")?.value || "0");
       const cloudinaryId = b.querySelector(".variante-id")?.value;
 
-      if (!talla) throw new Error("⚠️ Talla obligatoria en variante");
+      if (!talla || !color) throw new Error("⚠️ Color y talla obligatorios en variante");
 
       let imageUrl = null;
       let finalCloudinaryId = cloudinaryId;

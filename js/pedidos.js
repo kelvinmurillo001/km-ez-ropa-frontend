@@ -70,10 +70,17 @@ function renderPedidos(pedidos = []) {
       day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"
     });
 
+    const cliente = sanitize(p.nombreCliente || "Sin nombre");
+    const nota = sanitize(p.nota || "-");
+
+    const linkWA = p.metodoPago === "transferencia"
+      ? generarLinkWhatsapp(p)
+      : "";
+
     return `
       <tr>
-        <td>${p.nombreCliente || "-"}</td>
-        <td>${p.nota || "-"}</td>
+        <td>${cliente}</td>
+        <td>${nota}</td>
         <td>${fecha}</td>
         <td>${productos}</td>
         <td>${total}</td>
@@ -82,6 +89,7 @@ function renderPedidos(pedidos = []) {
           <select onchange="cambiarEstado('${p._id}', this)" class="select-estado">
             ${generarOpcionesEstado(p.estado)}
           </select>
+          ${linkWA}
         </td>
       </tr>`;
   }).join("");
@@ -96,7 +104,7 @@ function renderPedidos(pedidos = []) {
           <th>Productos</th>
           <th>Total</th>
           <th>Estado</th>
-          <th>Actualizar</th>
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>${filas}</tbody>
@@ -121,7 +129,6 @@ window.cambiarEstado = async (id, selectElem) => {
     });
 
     if (!res.ok) throw new Error("Error al actualizar el estado");
-    const data = await res.json();
 
     mostrarMensaje("✅ Estado actualizado correctamente", "success");
     cargarPedidos(); // Refrescar lista
@@ -153,5 +160,36 @@ function formatearEstado(estado) {
   }
 }
 
-// ✅ Funciones expuestas
+// ✅ Enlace para contacto por WhatsApp
+function generarLinkWhatsapp(pedido) {
+  const productos = pedido.items?.map(i =>
+    `• ${i.cantidad}x ${i.name} (${i.talla})`
+  ).join("\n") || "";
+
+  const texto = encodeURIComponent(`
+
+📦 Pedido de ${pedido.nombreCliente}
+📧 ${pedido.email}
+📞 ${pedido.telefono}
+📍 ${pedido.direccion}
+
+${productos}
+
+💰 Total: $${pedido.total?.toFixed(2) || "0.00"}
+💳 Pago: Transferencia
+  `);
+
+  return `
+    <a href="https://wa.me/593990270864?text=${texto}" target="_blank" class="btn btn-wsp mt-1">💬 WhatsApp</a>
+  `;
+}
+
+// ✅ Sanitizar texto para prevenir XSS
+function sanitize(text) {
+  const temp = document.createElement("div");
+  temp.textContent = text;
+  return temp.innerHTML;
+}
+
+// ✅ Exponer funciones
 window.goBack = goBack;

@@ -1,22 +1,22 @@
 "use strict";
 
-// 📦 DOM
+// 📦 Elementos DOM
 const carritoItems = document.getElementById("carritoItems");
 const carritoTotal = document.getElementById("carritoTotal");
 const btnIrCheckout = document.getElementById("btnIrCheckout");
 
-// 🔐 Clave de almacenamiento
+// 🔐 Clave de localStorage
 const STORAGE_KEY = "km_ez_cart";
 let carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
-// ▶️ Inicializar al cargar
+// ▶️ Al cargar página
 document.addEventListener("DOMContentLoaded", () => {
   limpiarItemsInvalidos();
   renderizarCarrito();
   btnIrCheckout?.addEventListener("click", irACheckout);
 });
 
-// ✅ Filtrar y eliminar productos corruptos
+// ✅ Filtrar items inválidos
 function limpiarItemsInvalidos() {
   carrito = carrito.filter(item =>
     item &&
@@ -29,10 +29,13 @@ function limpiarItemsInvalidos() {
   guardarCarrito();
 }
 
-// 🧠 Mostrar carrito
+// 🧠 Mostrar carrito visualmente
 function renderizarCarrito() {
   if (!carrito.length) {
-    carritoItems.innerHTML = `<p class="text-center">🛍️ Tu carrito está vacío.</p>`;
+    carritoItems.innerHTML = `
+      <div class="text-center fade-in">
+        <p>🛍️ Tu carrito está vacío. ¡Explora nuestras <a href='/categorias.html'>categorías</a> y encuentra tu estilo!</p>
+      </div>`;
     carritoTotal.textContent = "$0.00";
     if (btnIrCheckout) btnIrCheckout.disabled = true;
     return;
@@ -49,7 +52,10 @@ function renderizarCarrito() {
     const subtotal = (precio * cantidad).toFixed(2);
 
     const div = document.createElement("div");
-    div.className = "carrito-item";
+    div.className = "carrito-item fade-in";
+    div.setAttribute("role", "group");
+    div.setAttribute("aria-label", `Producto ${nombre}`);
+
     div.innerHTML = `
       <img src="${imagen}" alt="${nombre}" class="carrito-img" />
       <div class="carrito-detalles">
@@ -61,7 +67,7 @@ function renderizarCarrito() {
           <input type="number" id="cantidad_${index}" min="1" max="100" value="${cantidad}" data-index="${index}" />
         </div>
         <p><strong>Subtotal:</strong> $${subtotal}</p>
-        <button class="btn-eliminar" data-index="${index}">🗑️ Eliminar</button>
+        <button class="btn-eliminar" data-index="${index}" aria-label="Eliminar ${nombre}">🗑️ Eliminar</button>
       </div>
     `;
     carritoItems.appendChild(div);
@@ -103,7 +109,7 @@ function agregarListeners() {
     btn.addEventListener("click", e => {
       const i = parseInt(e.target.dataset.index);
       if (!isNaN(i) && carrito[i]) {
-        const confirmar = confirm("¿Eliminar este producto del carrito?");
+        const confirmar = confirm(`¿Eliminar "${carrito[i].nombre}" del carrito?`);
         if (confirmar) {
           carrito.splice(i, 1);
           guardarCarrito();
@@ -119,7 +125,7 @@ function guardarCarrito() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(carrito));
 }
 
-// 🚀 Ir a checkout
+// 🚀 Navegar a checkout
 function irACheckout() {
   if (carrito.length > 0) {
     window.location.href = "/checkout.html";

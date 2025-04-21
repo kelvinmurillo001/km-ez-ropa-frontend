@@ -1,4 +1,4 @@
-<!DOCTYPE html>  
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -6,9 +6,15 @@
   <title>👕 Detalle del Producto | KM & EZ ROPA</title>
 
   <!-- 🔍 SEO -->
-  <meta name="description" content="Descubre los detalles del producto seleccionado de KM & EZ ROPA." />
+  <meta name="description" content="Explora los detalles exclusivos de nuestras prendas urbanas. KM & EZ ROPA te viste con estilo y autenticidad." />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="KM & EZ ROPA" />
+
+  <!-- 🌐 Social -->
+  <meta property="og:title" content="Detalle del Producto | KM & EZ ROPA">
+  <meta property="og:description" content="Estilo callejero, diseño premium. Encuentra tu prenda ideal con promociones destacadas.">
+  <meta property="og:image" content="/assets/og-image.jpg" />
+  <meta property="og:type" content="product" />
 
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -23,53 +29,56 @@
 </head>
 <body>
 
-  <!-- 🔝 Encabezado -->
+  <!-- 🔝 ENCABEZADO -->
   <header class="main-header">
     <div class="logo">
-      <a href="/"><img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" /></a>
+      <a href="/" aria-label="Ir al inicio">
+        <img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" />
+      </a>
       <div class="brand">
         <h1>KM & EZ ROPA</h1>
         <p>Moda Urbana con Estilo</p>
       </div>
     </div>
 
-    <nav class="nav-links">
+    <nav class="nav-links" aria-label="Navegación principal">
       <a href="/index.html">🏠 Inicio</a>
       <a href="/categorias.html">🛍️ Catálogo</a>
-      <button id="modoOscuroBtn" aria-label="Modo Oscuro">🌙</button>
+      <button id="modoOscuroBtn" aria-label="Alternar modo oscuro">🌙</button>
     </nav>
   </header>
 
-  <!-- 🎯 Banner promocional -->
-  <div id="promo-display-container" data-page="detalle"></div>
+  <!-- 🎯 PROMO BANNER -->
+  <div id="promo-display-container" data-page="detalle" aria-label="Espacio promocional dinámico"></div>
 
-  <!-- 🧾 Detalle del Producto -->
+  <!-- 👕 DETALLE DEL PRODUCTO -->
   <main class="detalle-container" role="main">
-    <section id="detalleProducto" class="detalle-grid fade-in" aria-label="Detalle del producto">
-      <!-- Este contenido se insertará dinámicamente desde detalle.js -->
+    <section id="detalleProducto" class="detalle-grid fade-in" aria-live="polite" aria-label="Detalle del producto seleccionado">
+      <!-- Detalle dinámico del producto generado por JS -->
     </section>
   </main>
 
-  <!-- 🛒 Botones flotantes -->
-  <div class="floating-buttons">
+  <!-- 🛒 BOTONES FLOTANTES -->
+  <div class="floating-buttons" aria-hidden="false">
     <a href="/carrito.html" class="cart-icon" aria-label="Ir al carrito">
-      <img src="/assets/cart-icon.svg" alt="Carrito" />
-      <span id="cartCount">0</span>
+      <img src="/assets/cart-icon.svg" alt="Icono de carrito" />
+      <span id="cartCount" role="status">0</span>
     </a>
 
-    <a href="https://wa.me/593990270864" class="whatsapp-icon" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
-      <img src="/assets/whatsapp.svg" alt="WhatsApp" />
+    <a href="https://wa.me/593990270864" class="whatsapp-icon" target="_blank" rel="noopener noreferrer" aria-label="Chatear por WhatsApp">
+      <img src="/assets/whatsapp.svg" alt="Icono de WhatsApp" />
     </a>
   </div>
 
-  <!-- 🔚 Footer -->
-  <footer class="site-footer">
-    &copy; 2024 KM & EZ ROPA. Todos los derechos reservados.
+  <!-- 🔚 FOOTER -->
+  <footer class="site-footer" role="contentinfo">
+    <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
   </footer>
 
-  <!-- ⚠️ Sin JavaScript -->
+  <!-- ⚠️ Fallback si JS está desactivado -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Activa JavaScript para visualizar correctamente esta página.</p>
   </noscript>
+
 </body>
 </html>

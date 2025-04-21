@@ -11,12 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const id = params.get("id");
 
   if (!id || id === "undefined") {
-    document.getElementById("detalleProducto").innerHTML = `
-      <div style="color:red; text-align:center;">
-        <h3>❌ Producto no encontrado o inválido.</h3>
-        <p>Por favor regresa al catálogo.</p>
-        <a href="/categorias.html" class="btn-secundario">🔙 Volver al catálogo</a>
-      </div>`;
+    mostrarError("❌ Producto no encontrado o inválido.");
     return;
   }
 
@@ -37,16 +32,11 @@ async function cargarProducto(id) {
     renderizarProducto(producto);
   } catch (err) {
     console.error("❌ Error cargando producto:", err.message);
-    detalle.innerHTML = `
-      <div style="color:red; text-align:center;">
-        <h3>⚠️ No se pudo cargar el producto.</h3>
-        <p>Intenta de nuevo o vuelve al catálogo.</p>
-        <a href="/categorias.html" class="btn-secundario">🔙 Volver al catálogo</a>
-      </div>`;
+    mostrarError("⚠️ No se pudo cargar el producto.");
   }
 }
 
-// === 🖼️ Renderizar producto en pantalla ===
+// === 🖼️ Renderizar producto ===
 function renderizarProducto(p = {}) {
   const detalle = document.getElementById("detalleProducto");
 
@@ -56,13 +46,11 @@ function renderizarProducto(p = {}) {
   const precio = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
   const id = p._id || "";
 
-  // 🔄 Calcular stock real total
   const stockTotal = Array.isArray(p.variants)
     ? p.variants.reduce((acc, v) => acc + (v.stock || 0), 0)
     : 0;
   const maxCantidad = Math.max(stockTotal, 1);
 
-  // 👟 Obtener tallas con stock > 0
   const tallasDisponibles = Array.isArray(p.variants)
     ? [...new Set(p.variants.filter(v => v.stock > 0).map(v => v.talla?.toUpperCase()))]
     : [];
@@ -81,9 +69,9 @@ function renderizarProducto(p = {}) {
       <p class="precio">$${precio}</p>
 
       <div class="detalles-extra">
-        <p data-type="categoria">Categoría: ${p.category || "-"}</p>
-        <p data-type="subcategoria">Subcategoría: ${p.subcategory || "-"}</p>
-        <p data-type="talla">Tipo de talla: ${p.tallaTipo || "-"}</p>
+        <p><strong>Categoría:</strong> ${p.category || "-"}</p>
+        <p><strong>Subcategoría:</strong> ${p.subcategory || "-"}</p>
+        <p><strong>Tipo de talla:</strong> ${p.tallaTipo || "-"}</p>
       </div>
 
       <div class="selectores">
@@ -135,10 +123,10 @@ function agregarAlCarrito(id, nombre, imagen, precio) {
 
   localStorage.setItem("km_ez_cart", JSON.stringify(carrito));
   actualizarCarritoWidget();
-  mostrarToast("✅ Producto agregado al carrito");
+  mostrarToast("✨ ¡Sumado al estilo! Producto agregado al carrito.");
 }
 
-// === 🛒 Contador de productos en el widget
+// === 🧮 Contador de productos
 function actualizarCarritoWidget() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
   const total = carrito.reduce((sum, item) => sum + item.cantidad, 0);
@@ -146,8 +134,8 @@ function actualizarCarritoWidget() {
   if (contador) contador.textContent = total;
 }
 
-// === ✅ Toast visual
-function mostrarToast(mensaje) {
+// === 🧾 Mensaje emergente
+function mostrarToast(mensaje = "✅ Acción realizada") {
   const toast = document.createElement("div");
   toast.textContent = mensaje;
   Object.assign(toast.style, {
@@ -166,6 +154,16 @@ function mostrarToast(mensaje) {
   setTimeout(() => toast.remove(), 2500);
 }
 
+// === 🧯 Error general
+function mostrarError(texto = "❌ Error desconocido") {
+  document.getElementById("detalleProducto").innerHTML = `
+    <div style="color:red; text-align:center;">
+      <h3>${texto}</h3>
+      <p>Por favor regresa al catálogo.</p>
+      <a href="/categorias.html" class="btn-secundario">🔙 Volver al catálogo</a>
+    </div>`;
+}
+
 // === 🌙 Modo oscuro
 function activarModoOscuro() {
   if (localStorage.getItem("modoOscuro") === "true") {
@@ -179,4 +177,5 @@ function activarModoOscuro() {
   });
 }
 
+// 🌐 Exponer globalmente
 window.agregarAlCarrito = agregarAlCarrito;

@@ -10,13 +10,14 @@ const resumenPedido = document.getElementById("resumenPedido");
 const totalFinal = document.getElementById("totalFinal");
 const form = document.getElementById("formCheckout");
 const msgEstado = document.getElementById("msgEstado");
+const btnUbicacion = document.getElementById("btnUbicacion");
 
 const API_ORDERS = `${API_BASE}/api/orders`;
 
 // ▶️ Mostrar resumen del pedido
 document.addEventListener("DOMContentLoaded", () => {
   if (!Array.isArray(carrito) || carrito.length === 0) {
-    resumenPedido.innerHTML = `<p>⚠️ Tu carrito está vacío.</p>`;
+    resumenPedido.innerHTML = `<p style="color:orange; text-align:center;">⚠️ Tu carrito está vacío.</p>`;
     totalFinal.textContent = "$0.00";
     form?.querySelector("button[type='submit']")?.setAttribute("disabled", "true");
     return;
@@ -45,6 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
 form?.addEventListener("submit", async e => {
   e.preventDefault();
   msgEstado.textContent = "⏳ Enviando pedido...";
+  msgEstado.style.color = "#ccc";
 
   const nombre = document.getElementById("nombreInput").value.trim();
   const email = document.getElementById("emailInput").value.trim();
@@ -53,18 +55,15 @@ form?.addEventListener("submit", async e => {
   const metodoPago = document.querySelector("input[name='metodoPago']:checked")?.value;
 
   if (!nombre || !email || !telefono || !direccion || !metodoPago) {
-    msgEstado.textContent = "❌ Todos los campos son obligatorios.";
-    return;
+    return mostrarError("❌ Todos los campos son obligatorios.");
   }
 
   if (!validarEmail(email)) {
-    msgEstado.textContent = "❌ Email inválido.";
-    return;
+    return mostrarError("❌ Email inválido.");
   }
 
   if (!/^[0-9+\-\s]{7,15}$/.test(telefono)) {
-    msgEstado.textContent = "❌ Teléfono inválido. Usa solo dígitos, espacios, + o -";
-    return;
+    return mostrarError("❌ Teléfono inválido. Usa solo dígitos, espacios, + o -");
   }
 
   const total = carrito.reduce((acc, item) =>
@@ -78,6 +77,7 @@ form?.addEventListener("submit", async e => {
     direccion: sanitizeText(direccion),
     metodoPago,
     total,
+    estado: metodoPago === "transferencia" ? "pendiente" : "pagado",
     items: carrito.map(item => ({
       productId: item.id || null,
       name: sanitizeText(item.nombre || ""),
@@ -97,35 +97,65 @@ form?.addEventListener("submit", async e => {
     if (!res.ok) throw new Error("Error al enviar el pedido");
 
     msgEstado.textContent = "✅ Pedido enviado con éxito. ¡Gracias por tu compra!";
+    msgEstado.style.color = "limegreen";
+
+    // ✅ Enviar por WhatsApp si es transferencia
+    if (metodoPago === "transferencia") {
+      const mensajeWA = `
+📦 *NUEVO PEDIDO POR TRANSFERENCIA*
+
+👤 *Cliente:* ${nombre}
+📞 *Teléfono:* ${telefono}
+📧 *Email:* ${email}
+📍 *Dirección:* ${direccion}
+
+🛍️ *Productos:*
+${carrito.map(i => `• ${i.cantidad} x ${i.nombre} - Talla: ${i.talla} - $${(i.precio * i.cantidad).toFixed(2)}`).join("\n")}
+
+💳 *Pago:* Transferencia Bancaria
+💰 *Total:* $${total.toFixed(2)}
+
+📲 *Responder para confirmar o coordinar el pago.*
+      `.trim();
+
+      const whatsappURL = `https://wa.me/593990270864?text=${encodeURIComponent(mensajeWA)}`;
+      window.open(whatsappURL, "_blank");
+    }
+
     localStorage.removeItem(STORAGE_KEY);
 
     setTimeout(() => {
       window.location.href = "/index.html";
     }, 2500);
-
   } catch (err) {
     console.error("❌", err);
-    msgEstado.textContent = "❌ No se pudo enviar el pedido. Intenta nuevamente.";
+    mostrarError("❌ No se pudo enviar el pedido. Intenta nuevamente.");
   }
 });
 
-// ✅ Validar formato de email
+// ✅ Validar email
 function validarEmail(email) {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const regex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/;
   return regex.test(email);
 }
 
-// ✅ Sanitizar texto
+// ✅ Mostrar errores
+function mostrarError(msg) {
+  msgEstado.textContent = msg;
+  msgEstado.style.color = "tomato";
+}
+
+// ✅ Limpiar texto para seguridad
 function sanitizeText(text) {
   const temp = document.createElement("div");
   temp.textContent = text;
   return temp.innerHTML;
 }
 
-// 🌍 Obtener ubicación del cliente
+// 🌍 Obtener ubicación
 function obtenerUbicacion() {
   if (!navigator.geolocation) {
-    msgEstado.textContent = "⚠️ Tu navegador no soporta geolocalización.";
+    mostrarError("⚠️ Tu navegador no soporta geolocalización.");
     return;
   }
 
@@ -140,16 +170,14 @@ function obtenerUbicacion() {
         const direccion = data.display_name || `${latitude}, ${longitude}`;
         document.getElementById("direccionInput").value = direccion;
         msgEstado.textContent = "✅ Dirección sugerida completada automáticamente.";
+        msgEstado.style.color = "limegreen";
       } catch (err) {
         console.error("Error al obtener dirección:", err);
-        msgEstado.textContent = "❌ No se pudo obtener la dirección.";
+        mostrarError("❌ No se pudo obtener la dirección.");
       }
     },
-    () => {
-      msgEstado.textContent = "❌ No se pudo acceder a la ubicación.";
-    }
+    () => mostrarError("❌ No se pudo acceder a la ubicación.")
   );
 }
 
-// ✅ Exponer para botón en HTML
-window.obtenerUbicacion = obtenerUbicacion;
+btnUbicacion?.addEventListener("click", obtenerUbicacion);

@@ -19,24 +19,22 @@ body {
   padding: 0;
 }
 
-/* ========================
-   🎯 TITULARES Y CONTENEDOR
-======================== */
+/* 🎯 TITULARES */
 h1, h3 {
   color: var(--color-acento);
   text-align: center;
   margin-bottom: 1rem;
+  letter-spacing: 1px;
 }
 
+/* 📦 CONTENEDOR PRINCIPAL */
 .promociones-container {
   max-width: 900px;
   margin: auto;
   padding: 2rem;
 }
 
-/* ========================
-   🟠 PROMOCIÓN ACTUAL
-======================== */
+/* 🟠 PROMOCIÓN ACTUAL */
 .promo-actual {
   background-color: #1e1e1e;
   padding: 1.5rem;
@@ -61,9 +59,7 @@ h1, h3 {
   max-height: 400px;
 }
 
-/* ========================
-   🏷️ BADGES
-======================== */
+/* 🏷️ BADGES */
 .badge {
   display: inline-block;
   padding: 0.3rem 0.8rem;
@@ -79,14 +75,13 @@ h1, h3 {
 .badge.green   { background-color: var(--color-badge-green); color: white; }
 .badge.red     { background-color: var(--color-badge-red); color: white; }
 
-/* ========================
-   📝 FORMULARIO PROMO
-======================== */
+/* 📝 FORMULARIO PROMO */
 .form-editar-promo {
   background-color: var(--color-panel);
   padding: 1.5rem;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(255, 109, 0, 0.15);
+  transition: box-shadow 0.3s ease;
 }
 
 .form-editar-promo form {
@@ -109,7 +104,7 @@ h1, h3 {
   padding: 0.65rem;
   border-radius: 6px;
   font-size: 1rem;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
 .form-editar-promo input:focus,
@@ -117,6 +112,7 @@ h1, h3 {
 .form-editar-promo textarea:focus {
   border-color: var(--color-acento);
   outline: none;
+  background-color: #2a2a2a;
 }
 
 .form-editar-promo input[type="checkbox"] {
@@ -124,9 +120,7 @@ h1, h3 {
   margin-right: 8px;
 }
 
-/* ========================
-   ✅ MENSAJE DE FORMULARIO
-======================== */
+/* ✅ MENSAJE DE FORMULARIO */
 .form-msg {
   font-size: 0.95rem;
   text-align: center;
@@ -134,9 +128,7 @@ h1, h3 {
   margin-top: 0.5rem;
 }
 
-/* ========================
-   🔘 GRUPO DE CHECKBOXES
-======================== */
+/* 🔘 GRUPO DE CHECKBOXES */
 .checkbox-group {
   display: flex;
   flex-wrap: wrap;
@@ -150,9 +142,7 @@ h1, h3 {
   gap: 0.4rem;
 }
 
-/* ========================
-   🔘 BOTONES
-======================== */
+/* 🔘 BOTONES */
 button.btn {
   background-color: var(--color-acento);
   color: white;
@@ -185,9 +175,7 @@ button.btn-secundario:hover {
   color: var(--color-bg);
 }
 
-/* ========================
-   📱 RESPONSIVE
-======================== */
+/* 📱 RESPONSIVE */
 @media (max-width: 600px) {
   .form-editar-promo form {
     gap: 0.8rem;
@@ -202,9 +190,7 @@ button.btn-secundario:hover {
   }
 }
 
-/* ========================
-   🔍 FILTROS DE BÚSQUEDA
-======================== */
+/* 🔍 FILTROS DE BÚSQUEDA */
 .filtros-promos {
   display: flex;
   flex-wrap: wrap;

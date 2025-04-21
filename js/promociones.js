@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("promoTipo")?.addEventListener("change", mostrarCampoMultimedia);
 });
 
-// Mostrar campo multimedia
 function mostrarCampoMultimedia() {
   const tipo = document.getElementById("promoTipo").value;
   const container = document.getElementById("mediaUploadContainer");
@@ -38,7 +37,6 @@ function mostrarCampoMultimedia() {
   }
 }
 
-// Cargar promoción activa
 async function cargarPromocion() {
   try {
     const res = await fetch(API_PROMOS);
@@ -46,7 +44,7 @@ async function cargarPromocion() {
     const promo = Array.isArray(promos) ? promos[0] : promos;
 
     if (!promo) {
-      estadoActual.innerHTML = "<p>📭 No hay promociones activas.</p>";
+      estadoActual.innerHTML = "<p>📭 No hay promociones activas en este momento.</p>";
       return;
     }
 
@@ -60,7 +58,7 @@ async function cargarPromocion() {
 
     let mediaPreview = "";
     if (promo.mediaType === "image" && promo.mediaUrl) {
-      mediaPreview = `<img src="${promo.mediaUrl}" alt="Promo" style="max-width:100%; border-radius:6px;" />`;
+      mediaPreview = `<img src="${promo.mediaUrl}" alt="Imagen promocional" style="max-width:100%; border-radius:6px;" />`;
     } else if (promo.mediaType === "video" && promo.mediaUrl) {
       mediaPreview = `
         <video controls style="max-width:100%; border-radius:6px;">
@@ -82,7 +80,6 @@ async function cargarPromocion() {
       </div>
     `;
 
-    // Llenar formulario
     document.getElementById("promoMensaje").value = promo.message || "";
     document.getElementById("promoActivo").checked = promo.active || false;
     document.getElementById("promoTema").value = promo.theme || "blue";
@@ -104,11 +101,10 @@ async function cargarPromocion() {
 
   } catch (err) {
     console.error("❌ Error al cargar promoción:", err);
-    estadoActual.innerHTML = "<p style='color:red;'>❌ Error al cargar promoción.</p>";
+    estadoActual.innerHTML = "<p style='color:red;'>❌ No se pudo cargar la promoción activa.</p>";
   }
 }
 
-// Guardar promoción
 async function guardarPromocion(e) {
   e.preventDefault();
   msgPromo.textContent = "";
@@ -125,13 +121,13 @@ async function guardarPromocion(e) {
   const pages = Array.from(document.querySelectorAll("input[name='promoPages']:checked")).map(cb => cb.value);
 
   if (!mensaje || mensaje.length < 3) return mostrarError("⚠️ El mensaje debe tener al menos 3 caracteres.");
-  if (!tipo || pages.length === 0) return mostrarError("⚠️ Debes seleccionar tipo y al menos una página.");
+  if (!tipo || pages.length === 0) return mostrarError("⚠️ Selecciona un tipo de contenido y al menos una página.");
 
   let mediaUrl = "";
 
   if (tipo === "video") {
     mediaUrl = document.getElementById("promoVideo")?.value?.trim() || "";
-    if (!mediaUrl.startsWith("http")) return mostrarError("⚠️ URL del video inválida.");
+    if (!mediaUrl.startsWith("http")) return mostrarError("⚠️ La URL del video no es válida.");
   }
 
   if (tipo === "imagen") {
@@ -152,7 +148,7 @@ async function guardarPromocion(e) {
         mediaUrl = imgData.secure_url || imgData.url;
       } catch (err) {
         console.error("❌", err);
-        return mostrarError("❌ No se pudo subir la imagen.");
+        return mostrarError("❌ Falló la subida de imagen. Intenta de nuevo.");
       }
     }
   }
@@ -192,9 +188,9 @@ async function guardarPromocion(e) {
     });
 
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Error");
+    if (!res.ok) throw new Error(data.message || "Error al guardar");
 
-    msgPromo.textContent = "✅ Promoción guardada correctamente.";
+    msgPromo.textContent = "✅ Promoción guardada con éxito.";
     msgPromo.style.color = "limegreen";
     await cargarPromocion();
   } catch (err) {

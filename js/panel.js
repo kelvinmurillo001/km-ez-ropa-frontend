@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!res.ok) {
         if (res.status === 401) {
-          mostrarError("🔐 Credenciales incorrectas.");
+          mostrarError("🔐 Usuario o contraseña incorrectos.");
         } else {
           mostrarError(data.message || "❌ Error al iniciar sesión.");
         }
@@ -45,9 +45,11 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      // ✅ Guardar sesión
       localStorage.setItem("admin_token", data.token);
       localStorage.setItem("admin_user", JSON.stringify(data.user));
 
+      // Redireccionar al panel
       window.location.href = "/panel.html";
 
     } catch (err) {
@@ -65,12 +67,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ⚠️ Mostrar mensaje de error
+// ⚠️ Mostrar mensaje de error accesible
 function mostrarError(msg) {
   const div = document.getElementById("errorMensaje");
   if (div) {
     div.textContent = msg;
     div.style.display = "block";
+    div.setAttribute("role", "alert");
+    div.setAttribute("aria-live", "assertive");
   }
 }
 

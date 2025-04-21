@@ -16,13 +16,8 @@ const container = document.getElementById("promo-container");
 document.addEventListener("DOMContentLoaded", () => {
   cargarTodasPromos();
 
-  inputBuscar?.addEventListener("input", () => {
-    cargarTodasPromos();
-  });
-
-  filtroEstado?.addEventListener("change", () => {
-    cargarTodasPromos();
-  });
+  inputBuscar?.addEventListener("input", cargarTodasPromos);
+  filtroEstado?.addEventListener("change", cargarTodasPromos);
 });
 
 async function cargarTodasPromos() {
@@ -34,7 +29,7 @@ async function cargarTodasPromos() {
 
     const params = new URLSearchParams();
     if (nombre) params.append("nombre", nombre);
-    if (estado) params.append("estado", estado); // activa | inactiva | futura | expirada
+    if (estado) params.append("estado", estado);
 
     const res = await fetch(`${API_PROMOS_ADMIN}?${params.toString()}`, {
       headers: { Authorization: `Bearer ${token}` }
@@ -45,7 +40,7 @@ async function cargarTodasPromos() {
     renderPromos(promos);
   } catch (error) {
     console.error("❌ Error al cargar promociones:", error);
-    container.innerHTML = "<p style='color:red;'>❌ Error al cargar promociones.</p>";
+    container.innerHTML = "<p class='text-danger'>❌ Error al cargar promociones.</p>";
   }
 }
 
@@ -108,7 +103,7 @@ function getPromoEstadoClass(promo) {
 
 function renderMedia(promo) {
   if (promo.mediaType === "image" && promo.mediaUrl) {
-    return `<div class="preview"><img src="${promo.mediaUrl}" alt="Imagen promo" onerror="this.src='/assets/logo.jpg'" /></div>`;
+    return `<div class="preview"><img src="${promo.mediaUrl}" alt="Imagen promocional" loading="lazy" /></div>`;
   }
   if (promo.mediaType === "video" && promo.mediaUrl) {
     return `<div class="preview"><video src="${promo.mediaUrl}" controls></video></div>`;
@@ -116,7 +111,6 @@ function renderMedia(promo) {
   return "";
 }
 
-// Cambiar estado
 window.togglePromo = async (id, btn) => {
   try {
     btn.disabled = true;
@@ -124,7 +118,7 @@ window.togglePromo = async (id, btn) => {
       method: "PATCH",
       headers: { Authorization: `Bearer ${token}` }
     });
-    if (!res.ok) throw new Error("❌ Error al cambiar estado de promoción");
+    if (!res.ok) throw new Error("❌ Error al cambiar estado");
     await cargarTodasPromos();
   } catch (err) {
     console.error(err);
@@ -134,7 +128,6 @@ window.togglePromo = async (id, btn) => {
   }
 };
 
-// Eliminar promoción
 window.eliminarPromo = async (id, btn) => {
   if (!confirm("🗑️ ¿Estás seguro de eliminar esta promoción?")) return;
   try {
@@ -143,7 +136,7 @@ window.eliminarPromo = async (id, btn) => {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` }
     });
-    if (!res.ok) throw new Error("❌ Error al eliminar promoción");
+    if (!res.ok) throw new Error("❌ Error al eliminar");
     await cargarTodasPromos();
   } catch (err) {
     console.error(err);
@@ -153,7 +146,6 @@ window.eliminarPromo = async (id, btn) => {
   }
 };
 
-// Editar promoción
 window.editarPromo = async (id) => {
   try {
     const res = await fetch(API_PROMOS_GET(id), {
@@ -162,7 +154,6 @@ window.editarPromo = async (id) => {
     const promo = await res.json();
     if (!res.ok) throw new Error(promo.message || "Error al cargar promoción");
 
-    // Llenar formulario
     document.getElementById("promoId").value = promo._id;
     document.getElementById("promoMensaje").value = promo.message || "";
     document.getElementById("promoTema").value = promo.theme || "blue";
@@ -172,33 +163,30 @@ window.editarPromo = async (id) => {
     document.getElementById("promoFin").value = promo.endDate?.substring(0, 10) || "";
     document.getElementById("promoActivo").checked = !!promo.active;
 
-    // Limpiar y marcar checkboxes
     document.querySelectorAll("input[name='promoPages']").forEach(cb => cb.checked = false);
     promo.pages?.forEach(p => {
       const cb = document.querySelector(`input[name='promoPages'][value='${p}']`);
       if (cb) cb.checked = true;
     });
 
-    // Mostrar campos multimedia
-    document.getElementById("mediaUploadContainer").innerHTML = "";
+    const mediaContainer = document.getElementById("mediaUploadContainer");
+    mediaContainer.innerHTML = "";
     if (promo.mediaType === "image") {
-      document.getElementById("mediaUploadContainer").innerHTML = `
-        <label for="promoImagen">Seleccionar nueva imagen (opcional):</label>
+      mediaContainer.innerHTML = `
+        <label for="promoImagen">Seleccionar nueva imagen:</label>
         <input type="file" id="promoImagen" accept="image/*" />
-        <p style="margin-top:0.5rem;">Actual: <img src="${promo.mediaUrl}" alt="Imagen actual" style="max-width:120px; border-radius:6px;" /></p>
+        <p class="preview-mini">Actual: <img src="${promo.mediaUrl}" alt="Imagen actual" style="max-width:120px; border-radius:6px;" /></p>
       `;
     } else if (promo.mediaType === "video") {
-      document.getElementById("mediaUploadContainer").innerHTML = `
-        <label for="promoVideo">URL de video:</label>
+      mediaContainer.innerHTML = `
+        <label for="promoVideo">URL del video:</label>
         <input type="url" id="promoVideo" value="${promo.mediaUrl || ""}" />
       `;
     }
 
-    // Scroll al formulario
     document.getElementById("formPromo")?.scrollIntoView({ behavior: "smooth" });
-
   } catch (err) {
     console.error("❌ Error al editar promoción:", err);
-    alert("❌ No se pudo cargar la promoción para editar.");
+    alert("❌ No se pudo cargar la promoción para edición.");
   }
 };

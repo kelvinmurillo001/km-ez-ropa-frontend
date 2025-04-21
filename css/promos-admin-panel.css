@@ -10,11 +10,10 @@
   --badge-warning: #ffc107;
   --badge-info: #007bff;
   --chip-bg: #2c2c2c;
+  --shadow-color: rgba(255, 109, 0, 0.15);
 }
 
-/* =============================
-   📦 GRID DE TARJETAS DE PROMO
-============================= */
+/* 📦 GRID DE PROMOCIONES */
 .promo-grid {
   display: grid;
   gap: 20px;
@@ -22,45 +21,41 @@
   margin-top: 20px;
 }
 
-/* =============================
-   🧾 TARJETA PROMOCIÓN
-============================= */
+/* 🧾 TARJETAS DE PROMOCIÓN */
 .promo-card {
   background-color: var(--panel-dark);
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(255, 109, 0, 0.1);
-  padding: 1.2rem;
-  transition: transform 0.2s ease;
+  box-shadow: 0 4px 15px var(--shadow-color);
+  padding: 1.5rem;
+  transition: transform 0.25s ease, box-shadow 0.3s ease;
   border-left: 6px solid transparent;
   color: var(--text-light);
+  position: relative;
 }
 
 .promo-card:hover {
   transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(255, 109, 0, 0.25);
 }
 
-/* =============================
-   🟢 ESTADOS VISUALES
-============================= */
-.promo-activa    { border-left-color: var(--badge-success); background-color: #1d2a1d; }
+/* 🟢 ESTADOS DE PROMOCIÓN */
+.promo-activa    { border-left-color: var(--badge-success); background-color: #1e2e1e; }
 .promo-inactiva  { border-left-color: var(--badge-warning); background-color: #2a251d; }
 .promo-expirada  { border-left-color: #6c757d; background-color: #2e2e2e; }
 .promo-futura    { border-left-color: var(--badge-info); background-color: #1b2d3a; }
 
-/* =============================
-   🏷️ CABECERA / BADGES
-============================= */
+/* 🏷️ ENCABEZADO TARJETA */
 .promo-header {
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
-  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  gap: 8px;
 }
 
 .badge {
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 20px;
   font-size: 13px;
   font-weight: bold;
@@ -73,34 +68,30 @@
 .position, .theme {
   font-size: 13px;
   opacity: 0.75;
+  font-style: italic;
 }
 
-/* =============================
-   📢 MENSAJE Y TEXTO
-============================= */
+/* 📢 MENSAJE PRINCIPAL */
 .promo-message {
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
   margin: 10px 0 6px 0;
-  line-height: 1.4;
+  line-height: 1.5;
+  color: var(--accent-light);
 }
 
-/* =============================
-   🔖 CHIPS DE PÁGINA
-============================= */
+/* 🔖 CHIPS */
 .chip {
   display: inline-block;
   background: var(--chip-bg);
   color: #eee;
   border-radius: 16px;
   padding: 4px 10px;
-  margin: 2px 4px 4px 0;
+  margin: 2px 6px 6px 0;
   font-size: 12px;
 }
 
-/* =============================
-   🖼️ MEDIA (imagen / video)
-============================= */
+/* 🖼️ MULTIMEDIA */
 .preview {
   margin-top: 10px;
 }
@@ -111,65 +102,85 @@
   border-radius: 6px;
   margin-top: 6px;
   object-fit: cover;
-  box-shadow: 0 0 8px rgba(255, 109, 0, 0.1);
+  box-shadow: 0 0 8px var(--shadow-color);
 }
 
-/* =============================
-   🎛️ ACCIONES
-============================= */
+/* 🎛️ BOTONES DE ACCIÓN */
 .promo-actions {
   display: flex;
   justify-content: flex-start;
   gap: 10px;
-  margin-top: 12px;
+  margin-top: 14px;
+  flex-wrap: wrap;
 }
 
 .promo-actions button {
-  padding: 6px 12px;
+  padding: 7px 14px;
   font-size: 14px;
   cursor: pointer;
   border: none;
   border-radius: 5px;
-  transition: 0.2s ease-in-out;
   font-weight: bold;
+  transition: transform 0.2s, background-color 0.2s ease;
 }
 
 .btn {
   background-color: var(--badge-info);
   color: white;
 }
-
 .btn-secundario {
   background-color: var(--badge-warning);
   color: black;
 }
-
 .btn-borrar {
   background-color: var(--badge-danger);
   color: white;
 }
 
 .promo-actions button:hover {
-  opacity: 0.9;
+  opacity: 0.92;
+  transform: scale(1.03);
 }
 
-/* =============================
-   🔍 FILTROS BUSCADOR
-============================= */
+/* 🔍 BÚSQUEDA Y FILTROS */
 .filtros-promos {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
-  margin: 1rem 0;
+  margin: 1.5rem 0 1rem;
   justify-content: center;
 }
 
 .filtros-promos input,
 .filtros-promos select {
-  padding: 0.6rem;
+  padding: 0.65rem;
   border-radius: 6px;
   border: 1px solid var(--border-color);
   background-color: #222;
   color: white;
   min-width: 240px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.filtros-promos input:focus,
+.filtros-promos select:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+/* 📱 RESPONSIVE */
+@media (max-width: 480px) {
+  .promo-message {
+    font-size: 15px;
+  }
+
+  .promo-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .promo-actions button {
+    width: 100%;
+  }
 }

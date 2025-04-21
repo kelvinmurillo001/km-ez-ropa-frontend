@@ -94,7 +94,7 @@ function agregarVariante() {
   const div = document.createElement("div");
   div.className = "variante-item";
   div.innerHTML = `
-    <label>Color Variante (nombre):</label>
+    <label>Color Variante (texto):</label>
     <input type="text" name="colorVariante${index}" placeholder="Ej: rojo, gris" required />
     <label>Talla:</label>
     <input type="text" name="tallaVariante${index}" placeholder="Ej: M" required />
@@ -191,7 +191,7 @@ form.addEventListener("submit", async e => {
         url: imagenPrincipal.url,
         cloudinaryId: imagenPrincipal.public_id,
         talla: tallas[0] || "única",
-        color: color
+        color: color // 👈 texto plano como color principal
       }],
       createdBy: user?.name || "admin"
     };
