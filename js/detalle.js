@@ -62,6 +62,11 @@ function renderizarProducto(p = {}) {
     : (p.stock ?? 0);
   const maxCantidad = Math.max(stockTotal, 1);
 
+  // 👕 Tallas dinámicas
+  const tallasHTML = Array.isArray(p.sizes) && p.sizes.length > 0
+    ? p.sizes.map(t => `<option value="${t}">${t}</option>`).join("")
+    : '<option disabled selected>Sin tallas disponibles</option>';
+
   detalle.innerHTML = `
     <div class="detalle-img">
       <img src="${imagen}" alt="${nombre}" loading="lazy" onerror="this.src='/assets/logo.jpg'" />
@@ -79,11 +84,7 @@ function renderizarProducto(p = {}) {
 
       <div class="selectores">
         <label for="tallaSelect">Talla:</label>
-        <select id="tallaSelect" required>
-          ${p.sizes?.length
-            ? p.sizes.map(t => `<option value="${t}">${t}</option>`).join("")
-            : '<option value="Única">Única</option>'}
-        </select>
+        <select id="tallaSelect" required>${tallasHTML}</select>
 
         <label for="cantidadInput">Cantidad:</label>
         <input type="number" id="cantidadInput" value="1" min="1" max="${maxCantidad}" />

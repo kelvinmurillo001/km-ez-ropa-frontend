@@ -122,21 +122,42 @@ img {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin: 1rem 0;
+  margin: 1.5rem 0;
 }
 
 .selectores label {
   font-weight: bold;
+  margin-bottom: 0.3rem;
+  color: #f0f0f0;
 }
 
 .selectores select,
 .selectores input[type="number"] {
-  padding: 0.6rem;
+  padding: 0.75rem 1rem;
   font-size: 1rem;
   border-radius: 6px;
-  border: 1px solid #333;
+  border: 1px solid #444;
   background-color: #1a1a1a;
   color: white;
+  outline: none;
+  transition: border 0.3s, box-shadow 0.3s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg fill='%23ff6d00' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+}
+
+.selectores select:focus,
+.selectores input[type="number"]:focus {
+  border-color: #ff6d00;
+  box-shadow: 0 0 0 2px rgba(255, 109, 0, 0.4);
+}
+
+.selectores select:disabled {
+  color: #888;
+  background-color: #2a2a2a;
+  cursor: not-allowed;
 }
 
 /* === ℹ️ DETALLES ADICIONALES === */
