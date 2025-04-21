@@ -31,8 +31,21 @@
       </button>
     </div>
 
+    <!-- 🔍 Filtros -->
+    <div class="filtros text-center mt-2">
+      <input type="text" id="buscarProducto" placeholder="🔎 Buscar por nombre..." />
+      <select id="filtroCategoria">
+        <option value="">📂 Todas las categorías</option>
+        <option value="mujer">👩 Mujer</option>
+        <option value="hombre">👨 Hombre</option>
+        <option value="niño">🧒 Niño</option>
+        <option value="niña">👧 Niña</option>
+        <option value="bebé">👶 Bebé</option>
+      </select>
+    </div>
+
     <!-- ✅ Contador de productos -->
-    <p id="contadorProductos" class="text-center mt-2" style="font-weight: bold; color: #333;"></p>
+    <p id="contadorProductos" class="text-center mt-2" style="font-weight: bold; color: #ccc;"></p>
 
     <!-- 📋 Tabla de productos -->
     <section id="productosLista" class="productos-lista mt-3" aria-label="Lista de productos">
