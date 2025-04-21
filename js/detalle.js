@@ -5,7 +5,7 @@ import { registrarVisitaPublica } from "./utils.js";
 import { API_BASE } from "./config.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  registrarVisitaPublica(); // 📊 Registrar visita
+  registrarVisitaPublica();
 
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
@@ -56,6 +56,12 @@ function renderizarProducto(p = {}) {
   const precio = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
   const id = p._id || "";
 
+  // 🔄 Calcular stock real
+  const stockTotal = Array.isArray(p.variants) && p.variants.length > 0
+    ? p.variants.reduce((acc, v) => acc + (v.stock || 0), 0)
+    : (p.stock ?? 0);
+  const maxCantidad = Math.max(stockTotal, 1);
+
   detalle.innerHTML = `
     <div class="detalle-img">
       <img src="${imagen}" alt="${nombre}" loading="lazy" onerror="this.src='/assets/logo.jpg'" />
@@ -64,6 +70,12 @@ function renderizarProducto(p = {}) {
       <h2>${nombre}</h2>
       <p>${descripcion}</p>
       <p class="precio">$${precio}</p>
+
+      <div class="detalles-extra">
+        <p data-type="categoria">Categoría: ${p.category || "-"}</p>
+        <p data-type="subcategoria">Subcategoría: ${p.subcategory || "-"}</p>
+        <p data-type="talla">Tipo de talla: ${p.tallaTipo || "-"}</p>
+      </div>
 
       <div class="selectores">
         <label for="tallaSelect">Talla:</label>
@@ -74,7 +86,7 @@ function renderizarProducto(p = {}) {
         </select>
 
         <label for="cantidadInput">Cantidad:</label>
-        <input type="number" id="cantidadInput" value="1" min="1" max="10" />
+        <input type="number" id="cantidadInput" value="1" min="1" max="${maxCantidad}" />
       </div>
 
       <button class="btn-agregar" onclick="agregarAlCarrito('${id}', \`${nombre}\`, \`${imagen}\`, ${p.price || 0})">
@@ -87,7 +99,14 @@ function renderizarProducto(p = {}) {
 // === 🛒 Agregar al carrito
 function agregarAlCarrito(id, nombre, imagen, precio) {
   const talla = document.getElementById("tallaSelect")?.value || "Única";
-  const cantidad = parseInt(document.getElementById("cantidadInput")?.value) || 1;
+  const cantidadInput = document.getElementById("cantidadInput");
+  const cantidad = parseInt(cantidadInput.value) || 1;
+  const max = parseInt(cantidadInput.max) || 1;
+
+  if (cantidad > max) {
+    alert(`⚠️ Solo puedes seleccionar hasta ${max} unidad(es).`);
+    return;
+  }
 
   const nuevoProducto = {
     id,
@@ -103,7 +122,8 @@ function agregarAlCarrito(id, nombre, imagen, precio) {
   const index = carrito.findIndex(p => `${p.id}_${p.talla}`.toLowerCase() === key);
 
   if (index >= 0) {
-    carrito[index].cantidad += cantidad;
+    const nuevaCantidad = carrito[index].cantidad + cantidad;
+    carrito[index].cantidad = Math.min(nuevaCantidad, max);
   } else {
     carrito.push(nuevoProducto);
   }

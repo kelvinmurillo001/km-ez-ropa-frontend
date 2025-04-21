@@ -139,6 +139,41 @@ img {
   color: white;
 }
 
+/* === ℹ️ DETALLES ADICIONALES === */
+.detalles-extra {
+  background-color: #1e1e1e;
+  border-left: 4px solid #ff6d00;
+  padding: 1rem;
+  margin-top: 1.5rem;
+  border-radius: 8px;
+}
+
+.detalles-extra p {
+  margin: 0.4rem 0;
+  font-size: 0.95rem;
+  color: #ccc;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.detalles-extra p::before {
+  content: "📌";
+  color: #ff6d00;
+}
+
+.detalles-extra p[data-type="talla"]::before {
+  content: "📏";
+}
+
+.detalles-extra p[data-type="categoria"]::before {
+  content: "📁";
+}
+
+.detalles-extra p[data-type="subcategoria"]::before {
+  content: "🧷";
+}
+
 /* === 🛒 BOTÓN AGREGAR AL CARRITO === */
 .btn-agregar {
   padding: 0.8rem 1.5rem;
