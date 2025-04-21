@@ -34,7 +34,7 @@ async function loadDashboard() {
 
     console.log("📦 Resumen de ventas:", resumenVentas);
 
-    renderMetrics(resumenPedidos, resumenVentas);
+    renderMetrics(resumenPedidos, resumenVentas, productos || []);
     renderTopCategorias(productos || []);
   } catch (err) {
     console.error("❌ Error al cargar dashboard:", err);
@@ -89,14 +89,15 @@ function contarPedidos(pedidos = []) {
 /**
  * 📈 Mostrar métricas generales
  */
-function renderMetrics(pedidos, resumen) {
+function renderMetrics(pedidos, resumen, productos = []) {
   const ventas = parseFloat(resumen.ventasTotales ?? 0);
-  const totalProductos = typeof resumen.totalProductos === "number" ? resumen.totalProductos : 0;
+  const totalProductos = productos.length;
+  const productosDestacados = productos.filter(p => p.featured).length;
 
   setText("ventasTotales", `$${ventas.toFixed(2)}`);
   setText("visitasTotales", resumen.totalVisitas || 0);
   setText("totalProductos", totalProductos);
-  setText("promosActivas", resumen.productosDestacados || 0);
+  setText("promosActivas", productosDestacados);
 
   setText("total", pedidos.total);
   setText("pendientes", pedidos.pendiente);
