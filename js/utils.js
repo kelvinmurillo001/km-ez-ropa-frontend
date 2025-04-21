@@ -1,3 +1,6 @@
+// utils.js
+import { API_BASE } from "./config.js";
+
 /**
  * 📊 Registrar una visita pública (sin autenticación)
  * Enviará datos como página visitada, fecha y contexto básico
@@ -20,7 +23,7 @@ export function registrarVisitaPublica() {
     titulo: document.title || null
   };
 
-  fetch("https://km-ez-ropa-backend.onrender.com/api/visitas/registrar", {
+  fetch(`${API_BASE}/api/visitas/registrar`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
