@@ -56,15 +56,19 @@ function renderizarProducto(p = {}) {
   const precio = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
   const id = p._id || "";
 
-  // 🔄 Calcular stock real
-  const stockTotal = Array.isArray(p.variants) && p.variants.length > 0
+  // 🔄 Calcular stock real total
+  const stockTotal = Array.isArray(p.variants)
     ? p.variants.reduce((acc, v) => acc + (v.stock || 0), 0)
-    : (p.stock ?? 0);
+    : 0;
   const maxCantidad = Math.max(stockTotal, 1);
 
-  // 👕 Tallas dinámicas
-  const tallasHTML = Array.isArray(p.sizes) && p.sizes.length > 0
-    ? p.sizes.map(t => `<option value="${t}">${t}</option>`).join("")
+  // 👟 Obtener tallas con stock > 0
+  const tallasDisponibles = Array.isArray(p.variants)
+    ? [...new Set(p.variants.filter(v => v.stock > 0).map(v => v.talla?.toUpperCase()))]
+    : [];
+
+  const tallasHTML = tallasDisponibles.length
+    ? tallasDisponibles.map(t => `<option value="${t}">${t}</option>`).join("")
     : '<option disabled selected>Sin tallas disponibles</option>';
 
   detalle.innerHTML = `
