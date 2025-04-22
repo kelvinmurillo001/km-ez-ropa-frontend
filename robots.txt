@@ -2,4 +2,4 @@ User-agent: *
 Disallow: /admin
 Disallow: /login.html
 
-Sitemap: https://km-ez-ropa-frontend.onrender.com/sitemap.xml
+Sitemap: https://kmezropacatalogo.com//sitemap.xml
