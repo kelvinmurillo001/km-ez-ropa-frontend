@@ -1,4 +1,4 @@
-/* === BASE === */
+/* === BASE === */ 
 body {
   background-color: #121212;
   color: #f5f5f5;
@@ -164,6 +164,7 @@ h3 span#totalFinal {
     font-size: 1.6rem;
   }
 }
+
 /* === MÉTODO DE PAGO COMO BOTONES === */
 .metodo-pago-selector {
   display: flex;

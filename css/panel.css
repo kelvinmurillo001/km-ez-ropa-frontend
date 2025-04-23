@@ -1,6 +1,6 @@
 /* === 🎛️ PANEL ADMINISTRATIVO CSS COMPLETO === */
 
-/* 🎛️ CONTENEDOR PRINCIPAL DEL PANEL */
+/* 🔲 CONTENEDOR PRINCIPAL */
 .panel-container {
   max-width: 1000px;
   margin: 0 auto;
@@ -8,8 +8,8 @@
   font-family: 'Segoe UI', sans-serif;
   background-color: #ffffff;
   color: #333;
-  animation: fadeIn 0.4s ease;
   border-radius: 12px;
+  animation: fadeIn 0.4s ease;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -18,7 +18,7 @@ body.modo-oscuro .panel-container {
   color: #eee;
 }
 
-/* 🔰 ENCABEZADO DEL PANEL */
+/* 🔰 ENCABEZADO */
 .header-panel {
   display: flex;
   justify-content: space-between;
@@ -29,8 +29,8 @@ body.modo-oscuro .panel-container {
   border-radius: 10px;
   margin-bottom: 2rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  transition: background-color 0.3s ease;
   animation: fadeIn 0.4s ease;
+  transition: background-color 0.3s ease;
 }
 
 .header-panel h1 {
@@ -41,9 +41,9 @@ body.modo-oscuro .panel-container {
 
 .header-panel button {
   background-color: #e53935;
+  color: white;
   border: none;
   padding: 10px 16px;
-  color: white;
   border-radius: 6px;
   font-size: 15px;
   cursor: pointer;
@@ -54,7 +54,7 @@ body.modo-oscuro .panel-container {
   background-color: #c62828;
 }
 
-/* 🌐 MENÚ DE ACCIONES DEL PANEL */
+/* 📚 MENÚ DE ACCIONES */
 .menu-panel {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -87,7 +87,7 @@ body.modo-oscuro .panel-container {
   outline-offset: 4px;
 }
 
-/* 🌙 MODO OSCURO PARA MENÚ */
+/* 🌙 MODO OSCURO */
 body.modo-oscuro .menu-panel a {
   background-color: #1e1e1e;
   color: #eee;
@@ -100,7 +100,7 @@ body.modo-oscuro .menu-panel a:hover {
   color: #90caf9;
 }
 
-/* ✅ ANIMACIÓN */
+/* 🎞️ ANIMACIÓN DE ENTRADA */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -112,7 +112,7 @@ body.modo-oscuro .menu-panel a:hover {
   }
 }
 
-/* 📱 RESPONSIVE */
+/* 📱 ADAPTACIÓN RESPONSIVE */
 @media (max-width: 600px) {
   .menu-panel {
     grid-template-columns: 1fr;

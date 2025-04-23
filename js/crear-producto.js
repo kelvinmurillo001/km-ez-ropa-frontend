@@ -43,7 +43,7 @@ const tallasPorTipo = {
 // 🚀 Carga inicial
 document.addEventListener("DOMContentLoaded", async () => {
   await cargarCategorias();
-  agregarVariante(); // Añadir al menos una variante vacía
+  agregarVariante();
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
@@ -66,16 +66,18 @@ imagenInput.addEventListener("change", () => {
   previewPrincipal.innerHTML = `<img src="${url}" alt="Vista previa" style="max-width:200px; border-radius:8px;" />`;
 });
 
-// 📂 Obtener categorías y subcategorías
+// 📂 Obtener categorías y subcategorías (con mejora aplicada)
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIES);
-    const data = await res.json();
-    if (!res.ok || !Array.isArray(data)) throw new Error();
+    const json = await res.json();
 
-    categoriasConSubcategorias = data;
+    if (!res.ok || !Array.isArray(json.data)) throw new Error();
+
+    categoriasConSubcategorias = json.data;
+
     categoriaInput.innerHTML = `<option value="">Selecciona categoría</option>` +
-      data.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join("");
+      categoriasConSubcategorias.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join("");
 
     categoriaInput.addEventListener("change", () => {
       const seleccionada = categoriaInput.value;
