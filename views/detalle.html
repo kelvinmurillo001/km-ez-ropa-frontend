@@ -54,7 +54,21 @@
   <!-- 👕 DETALLE DEL PRODUCTO -->
   <main class="detalle-container" role="main">
     <section id="detalleProducto" class="detalle-grid fade-in" aria-live="polite" aria-label="Detalle del producto seleccionado">
-      <!-- JS insertará contenido aquí con microdatos -->
+
+      <!-- GALERÍA DE IMÁGENES -->
+      <div class="galeria-producto">
+        <div class="miniaturas">
+          <img src="/assets/prod1.jpg" class="thumb activa" alt="Miniatura 1" />
+          <img src="/assets/prod2.jpg" class="thumb" alt="Miniatura 2" />
+          <img src="/assets/prod3.jpg" class="thumb" alt="Miniatura 3" />
+        </div>
+        <div class="imagen-principal">
+          <img id="imagenGrande" src="/assets/prod1.jpg" alt="Imagen Principal del Producto" />
+        </div>
+      </div>
+
+      <!-- Aquí irá dinámicamente el resto del detalle insertado por JS -->
+
     </section>
 
     <!-- ❤️ Botón Favoritos -->
@@ -97,7 +111,7 @@
     <p style="text-align: center; color: red;">⚠️ Activa JavaScript para visualizar correctamente esta página.</p>
   </noscript>
 
-  <!-- 🔗 Compartir JS (opcional) -->
+  <!-- 🔗 Compartir JS -->
   <script>
     function compartirEnRed(red) {
       const url = window.location.href;
@@ -112,6 +126,20 @@
 
       window.open(enlace, "_blank");
     }
+
+    // JS para galería de imágenes
+    document.addEventListener("DOMContentLoaded", () => {
+      const thumbs = document.querySelectorAll(".thumb");
+      const imagenGrande = document.getElementById("imagenGrande");
+
+      thumbs.forEach(img => {
+        img.addEventListener("click", () => {
+          imagenGrande.src = img.src;
+          thumbs.forEach(i => i.classList.remove("activa"));
+          img.classList.add("activa");
+        });
+      });
+    });
   </script>
 
 </body>
