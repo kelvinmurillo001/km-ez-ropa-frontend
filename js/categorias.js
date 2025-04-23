@@ -13,8 +13,8 @@ const categoriaSelect = document.getElementById("categoriaSelect");
 const subcategoriaSelect = document.getElementById("subcategoriaSelect");
 const precioSelect = document.getElementById("precioSelect");
 const busquedaInput = document.getElementById("busquedaInput");
-const promoBanner = document.getElementById("promoBanner");
 const contadorCarrito = document.getElementById("cartCount");
+const promoContainer = document.getElementById("promo-display-container");
 
 // 🚀 Inicialización
 document.addEventListener("DOMContentLoaded", () => {
@@ -40,13 +40,14 @@ function aplicarModoOscuro() {
 // 🎯 Listeners para filtros
 function configurarFiltros() {
   [categoriaSelect, subcategoriaSelect, precioSelect].forEach(el =>
-    el.addEventListener("change", cargarProductos)
+    el?.addEventListener("change", cargarProductos)
   );
   busquedaInput?.addEventListener("input", cargarProductos);
 }
 
 // 📦 Cargar productos
 async function cargarProductos() {
+  if (!catalogo) return;
   catalogo.innerHTML = "<p class='text-center'>⏳ Cargando productos...</p>";
 
   try {
@@ -83,6 +84,7 @@ function aplicarFiltros(productos) {
 
 // 🎨 Render productos
 function renderizarCatalogo(productos) {
+  if (!catalogo) return;
   catalogo.innerHTML = "";
 
   if (!productos.length) {
@@ -111,13 +113,18 @@ function renderizarCatalogo(productos) {
 
 // 🔁 Ver detalle
 function verDetalle(id) {
-  if (!id) return;
+  if (!id) {
+    alert("❌ ID de producto inválido");
+    return;
+  }
   window.location.href = `/detalle.html?id=${id}`;
 }
 window.verDetalle = verDetalle;
 
 // 📂 Llenar selects dinámicamente
 function llenarSelects(productos) {
+  if (!categoriaSelect || !subcategoriaSelect) return;
+
   const categorias = [...new Set(productos.map(p => p.category).filter(Boolean))];
   const subcategorias = [...new Set(productos.map(p => p.subcategory).filter(Boolean))];
 
@@ -140,13 +147,13 @@ async function cargarPromocion() {
   try {
     const res = await fetch(API_PROMOS);
     const promo = await res.json();
-    if (res.ok && promo?.active && promo?.message) {
+    if (res.ok && promo?.active && promo?.message && promoContainer) {
       const banner = document.createElement("div");
       banner.id = "promoBanner";
       banner.className = "promo-banner";
       banner.style.backgroundColor = promo.color || "#ff6d00";
       banner.textContent = promo.message;
-      document.getElementById("promo-display-container")?.appendChild(banner);
+      promoContainer.appendChild(banner);
     }
   } catch (err) {
     console.warn("⚠️ No se pudo cargar la promoción activa.");
