@@ -30,11 +30,20 @@ async function cargarProducto(id) {
   try {
     const res = await fetch(`${API_BASE}/api/products/${id}`);
     const data = await res.json();
-    if (!res.ok || !data?.producto) throw new Error("Producto no encontrado");
+
+    if (!res.ok) {
+      const mensaje = data?.message || "⚠️ Error al cargar el producto.";
+      throw new Error(mensaje);
+    }
+
+    if (!data?.producto) {
+      throw new Error("⚠️ El producto no fue encontrado o no existe.");
+    }
+
     renderizarProducto(data.producto);
   } catch (err) {
-    console.error("❌", err.message);
-    mostrarError("⚠️ No se pudo cargar el producto.");
+    console.error("❌ Error cargando producto:", err.message);
+    mostrarError(err.message);
   }
 }
 

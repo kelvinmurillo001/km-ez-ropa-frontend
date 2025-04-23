@@ -1,4 +1,4 @@
-/* === 🌑 ESTILO BASE === */
+/* === 🌑 ESTILO BASE GENERAL === */
 body {
   background-color: #121212;
   color: #f5f5f5;
@@ -38,7 +38,7 @@ h1 {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.3s ease;
 }
 
 #btnNuevoProducto:hover {
@@ -63,7 +63,7 @@ h1 {
   overflow-x: auto;
 }
 
-/* === 🧾 TABLA DE PRODUCTOS CON DIVISIONES VISIBLES === */
+/* === 🧾 TABLA DE PRODUCTOS === */
 .productos-table {
   width: 100%;
   border-collapse: collapse;
@@ -101,13 +101,13 @@ h1 {
   background-color: #2a2a2a;
 }
 
-/* 🔴 Sin stock visual */
+/* 🔴 Estado visual para productos sin stock */
 .sin-stock {
   background-color: #2a2a2a !important;
   color: #aaa;
 }
 
-/* 🖼️ Imagen del producto */
+/* 🖼️ Imagen en tabla */
 .producto-img {
   width: 50px;
   height: 50px;
@@ -116,7 +116,7 @@ h1 {
   border: 1px solid #444;
 }
 
-/* === 🛠️ BOTONES DE ACCIÓN === */
+/* === 🛠️ BOTONES DE ACCIÓN EN TABLA === */
 .btn-tabla {
   background-color: transparent;
   border: none;
@@ -155,8 +155,8 @@ h1 {
   border: 1px solid #444;
   border-radius: 6px;
   outline: none;
-  transition: border 0.2s;
   font-size: 1rem;
+  transition: border 0.2s ease;
 }
 
 .filtros input:focus,
@@ -165,7 +165,7 @@ h1 {
   box-shadow: 0 0 5px rgba(255, 109, 0, 0.4);
 }
 
-/* === 📱 RESPONSIVE === */
+/* === 📱 RESPONSIVE PARA MÓVILES === */
 @media (max-width: 768px) {
   .productos-table th,
   .productos-table td {
@@ -188,7 +188,7 @@ h1 {
   }
 }
 
-/* === MODO OSCURO === */
+/* === 🌘 MODO OSCURO === */
 body.modo-oscuro {
   background-color: #121212;
   color: #f5f5f5;
