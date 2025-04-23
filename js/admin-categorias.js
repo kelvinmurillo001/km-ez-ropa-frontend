@@ -4,25 +4,32 @@ import { API_BASE } from "./config.js";
 import { verificarSesion, mostrarMensaje, goBack } from "./admin-utils.js";
 
 const token = verificarSesion();
+const API = `${API_BASE}/api/categories`;
 
-// 🧾 DOM Elements
+// 📦 Elementos del DOM
 const formCrear = document.getElementById("formCrearCategoria");
 const formSub = document.getElementById("formSubcategoria");
-
 const categoriaInput = document.getElementById("categoriaInput");
 const subcategoriaInput = document.getElementById("subcategoriaInput");
 const selectCategoria = document.getElementById("selectCategoria");
 const listaCategorias = document.getElementById("listaCategorias");
 
-const API = `${API_BASE}/api/categories`;
+// 🚀 Inicialización
+document.addEventListener("DOMContentLoaded", () => {
+  if (!token) return;
+  cargarCategorias();
+});
 
-document.addEventListener("DOMContentLoaded", cargarCategorias);
-
-// ➕ Crear Categoría
+/* ───────────────────────────────────────────── */
+/* ➕ CREAR CATEGORÍA                             */
+/* ───────────────────────────────────────────── */
 formCrear?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const nombre = sanitize(categoriaInput.value);
-  if (!nombre) return mostrarMensaje("⚠️ Ingresa un nombre válido", "error");
+
+  if (!nombre) {
+    return mostrarMensaje("⚠️ Ingresa un nombre válido", "error");
+  }
 
   try {
     const res = await fetch(API, {
@@ -34,7 +41,8 @@ formCrear?.addEventListener("submit", async (e) => {
       body: JSON.stringify({ name: nombre })
     });
 
-    if (!res.ok) throw new Error("❌ No se pudo crear la categoría");
+    const json = await res.json();
+    if (!res.ok || !json.ok) throw new Error(json.message || "❌ No se pudo crear la categoría");
 
     mostrarMensaje("✅ Categoría creada");
     categoriaInput.value = "";
@@ -45,12 +53,17 @@ formCrear?.addEventListener("submit", async (e) => {
   }
 });
 
-// ➕ Crear Subcategoría
+/* ───────────────────────────────────────────── */
+/* ➕ CREAR SUBCATEGORÍA                          */
+/* ───────────────────────────────────────────── */
 formSub?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const id = selectCategoria.value;
   const sub = sanitize(subcategoriaInput.value);
-  if (!id || !sub) return mostrarMensaje("⚠️ Completa todos los campos", "error");
+
+  if (!id || !sub) {
+    return mostrarMensaje("⚠️ Completa todos los campos", "error");
+  }
 
   try {
     const res = await fetch(`${API}/${id}/subcategories`, {
@@ -62,7 +75,8 @@ formSub?.addEventListener("submit", async (e) => {
       body: JSON.stringify({ subcategory: sub })
     });
 
-    if (!res.ok) throw new Error("❌ Error al agregar subcategoría");
+    const json = await res.json();
+    if (!res.ok || !json.ok) throw new Error(json.message || "❌ Error al agregar subcategoría");
 
     mostrarMensaje("✅ Subcategoría agregada");
     subcategoriaInput.value = "";
@@ -73,7 +87,9 @@ formSub?.addEventListener("submit", async (e) => {
   }
 });
 
-// 🔄 Cargar Categorías
+/* ───────────────────────────────────────────── */
+/* 🔄 CARGAR TODAS LAS CATEGORÍAS                */
+/* ───────────────────────────────────────────── */
 async function cargarCategorias() {
   try {
     const res = await fetch(API, {
@@ -86,18 +102,26 @@ async function cargarCategorias() {
     }
 
     renderCategorias(json.data);
-
-    selectCategoria.innerHTML =
-      '<option value="">Seleccionar categoría</option>' +
-      json.data.map(c => `<option value="${c._id}">${sanitize(c.name)}</option>`).join("");
-
+    actualizarSelect(json.data);
   } catch (err) {
     mostrarMensaje(err.message, "error");
     listaCategorias.innerHTML = `<p style="color:red;">${err.message}</p>`;
   }
 }
 
-// 🖼️ Renderizar Categorías
+/* ───────────────────────────────────────────── */
+/* 📂 ACTUALIZAR SELECT DE CATEGORÍAS            */
+/* ───────────────────────────────────────────── */
+function actualizarSelect(categorias = []) {
+  selectCategoria.innerHTML = '<option value="">Seleccionar categoría</option>';
+  categorias.forEach(cat => {
+    selectCategoria.innerHTML += `<option value="${cat._id}">${sanitize(cat.name)}</option>`;
+  });
+}
+
+/* ───────────────────────────────────────────── */
+/* 🖼️ RENDER CATEGORÍAS Y SUBCATEGORÍAS         */
+/* ───────────────────────────────────────────── */
 function renderCategorias(categorias = []) {
   if (!categorias.length) {
     listaCategorias.innerHTML = "<p>⚠️ No hay categorías registradas.</p>";
@@ -124,7 +148,9 @@ function renderCategorias(categorias = []) {
   `).join("");
 }
 
-// ❌ Eliminar Categoría
+/* ───────────────────────────────────────────── */
+/* ❌ ELIMINAR CATEGORÍA                         */
+/* ───────────────────────────────────────────── */
 window.eliminarCategoria = async (id) => {
   if (!confirm("⚠️ ¿Eliminar esta categoría y todas sus subcategorías?")) return;
 
@@ -134,7 +160,8 @@ window.eliminarCategoria = async (id) => {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    if (!res.ok) throw new Error("❌ No se pudo eliminar la categoría");
+    const json = await res.json();
+    if (!res.ok || !json.ok) throw new Error(json.message || "❌ No se pudo eliminar la categoría");
 
     mostrarMensaje("✅ Categoría eliminada");
     await cargarCategorias();
@@ -143,7 +170,9 @@ window.eliminarCategoria = async (id) => {
   }
 };
 
-// ❌ Eliminar Subcategoría
+/* ───────────────────────────────────────────── */
+/* ❌ ELIMINAR SUBCATEGORÍA                      */
+/* ───────────────────────────────────────────── */
 window.eliminarSubcategoria = async (categoryId, subcategory) => {
   if (!confirm("⚠️ ¿Eliminar esta subcategoría?")) return;
 
@@ -153,7 +182,8 @@ window.eliminarSubcategoria = async (categoryId, subcategory) => {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    if (!res.ok) throw new Error("❌ No se pudo eliminar la subcategoría");
+    const json = await res.json();
+    if (!res.ok || !json.ok) throw new Error(json.message || "❌ No se pudo eliminar la subcategoría");
 
     mostrarMensaje("✅ Subcategoría eliminada");
     await cargarCategorias();
@@ -162,11 +192,14 @@ window.eliminarSubcategoria = async (categoryId, subcategory) => {
   }
 };
 
-// 🧼 Sanitizar texto
+/* ───────────────────────────────────────────── */
+/* 🧼 SANITIZAR TEXTO                            */
+/* ───────────────────────────────────────────── */
 function sanitize(text = "") {
   const temp = document.createElement("div");
   temp.textContent = text;
   return temp.innerHTML.trim();
 }
 
+// 🔙 Navegación global
 window.goBack = goBack;

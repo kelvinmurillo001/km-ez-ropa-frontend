@@ -24,27 +24,31 @@
   <main class="categorias-admin-container fade-in" role="main" aria-label="Panel de administración de categorías">
 
     <!-- Encabezado -->
-    <header class="text-center mt-2 mb-2">
+    <header class="text-center mt-2 mb-2" role="banner">
       <h1>📁 Gestión de Categorías</h1>
       <p>Agrega, edita o elimina categorías para organizar el catálogo de productos.</p>
     </header>
 
+    <!-- Mensaje dinámico -->
+    <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
+
     <!-- Nueva Categoría -->
-    <section class="form-section" aria-labelledby="tituloCrearCategoria">
+    <section class="form-section" aria-labelledby="tituloCrearCategoria" role="region">
       <h2 id="tituloCrearCategoria">➕ Crear Categoría</h2>
-      <form id="formCrearCategoria" aria-label="Formulario para crear nueva categoría">
+      <form id="formCrearCategoria" role="form" aria-describedby="categoriaInputHelp">
         <label for="categoriaInput" class="sr-only">Nombre de la categoría</label>
-        <input type="text" id="categoriaInput" placeholder="Nombre de la categoría" required />
+        <input type="text" id="categoriaInput" placeholder="Nombre de la categoría" required aria-required="true" />
         <button type="submit" class="btn">✅ Crear</button>
+        <small id="categoriaInputHelp" class="form-help">Ej: mujer, hombre, niño...</small>
       </form>
     </section>
 
     <!-- Nueva Subcategoría -->
-    <section class="form-section" aria-labelledby="tituloSubcategoria">
+    <section class="form-section" aria-labelledby="tituloSubcategoria" role="region">
       <h2 id="tituloSubcategoria">➕ Agregar Subcategoría</h2>
-      <form id="formSubcategoria" aria-label="Formulario para agregar subcategoría">
+      <form id="formSubcategoria" role="form">
         <label for="selectCategoria" class="sr-only">Seleccionar categoría principal</label>
-        <select id="selectCategoria" required aria-label="Seleccionar categoría">
+        <select id="selectCategoria" required aria-label="Seleccionar categoría principal">
           <option value="">Seleccionar categoría</option>
         </select>
 
@@ -56,10 +60,10 @@
     </section>
 
     <!-- Lista Categorías -->
-    <section class="lista-categorias mt-4" aria-labelledby="tituloListaCategorias">
+    <section class="lista-categorias mt-4" aria-labelledby="tituloListaCategorias" role="region">
       <h2 id="tituloListaCategorias">📋 Categorías Registradas</h2>
       <ul id="listaCategorias" class="lista-render" aria-live="polite">
-        <!-- JS renderiza dinámicamente -->
+        <!-- Renderizado dinámico con JS -->
       </ul>
     </section>
 
