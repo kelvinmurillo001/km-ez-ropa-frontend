@@ -1,4 +1,4 @@
-/* 🎨 VARIABLES GLOBALES */
+/* === 🎨 VARIABLES GLOBALES === */
 :root {
   --bg-main: #121212;
   --text-light: #f5f5f5;
@@ -8,15 +8,17 @@
   --panel-dark: #1a1a1a;
   --border-color: #333;
   --gold: #FFD700;
+  --radius: 8px;
+  --transition: all 0.3s ease;
 }
 
-/* 🌍 BASE */
+/* === 🌍 BASE === */
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
   background-color: var(--bg-main);
   color: var(--text-light);
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: var(--transition);
 }
 
 a {
@@ -35,7 +37,7 @@ img {
   display: block;
 }
 
-/* 🧠 ANIMACIONES */
+/* === 🧠 ANIMACIONES === */
 .fade-in {
   animation: fadeIn 0.6s ease forwards;
   opacity: 0;
@@ -47,7 +49,7 @@ img {
   }
 }
 
-/* 🔝 HEADER */
+/* === 🔝 HEADER === */
 .main-header {
   display: flex;
   justify-content: space-between;
@@ -92,14 +94,14 @@ img {
 
 .nav-links a,
 .nav-links button {
-  background-color: transparent;
+  background: transparent;
   border: 2px solid var(--accent);
   color: var(--accent);
   padding: 0.5rem 1rem;
-  border-radius: 6px;
+  border-radius: var(--radius);
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: var(--transition);
 }
 
 .nav-links a:hover,
@@ -108,7 +110,7 @@ img {
   color: var(--bg-main);
 }
 
-/* 🔥 HERO */
+/* === 🔥 HERO === */
 .hero-banner {
   background: linear-gradient(90deg, #ff8a00, #ff6d00);
   text-align: center;
@@ -135,14 +137,14 @@ img {
   border-radius: 30px;
   font-weight: bold;
   text-transform: uppercase;
-  transition: all 0.3s ease;
+  transition: var(--transition);
 }
 
 .btn-hero:hover {
   background-color: #f1f1f1;
 }
 
-/* 🛍️ SECCIÓN PRINCIPAL */
+/* === 🛍️ SECCIÓN PRINCIPAL === */
 .main-section {
   padding: 2rem;
   max-width: 1200px;
@@ -162,13 +164,13 @@ img {
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
-/* 🧾 TARJETAS PRODUCTO */
+/* === 🧾 TARJETAS PRODUCTO === */
 .product-card {
   background-color: var(--panel-dark);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--radius);
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: var(--transition);
 }
 
 .product-card:hover {
@@ -201,18 +203,18 @@ img {
   color: var(--bg-main);
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 6px;
+  border-radius: var(--radius);
   font-weight: bold;
   cursor: pointer;
   margin-top: 0.5rem;
-  transition: 0.3s;
+  transition: var(--transition);
 }
 
 .btn-card:hover {
   background-color: var(--accent-light);
 }
 
-/* 📱 BOTONES FLOTANTES */
+/* === 📱 BOTONES FLOTANTES === */
 .floating-buttons {
   position: fixed;
   right: 20px;
@@ -252,7 +254,7 @@ img {
   border-radius: 50%;
 }
 
-/* 🧾 FOOTER */
+/* === 🧾 FOOTER === */
 .site-footer {
   text-align: center;
   padding: 2rem;
@@ -261,7 +263,7 @@ img {
   color: #999;
 }
 
-/* 🌚 MODO OSCURO */
+/* === 🌚 MODO OSCURO === */
 body.modo-oscuro {
   background-color: #111;
   color: #eee;
@@ -284,7 +286,7 @@ body.modo-oscuro .nav-links button:hover {
   color: #111;
 }
 
-/* 📱 RESPONSIVE */
+/* === 📱 RESPONSIVE === */
 @media (max-width: 768px) {
   .main-header {
     flex-direction: column;

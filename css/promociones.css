@@ -12,6 +12,7 @@
   --badge-red: #e53935;
 }
 
+/* 🌍 BASE */
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -22,7 +23,7 @@ body {
   scroll-behavior: smooth;
 }
 
-/* 🎯 Encabezados */
+/* 🎯 ENCABEZADOS */
 h1, h2, h3 {
   color: var(--accent);
   text-align: center;
@@ -30,7 +31,7 @@ h1, h2, h3 {
   letter-spacing: 0.5px;
 }
 
-/* Contenedor principal */
+/* 🧱 CONTENEDOR PRINCIPAL */
 .promociones-container {
   max-width: 960px;
   margin: auto;
@@ -40,7 +41,7 @@ h1, h2, h3 {
   box-shadow: 0 0 30px rgba(255, 109, 0, 0.08);
 }
 
-/* 📋 Promoción actual */
+/* 📢 PROMOCIÓN ACTUAL */
 .promo-actual {
   background-color: #1e1e1e;
   padding: 1.5rem;
@@ -65,7 +66,7 @@ h1, h2, h3 {
   max-height: 400px;
 }
 
-/* 🔷 Badge */
+/* 🔷 ETIQUETAS / BADGES */
 .badge {
   display: inline-block;
   padding: 0.3rem 0.8rem;
@@ -76,12 +77,12 @@ h1, h2, h3 {
   text-transform: uppercase;
 }
 
-.badge.blue    { background-color: var(--badge-blue); color: #fff; }
-.badge.orange  { background-color: var(--badge-orange); color: #fff; }
-.badge.green   { background-color: var(--badge-green); color: #fff; }
-.badge.red     { background-color: var(--badge-red); color: #fff; }
+.badge.blue   { background-color: var(--badge-blue); color: #fff; }
+.badge.orange { background-color: var(--badge-orange); color: #fff; }
+.badge.green  { background-color: var(--badge-green); color: #fff; }
+.badge.red    { background-color: var(--badge-red); color: #fff; }
 
-/* ✏️ Formulario */
+/* ✏️ FORMULARIO DE EDICIÓN */
 .form-editar-promo {
   background-color: var(--panel-color);
   padding: 1.8rem;
@@ -125,7 +126,7 @@ h1, h2, h3 {
   margin-right: 8px;
 }
 
-/* ✅ Checkbox Group */
+/* ✅ GRUPO DE CHECKBOX */
 .checkbox-group {
   display: flex;
   flex-wrap: wrap;
@@ -139,7 +140,7 @@ h1, h2, h3 {
   gap: 0.4rem;
 }
 
-/* ⚠️ Mensajes */
+/* ⚠️ MENSAJES DE ESTADO */
 .form-msg {
   font-size: 0.95rem;
   text-align: center;
@@ -147,7 +148,7 @@ h1, h2, h3 {
   margin-top: 0.5rem;
 }
 
-/* 🔘 Botones */
+/* 🔘 BOTONES */
 button.btn {
   background-color: var(--accent);
   color: white;
@@ -180,7 +181,7 @@ button.btn-secundario:hover {
   color: var(--bg-color);
 }
 
-/* 🔍 Filtros */
+/* 🔍 FILTROS */
 .filtros-promos {
   display: flex;
   flex-wrap: wrap;
@@ -200,7 +201,7 @@ button.btn-secundario:hover {
   min-width: 220px;
 }
 
-/* 📱 Responsive */
+/* 📱 RESPONSIVE */
 @media (max-width: 600px) {
   .form-editar-promo form {
     gap: 1rem;

@@ -6,13 +6,24 @@ import { API_BASE } from "./config.js";
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formLogin");
 
-  form?.addEventListener("submit", async (e) => {
+  // 🌙 Aplicar modo oscuro si está activado
+  if (localStorage.getItem("modoOscuro") === "true") {
+    document.body.classList.add("modo-oscuro");
+  }
+
+  if (!form) return;
+
+  const btnSubmit = form.querySelector("button[type='submit']");
+  const inputUser = form.username;
+  const inputPass = form.password;
+
+  // Escuchar envío del formulario
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     ocultarError();
 
-    const username = form.username.value.trim();
-    const password = form.password.value.trim();
-    const btnSubmit = form.querySelector("button[type='submit']");
+    const username = inputUser.value.trim().toLowerCase();
+    const password = inputPass.value.trim();
 
     if (!username || !password) {
       mostrarError("⚠️ Ingresa tu usuario y contraseña.");
@@ -21,22 +32,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       btnSubmit.disabled = true;
-      btnSubmit.textContent = "🔐 Iniciando...";
+      btnSubmit.textContent = "🔐 Iniciando sesión...";
 
       const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: username.toLowerCase(), password })
+        body: JSON.stringify({ username, password })
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        if (res.status === 401) {
-          mostrarError("🔐 Usuario o contraseña incorrectos.");
-        } else {
-          mostrarError(data.message || "❌ Error al iniciar sesión.");
-        }
+        const msg = res.status === 401
+          ? "🔐 Usuario o contraseña incorrectos."
+          : data.message || "❌ Error inesperado.";
+        mostrarError(msg);
         return;
       }
 
@@ -45,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // ✅ Guardar sesión
+      // ✅ Guardar sesión en localStorage
       localStorage.setItem("admin_token", data.token);
       localStorage.setItem("admin_user", JSON.stringify(data.user));
 
@@ -61,24 +71,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 🌙 Activar modo oscuro si está guardado
-  if (localStorage.getItem("modoOscuro") === "true") {
-    document.body.classList.add("modo-oscuro");
-  }
+  // Permitir Enter para enviar desde cualquier input
+  form.querySelectorAll("input").forEach(input => {
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") form.dispatchEvent(new Event("submit"));
+    });
+  });
 });
 
-// ⚠️ Mostrar mensaje de error accesible
-function mostrarError(msg) {
+// ⚠️ Mostrar error accesible
+function mostrarError(msg = "❌ Error desconocido") {
   const div = document.getElementById("errorMensaje");
   if (div) {
     div.textContent = msg;
     div.style.display = "block";
     div.setAttribute("role", "alert");
     div.setAttribute("aria-live", "assertive");
+    div.focus?.();
   }
 }
 
-// ✅ Ocultar mensaje de error
+// ✅ Ocultar error
 function ocultarError() {
   const div = document.getElementById("errorMensaje");
   if (div) {

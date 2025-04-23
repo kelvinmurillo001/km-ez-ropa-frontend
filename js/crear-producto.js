@@ -1,18 +1,23 @@
 "use strict";
 
-import { verificarSesion, goBack, mostrarMensaje, getUsuarioActivo } from "./admin-utils.js";
+import {
+  verificarSesion,
+  goBack,
+  mostrarMensaje,
+  getUsuarioActivo
+} from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
-// 🔐 Verificar sesión
+// 🔐 Seguridad: Autenticación y usuario
 const token = verificarSesion();
 const user = getUsuarioActivo();
 
-// Endpoints
+// 🌐 API Endpoints
 const API_PRODUCTS = `${API_BASE}/api/products`;
 const API_CATEGORIES = `${API_BASE}/api/categories`;
 const API_UPLOADS = `${API_BASE}/api/uploads`;
 
-// DOM Elements
+// 🧩 Elementos del DOM
 const form = document.getElementById("formProducto");
 const imagenInput = document.getElementById("imagenPrincipalInput");
 const previewPrincipal = document.getElementById("previewPrincipal");
@@ -35,19 +40,22 @@ const tallasPorTipo = {
   bebé: ["0-3", "3-6", "6-9", "9-12", "12-18", "18-24"]
 };
 
+// 🚀 Carga inicial
 document.addEventListener("DOMContentLoaded", async () => {
   await cargarCategorias();
-  agregarVariante();
+  agregarVariante(); // Añadir al menos una variante vacía
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 });
 
+// 📏 Autocompletar tallas según tipo
 tallaTipoInput.addEventListener("change", () => {
   const tipo = tallaTipoInput.value.toLowerCase();
   tallasInput.value = tallasPorTipo[tipo]?.join(", ") || "";
 });
 
+// 🎨 Vista previa imagen principal
 imagenInput.addEventListener("change", () => {
   const file = imagenInput.files[0];
   if (!file) return;
@@ -55,9 +63,10 @@ imagenInput.addEventListener("change", () => {
   if (file.size > 2 * 1024 * 1024) return mostrarMensaje("⚠️ Imagen supera 2MB", "error");
 
   const url = URL.createObjectURL(file);
-  previewPrincipal.innerHTML = `<img src="${url}" alt="Vista previa imagen" style="max-width:200px; border-radius:8px;" />`;
+  previewPrincipal.innerHTML = `<img src="${url}" alt="Vista previa" style="max-width:200px; border-radius:8px;" />`;
 });
 
+// 📂 Obtener categorías y subcategorías
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIES);
@@ -87,6 +96,7 @@ async function cargarCategorias() {
   }
 }
 
+// ➕ Añadir nueva variante visualmente
 btnAgregarVariante.addEventListener("click", () => agregarVariante());
 
 function agregarVariante() {
@@ -94,7 +104,7 @@ function agregarVariante() {
   const div = document.createElement("div");
   div.className = "variante-item";
   div.innerHTML = `
-    <label>Color Variante (texto):</label>
+    <label>Color Variante:</label>
     <input type="text" name="colorVariante${index}" placeholder="Ej: rojo, gris" required />
     <label>Talla:</label>
     <input type="text" name="tallaVariante${index}" placeholder="Ej: M" required />
@@ -109,6 +119,7 @@ function agregarVariante() {
   variantes.push(index);
 }
 
+// ☁️ Subida de imagen a Cloudinary
 async function subirImagen(file) {
   const formData = new FormData();
   formData.append("image", file);
@@ -128,13 +139,14 @@ async function subirImagen(file) {
   };
 }
 
+// 💾 Envío del formulario
 form.addEventListener("submit", async e => {
   e.preventDefault();
 
   const nombre = form.nombreInput.value.trim();
   const descripcion = form.descripcionInput.value.trim();
   const precio = parseFloat(form.precioInput.value);
-  const stock = parseInt(form.stockInput.value || "0"); // ✅ Stock base
+  const stock = parseInt(form.stockInput.value || "0");
   const categoria = categoriaInput.value;
   const subcategoria = subcategoriaInput?.value || null;
   const tallaTipo = tallaTipoInput?.value || "";
@@ -181,9 +193,9 @@ form.addEventListener("submit", async e => {
       name: nombre,
       description: descripcion,
       price: precio,
-      stock: stock, // ✅ Incluido
+      stock,
       category: categoria,
-      subcategory: subcategoria,
+      subcategory,
       tallaTipo,
       color,
       sizes: tallas,

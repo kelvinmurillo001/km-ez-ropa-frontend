@@ -13,7 +13,7 @@
   --shadow-color: rgba(255, 109, 0, 0.15);
 }
 
-/* 📦 GRID DE PROMOCIONES */
+/* === 📦 GRID DE PROMOCIONES === */
 .promo-grid {
   display: grid;
   gap: 20px;
@@ -21,15 +21,15 @@
   margin-top: 20px;
 }
 
-/* 🧾 TARJETAS DE PROMOCIÓN */
+/* === 🧾 TARJETAS DE PROMOCIÓN === */
 .promo-card {
   background-color: var(--panel-dark);
   border-radius: 10px;
   box-shadow: 0 4px 15px var(--shadow-color);
   padding: 1.5rem;
-  transition: transform 0.25s ease, box-shadow 0.3s ease;
   border-left: 6px solid transparent;
   color: var(--text-light);
+  transition: transform 0.25s ease, box-shadow 0.3s ease;
   position: relative;
 }
 
@@ -38,20 +38,20 @@
   box-shadow: 0 6px 20px rgba(255, 109, 0, 0.25);
 }
 
-/* 🟢 ESTADOS DE PROMOCIÓN */
+/* === 🟢 ESTADOS DE PROMOCIÓN === */
 .promo-activa    { border-left-color: var(--badge-success); background-color: #1e2e1e; }
 .promo-inactiva  { border-left-color: var(--badge-warning); background-color: #2a251d; }
 .promo-expirada  { border-left-color: #6c757d; background-color: #2e2e2e; }
 .promo-futura    { border-left-color: var(--badge-info); background-color: #1b2d3a; }
 
-/* 🏷️ ENCABEZADO TARJETA */
+/* === 🏷️ ENCABEZADO TARJETA === */
 .promo-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  margin-bottom: 10px;
   gap: 8px;
+  margin-bottom: 10px;
 }
 
 .badge {
@@ -71,7 +71,7 @@
   font-style: italic;
 }
 
-/* 📢 MENSAJE PRINCIPAL */
+/* === 📣 MENSAJE DE PROMOCIÓN === */
 .promo-message {
   font-size: 16px;
   font-weight: 600;
@@ -80,7 +80,7 @@
   color: var(--accent-light);
 }
 
-/* 🔖 CHIPS */
+/* === 🔖 CHIPS (Páginas asociadas) === */
 .chip {
   display: inline-block;
   background: var(--chip-bg);
@@ -91,7 +91,7 @@
   font-size: 12px;
 }
 
-/* 🖼️ MULTIMEDIA */
+/* === 🖼️ CONTENIDO MULTIMEDIA === */
 .preview {
   margin-top: 10px;
 }
@@ -105,7 +105,7 @@
   box-shadow: 0 0 8px var(--shadow-color);
 }
 
-/* 🎛️ BOTONES DE ACCIÓN */
+/* === 🎛️ BOTONES DE ACCIÓN === */
 .promo-actions {
   display: flex;
   justify-content: flex-start;
@@ -128,10 +128,12 @@
   background-color: var(--badge-info);
   color: white;
 }
+
 .btn-secundario {
   background-color: var(--badge-warning);
   color: black;
 }
+
 .btn-borrar {
   background-color: var(--badge-danger);
   color: white;
@@ -142,13 +144,13 @@
   transform: scale(1.03);
 }
 
-/* 🔍 BÚSQUEDA Y FILTROS */
+/* === 🔍 FILTROS Y BÚSQUEDA === */
 .filtros-promos {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
-  margin: 1.5rem 0 1rem;
   justify-content: center;
+  margin: 1.5rem 0 1rem;
 }
 
 .filtros-promos input,
@@ -169,7 +171,7 @@
   outline: none;
 }
 
-/* 📱 RESPONSIVE */
+/* === 📱 RESPONSIVE (Mobile First) === */
 @media (max-width: 480px) {
   .promo-message {
     font-size: 15px;

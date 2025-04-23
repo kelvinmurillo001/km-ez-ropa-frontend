@@ -1,32 +1,32 @@
 "use strict";
 
-// ✅ Cargar promociones activas
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const res = await fetch("https://km-ez-ropa-backend.onrender.com/api/promos");
-    const promos = await res.json();
-
+    if (!res.ok) throw new Error("❌ Error al obtener promociones");
+    const { data: promos = [] } = await res.json();
     if (!Array.isArray(promos) || promos.length === 0) return;
 
-    const pageKey = obtenerClavePagina(window.location.pathname);
+    const pageKey = detectarClavePagina(window.location.pathname);
     const hoy = new Date();
 
-    const activas = promos.filter(promo =>
-      promo.active &&
-      Array.isArray(promo.pages) &&
-      promo.pages.includes(pageKey) &&
-      (!promo.startDate || new Date(promo.startDate) <= hoy) &&
-      (!promo.endDate || new Date(promo.endDate) >= hoy)
+    const activas = promos.filter(p =>
+      p.active &&
+      Array.isArray(p.pages) &&
+      p.pages.includes(pageKey) &&
+      (!p.startDate || new Date(p.startDate) <= hoy) &&
+      (!p.endDate || new Date(p.endDate) >= hoy)
     );
 
-    activas.forEach(promo => mostrarPromo(promo));
+    const agrupadas = agruparPorPosicion(activas);
+    Object.entries(agrupadas).forEach(([posicion, promos]) => mostrarRotador(promos, posicion));
   } catch (err) {
-    console.error("❌ Error al cargar promociones activas:", err);
+    console.error("❌ Error al cargar promociones activas:", err.message);
   }
 });
 
-// 🧠 Detección automática de página
-function obtenerClavePagina(path) {
+// 🧠 Determinar página actual
+function detectarClavePagina(path) {
   if (path.includes("checkout")) return "checkout";
   if (path.includes("carrito")) return "carrito";
   if (path.includes("categorias")) return "categorias";
@@ -36,45 +36,101 @@ function obtenerClavePagina(path) {
   return "otros";
 }
 
-// 🎯 Mostrar promoción
-function mostrarPromo(promo) {
-  const promoBox = document.createElement("section");
-  promoBox.className = `promo-display promo-${promo.theme || "blue"} promo-${promo.position || "top"}`;
-  promoBox.setAttribute("role", "region");
-  promoBox.setAttribute("aria-label", "Promoción destacada");
+// 🧠 Agrupar promociones por posición
+function agruparPorPosicion(lista = []) {
+  return lista.reduce((acc, promo) => {
+    const pos = promo.position || "top";
+    if (!acc[pos]) acc[pos] = [];
+    acc[pos].push(promo);
+    return acc;
+  }, {});
+}
 
-  // 💬 Mensaje
-  let contenido = `<p class="promo-msg">📣 ${promo.message}</p>`;
+// 🎯 Mostrar carrusel de promociones por posición
+function mostrarRotador(promos = [], posicion = "top") {
+  if (!promos.length) return;
 
-  // 🖼️ Imagen
-  if (promo.mediaType === "image" && promo.mediaUrl) {
-    contenido += `<img src="${promo.mediaUrl}" alt="Promoción" class="promo-img" loading="lazy" />`;
-  }
+  const wrapper = document.createElement("section");
+  wrapper.className = `promo-display promo-${promos[0].theme || "blue"} promo-${posicion}`;
+  wrapper.setAttribute("role", "region");
+  wrapper.setAttribute("aria-label", `Promociones ${posicion}`);
+  wrapper.style.position = "relative";
+  wrapper.style.overflow = "hidden";
 
-  // 🎬 Video
-  if (promo.mediaType === "video" && promo.mediaUrl) {
-    contenido += `
-      <video controls class="promo-video" preload="metadata">
-        <source src="${promo.mediaUrl}" type="video/mp4" />
-        Tu navegador no soporta video.
-      </video>`;
-  }
+  const contenedor = document.createElement("div");
+  contenedor.className = "promo-slider";
+  contenedor.style.whiteSpace = "nowrap";
+  contenedor.style.transition = "transform 0.5s ease-in-out";
 
-  promoBox.innerHTML = contenido;
+  promos.forEach((promo, i) => {
+    const slide = document.createElement("div");
+    slide.className = "promo-slide";
+    slide.setAttribute("aria-hidden", i > 0 ? "true" : "false");
+    slide.style.display = "inline-block";
+    slide.style.width = "100%";
+    slide.style.verticalAlign = "top";
 
-  // 📌 Insertar
-  const container = document.querySelector("main") || document.body;
-  if (promo.position === "top") {
-    container.prepend(promoBox);
-  } else if (promo.position === "bottom") {
-    container.appendChild(promoBox);
-  } else {
-    // Por defecto middle → dentro de <main>
-    const target = document.querySelector("main");
-    if (target) {
-      target.insertBefore(promoBox, target.firstChild);
-    } else {
-      container.appendChild(promoBox);
+    let contenido = `<p class="promo-msg">📣 ${sanitize(promo.message)}</p>`;
+
+    if (promo.mediaType === "image" && promo.mediaUrl) {
+      contenido += `<img src="${promo.mediaUrl}" alt="Promoción" class="promo-img" loading="lazy" onerror="this.style.display='none'" />`;
     }
+
+    if (promo.mediaType === "video" && promo.mediaUrl) {
+      contenido += `
+        <video controls class="promo-video" preload="metadata">
+          <source src="${promo.mediaUrl}" type="video/mp4" />
+          Tu navegador no soporta video.
+        </video>`;
+    }
+
+    slide.innerHTML = contenido;
+    contenedor.appendChild(slide);
+  });
+
+  wrapper.appendChild(contenedor);
+  insertarSegunPosicion(wrapper, posicion);
+
+  if (promos.length > 1) {
+    let index = 0;
+    setInterval(() => {
+      index = (index + 1) % promos.length;
+      contenedor.style.transform = `translateX(-${index * 100}%)`;
+
+      [...contenedor.children].forEach((slide, i) =>
+        slide.setAttribute("aria-hidden", i !== index)
+      );
+    }, 6000); // ⏱️ Cambiar cada 6 segundos
+  }
+}
+
+// 🧼 Sanear texto
+function sanitize(text = "") {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// 📌 Insertar sección en la página
+function insertarSegunPosicion(elemento, posicion) {
+  const main = document.querySelector("main");
+  const body = document.body;
+
+  switch (posicion) {
+    case "top":
+      main?.prepend(elemento) || body.prepend(elemento);
+      break;
+    case "bottom":
+      main?.appendChild(elemento) || body.appendChild(elemento);
+      break;
+    case "middle":
+      if (main?.firstChild) {
+        main.insertBefore(elemento, main.firstChild);
+      } else {
+        main?.appendChild(elemento) || body.appendChild(elemento);
+      }
+      break;
+    default:
+      body.appendChild(elemento);
   }
 }

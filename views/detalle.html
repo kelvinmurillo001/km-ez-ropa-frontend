@@ -54,7 +54,25 @@
   <!-- 👕 DETALLE DEL PRODUCTO -->
   <main class="detalle-container" role="main">
     <section id="detalleProducto" class="detalle-grid fade-in" aria-live="polite" aria-label="Detalle del producto seleccionado">
-      <!-- Detalle dinámico del producto generado por JS -->
+      <!-- JS insertará contenido aquí con microdatos -->
+    </section>
+
+    <!-- ❤️ Botón Favoritos -->
+    <div class="text-center mt-2">
+      <button id="btnFavorito" class="btn-secundario" aria-label="Agregar producto a favoritos">❤️ Agregar a Favoritos</button>
+    </div>
+
+    <!-- 🧾 Reseñas del producto -->
+    <section id="reseñas" aria-label="Opiniones del producto" class="mt-3">
+      <h2 class="text-center">🗣️ Opiniones y Reseñas</h2>
+      <p class="text-center">✨ Próximamente podrás dejar tu valoración aquí.</p>
+    </section>
+
+    <!-- 📤 Compartir -->
+    <section class="redes-sociales mt-3 text-center" aria-label="Compartir producto">
+      <p>🔗 Compartir este producto:</p>
+      <a href="#" onclick="compartirEnRed('facebook')" aria-label="Compartir en Facebook">📘 Facebook</a> |
+      <a href="#" onclick="compartirEnRed('whatsapp')" aria-label="Compartir por WhatsApp">💬 WhatsApp</a>
     </section>
   </main>
 
@@ -64,7 +82,6 @@
       <img src="/assets/cart-icon.svg" alt="Icono de carrito" />
       <span id="cartCount" role="status">0</span>
     </a>
-
     <a href="https://wa.me/593990270864" class="whatsapp-icon" target="_blank" rel="noopener noreferrer" aria-label="Chatear por WhatsApp">
       <img src="/assets/whatsapp.svg" alt="Icono de WhatsApp" />
     </a>
@@ -79,6 +96,23 @@
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Activa JavaScript para visualizar correctamente esta página.</p>
   </noscript>
+
+  <!-- 🔗 Compartir JS (opcional) -->
+  <script>
+    function compartirEnRed(red) {
+      const url = window.location.href;
+      const titulo = document.title;
+      let enlace = "";
+
+      if (red === "facebook") {
+        enlace = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+      } else if (red === "whatsapp") {
+        enlace = `https://wa.me/?text=${encodeURIComponent(titulo + " " + url)}`;
+      }
+
+      window.open(enlace, "_blank");
+    }
+  </script>
 
 </body>
 </html>

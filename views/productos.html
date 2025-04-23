@@ -7,7 +7,7 @@
 
   <!-- Meta -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="description" content="Administra los productos de tu tienda. Agrega, edita y elimina artículos fácilmente." />
+  <meta name="description" content="Administra los productos de tu tienda. Agrega, edita y elimina artículos fácilmente desde el panel de administración." />
 
   <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -18,68 +18,67 @@
 </head>
 <body>
 
-  <main class="productos-container fade-in" role="main">
-    <h1 class="text-center">👕 Gestión de Productos</h1>
+<main class="productos-container fade-in" role="main">
+  <h1 class="text-center" tabindex="0">👕 Gestión de Productos</h1>
 
-    <!-- 🔥 PROMOCIÓN DESTACADA -->
-    <div id="promo-display-container" data-page="productos" role="region" aria-label="Promoción activa"></div>
+  <!-- 🔥 PROMOCIÓN DESTACADA -->
+  <div id="promo-display-container" data-page="productos" role="region" aria-label="Promoción activa en productos"></div>
 
-    <!-- 🟠 Botón principal -->
-    <div class="text-center mt-2">
-      <button id="btnNuevoProducto" class="btn" aria-label="Crear nuevo producto">
-        ➕ Nuevo Producto
-      </button>
-    </div>
+  <!-- ➕ Crear nuevo -->
+  <div class="text-center mt-2">
+    <button id="btnNuevoProducto" class="btn" aria-label="Crear nuevo producto">➕ Nuevo Producto</button>
+  </div>
 
-    <!-- 🔍 Filtros -->
-    <div class="filtros text-center mt-2" role="search">
-      <input type="text" id="buscarProducto" placeholder="🔎 Buscar por nombre..." aria-label="Buscar producto por nombre" />
-      <select id="filtroCategoria" aria-label="Filtrar por categoría">
-        <option value="">📂 Todas las categorías</option>
-        <option value="mujer">👩 Mujer</option>
-        <option value="hombre">👨 Hombre</option>
-        <option value="niño">🧒 Niño</option>
-        <option value="niña">👧 Niña</option>
-        <option value="bebé">👶 Bebé</option>
-      </select>
-    </div>
+  <!-- 🔍 Filtros -->
+  <div class="filtros text-center mt-2" role="search" aria-label="Filtrar productos">
+    <input type="text" id="buscarProducto" placeholder="🔎 Buscar por nombre..." aria-label="Buscar producto por nombre" />
+    <select id="filtroCategoria" aria-label="Filtrar por categoría">
+      <option value="">📂 Todas las categorías</option>
+      <option value="mujer">👩 Mujer</option>
+      <option value="hombre">👨 Hombre</option>
+      <option value="niño">🧒 Niño</option>
+      <option value="niña">👧 Niña</option>
+      <option value="bebé">👶 Bebé</option>
+    </select>
+  </div>
 
-    <!-- ✅ Contador de productos -->
-    <p id="contadorProductos" class="text-center mt-2" style="font-weight: bold; color: #ccc;" aria-live="polite"></p>
+  <!-- 📦 Contador -->
+  <p id="contadorProductos" class="text-center mt-2" style="font-weight: bold; color: #ccc;" role="status" aria-live="polite"></p>
 
-    <!-- 📋 Tabla de productos -->
-    <section id="productosLista" class="productos-lista mt-3" aria-label="Lista de productos">
-      <!-- JS insertará la tabla aquí -->
-    </section>
+  <!-- 📋 Lista -->
+  <section id="productosLista" class="productos-lista mt-3" aria-label="Listado dinámico de productos">
+    <!-- JS dinámico -->
+  </section>
 
-    <!-- 🔙 Botón regreso -->
-    <div class="text-center mt-3">
-      <button id="btnVolverPanel" class="btn-secundario" aria-label="Volver al panel principal">🔙 Volver al Panel</button>
-    </div>
-  </main>
+  <!-- 🔙 Botón regreso -->
+  <div class="text-center mt-3">
+    <button id="btnVolverPanel" class="btn-secundario" aria-label="Volver al panel principal">🔙 Volver al Panel</button>
+  </div>
+</main>
 
-  <!-- 📣 Mensaje flotante -->
-  <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
+<!-- 📣 Mensaje dinámico -->
+<div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
 
-  <!-- 🌙 Activar modo oscuro -->
-  <script>
-    if (localStorage.getItem("modoOscuro") === "true") {
-      document.body.classList.add("modo-oscuro");
-    }
-  </script>
+<!-- 🌙 Modo oscuro automático -->
+<script>
+  if (localStorage.getItem("modoOscuro") === "true") {
+    document.body.classList.add("modo-oscuro");
+  }
+</script>
 
-  <!-- ✅ JS principal y utilidades -->
-  <script type="module">
-    import { goBack } from "/js/admin-utils.js";
-    import "/js/productos.js";
-    import "/js/promo-display.js";
+<!-- ✅ Módulos principales -->
+<script type="module">
+  import { goBack } from "/js/admin-utils.js";
+  import "/js/productos.js";
+  import "/js/promo-display.js";
 
-    document.getElementById("btnVolverPanel").addEventListener("click", goBack);
-  </script>
+  document.getElementById("btnVolverPanel").addEventListener("click", goBack);
+</script>
 
-  <!-- 🛑 JS fallback -->
-  <noscript>
-    <p style="text-align:center; color:red;">⚠️ Esta página requiere JavaScript para funcionar.</p>
-  </noscript>
+<!-- 🚫 No-JS fallback -->
+<noscript>
+  <p style="text-align:center; color:red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+</noscript>
+
 </body>
 </html>

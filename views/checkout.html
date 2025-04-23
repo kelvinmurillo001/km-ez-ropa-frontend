@@ -7,7 +7,7 @@
 
   <!-- Meta Seguridad & SEO -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="description" content="Ingresa tus datos para completar tu pedido en KM & EZ ROPA. Compra segura, rápida y con estilo." />
+  <meta name="description" content="Completa tu compra con seguridad y confianza en KM & EZ ROPA. Opciones flexibles de pago y envío rápido a nivel nacional." />
   <meta name="author" content="KM & EZ ROPA" />
 
   <!-- Estilos -->
@@ -24,17 +24,18 @@
 <body>
 
   <!-- 🔥 BANNER PROMOCIONAL -->
-  <div id="promo-display-container" data-page="checkout"></div>
+  <div id="promo-display-container" data-page="checkout" role="region" aria-label="Promoción activa"></div>
 
   <!-- 🧾 CONTENEDOR PRINCIPAL -->
   <main class="checkout-container fade-in" role="main">
-    <h1 class="text-center">✅ Finalizar Compra</h1>
+    <h1 class="text-center">🛍️ Finaliza tu Compra con Confianza</h1>
+    <p class="text-center subtitulo-checkout">💬 Asegúrate de revisar tus datos. ¡Tu estilo está a solo un clic de distancia!</p>
 
     <form id="formCheckout" class="form-checkout" novalidate autocomplete="on">
       
       <!-- 🧾 DATOS DE FACTURACIÓN -->
       <fieldset>
-        <legend>🧾 Datos de Facturación</legend>
+        <legend>👤 Datos del Cliente</legend>
 
         <label for="nombreInput">Nombre Completo: *</label>
         <input type="text" id="nombreInput" name="nombre" required placeholder="Ej: Juan Pérez" autocomplete="name" />
@@ -46,41 +47,48 @@
         <input type="tel" id="telefonoInput" name="telefono" required placeholder="+593..." autocomplete="tel" />
       </fieldset>
 
-      <!-- 🚚 DATOS DE ENTREGA -->
+      <!-- 🚚 DIRECCIÓN -->
       <fieldset>
-        <legend>🚚 Dirección de Entrega</legend>
+        <legend>📍 Dirección de Entrega</legend>
 
         <label for="direccionInput">Dirección completa: *</label>
         <textarea id="direccionInput" name="direccion" required placeholder="Ej: Av. Amazonas y NNUU, Quito - Pichincha" autocomplete="street-address"></textarea>
 
-        <button type="button" class="btn-secundario" id="btnUbicacion">📍 Usar mi ubicación actual</button>
+        <button type="button" class="btn-secundario" id="btnUbicacion" aria-label="Obtener ubicación actual">
+          📍 Usar mi ubicación actual
+        </button>
       </fieldset>
 
       <!-- 💳 MÉTODO DE PAGO -->
       <fieldset>
-        <legend>💳 Método de Pago</legend>
+        <legend>💳 Elige tu Método de Pago</legend>
 
         <div class="metodo-pago-opciones">
           <label class="opcion-pago">
             <input type="radio" name="metodoPago" value="transferencia" required />
-            <span>🪙 Transferencia Bancaria</span>
+            <span>🪙 Transferencia Bancaria (Pago anticipado)</span>
           </label>
 
           <label class="opcion-pago">
             <input type="radio" name="metodoPago" value="tarjeta" />
-            <span>💳 Tarjeta / Débito</span>
+            <span>💳 Tarjeta de Crédito / Débito</span>
           </label>
 
           <label class="opcion-pago">
             <input type="radio" name="metodoPago" value="paypal" />
-            <span>🅿️ PayPal</span>
+            <span>🅿️ PayPal (Compra protegida)</span>
           </label>
+        </div>
+
+        <!-- Info dinámica -->
+        <div id="infoMetodoPago" class="metodo-pago-info mt-1" aria-live="polite">
+          <!-- Aquí se mostrará información adicional -->
         </div>
       </fieldset>
 
       <!-- 🛍️ RESUMEN DEL PEDIDO -->
       <fieldset>
-        <legend>🛍️ Tu Pedido</legend>
+        <legend>🧾 Tu Pedido</legend>
         <div id="resumenPedido" aria-live="polite" aria-relevant="all">
           <!-- Productos del carrito insertados por JS -->
         </div>
@@ -97,9 +105,8 @@
     </form>
   </main>
 
-  <!-- 🔒 JS fallback -->
   <noscript>
-    <p style="text-align:center; color:red;">⚠️ Activa JavaScript para completar tu pedido.</p>
+    <p style="text-align:center; color:red;">⚠️ Activa JavaScript para completar tu pedido correctamente.</p>
   </noscript>
 
 </body>

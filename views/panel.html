@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🎛️ Panel Administrativo | KM & EZ ROPA</title>
 
-  <!-- Meta Seguridad y SEO -->
+  <!-- 🔐 Meta Seguridad y SEO -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="author" content="KM & EZ ROPA" />
   <meta name="description" content="Administra productos, pedidos, categorías, promociones y más desde este panel privado." />
 
-  <!-- Estilos -->
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/panel.css" />
@@ -20,44 +20,44 @@
 </head>
 <body>
 
+  <!-- 🧭 Contenedor principal -->
   <main class="panel-container fade-in" role="main" aria-label="Panel de administración principal">
     
-    <!-- Encabezado del Panel -->
+    <!-- 🧑‍💼 Encabezado -->
     <header class="header-panel">
       <h1 class="text-center">🎛️ Panel de Administración</h1>
       <button id="btnCerrarSesion" class="btn-secundario" aria-label="Cerrar sesión del panel">🚪 Cerrar Sesión</button>
     </header>
 
-    <!-- Menú de navegación del Panel -->
-    <section class="menu-panel" aria-label="Navegación administrativa">
+    <!-- 📋 Navegación -->
+    <section class="menu-panel" aria-label="Opciones de administración">
       <a href="/productos.html" class="btn-panel" aria-label="Ir a gestión de productos">👕 Gestionar Productos</a>
       <a href="/pedidos.html" class="btn-panel" aria-label="Ver pedidos de clientes">🧾 Ver Pedidos</a>
-      <a href="/admin-categorias.html" class="btn-panel" aria-label="Gestionar categorías">🗂️ Categorías y Subcategorías</a>
+      <a href="/admin-categorias.html" class="btn-panel" aria-label="Gestionar categorías y subcategorías">🗂️ Categorías y Subcategorías</a>
       <a href="/promociones.html" class="btn-panel" aria-label="Gestionar promociones activas">🎯 Promociones</a>
-      <a href="/dashboard.html" class="btn-panel" aria-label="Ver estadísticas del sistema">📊 Analítica</a>
+      <a href="/dashboard.html" class="btn-panel" aria-label="Ver estadísticas y métricas">📊 Analítica</a>
     </section>
   </main>
 
   <!-- 🔔 Mensaje flotante -->
   <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="polite"></div>
 
-  <!-- 🌙 Modo Oscuro Automático -->
+  <!-- 🌙 Modo Oscuro -->
   <script>
     if (localStorage.getItem("modoOscuro") === "true") {
       document.body.classList.add("modo-oscuro");
     }
   </script>
 
-  <!-- Fallback si JavaScript está deshabilitado -->
+  <!-- 🚫 Sin JS -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Activa JavaScript para utilizar este panel administrativo.</p>
   </noscript>
 
-  <!-- Verificación de sesión y cierre -->
+  <!-- 🔐 Verificación y logout -->
   <script type="module">
     import { cerrarSesion, verificarSesion } from "/js/admin-utils.js";
-
-    verificarSesion(); // 🔐 Protección del panel
+    verificarSesion();
     document.getElementById("btnCerrarSesion")?.addEventListener("click", cerrarSesion);
   </script>
 

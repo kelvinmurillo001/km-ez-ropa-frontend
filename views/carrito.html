@@ -7,7 +7,7 @@
 
   <!-- ✅ SEO y Seguridad -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="description" content="Revisa y gestiona tu carrito de compras antes de finalizar tu pedido." />
+  <meta name="description" content="Revisa, edita y gestiona tu carrito de compras antes de finalizar tu pedido en KM & EZ ROPA." />
   <meta name="author" content="KM & EZ ROPA" />
 
   <!-- 🎨 Estilos -->
@@ -23,28 +23,30 @@
 </head>
 <body>
 
-  <!-- 🔥 PROMOCIONES DINÁMICAS -->
+  <!-- 🔥 PROMOCIÓN EN CARRITO -->
   <div id="promo-display-container" data-page="carrito" role="complementary" aria-label="Promoción activa en carrito"></div>
 
   <!-- 🛍️ CONTENIDO PRINCIPAL -->
   <main class="carrito-container fade-in" role="main" aria-label="Sección del carrito de compras">
     <h1 class="text-center">🛒 Tu Carrito</h1>
 
-    <!-- 📦 Lista de productos -->
+    <!-- 📦 Lista dinámica de productos -->
     <section id="carritoItems" class="carrito-lista" aria-live="polite" aria-relevant="all">
-      <!-- 🧩 Productos renderizados desde JS -->
+      <!-- Productos renderizados por JavaScript -->
     </section>
 
-    <!-- 💳 Resumen y acciones -->
-    <section class="carrito-resumen mt-3" aria-label="Resumen de compra">
-      <h2>Total: <span id="carritoTotal">$0.00</span></h2>
+    <!-- 💳 Resumen del pedido -->
+    <section class="carrito-resumen mt-3" aria-label="Resumen del pedido y acciones de pago">
+      <h2>Total: <span id="carritoTotal" aria-live="polite">$0.00</span></h2>
 
       <div class="botones-carrito">
-        <button onclick="window.location.href='/index.html'" class="btn-secundario" aria-label="Seguir viendo productos">
+        <button onclick="window.location.href='/index.html'" class="btn-secundario" aria-label="Volver al catálogo de productos">
           ⬅️ Seguir Comprando
         </button>
-
-        <button id="btnIrCheckout" class="btn" aria-label="Proceder al pago">
+        <button id="btnVaciarCarrito" class="btn-secundario" aria-label="Vaciar todo el carrito">
+          🧹 Vaciar Carrito
+        </button>        
+        <button id="btnIrCheckout" class="btn" aria-label="Ir al formulario de compra">
           ✅ Finalizar Compra
         </button>
       </div>
@@ -55,6 +57,5 @@
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar el carrito correctamente.</p>
   </noscript>
-
 </body>
 </html>

@@ -2,38 +2,43 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🔐 Iniciar Sesión | KM & EZ ROPA</title>
 
-  <!-- SEO -->
-  <meta name="description" content="Inicia sesión en KM & EZ ROPA para gestionar productos, pedidos y promociones." />
+  <!-- 🔒 Seguridad y SEO -->
   <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="Accede al panel administrativo de KM & EZ ROPA y gestiona productos, pedidos y promociones." />
+  <meta name="author" content="KM & EZ ROPA" />
 
-  <!-- Estilos -->
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/login.css" />
 
-  <!-- JS -->
+  <!-- ✅ JS -->
   <script type="module" src="/js/login.js" defer></script>
 </head>
 <body>
 
-  <main class="login-container fade-in" role="main">
-    <h1 class="text-center" aria-label="Iniciar sesión">🔐 Iniciar Sesión</h1>
+  <main class="login-container fade-in" role="main" aria-labelledby="tituloLogin">
+    <h1 id="tituloLogin" class="text-center">🔐 Acceso Administrativo</h1>
 
-    <form id="formLogin" class="formulario" aria-labelledby="formLogin">
+    <form id="formLogin" class="formulario" aria-describedby="instruccionesLogin" novalidate>
+      <p id="instruccionesLogin" class="text-center mb-2">Introduce tus credenciales para entrar al panel.</p>
+
       <!-- Usuario -->
       <label for="username">Usuario:</label>
       <input 
         type="text"
         name="username"
         id="username"
-        placeholder="admin"
+        placeholder="Ej: admin"
         required
         autocomplete="username"
         aria-required="true"
+        maxlength="40"
+        inputmode="text"
       />
 
       <!-- Contraseña -->
@@ -46,25 +51,47 @@
         required
         autocomplete="current-password"
         aria-required="true"
+        maxlength="100"
+        inputmode="text"
       />
 
       <!-- Botón de acceso -->
-      <button type="submit" class="btn mt-2" aria-label="Acceder al panel">🔓 Acceder</button>
+      <button type="submit" class="btn mt-2" aria-label="Ingresar al panel de control">🔓 Ingresar</button>
 
-      <!-- Error -->
-      <div id="errorMensaje" role="alert" aria-live="assertive" style="display: none; color: red; margin-top: 1rem;"></div>
+      <!-- Mensaje de error -->
+      <div 
+        id="errorMensaje" 
+        class="mensaje-error mt-2" 
+        role="alert" 
+        aria-live="assertive" 
+        style="display: none; color: red;"
+      ></div>
 
-      <!-- Volver -->
-      <div class="text-center mt-2">
-        <button type="button" onclick="window.location.href='/'" class="btn-secundario">
+      <!-- Navegación secundaria -->
+      <div class="text-center mt-3">
+        <button 
+          type="button" 
+          class="btn-secundario" 
+          onclick="window.location.href='/'" 
+          aria-label="Volver al inicio del sitio">
           🔙 Volver al Inicio
         </button>
       </div>
     </form>
   </main>
 
+  <!-- Fallback para navegadores sin JS -->
   <noscript>
-    <p style="text-align:center; color:red;">⚠️ Activa JavaScript para iniciar sesión correctamente.</p>
+    <p style="text-align:center; color:red;">⚠️ Debes activar JavaScript para iniciar sesión.</p>
   </noscript>
+
+  <!-- 🌙 Modo oscuro automático -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("modoOscuro") === "true") {
+        document.body.classList.add("modo-oscuro");
+      }
+    });
+  </script>
 </body>
 </html>

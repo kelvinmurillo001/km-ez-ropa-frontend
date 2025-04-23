@@ -1,51 +1,50 @@
 "use strict";
 
 /**
- * 🔐 Verifica si el token y el usuario son válidos.
- * Redirige a login si no está autenticado o no es administrador.
- * @returns {string} token
+ * 🔐 Verifica si el usuario está autenticado y es admin.
+ * Si no lo está, redirige a login y detiene ejecución.
+ * @returns {string} token de autenticación
  */
 export function verificarSesion() {
   const token = localStorage.getItem("admin_token");
   const userRaw = localStorage.getItem("admin_user");
-  let user = {};
 
+  let user = {};
   try {
     user = JSON.parse(userRaw);
-  } catch (e) {
-    console.warn("⚠️ admin_user malformado. Limpiando localStorage...");
+  } catch (err) {
+    console.warn("⚠️ Datos de sesión corruptos. Limpiando...");
     localStorage.clear();
   }
 
   if (!token || !user?.isAdmin) {
-    alert("⚠️ Acceso denegado. Inicia sesión como administrador.");
+    alert("⚠️ Acceso restringido. Debes iniciar sesión como administrador.");
     localStorage.clear();
     window.location.href = "/login.html";
-    throw new Error("Usuario no autenticado o no autorizado");
+    throw new Error("🚫 Usuario no autenticado o sin permisos");
   }
 
   return token;
 }
 
 /**
- * 💬 Muestra un mensaje flotante con accesibilidad ARIA.
- * @param {string} texto - Contenido del mensaje.
- * @param {"success"|"error"|"info"} tipo - Tipo visual (CSS).
+ * 💬 Muestra un mensaje accesible flotante.
+ * @param {string} texto - El texto a mostrar.
+ * @param {"success"|"error"|"info"} tipo - Tipo visual (para CSS).
  */
-export function mostrarMensaje(texto, tipo = "info") {
+export function mostrarMensaje(texto = "", tipo = "info") {
   const mensaje = document.getElementById("adminMensaje");
 
   if (!mensaje) {
-    console.warn("⚠️ adminMensaje no encontrado. Usando alert como fallback.");
+    console.warn("⚠️ Elemento #adminMensaje no encontrado. Usando alert()...");
     alert(texto);
     return;
   }
 
+  mensaje.textContent = texto;
   mensaje.className = `admin-message ${tipo}`;
   mensaje.setAttribute("role", "alert");
   mensaje.setAttribute("aria-live", "assertive");
-  mensaje.textContent = texto;
-
   mensaje.classList.remove("oculto");
 
   clearTimeout(mensaje._timeout);
@@ -55,14 +54,14 @@ export function mostrarMensaje(texto, tipo = "info") {
 }
 
 /**
- * 🔙 Regresa al panel principal de administración.
+ * 🔙 Redirige al panel de administración principal.
  */
 export function goBack() {
   window.location.href = "/panel.html";
 }
 
 /**
- * 🚪 Cierra sesión, limpia localStorage y redirige.
+ * 🚪 Cierra la sesión y limpia almacenamiento.
  */
 export function cerrarSesion() {
   localStorage.removeItem("admin_token");
@@ -71,17 +70,17 @@ export function cerrarSesion() {
 }
 
 /**
- * 🙋‍♂️ Devuelve el usuario autenticado o un objeto vacío.
- * @returns {Object} Usuario
+ * 🧑‍💻 Obtiene los datos del usuario autenticado.
+ * @returns {Object} objeto de usuario o {} si inválido.
  */
 export function getUsuarioActivo() {
   try {
     const raw = localStorage.getItem("admin_user");
     return raw ? JSON.parse(raw) : {};
-  } catch {
+  } catch (err) {
     return {};
   }
 }
 
-// 🌍 Exponer logout globalmente (por si hay botón de cierre)
+// 🌐 Exponer logout globalmente (para botones HTML)
 window.cerrarSesion = cerrarSesion;

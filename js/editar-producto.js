@@ -1,6 +1,6 @@
 "use strict";
 
-import { verificarSesion, goBack } from "./admin-utils.js";
+import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
 const token = verificarSesion();
@@ -46,7 +46,7 @@ async function cargarCategorias() {
     });
   } catch (err) {
     console.error("❌ Error cargando categorías:", err);
-    msgEstado.textContent = "❌ No se pudieron cargar las categorías.";
+    mostrarMensaje("❌ No se pudieron cargar las categorías", "error");
   }
 }
 
@@ -59,7 +59,7 @@ async function cargarProducto() {
     document.getElementById("nombreInput").value = p.name || "";
     document.getElementById("descripcionInput").value = p.description || "";
     document.getElementById("precioInput").value = p.price || "";
-    document.getElementById("stockInput").value = p.stock ?? 0; // 🟢 stock base
+    document.getElementById("stockInput").value = p.stock ?? 0;
     document.getElementById("categoriaInput").value = p.category || "";
     document.getElementById("subcategoriaInput").value = p.subcategory || "";
     document.getElementById("tallasInput").value = p.sizes?.join(", ") || "";
@@ -104,6 +104,10 @@ async function cargarProducto() {
 }
 
 async function subirImagen(file) {
+  if (!file || !file.type.startsWith("image/") || file.size > 2 * 1024 * 1024) {
+    throw new Error("⚠️ Imagen inválida o muy pesada");
+  }
+
   const formData = new FormData();
   formData.append("image", file);
 
@@ -135,7 +139,7 @@ function agregarVariante() {
     <label>Imagen:</label>
     <input type="file" class="variante-img" accept="image/*" required />
     <label>Color:</label>
-    <input type="text" class="variante-color" placeholder="Ej: blanco, vino, mostaza" required />
+    <input type="text" class="variante-color" placeholder="Ej: blanco, vino" required />
     <label>Talla:</label>
     <input type="text" class="variante-talla" required />
     <label>Stock:</label>
@@ -149,7 +153,11 @@ function agregarVariante() {
 
 function mostrarMensaje(msg, tipo = "info") {
   msgEstado.textContent = msg;
-  msgEstado.style.color = tipo === "success" ? "limegreen" : tipo === "error" ? "red" : "orange";
+  msgEstado.style.color =
+    tipo === "success" ? "limegreen" :
+    tipo === "error" ? "red" :
+    "orange";
+
   msgEstado.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
@@ -161,7 +169,7 @@ form.addEventListener("submit", async (e) => {
     const nombre = form.nombreInput.value.trim();
     const descripcion = form.descripcionInput.value.trim();
     const precio = parseFloat(form.precioInput.value);
-    const stockBase = parseInt(form.stockInput.value || "0"); // ✅ stock base
+    const stockBase = parseInt(form.stockInput.value || "0");
     const categoria = form.categoriaInput.value;
     const subcategoria = form.subcategoriaInput?.value?.trim() || null;
     const destacado = form.destacadoInput?.checked || false;
@@ -169,15 +177,13 @@ form.addEventListener("submit", async (e) => {
     const sizes = form.tallasInput.value.split(",").map(s => s.trim()).filter(Boolean);
 
     if (!nombre || !descripcion || isNaN(precio) || !categoria) {
-      mostrarMensaje("⚠️ Por favor completa todos los campos obligatorios.", "warning");
+      mostrarMensaje("⚠️ Completa todos los campos obligatorios", "warning");
       return;
     }
 
     const nuevaImg = form.imagenPrincipalNueva?.files[0];
     let nuevaImagen = null;
-    if (nuevaImg) {
-      nuevaImagen = await subirImagen(nuevaImg);
-    }
+    if (nuevaImg) nuevaImagen = await subirImagen(nuevaImg);
 
     const bloques = document.querySelectorAll(".variante-box");
     const variantes = await Promise.all(Array.from(bloques).map(async (b) => {
@@ -187,7 +193,7 @@ form.addEventListener("submit", async (e) => {
       const stock = parseInt(b.querySelector(".variante-stock")?.value || "0");
       const cloudinaryId = b.querySelector(".variante-id")?.value;
 
-      if (!talla || !color) throw new Error("⚠️ Color y talla obligatorios en variante");
+      if (!talla || !color) throw new Error("⚠️ Color y talla requeridos en variante");
 
       let imageUrl = null;
       let finalCloudinaryId = cloudinaryId;
@@ -203,6 +209,7 @@ form.addEventListener("submit", async (e) => {
       return { imageUrl, cloudinaryId: finalCloudinaryId, color, talla, stock };
     }));
 
+    // 🔁 Validar duplicados
     const claves = new Set();
     for (const v of variantes) {
       const clave = `${v.talla}-${v.color}`;
@@ -222,13 +229,8 @@ form.addEventListener("submit", async (e) => {
       variants
     };
 
-    if (nuevaImagen) {
-      payload.images = [nuevaImagen];
-    }
-
-    if (variantes.length === 0) {
-      payload.stock = stockBase;
-    }
+    if (nuevaImagen) payload.images = [nuevaImagen];
+    if (variantes.length === 0) payload.stock = stockBase;
 
     const res = await fetch(API_PRODUCTO, {
       method: "PUT",
@@ -240,9 +242,9 @@ form.addEventListener("submit", async (e) => {
     });
 
     const result = await res.json();
-    if (!res.ok) throw new Error(result.message || "No se pudo actualizar el producto");
+    if (!res.ok) throw new Error(result.message || "Error actualizando producto");
 
-    mostrarMensaje("✅ Producto actualizado con éxito.", "success");
+    mostrarMensaje("✅ Producto actualizado con éxito", "success");
 
   } catch (err) {
     console.error("❌", err);

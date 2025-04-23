@@ -2,10 +2,10 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>📊 Dashboard Analítico | KM & EZ ROPA</title>
 
-  <!-- 🔐 Meta Seguridad y SEO -->
+  <!-- 🔐 Seguridad y SEO -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="author" content="KM & EZ ROPA" />
   <meta name="description" content="Panel de control con estadísticas de ventas, productos, visitas y pedidos recibidos." />
@@ -23,70 +23,69 @@
 </head>
 <body>
 
-  <!-- 🌍 Contenedor Principal -->
-  <main class="dashboard-container fade-in" role="main" aria-label="Panel de Analítica de KM & EZ ROPA">
+  <main class="dashboard-container fade-in" role="main" aria-label="Panel de estadísticas KM & EZ ROPA">
     <h1 class="text-center">📊 Panel de Analítica</h1>
 
     <!-- 🔢 Métricas Globales -->
-    <section class="dashboard-grid" aria-label="Métricas del negocio">
-      <article class="card" role="region" aria-labelledby="ventasTotales">
-        <h3>🛒 Ventas Totales</h3>
-        <p><span id="ventasTotales" aria-live="polite">0</span></p>
+    <section class="dashboard-grid" aria-label="Métricas globales">
+      <article class="card" role="region" aria-labelledby="tituloVentas">
+        <h3 id="tituloVentas">🛒 Ventas Totales</h3>
+        <p><span id="ventasTotales" aria-live="polite">$0.00</span></p>
       </article>
-      <article class="card" role="region" aria-labelledby="visitasTotales">
-        <h3>👥 Visitas</h3>
+      <article class="card" role="region" aria-labelledby="tituloVisitas">
+        <h3 id="tituloVisitas">👥 Visitas</h3>
         <p><span id="visitasTotales" aria-live="polite">0</span></p>
       </article>
-      <article class="card" role="region" aria-labelledby="totalProductos">
-        <h3>📦 Productos</h3>
+      <article class="card" role="region" aria-labelledby="tituloProductos">
+        <h3 id="tituloProductos">📦 Productos</h3>
         <p><span id="totalProductos" aria-live="polite">0</span></p>
       </article>
-      <article class="card" role="region" aria-labelledby="promosActivas">
-        <h3>🎯 Promos Activas</h3>
+      <article class="card" role="region" aria-labelledby="tituloPromos">
+        <h3 id="tituloPromos">🎯 Promos Activas</h3>
         <p><span id="promosActivas" aria-live="polite">0</span></p>
       </article>
     </section>
 
     <!-- 📋 Estado de Pedidos -->
-    <section class="analitica-extra mt-3" aria-label="Estado de pedidos">
-      <h2 class="text-center">🧾 Estado de Pedidos</h2>
+    <section class="analitica-extra mt-3" aria-labelledby="tituloPedidos">
+      <h2 id="tituloPedidos" class="text-center">🧾 Estado de Pedidos</h2>
       <ul class="listado-categorias">
-        <li><strong>Totales:</strong> <span id="total">-</span></li>
+        <li><strong>Total:</strong> <span id="total">-</span></li>
         <li><strong>Pendientes:</strong> <span id="pendientes">-</span></li>
         <li><strong>En Proceso:</strong> <span id="en_proceso">-</span></li>
         <li><strong>Enviados:</strong> <span id="enviado">-</span></li>
         <li><strong>Cancelados:</strong> <span id="cancelado">-</span></li>
-        <li><strong>Pedidos del Día:</strong> <span id="hoy">-</span></li>
+        <li><strong>Hoy:</strong> <span id="hoy">-</span></li>
       </ul>
     </section>
 
     <!-- 🗂️ Top Categorías -->
-    <section class="analitica-extra mt-3" aria-label="Categorías más frecuentes">
-      <h2 class="text-center">📁 Top Categorías</h2>
+    <section class="analitica-extra mt-3" aria-labelledby="tituloTopCategorias">
+      <h2 id="tituloTopCategorias" class="text-center">📁 Top Categorías</h2>
       <ul id="topCategorias" class="listado-categorias" aria-live="polite">
-        <!-- Se insertará dinámicamente -->
+        <!-- Contenido dinámico -->
       </ul>
     </section>
 
-    <!-- ⚙️ Acciones -->
+    <!-- 📤 Exportar CSV -->
     <div class="text-center mt-3">
-      <button type="button" id="btnExportar" class="btn-secundario">
+      <button type="button" id="btnExportar" class="btn-secundario" aria-label="Exportar estadísticas como CSV">
         📤 Exportar Estadísticas (CSV)
       </button>
     </div>
 
-    <!-- 🔙 Volver -->
+    <!-- 🔙 Navegación -->
     <div class="text-center mt-2">
-      <button type="button" onclick="goBack()" class="btn">
+      <button type="button" onclick="goBack()" class="btn" aria-label="Volver al panel administrativo">
         🔙 Volver al Panel
       </button>
     </div>
   </main>
 
-  <!-- 💬 Mensaje flotante -->
+  <!-- 🔔 Mensaje flotante -->
   <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="polite"></div>
 
-  <!-- ⚠️ No JS -->
+  <!-- ⚠️ Fallback -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>

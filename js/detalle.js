@@ -18,89 +18,95 @@ document.addEventListener("DOMContentLoaded", () => {
   cargarProducto(id);
   activarModoOscuro();
   actualizarCarritoWidget();
+
+  const btnFavorito = document.getElementById("btnFavorito");
+  btnFavorito?.addEventListener("click", () => toggleFavorito(id));
 });
 
-// === 📦 Cargar producto por ID ===
+/**
+ * 📦 Cargar producto desde la API
+ */
 async function cargarProducto(id) {
   try {
     const res = await fetch(`${API_BASE}/api/products/${id}`);
     const data = await res.json();
-
     if (!res.ok || !data?.producto) throw new Error("Producto no encontrado");
-
     renderizarProducto(data.producto);
   } catch (err) {
-    console.error("❌ Error cargando producto:", err.message);
+    console.error("❌", err.message);
     mostrarError("⚠️ No se pudo cargar el producto.");
   }
 }
 
-// === 🖼️ Renderizar producto ===
+/**
+ * 🖼️ Renderizar producto en pantalla
+ */
 function renderizarProducto(p = {}) {
   const detalle = document.getElementById("detalleProducto");
-
-  const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
+  const imagenPrincipal = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
+  const imagenes = Array.isArray(p.images) ? p.images : [{ url: imagenPrincipal }];
   const nombre = p.name || "Producto sin nombre";
   const descripcion = p.description || "Sin descripción disponible";
   const precio = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
   const id = p._id || "";
 
-  // 🔍 TALLAS Y STOCK
   let tallasDisponibles = [];
   let maxCantidad = 1;
 
-  // Si hay variantes con stock
   if (Array.isArray(p.variants) && p.variants.length > 0) {
-    const variantesConStock = p.variants.filter(v => v.stock > 0);
-    tallasDisponibles = [...new Set(variantesConStock.map(v => v.talla?.toUpperCase()))];
-    maxCantidad = variantesConStock.reduce((acc, v) => acc + (v.stock || 0), 0);
+    const conStock = p.variants.filter(v => v.stock > 0);
+    tallasDisponibles = [...new Set(conStock.map(v => v.talla?.toUpperCase()))];
+    maxCantidad = conStock.reduce((acc, v) => acc + (v.stock || 0), 0);
   } else {
-    // No hay variantes, usar la talla principal
-    if (Array.isArray(p.sizes) && p.sizes.length > 0) {
-      tallasDisponibles = p.sizes.map(t => t.toUpperCase());
-    } else if (p.images?.[0]?.talla) {
-      tallasDisponibles = [p.images[0].talla.toUpperCase()];
-    } else {
-      tallasDisponibles = ["Única"];
-    }
-    maxCantidad = p.stock || 1; // stock de la imagen principal
+    tallasDisponibles = p.sizes?.map(t => t.toUpperCase()) || ["Única"];
+    maxCantidad = p.stock || 1;
   }
 
   const tallasHTML = tallasDisponibles.length
     ? tallasDisponibles.map(t => `<option value="${t}">${t}</option>`).join("")
     : '<option disabled selected>Sin tallas disponibles</option>';
 
+  const galeriaHTML = imagenes.map(img =>
+    `<img src="${img.url}" alt="${nombre}" loading="lazy" class="mini-img" onclick="document.getElementById('imgPrincipal').src='${img.url}'"/>`
+  ).join("");
+
   detalle.innerHTML = `
-    <div class="detalle-img">
-      <img src="${imagen}" alt="${nombre}" loading="lazy" onerror="this.src='/assets/logo.jpg'" />
+  <div class="detalle-img">
+    <img id="imgPrincipal" src="${imagenPrincipal}" alt="${nombre}" loading="lazy" onerror="this.src='/assets/logo.jpg'" />
+    <div class="galeria-mini">${galeriaHTML}</div>
+  </div>
+
+  <div class="detalle-info" itemscope itemtype="https://schema.org/Product">
+    <h2 itemprop="name">${nombre}</h2>
+    <p itemprop="description">${descripcion}</p>
+    <p class="precio">$<span itemprop="price">${precio}</span></p>
+
+    <meta itemprop="sku" content="${id}" />
+    <meta itemprop="brand" content="KM & EZ ROPA" />
+
+    <div class="detalles-extra">
+      <p><strong>Categoría:</strong> ${p.category || "-"}</p>
+      <p><strong>Subcategoría:</strong> ${p.subcategory || "-"}</p>
+      <p><strong>Tipo de talla:</strong> ${p.tallaTipo || "-"}</p>
     </div>
-    <div class="detalle-info">
-      <h2>${nombre}</h2>
-      <p>${descripcion}</p>
-      <p class="precio">$${precio}</p>
 
-      <div class="detalles-extra">
-        <p><strong>Categoría:</strong> ${p.category || "-"}</p>
-        <p><strong>Subcategoría:</strong> ${p.subcategory || "-"}</p>
-        <p><strong>Tipo de talla:</strong> ${p.tallaTipo || "-"}</p>
-      </div>
+    <div class="selectores">
+      <label for="tallaSelect">Talla:</label>
+      <select id="tallaSelect">${tallasHTML}</select>
 
-      <div class="selectores">
-        <label for="tallaSelect">Talla:</label>
-        <select id="tallaSelect" required>${tallasHTML}</select>
-
-        <label for="cantidadInput">Cantidad:</label>
-        <input type="number" id="cantidadInput" value="1" min="1" max="${maxCantidad}" />
-      </div>
-
-      <button class="btn-agregar" onclick="agregarAlCarrito('${id}', \`${nombre}\`, \`${imagen}\`, ${p.price || 0})">
-        🛒 Agregar al carrito
-      </button>
+      <label for="cantidadInput">Cantidad:</label>
+      <input type="number" id="cantidadInput" value="1" min="1" max="${maxCantidad}" />
     </div>
-  `;
+
+    <button class="btn-agregar" onclick="agregarAlCarrito('${id}', \`${nombre}\`, \`${imagenPrincipal}\`, ${p.price || 0})">
+      🛒 Agregar al carrito
+    </button>
+  </div>`;
 }
 
-// === 🛒 Agregar al carrito
+/**
+ * 🛒 Agregar producto al carrito
+ */
 function agregarAlCarrito(id, nombre, imagen, precio) {
   const talla = document.getElementById("tallaSelect")?.value || "Única";
   const cantidadInput = document.getElementById("cantidadInput");
@@ -112,22 +118,13 @@ function agregarAlCarrito(id, nombre, imagen, precio) {
     return;
   }
 
-  const nuevoProducto = {
-    id,
-    nombre,
-    imagen,
-    precio,
-    talla,
-    cantidad
-  };
-
+  const nuevoProducto = { id, nombre, imagen, precio, talla, cantidad };
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
   const key = `${id}_${talla}`.toLowerCase();
   const index = carrito.findIndex(p => `${p.id}_${p.talla}`.toLowerCase() === key);
 
   if (index >= 0) {
-    const nuevaCantidad = carrito[index].cantidad + cantidad;
-    carrito[index].cantidad = Math.min(nuevaCantidad, max);
+    carrito[index].cantidad = Math.min(carrito[index].cantidad + cantidad, max);
   } else {
     carrito.push(nuevoProducto);
   }
@@ -137,7 +134,28 @@ function agregarAlCarrito(id, nombre, imagen, precio) {
   mostrarToast("✨ ¡Sumado al estilo! Producto agregado al carrito.");
 }
 
-// === 🧮 Contador de productos
+/**
+ * 🧡 Agregar/quitar de favoritos
+ */
+function toggleFavorito(id) {
+  const key = "km_ez_favs";
+  const favs = JSON.parse(localStorage.getItem(key)) || [];
+  const i = favs.indexOf(id);
+
+  if (i >= 0) {
+    favs.splice(i, 1);
+    mostrarToast("🧺 Producto quitado de favoritos.");
+  } else {
+    favs.push(id);
+    mostrarToast("❤️ Producto guardado como favorito.");
+  }
+
+  localStorage.setItem(key, JSON.stringify(favs));
+}
+
+/**
+ * 🛍️ Contador del carrito
+ */
 function actualizarCarritoWidget() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
   const total = carrito.reduce((sum, item) => sum + item.cantidad, 0);
@@ -145,7 +163,9 @@ function actualizarCarritoWidget() {
   if (contador) contador.textContent = total;
 }
 
-// === 🧾 Mensaje emergente
+/**
+ * 🔔 Toast simple
+ */
 function mostrarToast(mensaje = "✅ Acción realizada") {
   const toast = document.createElement("div");
   toast.textContent = mensaje;
@@ -165,7 +185,9 @@ function mostrarToast(mensaje = "✅ Acción realizada") {
   setTimeout(() => toast.remove(), 2500);
 }
 
-// === 🧯 Error general
+/**
+ * ⚠️ Mensaje de error
+ */
 function mostrarError(texto = "❌ Error desconocido") {
   document.getElementById("detalleProducto").innerHTML = `
     <div style="color:red; text-align:center;">
@@ -175,7 +197,9 @@ function mostrarError(texto = "❌ Error desconocido") {
     </div>`;
 }
 
-// === 🌙 Modo oscuro
+/**
+ * 🌙 Activar modo oscuro
+ */
 function activarModoOscuro() {
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
@@ -188,5 +212,6 @@ function activarModoOscuro() {
   });
 }
 
-// 🌐 Exponer globalmente
+// 🌐 Global
 window.agregarAlCarrito = agregarAlCarrito;
+window.toggleFavorito = toggleFavorito;

@@ -4,8 +4,10 @@
 import { registrarVisitaPublica } from "./utils.js";
 import { API_BASE } from "./config.js";
 
+// ▶️ Al cargar el DOM
 document.addEventListener("DOMContentLoaded", async () => {
   registrarVisitaPublica(); // 📊 Registro de visita
+  mostrarSaludo(); // 👋 Saludo dinámico en consola
 
   const catalogo = document.getElementById("catalogo");
 
@@ -52,6 +54,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   aplicarModoOscuro();
 });
 
+// 👋 Mostrar saludo según hora del día
+function mostrarSaludo() {
+  const hora = new Date().getHours();
+  let saludo = "👋 ¡Bienvenido a KM & EZ ROPA!";
+
+  if (hora >= 5 && hora < 12) saludo = "🌞 ¡Buenos días, tu estilo comienza temprano!";
+  else if (hora >= 12 && hora < 18) saludo = "☀️ ¡Buenas tardes! Descubre lo más top para esta temporada.";
+  else saludo = "🌙 ¡Buenas noches! Ideal para elegir tu look de mañana.";
+
+  console.log(saludo);
+}
+
 // 🌙 Modo oscuro
 function aplicarModoOscuro() {
   const btn = document.getElementById("modoOscuroBtn");
@@ -65,7 +79,6 @@ function aplicarModoOscuro() {
     btn.textContent = isDark ? "☀️" : "🌙";
   });
 
-  // Icono inicial
   if (btn) btn.textContent = dark ? "☀️" : "🌙";
 }
 

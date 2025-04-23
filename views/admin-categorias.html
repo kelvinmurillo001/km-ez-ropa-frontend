@@ -3,55 +3,78 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Administrar Categorías | KM & EZ ROPA</title>
+  <title>📁 Administrar Categorías | KM & EZ ROPA</title>
 
+  <!-- 🔒 Seguridad y SEO -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="author" content="KM & EZ ROPA" />
+  <meta name="description" content="Administra las categorías y subcategorías del catálogo de KM & EZ ROPA fácilmente." />
+
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/admin-categorias.css" />
+  <link rel="stylesheet" href="/css/fondo.css" />
 
+  <!-- 🚀 Script -->
   <script type="module" src="/js/admin-categorias.js" defer></script>
 </head>
 <body>
-  <main class="categorias-admin-container">
-    <h1>📁 Gestión de Categorías</h1>
 
-    <!-- Crear Categoría -->
-    <section class="form-section">
-      <h2>➕ Nueva Categoría</h2>
-      <form id="formCrearCategoria">
+  <main class="categorias-admin-container fade-in" role="main" aria-label="Panel de administración de categorías">
+
+    <!-- Encabezado -->
+    <header class="text-center mt-2 mb-2">
+      <h1>📁 Gestión de Categorías</h1>
+      <p>Agrega, edita o elimina categorías para organizar el catálogo de productos.</p>
+    </header>
+
+    <!-- Nueva Categoría -->
+    <section class="form-section" aria-labelledby="tituloCrearCategoria">
+      <h2 id="tituloCrearCategoria">➕ Crear Categoría</h2>
+      <form id="formCrearCategoria" aria-label="Formulario para crear nueva categoría">
+        <label for="categoriaInput" class="sr-only">Nombre de la categoría</label>
         <input type="text" id="categoriaInput" placeholder="Nombre de la categoría" required />
-        <button type="submit" class="btn">Crear</button>
+        <button type="submit" class="btn">✅ Crear</button>
       </form>
     </section>
 
-    <!-- Agregar Subcategoría -->
-    <section class="form-section">
-      <h2>➕ Subcategoría</h2>
-      <form id="formSubcategoria">
-        <select id="selectCategoria" required>
+    <!-- Nueva Subcategoría -->
+    <section class="form-section" aria-labelledby="tituloSubcategoria">
+      <h2 id="tituloSubcategoria">➕ Agregar Subcategoría</h2>
+      <form id="formSubcategoria" aria-label="Formulario para agregar subcategoría">
+        <label for="selectCategoria" class="sr-only">Seleccionar categoría principal</label>
+        <select id="selectCategoria" required aria-label="Seleccionar categoría">
           <option value="">Seleccionar categoría</option>
         </select>
+
+        <label for="subcategoriaInput" class="sr-only">Nombre de la subcategoría</label>
         <input type="text" id="subcategoriaInput" placeholder="Nombre de subcategoría" required />
-        <button type="submit" class="btn">Agregar</button>
+
+        <button type="submit" class="btn">✅ Agregar</button>
       </form>
     </section>
 
-    <!-- Lista de Categorías y Subcategorías -->
-    <section class="lista-categorias mt-4">
-      <h2>📋 Categorías Registradas</h2>
-      <ul id="listaCategorias" class="lista-render">
-        <!-- JS renderiza aquí -->
+    <!-- Lista Categorías -->
+    <section class="lista-categorias mt-4" aria-labelledby="tituloListaCategorias">
+      <h2 id="tituloListaCategorias">📋 Categorías Registradas</h2>
+      <ul id="listaCategorias" class="lista-render" aria-live="polite">
+        <!-- JS renderiza dinámicamente -->
       </ul>
     </section>
 
-    <!-- Volver -->
+    <!-- Botón volver -->
     <div class="text-center mt-4">
-      <button onclick="goBack()" class="btn-secundario">🔙 Volver al Panel</button>
+      <button onclick="goBack()" class="btn-secundario" aria-label="Volver al panel administrativo">
+        🔙 Volver al Panel
+      </button>
     </div>
   </main>
 
+  <!-- JS inhabilitado -->
   <noscript>
-    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar esta página.</p>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para utilizar esta sección de administración.</p>
   </noscript>
+
 </body>
 </html>

@@ -1,27 +1,29 @@
 "use strict";
 
-// ✅ Importar utilidades comunes
+// ✅ Utilidades
 import { verificarSesion, goBack } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
-// 🔐 Validar sesión
+// 🔐 Verificar sesión
 const token = verificarSesion();
 
-// 🔗 API Endpoints
+// 🔗 Endpoints
 const API_RESUMEN = `${API_BASE}/api/stats/resumen`;
 const API_PRODUCTS = `${API_BASE}/api/products`;
 
-// 🔄 Datos globales
+// 📊 Variables globales
 let estadisticas = null;
 let productos = [];
+let pedidosPorDia = [];
 
 // ▶️ Inicializar
 document.addEventListener("DOMContentLoaded", () => {
+  mostrarCargando();
   cargarEstadisticas();
 });
 
 /**
- * 📊 Cargar estadísticas y productos
+ * 📊 Obtener datos principales
  */
 async function cargarEstadisticas() {
   try {
@@ -34,9 +36,12 @@ async function cargarEstadisticas() {
 
     estadisticas = resumen;
     productos = productosData;
+    pedidosPorDia = resumen.pedidosPorDia || [];
 
     renderResumen(resumen);
     renderCategorias(productos);
+    renderGraficaPedidosPorDia(pedidosPorDia);
+
   } catch (err) {
     console.error("❌ Error cargando estadísticas:", err);
     alert("❌ No se pudieron obtener los datos del sistema.");
@@ -44,7 +49,7 @@ async function cargarEstadisticas() {
 }
 
 /**
- * 🌐 Fetch genérico con/sin autorización
+ * 🌐 Fetch genérico con token
  */
 async function fetchAPI(url, auth = false) {
   const res = await fetch(url, {
@@ -52,7 +57,6 @@ async function fetchAPI(url, auth = false) {
   });
 
   if (!res.ok) throw new Error(`❌ Error al obtener datos de ${url}`);
-
   const data = await res.json();
   if (!data) throw new Error(`❌ Respuesta vacía de ${url}`);
 
@@ -60,7 +64,18 @@ async function fetchAPI(url, auth = false) {
 }
 
 /**
- * 🧾 Mostrar resumen en DOM
+ * ⏳ Mostrar estado cargando
+ */
+function mostrarCargando() {
+  const campos = [
+    "totalProductos", "promosActivas", "visitas",
+    "ventasTotales", "pedidosTotales", "pedidosHoy"
+  ];
+  campos.forEach(id => setTexto(id, "⏳"));
+}
+
+/**
+ * 🧾 Resumen general
  */
 function renderResumen(data = {}) {
   setTexto("totalProductos", data.totalProductos ?? 0);
@@ -72,7 +87,7 @@ function renderResumen(data = {}) {
 }
 
 /**
- * 📁 Mostrar top categorías
+ * 📁 Categorías populares
  */
 function renderCategorias(productos = []) {
   const conteo = {};
@@ -97,18 +112,46 @@ function renderCategorias(productos = []) {
 }
 
 /**
- * 🔠 Establecer texto de un elemento
+ * 📉 Gráfico de pedidos por día
  */
-function setTexto(id, value) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = value;
+function renderGraficaPedidosPorDia(series = []) {
+  const contenedor = document.getElementById("graficaPedidos");
+  if (!contenedor) return;
+
+  if (typeof Chart === "undefined") {
+    contenedor.innerHTML = "<p>📊 Gráfica no disponible. Agrega Chart.js para visualizar.</p>";
+    return;
+  }
+
+  const labels = series.map(s => s.fecha);
+  const valores = series.map(s => s.total);
+
+  contenedor.innerHTML = `<canvas id="graficoPedidosCanvas" height="180"></canvas>`;
+  const ctx = document.getElementById("graficoPedidosCanvas").getContext("2d");
+
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{
+        label: "Pedidos por día",
+        data: valores,
+        backgroundColor: "#ff6d00"
+      }]
+    },
+    options: {
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
 }
 
 /**
- * 📤 Exportar resumen como CSV
+ * 📤 Exportar CSV
  */
 function exportarEstadisticas() {
-  if (!estadisticas || !Array.isArray(productos) || productos.length === 0) {
+  if (!estadisticas || !Array.isArray(productos)) {
     return alert("⚠️ Aún no se cargaron los datos.");
   }
 
@@ -143,6 +186,14 @@ function exportarEstadisticas() {
   link.click();
 }
 
-// 🌐 Exponer funciones globales
+/**
+ * 🔠 Insertar texto en el DOM
+ */
+function setTexto(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
+
+// 🌐 Globales
 window.exportarEstadisticas = exportarEstadisticas;
 window.goBack = goBack;

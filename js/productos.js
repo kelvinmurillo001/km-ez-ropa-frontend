@@ -3,28 +3,34 @@
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
-// 🔐 Validación de sesión
+// Verificación de sesión
 const token = verificarSesion();
-
-// 🌐 Endpoints
 const API_PRODUCTS = `${API_BASE}/api/products`;
 
-// 📍 DOM Elements
+// DOM Elements
 const productosLista = document.getElementById("productosLista");
 const btnNuevoProducto = document.getElementById("btnNuevoProducto");
 const inputBuscar = document.getElementById("buscarProducto");
 const filtroCategoria = document.getElementById("filtroCategoria");
 const contadorProductos = document.getElementById("contadorProductos");
+const btnExportar = document.getElementById("btnExportar");
+const filtroStock = document.getElementById("filtroStock");
+const filtroDestacados = document.getElementById("filtroDestacados");
+const paginacion = document.getElementById("paginacion");
+
+let productosTodos = [];
+let paginaActual = 1;
+const productosPorPagina = 10;
 
 document.addEventListener("DOMContentLoaded", () => {
-  btnNuevoProducto?.addEventListener("click", () => {
-    window.location.href = "/crear-producto.html";
-  });
-
-  cargarProductos();
-
+  btnNuevoProducto?.addEventListener("click", () => window.location.href = "/crear-producto.html");
   inputBuscar?.addEventListener("input", cargarProductos);
   filtroCategoria?.addEventListener("change", cargarProductos);
+  filtroStock?.addEventListener("change", renderizarProductos);
+  filtroDestacados?.addEventListener("change", renderizarProductos);
+  btnExportar?.addEventListener("click", exportarExcel);
+
+  cargarProductos();
 
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
@@ -32,11 +38,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**
- * 🚀 Obtener productos desde el backend
+ * 📡 Obtener todos los productos
  */
 async function cargarProductos() {
   productosLista.innerHTML = `<p class='text-center'>⏳ Cargando productos...</p>`;
-  if (contadorProductos) contadorProductos.textContent = "";
+  contadorProductos.textContent = "";
 
   try {
     const nombre = inputBuscar?.value?.trim() || "";
@@ -50,63 +56,56 @@ async function cargarProductos() {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    const productos = await res.json();
-    if (!res.ok) throw new Error(productos.message || "Error al obtener productos");
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Error al obtener productos");
 
-    if (!Array.isArray(productos) || productos.length === 0) {
+    if (!Array.isArray(data) || data.length === 0) {
+      productosTodos = [];
       productosLista.innerHTML = "<p class='text-center'>📭 No se encontraron productos.</p>";
       return;
     }
 
-    if (contadorProductos) {
-      contadorProductos.textContent = `Mostrando ${productos.length} producto(s)`;
-    }
-
-    renderizarProductos(productos);
+    productosTodos = data;
+    paginaActual = 1;
+    renderizarProductos();
 
   } catch (err) {
-    console.error("❌ Error al cargar productos:", err);
-    productosLista.innerHTML = `<p class="text-center" style="color:red;">❌ ${err.message}</p>`;
+    console.error("❌", err);
+    productosLista.innerHTML = `<p class='text-center' style='color:red;'>❌ ${err.message}</p>`;
   }
 }
 
 /**
- * 🧾 Renderizar tabla de productos
+ * 📋 Renderizar productos por página y con filtros
  */
-function renderizarProductos(productos) {
-  productos.sort((a, b) => a.name.localeCompare(b.name));
+function renderizarProductos() {
+  let filtrados = [...productosTodos];
 
-  const filas = productos.map(p => {
-    const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
-    const nombre = sanitize(p.name || "Producto sin nombre");
-    const precio = isNaN(p.price) ? "0.00" : parseFloat(p.price).toFixed(2);
-    const categoria = sanitize(p.category || "-");
+  // Filtrar por stock
+  if (filtroStock?.value === "sinStock") {
+    filtrados = filtrados.filter(p => {
+      const total = p.variants?.reduce((a, v) => a + (v.stock || 0), 0) || p.stock || 0;
+      return total === 0;
+    });
+  }
 
-    // 🧠 Calcular stock total
-    let stockTotal = 0;
-    if (Array.isArray(p.variants) && p.variants.length > 0) {
-      stockTotal = p.variants.reduce((acc, v) => acc + (v.stock || 0), 0);
-    } else if (typeof p.stock === "number") {
-      stockTotal = p.stock;
-    } else {
-      stockTotal = 1; // Asumimos 1 si no tiene variantes ni campo específico
-    }
+  // Filtrar por destacados
+  if (filtroDestacados?.checked) {
+    filtrados = filtrados.filter(p => p.featured === true);
+  }
 
-    const claseSinStock = stockTotal === 0 ? "sin-stock" : "";
+  // Paginación
+  const totalPaginas = Math.ceil(filtrados.length / productosPorPagina);
+  const inicio = (paginaActual - 1) * productosPorPagina;
+  const pagina = filtrados.slice(inicio, inicio + productosPorPagina);
 
-    return `
-      <tr class="${claseSinStock}">
-        <td><img src="${imagen}" alt="${nombre}" class="producto-img" onerror="this.src='/assets/logo.jpg'" /></td>
-        <td>${nombre}</td>
-        <td>$${precio}</td>
-        <td>${stockTotal}</td>
-        <td>${categoria}</td>
-        <td>
-          <button class="btn-tabla editar" onclick="editarProducto('${p._id}')">✏️</button>
-          <button class="btn-tabla eliminar" onclick="eliminarProducto('${p._id}', '${nombre}')">🗑️</button>
-        </td>
-      </tr>`;
-  }).join("");
+  contadorProductos.textContent = `Mostrando ${pagina.length} de ${filtrados.length} producto(s)`;
+
+  if (pagina.length === 0) {
+    productosLista.innerHTML = "<p class='text-center'>📭 Sin resultados.</p>";
+    paginacion.innerHTML = "";
+    return;
+  }
 
   productosLista.innerHTML = `
     <div class="tabla-scroll">
@@ -121,25 +120,71 @@ function renderizarProductos(productos) {
             <th>Acciones</th>
           </tr>
         </thead>
-        <tbody>${filas}</tbody>
+        <tbody>
+          ${pagina.map(productoFilaHTML).join("")}
+        </tbody>
       </table>
     </div>`;
+
+  renderPaginacion(totalPaginas);
 }
 
 /**
- * ✏️ Editar producto
+ * 🔢 Render de paginación
  */
-function editarProducto(id) {
-  window.location.href = `/editar-producto.html?id=${id}`;
+function renderPaginacion(total) {
+  paginacion.innerHTML = "";
+  if (total <= 1) return;
+
+  for (let i = 1; i <= total; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    btn.className = i === paginaActual ? "btn paginacion-activa" : "btn-secundario";
+    btn.addEventListener("click", () => {
+      paginaActual = i;
+      renderizarProductos();
+    });
+    paginacion.appendChild(btn);
+  }
 }
 
 /**
- * ❌ Eliminar producto
+ * 🧾 Generar HTML de fila
  */
-async function eliminarProducto(id, nombre = "") {
-  const confirmar = confirm(`⚠️ ¿Eliminar el producto "${nombre}"?`);
-  if (!confirmar) return;
+function productoFilaHTML(p) {
+  const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
+  const nombre = sanitize(p.name || "Sin nombre");
+  const precio = isNaN(p.price) ? "0.00" : parseFloat(p.price).toFixed(2);
+  const categoria = sanitize(p.category || "-");
 
+  let stock = 0;
+  if (Array.isArray(p.variants) && p.variants.length > 0) {
+    stock = p.variants.reduce((a, v) => a + (v.stock || 0), 0);
+  } else if (typeof p.stock === "number") {
+    stock = p.stock;
+  }
+
+  const claseStock = stock === 0 ? "sin-stock" : "";
+
+  return `
+    <tr class="${claseStock}">
+      <td><img src="${imagen}" alt="${nombre}" class="producto-img" /></td>
+      <td>${nombre}</td>
+      <td>$${precio}</td>
+      <td>${stock}</td>
+      <td>${categoria}</td>
+      <td>
+        <button class="btn-tabla editar" onclick="editarProducto('${p._id}')">✏️</button>
+        <button class="btn-tabla eliminar" onclick="eliminarProducto('${p._id}', '${nombre}')">🗑️</button>
+      </td>
+    </tr>`;
+}
+
+/**
+ * 🗑️ Eliminar
+ */
+async function eliminarProducto(id, nombre) {
+  if (!confirm(`¿Eliminar "${nombre}"?`)) return;
   try {
     const res = await fetch(`${API_PRODUCTS}/${id}`, {
       method: "DELETE",
@@ -147,19 +192,38 @@ async function eliminarProducto(id, nombre = "") {
     });
 
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "No se pudo eliminar");
+    if (!res.ok) throw new Error(data.message || "Error al eliminar");
 
-    mostrarMensaje(`✅ Producto "${nombre}" eliminado correctamente`, "success");
+    mostrarMensaje(`✅ "${nombre}" eliminado`, "success");
     await cargarProductos();
-
   } catch (err) {
-    console.error("❌ Error eliminando producto:", err);
+    console.error(err);
     mostrarMensaje("❌ No se pudo eliminar", "error");
   }
 }
 
 /**
- * 🔒 Limpieza básica HTML
+ * 📤 Exportar a Excel
+ */
+async function exportarExcel() {
+  const { utils, writeFile } = await import("https://cdn.sheetjs.com/xlsx-0.20.0/package/xlsx.mjs");
+  const hoja = productosTodos.map(p => ({
+    ID: p._id,
+    Nombre: p.name,
+    Precio: p.price,
+    Stock: (p.stock ?? (p.variants?.reduce((a, v) => a + (v.stock || 0), 0))) || 0,
+    Categoría: p.category,
+    Destacado: p.featured ? "Sí" : "No"
+  }));
+
+  const ws = utils.json_to_sheet(hoja);
+  const wb = utils.book_new();
+  utils.book_append_sheet(wb, ws, "Inventario");
+  writeFile(wb, "inventario_kmezropa.xlsx");
+}
+
+/**
+ * 🔐 Sanitizar texto
  */
 function sanitize(text) {
   const temp = document.createElement("div");
@@ -167,7 +231,7 @@ function sanitize(text) {
   return temp.innerHTML;
 }
 
-// 🌐 Funciones globales
+// Funciones globales
 window.goBack = goBack;
-window.editarProducto = editarProducto;
+window.editarProducto = id => window.location.href = `/editar-producto.html?id=${id}`;
 window.eliminarProducto = eliminarProducto;

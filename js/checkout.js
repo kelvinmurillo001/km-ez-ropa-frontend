@@ -11,13 +11,16 @@ const totalFinal = document.getElementById("totalFinal");
 const form = document.getElementById("formCheckout");
 const msgEstado = document.getElementById("msgEstado");
 const btnUbicacion = document.getElementById("btnUbicacion");
+const infoMetodoPago = document.getElementById("infoMetodoPago");
 
 const API_ORDERS = `${API_BASE}/api/orders`;
 
-// ▶️ Mostrar resumen del pedido
+/* -------------------------------------------------------------------------- */
+/* 🧾 Renderizado del pedido                                                  */
+/* -------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
   if (!Array.isArray(carrito) || carrito.length === 0) {
-    resumenPedido.innerHTML = `<p style="color:orange; text-align:center;">⚠️ Tu carrito está vacío.</p>`;
+    resumenPedido.innerHTML = `<p class="text-center text-warn">⚠️ Tu carrito está vacío.</p>`;
     totalFinal.textContent = "$0.00";
     form?.querySelector("button[type='submit']")?.setAttribute("disabled", "true");
     return;
@@ -25,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let total = 0;
   resumenPedido.innerHTML = carrito.map(item => {
-    const nombre = sanitizeText(item.nombre || "Producto sin nombre");
+    const nombre = sanitizeText(item.nombre || "Producto");
     const talla = sanitizeText(item.talla || "Única");
     const cantidad = parseInt(item.cantidad) || 0;
     const precio = parseFloat(item.precio) || 0;
@@ -34,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return `
       <div class="resumen-item">
-        <p>👕 <strong>${nombre}</strong> | Talla: ${talla} | Cant: ${cantidad} | $${subtotal.toFixed(2)}</p>
+        <p>🧢 <strong>${nombre}</strong> | Talla: ${talla} | Cant: ${cantidad} | <strong>$${subtotal.toFixed(2)}</strong></p>
       </div>
     `;
   }).join("");
@@ -42,29 +45,39 @@ document.addEventListener("DOMContentLoaded", () => {
   totalFinal.textContent = `$${total.toFixed(2)}`;
 });
 
-// ✅ Confirmar pedido
+// 🔁 Mostrar información adicional de método de pago
+document.querySelectorAll("input[name='metodoPago']").forEach(radio => {
+  radio.addEventListener("change", e => {
+    const val = e.target.value;
+    infoMetodoPago.innerHTML = {
+      transferencia: `<p>🔐 Recibirás los datos bancarios por WhatsApp. Envío tras validación del pago.</p>`,
+      tarjeta: `<p>💳 Redirigiremos a una pasarela segura para completar el pago con tarjeta.</p>`,
+      paypal: `<p>🅿️ Serás dirigido a PayPal. Compra segura y protegida.</p>`
+    }[val] || "";
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+/* 📤 Enviar pedido                                                           */
+/* -------------------------------------------------------------------------- */
 form?.addEventListener("submit", async e => {
   e.preventDefault();
   msgEstado.textContent = "⏳ Enviando pedido...";
-  msgEstado.style.color = "#ccc";
+  msgEstado.style.color = "#999";
 
-  const nombre = document.getElementById("nombreInput").value.trim();
-  const email = document.getElementById("emailInput").value.trim();
-  const telefono = document.getElementById("telefonoInput").value.trim();
-  const direccion = document.getElementById("direccionInput").value.trim();
+  const nombre = form.nombreInput.value.trim();
+  const email = form.emailInput.value.trim();
+  const telefono = form.telefonoInput.value.trim();
+  const direccion = form.direccionInput.value.trim();
   const metodoPago = document.querySelector("input[name='metodoPago']:checked")?.value;
 
+  // 🔐 Validaciones básicas
   if (!nombre || !email || !telefono || !direccion || !metodoPago) {
     return mostrarError("❌ Todos los campos son obligatorios.");
   }
 
-  if (!validarEmail(email)) {
-    return mostrarError("❌ Email inválido.");
-  }
-
-  if (!/^[0-9+\-\s]{7,15}$/.test(telefono)) {
-    return mostrarError("❌ Teléfono inválido. Usa solo dígitos, espacios, + o -");
-  }
+  if (!validarEmail(email)) return mostrarError("❌ Email inválido.");
+  if (!/^[0-9+\-\s]{7,20}$/.test(telefono)) return mostrarError("❌ Teléfono inválido. Usa dígitos, +, - o espacios.");
 
   const total = carrito.reduce((acc, item) =>
     acc + (parseFloat(item.precio) || 0) * (parseInt(item.cantidad) || 0), 0
@@ -99,10 +112,15 @@ form?.addEventListener("submit", async e => {
     msgEstado.textContent = "✅ Pedido enviado con éxito. ¡Gracias por tu compra!";
     msgEstado.style.color = "limegreen";
 
-    // ✅ Enviar por WhatsApp si es transferencia
+    // 🟡 INTEGRACIÓN CON MÉTODOS EXTERNOS
+    if (metodoPago === "paypal") {
+      // Redirección opcional si tienes backend PayPal integrado
+      // window.location.href = `${API_BASE}/api/paypal/session?orderId=XXX`;
+    }
+
     if (metodoPago === "transferencia") {
       const mensajeWA = `
-📦 *NUEVO PEDIDO POR TRANSFERENCIA*
+📦 *NUEVO PEDIDO*
 
 👤 *Cliente:* ${nombre}
 📞 *Teléfono:* ${telefono}
@@ -114,8 +132,6 @@ ${carrito.map(i => `• ${i.cantidad} x ${i.nombre} - Talla: ${i.talla} - $${(i.
 
 💳 *Pago:* Transferencia Bancaria
 💰 *Total:* $${total.toFixed(2)}
-
-📲 *Responder para confirmar o coordinar el pago.*
       `.trim();
 
       const whatsappURL = `https://wa.me/593990270864?text=${encodeURIComponent(mensajeWA)}`;
@@ -123,61 +139,52 @@ ${carrito.map(i => `• ${i.cantidad} x ${i.nombre} - Talla: ${i.talla} - $${(i.
     }
 
     localStorage.removeItem(STORAGE_KEY);
+    setTimeout(() => window.location.href = "/index.html", 3000);
 
-    setTimeout(() => {
-      window.location.href = "/index.html";
-    }, 2500);
   } catch (err) {
     console.error("❌", err);
     mostrarError("❌ No se pudo enviar el pedido. Intenta nuevamente.");
   }
 });
 
-// ✅ Validar email
+/* -------------------------------------------------------------------------- */
+/* 🛠️ Funciones utilitarias                                                  */
+/* -------------------------------------------------------------------------- */
 function validarEmail(email) {
-  const regex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/;
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   return regex.test(email);
 }
 
-// ✅ Mostrar errores
 function mostrarError(msg) {
   msgEstado.textContent = msg;
   msgEstado.style.color = "tomato";
 }
 
-// ✅ Limpiar texto para seguridad
 function sanitizeText(text) {
   const temp = document.createElement("div");
   temp.textContent = text;
   return temp.innerHTML;
 }
 
-// 🌍 Obtener ubicación
-function obtenerUbicacion() {
-  if (!navigator.geolocation) {
-    mostrarError("⚠️ Tu navegador no soporta geolocalización.");
-    return;
-  }
-
+/* -------------------------------------------------------------------------- */
+/* 📍 Obtener ubicación                                                      */
+/* -------------------------------------------------------------------------- */
+btnUbicacion?.addEventListener("click", () => {
+  if (!navigator.geolocation) return mostrarError("⚠️ Tu navegador no soporta geolocalización.");
   msgEstado.textContent = "📍 Obteniendo ubicación...";
 
   navigator.geolocation.getCurrentPosition(
-    async position => {
-      const { latitude, longitude } = position.coords;
+    async ({ coords }) => {
       try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.latitude}&lon=${coords.longitude}`);
         const data = await res.json();
-        const direccion = data.display_name || `${latitude}, ${longitude}`;
-        document.getElementById("direccionInput").value = direccion;
-        msgEstado.textContent = "✅ Dirección sugerida completada automáticamente.";
+        form.direccionInput.value = data.display_name || `${coords.latitude}, ${coords.longitude}`;
+        msgEstado.textContent = "✅ Dirección detectada automáticamente.";
         msgEstado.style.color = "limegreen";
-      } catch (err) {
-        console.error("Error al obtener dirección:", err);
+      } catch {
         mostrarError("❌ No se pudo obtener la dirección.");
       }
     },
     () => mostrarError("❌ No se pudo acceder a la ubicación.")
   );
-}
-
-btnUbicacion?.addEventListener("click", obtenerUbicacion);
+});

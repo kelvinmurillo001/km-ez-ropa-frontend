@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>📦 Pedidos | KM & EZ ROPA</title>
 
+  <!-- 🧠 SEO -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Panel administrativo para gestionar pedidos de clientes en KM & EZ ROPA.">
 
@@ -14,16 +15,22 @@
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/pedidos.css" />
 
-  <!-- 🚀 Script principal -->
+  <!-- 🚀 Scripts -->
   <script type="module" src="/js/pedidos.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
-  <main class="pedidos-container fade-in">
+  <main class="pedidos-container fade-in" role="main" aria-label="Panel de gestión de pedidos">
     <h1 class="text-center">📦 Gestión de Pedidos</h1>
 
-    <!-- 🔍 Filtro por estado -->
-    <div class="filtro-estado mt-2 text-center">
+    <!-- 📊 Estadísticas generales -->
+    <section class="estadisticas-ventas text-center mt-3 mb-2" id="estadisticasVentas" aria-live="polite">
+      <!-- Renderizado por JS -->
+    </section>
+
+    <!-- 🔍 Filtros y acciones -->
+    <div class="filtro-estado text-center mt-2 mb-2">
       <label for="filtroEstado">Filtrar por estado:</label>
       <select id="filtroEstado" aria-label="Filtrar pedidos por estado">
         <option value="todos">Todos</option>
@@ -32,22 +39,27 @@
         <option value="enviado">📤 Enviado</option>
         <option value="cancelado">❌ Cancelado</option>
       </select>
+
+      <button id="btnExportarPedidos" class="btn" aria-label="Exportar pedidos a PDF">📄 Exportar PDF</button>
     </div>
 
     <!-- 📋 Lista dinámica de pedidos -->
-    <section id="listaPedidos" class="tabla-pedidos mt-3" aria-label="Listado de pedidos">
-      <!-- JavaScript renderiza aquí -->
+    <section id="listaPedidos" class="tabla-pedidos mt-2" aria-label="Listado de pedidos">
+      <!-- Renderizado por pedidos.js -->
     </section>
 
-    <!-- 🔙 Volver al panel admin -->
+    <!-- 🔢 Paginación -->
+    <div id="paginacionPedidos" class="paginacion mt-3 text-center" aria-label="Paginación de pedidos"></div>
+
+    <!-- 🔙 Botón de retorno -->
     <div class="text-center mt-4">
-      <button onclick="window.location.href='/panel.html'" class="btn-secundario">🔙 Volver al panel</button>
+      <button onclick="window.location.href='/panel.html'" class="btn-secundario" aria-label="Volver al panel principal">🔙 Volver al panel</button>
     </div>
   </main>
 
-  <!-- 🚫 Fallback si JS está desactivado -->
+  <!-- 🚫 Sin JS -->
   <noscript>
-    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para ver y gestionar los pedidos.</p>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para ver y gestionar los pedidos correctamente.</p>
   </noscript>
 
 </body>

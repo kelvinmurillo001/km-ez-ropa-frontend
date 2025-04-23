@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -7,7 +7,7 @@
 
   <!-- Meta -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="description" content="Editar detalles de un producto en KM & EZ ROPA. Ajusta imágenes, precios, variantes y más." />
+  <meta name="description" content="Editar detalles completos de un producto, incluyendo imágenes, tallas, variantes y más." />
 
   <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -15,66 +15,73 @@
   <link rel="stylesheet" href="/css/crear-producto.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- Script -->
+  <!-- JS -->
   <script type="module" src="/js/editar-producto.js" defer></script>
 </head>
 <body>
 
-<main class="formulario-container fade-in" role="main" aria-label="Formulario para editar producto">
+<main class="formulario-container fade-in" role="main" aria-label="Formulario de edición de producto">
   <h1 class="text-center">✏️ Editar Producto</h1>
 
   <form id="formEditarProducto" class="form-producto" enctype="multipart/form-data" novalidate>
-
-    <!-- Imagen actual -->
+    
+    <!-- 📸 Imagen Actual -->
     <label for="imagenPrincipalActual">Imagen Principal Actual:</label>
     <div id="imagenPrincipalActual" class="preview-imagen" aria-live="polite"></div>
 
-    <!-- Nueva imagen -->
-    <label for="imagenPrincipalNueva">Cambiar Imagen Principal (opcional):</label>
-    <input type="file" id="imagenPrincipalNueva" accept="image/*" />
+    <!-- 🖼️ Cambiar Imagen -->
+    <label for="imagenPrincipalNueva">Subir Nueva Imagen Principal:</label>
+    <input type="file" id="imagenPrincipalNueva" accept="image/*" aria-describedby="imagenHelp" />
+    <small id="imagenHelp" class="help-text">Opcional. Máx. 2MB. Formatos: JPG, PNG, WEBP.</small>
 
-    <!-- Campos principales -->
+    <!-- 🔤 Nombre -->
     <label for="nombreInput">Nombre del Producto: *</label>
-    <input type="text" id="nombreInput" required placeholder="Ej: Camiseta oversize" />
+    <input type="text" id="nombreInput" required placeholder="Ej: Hoodie urbana oversize" maxlength="100" />
 
-    <label for="descripcionInput">Descripción: *</label>
-    <textarea id="descripcionInput" required placeholder="Escribe una descripción atractiva y clara del producto."></textarea>
+    <!-- 📝 Descripción -->
+    <label for="descripcionInput">Descripción del Producto: *</label>
+    <textarea id="descripcionInput" required placeholder="Describe estilo, tela, corte... máx. 300 caracteres." maxlength="300"></textarea>
 
-    <label for="precioInput">Precio: *</label>
+    <!-- 💰 Precio -->
+    <label for="precioInput">Precio de venta: *</label>
     <input type="number" id="precioInput" step="0.01" min="0" required />
 
-    <!-- ✅ NUEVO CAMPO: Stock base -->
+    <!-- 📦 Stock base -->
     <label for="stockInput">Stock base (si no hay variantes):</label>
     <input type="number" id="stockInput" min="0" value="0" />
 
-    <label for="categoriaInput">Categoría: *</label>
+    <!-- 🧩 Categoría -->
+    <label for="categoriaInput">Categoría principal: *</label>
     <select id="categoriaInput" required>
       <option value="">Selecciona una categoría</option>
     </select>
 
+    <!-- 🪪 Subcategoría -->
     <label for="subcategoriaInput">Subcategoría:</label>
-    <input type="text" id="subcategoriaInput" placeholder="Ej: Licras deportivas, Camisetas básicas..." maxlength="100" />
+    <input type="text" id="subcategoriaInput" maxlength="100" placeholder="Ej: Camisetas básicas, Sportwear..." />
 
+    <!-- 📏 Tallas -->
     <label for="tallasInput">Tallas disponibles (separadas por coma):</label>
     <input type="text" id="tallasInput" placeholder="Ej: S, M, L, XL" />
 
-    <label for="colorInput">Color Principal:</label>
-    <input type="text" id="colorInput" placeholder="Ej: negro, azul marino" />
+    <!-- 🎨 Color -->
+    <label for="colorInput">Color principal:</label>
+    <input type="text" id="colorInput" placeholder="Ej: negro, beige, denim oscuro" />
 
-    <!-- Producto destacado -->
+    <!-- 🔝 Producto destacado -->
     <div class="mt-2">
       <input type="checkbox" id="destacadoInput" />
-      <label for="destacadoInput">✅ Producto destacado</label>
+      <label for="destacadoInput">✅ Producto destacado en inicio</label>
     </div>
 
-    <!-- Variantes -->
+    <!-- 🧬 Variantes -->
     <fieldset class="mt-2">
-      <legend>Variantes (colores alternativos / tallas específicas)</legend>
+      <legend>Variantes (colores, tallas y stock específicos)</legend>
       <div id="variantesExistentes" aria-live="polite"></div>
       <button type="button" id="btnAgregarVariante" class="btn-secundario mt-1">➕ Añadir Variante</button>
     </fieldset>
 
-    <!-- Acciones -->
+    <!-- 💾 Acciones -->
     <div class="form-actions mt-3">
       <button type="submit" class="btn">💾 Guardar Cambios</button>
       <button type="button" id="btnCancelar" class="btn-secundario">🔙 Cancelar</button>
@@ -94,14 +101,14 @@
 
     document.getElementById("btnCancelar")?.addEventListener("click", () => history.back());
 
-    const nuevaImg = document.getElementById('imagenPrincipalNueva');
-    nuevaImg?.addEventListener('change', (e) => {
-      const preview = document.getElementById('imagenPrincipalActual');
+    // 🖼️ Vista previa imagen nueva
+    document.getElementById("imagenPrincipalNueva")?.addEventListener("change", e => {
       const file = e.target.files[0];
-      if (file && file.type.startsWith('image/')) {
+      if (file && file.type.startsWith("image/")) {
         const reader = new FileReader();
         reader.onload = () => {
-          preview.innerHTML = `<img src="${reader.result}" alt="Vista previa" class="imagen-preview-principal" />`;
+          document.getElementById("imagenPrincipalActual").innerHTML =
+            `<img src="${reader.result}" alt="Vista previa nueva imagen" class="imagen-preview-principal" />`;
         };
         reader.readAsDataURL(file);
       }
@@ -110,7 +117,7 @@
 </script>
 
 <noscript>
-  <p style="text-align: center; color: red;">⚠️ Activa JavaScript para editar correctamente el producto.</p>
+  <p style="text-align: center; color: red;">⚠️ Activa JavaScript para poder editar el producto correctamente.</p>
 </noscript>
 
 </body>

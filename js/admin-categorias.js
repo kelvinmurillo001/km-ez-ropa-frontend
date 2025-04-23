@@ -5,7 +5,7 @@ import { verificarSesion, mostrarMensaje, goBack } from "./admin-utils.js";
 
 const token = verificarSesion();
 
-// Formulario DOM
+// 🧾 DOM Elements
 const formCrear = document.getElementById("formCrearCategoria");
 const formSub = document.getElementById("formSubcategoria");
 
@@ -14,17 +14,16 @@ const subcategoriaInput = document.getElementById("subcategoriaInput");
 const selectCategoria = document.getElementById("selectCategoria");
 const listaCategorias = document.getElementById("listaCategorias");
 
-// Endpoint base
 const API = `${API_BASE}/api/categories`;
 
 document.addEventListener("DOMContentLoaded", cargarCategorias);
 
-// ➕ Crear nueva categoría
+// ➕ Crear Categoría
 formCrear.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const nombre = categoriaInput.value.trim();
+  const nombre = sanitize(categoriaInput.value);
 
-  if (!nombre) return mostrarMensaje("❌ Nombre requerido", "error");
+  if (!nombre) return mostrarMensaje("⚠️ Ingresa un nombre válido", "error");
 
   try {
     const res = await fetch(API, {
@@ -36,8 +35,7 @@ formCrear.addEventListener("submit", async (e) => {
       body: JSON.stringify({ name: nombre })
     });
 
-    if (!res.ok) throw new Error("❌ Error al crear categoría");
-    await res.json();
+    if (!res.ok) throw new Error("❌ No se pudo crear la categoría");
 
     mostrarMensaje("✅ Categoría creada");
     categoriaInput.value = "";
@@ -48,13 +46,13 @@ formCrear.addEventListener("submit", async (e) => {
   }
 });
 
-// ➕ Agregar subcategoría a categoría existente
+// ➕ Crear Subcategoría
 formSub.addEventListener("submit", async (e) => {
   e.preventDefault();
   const id = selectCategoria.value;
-  const sub = subcategoriaInput.value.trim();
+  const sub = sanitize(subcategoriaInput.value);
 
-  if (!id || !sub) return mostrarMensaje("❌ Completa todos los campos", "error");
+  if (!id || !sub) return mostrarMensaje("⚠️ Completa todos los campos", "error");
 
   try {
     const res = await fetch(`${API}/${id}/subcategories`, {
@@ -67,7 +65,6 @@ formSub.addEventListener("submit", async (e) => {
     });
 
     if (!res.ok) throw new Error("❌ Error al agregar subcategoría");
-    await res.json();
 
     mostrarMensaje("✅ Subcategoría agregada");
     subcategoriaInput.value = "";
@@ -78,25 +75,24 @@ formSub.addEventListener("submit", async (e) => {
   }
 });
 
-// 🔄 Cargar categorías con subcategorías
+// 🔄 Cargar Categorías
 async function cargarCategorias() {
   try {
     const res = await fetch(API);
-    if (!res.ok) throw new Error("❌ No se pudo cargar categorías");
+    if (!res.ok) throw new Error("❌ Error al obtener categorías");
 
     const categorias = await res.json();
-
     renderCategorias(categorias);
 
-    selectCategoria.innerHTML = `<option value="">Seleccionar categoría</option>` +
-      categorias.map(c => `<option value="${c._id}">${c.name}</option>`).join("");
+    selectCategoria.innerHTML = '<option value="">Seleccionar categoría</option>' +
+      categorias.map(c => `<option value="${c._id}">${sanitize(c.name)}</option>`).join("");
 
   } catch (err) {
     mostrarMensaje(err.message, "error");
   }
 }
 
-// 📋 Renderizar lista de categorías y subcategorías
+// 🖼️ Renderizar Categorías
 function renderCategorias(categorias = []) {
   if (!categorias.length) {
     listaCategorias.innerHTML = "<p>⚠️ No hay categorías registradas.</p>";
@@ -105,21 +101,22 @@ function renderCategorias(categorias = []) {
 
   listaCategorias.innerHTML = categorias.map(c => `
     <li>
-      <strong>${c.name}</strong>
+      <strong>${sanitize(c.name)}</strong>
       <button class="btn-danger" onclick="eliminarCategoria('${c._id}')">🗑️</button>
       <ul>
-        ${c.subcategories?.map(s => `
-          <li>
-            ${s}
-            <button class="btn-danger" onclick="eliminarSubcategoria('${c._id}', '${s}')">🗑️</button>
-          </li>
-        `).join("") || "<li><em>Sin subcategorías</em></li>"}
+        ${Array.isArray(c.subcategories) && c.subcategories.length
+          ? c.subcategories.map(s => `
+              <li>
+                ${sanitize(s)}
+                <button class="btn-danger" onclick="eliminarSubcategoria('${c._id}', '${encodeURIComponent(s)}')">🗑️</button>
+              </li>`).join("")
+          : "<li><em>Sin subcategorías</em></li>"}
       </ul>
     </li>
   `).join("");
 }
 
-// ❌ Eliminar categoría
+// ❌ Eliminar Categoría
 window.eliminarCategoria = async (id) => {
   if (!confirm("⚠️ ¿Eliminar esta categoría y todas sus subcategorías?")) return;
 
@@ -129,8 +126,7 @@ window.eliminarCategoria = async (id) => {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    if (!res.ok) throw new Error("❌ Error al eliminar categoría");
-    await res.json();
+    if (!res.ok) throw new Error("❌ No se pudo eliminar la categoría");
 
     mostrarMensaje("✅ Categoría eliminada");
     cargarCategorias();
@@ -139,7 +135,7 @@ window.eliminarCategoria = async (id) => {
   }
 };
 
-// ❌ Eliminar subcategoría específica
+// ❌ Eliminar Subcategoría
 window.eliminarSubcategoria = async (categoryId, subcategory) => {
   if (!confirm("⚠️ ¿Eliminar esta subcategoría?")) return;
 
@@ -149,8 +145,7 @@ window.eliminarSubcategoria = async (categoryId, subcategory) => {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    if (!res.ok) throw new Error("❌ Error al eliminar subcategoría");
-    await res.json();
+    if (!res.ok) throw new Error("❌ No se pudo eliminar la subcategoría");
 
     mostrarMensaje("✅ Subcategoría eliminada");
     cargarCategorias();
@@ -159,4 +154,12 @@ window.eliminarSubcategoria = async (categoryId, subcategory) => {
   }
 };
 
+// 🔐 Sanitizar texto
+function sanitize(text = "") {
+  const temp = document.createElement("div");
+  temp.textContent = text;
+  return temp.innerHTML.trim();
+}
+
+// 🌐 Global
 window.goBack = goBack;

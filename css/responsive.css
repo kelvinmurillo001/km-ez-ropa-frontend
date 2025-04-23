@@ -1,17 +1,14 @@
-/* 📱 Diseño Responsive por Resolución */
+/* === 🌐 Responsivo por Resolución === */
 
-/* 🌐 Escritorio Medio (≤ 1200px) */
+/* 💻 Escritorio Medio (≤ 1200px) */
 @media (max-width: 1200px) {
-  .container {
-    padding: 20px;
-  }
-
+  .container,
   .admin-container {
-    padding: 1.5rem;
+    padding: 20px;
   }
 }
 
-/* 💻 Tablets (≤ 992px) */
+/* 📱 Tablets (≤ 992px) */
 @media (max-width: 992px) {
   .hide-on-tablet {
     display: none !important;
@@ -21,25 +18,19 @@
     width: 100% !important;
   }
 
-  .form-row {
+  .form-row,
+  .top-buttons,
+  .filtros-container {
     flex-direction: column;
     gap: 1rem;
+    align-items: center;
   }
 
   .dashboard-grid,
   .metricas {
+    display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  }
-
-  .top-buttons {
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-  }
-
-  .filtros-container {
-    flex-direction: column;
-    align-items: center;
+    gap: 1rem;
   }
 
   .catalogo-container {
@@ -47,16 +38,17 @@
   }
 }
 
-/* 📱 Teléfonos (≤ 768px) */
+/* 📲 Teléfonos (≤ 768px) */
 @media (max-width: 768px) {
   .grid-responsive {
-    display: grid;
     grid-template-columns: 1fr;
     gap: 1rem;
   }
 
-  .responsive-text-center {
+  .responsive-text-center,
+  .tallas-disponibles {
     text-align: center !important;
+    justify-content: center;
   }
 
   .mobile-col {
@@ -76,7 +68,8 @@
     padding: 1.2rem;
   }
 
-  .variante-card {
+  .variante-card,
+  .estado-select {
     width: 100% !important;
   }
 
@@ -90,14 +83,10 @@
     padding: 16px;
   }
 
-  .estado-select {
-    width: 100%;
-  }
-
   .cart-actions {
     justify-content: center;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 8px;
   }
 
   .modal-close {
@@ -106,16 +95,11 @@
     font-size: 26px;
   }
 
-  .tallas-disponibles {
-    justify-content: center;
-    text-align: center;
-  }
-
   .detalle-galeria-thumbs {
     flex-direction: row;
     justify-content: center;
-    gap: 8px;
     overflow-x: auto;
+    gap: 8px;
     padding-bottom: 6px;
   }
 
@@ -125,21 +109,22 @@
   }
 }
 
-/* 📲 Teléfonos Pequeños (≤ 480px) */
+/* 📞 Teléfonos Pequeños (≤ 480px) */
 @media (max-width: 480px) {
   h1 {
-    font-size: 1.4rem;
+    font-size: clamp(1.2rem, 4vw, 1.5rem);
   }
 
   h2 {
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 3.8vw, 1.3rem);
   }
 
   h3 {
-    font-size: 1.1rem;
+    font-size: clamp(0.9rem, 3.5vw, 1.1rem);
   }
 
-  .text-sm {
+  .text-sm,
+  .admin-message {
     font-size: 0.9rem;
   }
 
@@ -149,10 +134,6 @@
 
   .mobile-full {
     width: 100% !important;
-  }
-
-  .admin-message {
-    font-size: 0.95rem;
   }
 
   .btn-volver {
@@ -167,7 +148,7 @@
   }
 
   .promo-preview {
-    font-size: 15px;
+    font-size: 14px;
     padding: 14px;
   }
 

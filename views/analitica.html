@@ -17,8 +17,10 @@
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- ✅ Script como módulo -->
+  <!-- ✅ Script principal -->
   <script type="module" src="/js/analitica.js" defer></script>
+  <!-- 📊 Chart.js para gráficas -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -46,6 +48,12 @@
       <ul id="topCategorias" class="mt-1" aria-live="polite">
         <!-- Dinámico desde analitica.js -->
       </ul>
+
+      <!-- 📊 Gráfico de pedidos -->
+      <h3 class="mt-3">📈 Pedidos por Día</h3>
+      <div id="graficaPedidos" class="grafica-container" aria-label="Gráfico de pedidos diarios">
+        <!-- Se carga dinámicamente -->
+      </div>
 
       <!-- 📤 Exportar botón -->
       <div class="text-center mt-3">

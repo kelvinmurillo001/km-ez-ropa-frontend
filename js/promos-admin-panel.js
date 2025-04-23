@@ -9,22 +9,25 @@ const API_PROMOS_TOGGLE = id => `${API_BASE}/api/promos/${id}/estado`;
 const API_PROMOS_DELETE = id => `${API_BASE}/api/promos/${id}`;
 const API_PROMOS_GET = id => `${API_BASE}/api/promos/${id}`;
 
+// DOM
 const inputBuscar = document.getElementById("buscarPromo");
 const filtroEstado = document.getElementById("filtroEstado");
 const container = document.getElementById("promo-container");
 
 document.addEventListener("DOMContentLoaded", () => {
   cargarTodasPromos();
-
   inputBuscar?.addEventListener("input", cargarTodasPromos);
   filtroEstado?.addEventListener("change", cargarTodasPromos);
 });
 
+/**
+ * 🔄 Cargar promociones con filtros
+ */
 async function cargarTodasPromos() {
   container.innerHTML = "<p class='text-center'>⏳ Cargando promociones...</p>";
 
   try {
-    const nombre = inputBuscar?.value?.trim().toLowerCase() || "";
+    const nombre = inputBuscar?.value.trim().toLowerCase() || "";
     const estado = filtroEstado?.value || "";
 
     const params = new URLSearchParams();
@@ -36,18 +39,22 @@ async function cargarTodasPromos() {
     });
 
     const promos = await res.json();
-    if (!res.ok && promos.message) throw new Error(promos.message);
+    if (!res.ok || !Array.isArray(promos)) throw new Error(promos.message || "Error al obtener promociones");
+
     renderPromos(promos);
   } catch (error) {
-    console.error("❌ Error al cargar promociones:", error);
-    container.innerHTML = "<p class='text-danger'>❌ Error al cargar promociones.</p>";
+    console.error("❌", error);
+    container.innerHTML = "<p class='text-danger'>❌ No se pudo cargar las promociones.</p>";
   }
 }
 
-function renderPromos(promos) {
+/**
+ * 🎨 Renderizar tarjetas de promociones
+ */
+function renderPromos(promos = []) {
   container.innerHTML = "";
 
-  if (!Array.isArray(promos) || promos.length === 0) {
+  if (!promos.length) {
     container.innerHTML = "<p>📭 No hay promociones encontradas.</p>";
     return;
   }
@@ -60,16 +67,14 @@ function renderPromos(promos) {
 
     card.innerHTML = `
       <div class="promo-header">
-        <span class="badge ${promo.active ? 'active' : 'inactive'}">
-          ${promo.active ? '✅ Activa' : '⛔ Inactiva'}
-        </span>
-        <span class="position">📌 ${promo.position}</span>
-        <span class="theme">🎨 ${promo.theme}</span>
+        <span class="badge ${promo.active ? 'active' : 'inactive'}">${promo.active ? '✅ Activa' : '⛔ Inactiva'}</span>
+        <span class="position">📌 ${sanitize(promo.position)}</span>
+        <span class="theme">🎨 ${sanitize(promo.theme)}</span>
       </div>
 
-      <p class="promo-message">${promo.message}</p>
+      <p class="promo-message">${sanitize(promo.message)}</p>
       <p><strong>Vigencia:</strong> ${formatearFecha(promo.startDate)} - ${formatearFecha(promo.endDate)}</p>
-      <p><strong>Páginas:</strong> ${promo.pages?.map(p => `<span class="chip">${p}</span>`).join(" ") || "N/A"}</p>
+      <p><strong>Páginas:</strong> ${promo.pages?.map(p => `<span class="chip">${sanitize(p)}</span>`).join(" ") || "N/A"}</p>
 
       ${renderMedia(promo)}
 
@@ -86,10 +91,16 @@ function renderPromos(promos) {
   });
 }
 
+/**
+ * 📅 Formato de fecha
+ */
 function formatearFecha(fecha) {
-  return fecha ? new Date(fecha).toLocaleDateString() : "–";
+  return fecha ? new Date(fecha).toLocaleDateString("es-EC") : "–";
 }
 
+/**
+ * 🎨 Clase CSS de estado de promoción
+ */
 function getPromoEstadoClass(promo) {
   const now = new Date();
   const start = promo.startDate ? new Date(promo.startDate) : null;
@@ -101,6 +112,9 @@ function getPromoEstadoClass(promo) {
   return "promo-activa";
 }
 
+/**
+ * 📷 Renderizar multimedia de la promoción
+ */
 function renderMedia(promo) {
   if (promo.mediaType === "image" && promo.mediaUrl) {
     return `<div class="preview"><img src="${promo.mediaUrl}" alt="Imagen promocional" loading="lazy" /></div>`;
@@ -111,31 +125,43 @@ function renderMedia(promo) {
   return "";
 }
 
+/**
+ * 🔁 Cambiar estado de una promoción
+ */
 window.togglePromo = async (id, btn) => {
+  if (!id || !btn) return;
+  btn.disabled = true;
+
   try {
-    btn.disabled = true;
     const res = await fetch(API_PROMOS_TOGGLE(id), {
       method: "PATCH",
       headers: { Authorization: `Bearer ${token}` }
     });
+
     if (!res.ok) throw new Error("❌ Error al cambiar estado");
+
     await cargarTodasPromos();
   } catch (err) {
     console.error(err);
-    alert("❌ No se pudo cambiar el estado de la promoción.");
+    alert("⚠️ No se pudo cambiar el estado de la promoción.");
   } finally {
     btn.disabled = false;
   }
 };
 
+/**
+ * 🗑️ Eliminar promoción
+ */
 window.eliminarPromo = async (id, btn) => {
-  if (!confirm("🗑️ ¿Estás seguro de eliminar esta promoción?")) return;
+  if (!id || !confirm("⚠️ ¿Eliminar esta promoción permanentemente?")) return;
+  btn.disabled = true;
+
   try {
-    btn.disabled = true;
     const res = await fetch(API_PROMOS_DELETE(id), {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` }
     });
+
     if (!res.ok) throw new Error("❌ Error al eliminar");
     await cargarTodasPromos();
   } catch (err) {
@@ -146,13 +172,17 @@ window.eliminarPromo = async (id, btn) => {
   }
 };
 
+/**
+ * ✏️ Editar una promoción existente
+ */
 window.editarPromo = async (id) => {
   try {
     const res = await fetch(API_PROMOS_GET(id), {
       headers: { Authorization: `Bearer ${token}` }
     });
+
     const promo = await res.json();
-    if (!res.ok) throw new Error(promo.message || "Error al cargar promoción");
+    if (!res.ok || !promo?._id) throw new Error("❌ Error al obtener los datos");
 
     document.getElementById("promoId").value = promo._id;
     document.getElementById("promoMensaje").value = promo.message || "";
@@ -163,19 +193,22 @@ window.editarPromo = async (id) => {
     document.getElementById("promoFin").value = promo.endDate?.substring(0, 10) || "";
     document.getElementById("promoActivo").checked = !!promo.active;
 
+    // Limpiar y marcar checkboxes de páginas
     document.querySelectorAll("input[name='promoPages']").forEach(cb => cb.checked = false);
     promo.pages?.forEach(p => {
       const cb = document.querySelector(`input[name='promoPages'][value='${p}']`);
       if (cb) cb.checked = true;
     });
 
+    // Render multimedia editable
     const mediaContainer = document.getElementById("mediaUploadContainer");
     mediaContainer.innerHTML = "";
+
     if (promo.mediaType === "image") {
       mediaContainer.innerHTML = `
-        <label for="promoImagen">Seleccionar nueva imagen:</label>
+        <label for="promoImagen">Imagen nueva:</label>
         <input type="file" id="promoImagen" accept="image/*" />
-        <p class="preview-mini">Actual: <img src="${promo.mediaUrl}" alt="Imagen actual" style="max-width:120px; border-radius:6px;" /></p>
+        <p class="preview-mini">Actual: <img src="${promo.mediaUrl}" style="max-width:120px;" /></p>
       `;
     } else if (promo.mediaType === "video") {
       mediaContainer.innerHTML = `
@@ -186,7 +219,16 @@ window.editarPromo = async (id) => {
 
     document.getElementById("formPromo")?.scrollIntoView({ behavior: "smooth" });
   } catch (err) {
-    console.error("❌ Error al editar promoción:", err);
-    alert("❌ No se pudo cargar la promoción para edición.");
+    console.error("❌", err);
+    alert("⚠️ No se pudo cargar la promoción para edición.");
   }
 };
+
+/**
+ * 🛡️ Prevenir inyecciones: sanitizar texto
+ */
+function sanitize(text = "") {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}

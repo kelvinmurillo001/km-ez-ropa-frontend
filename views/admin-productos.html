@@ -3,58 +3,87 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Productos | KM & EZ ROPA</title>
+  <title>🛍️ Admin Productos | KM & EZ ROPA</title>
 
-  <!-- SEO -->
+  <!-- 🧠 SEO & Accesibilidad -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="author" content="KM & EZ ROPA">
-  <meta name="description" content="Panel para gestionar productos: crear, editar y eliminar.">
+  <meta name="author" content="KM & EZ ROPA" />
+  <meta name="description" content="Administra productos de tu tienda: crea, edita y elimina artículos fácilmente desde el panel de control." />
 
-  <!-- Estilos -->
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/productos.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- Script principal -->
+  <!-- ⚙️ Script principal -->
   <script type="module" src="/js/productos.js" defer></script>
 </head>
 <body>
-  <main class="panel-container fade-in">
+
+  <!-- 📦 Panel principal de administración -->
+  <main class="panel-container fade-in" role="main" aria-label="Panel de productos">
+
+    <!-- 🧭 Encabezado -->
     <header class="header-panel">
       <h1>🛍️ Gestión de Productos</h1>
-      <div>
-        <a href="/crear-producto.html" class="btn">➕ Crear Producto</a>
-        <a href="/panel.html" class="btn-secundario">🔙 Volver</a>
+      <div class="botones-header">
+        <a href="/crear-producto.html" class="btn" aria-label="Crear nuevo producto">➕ Crear Producto</a>
+        <a href="/panel.html" class="btn-secundario" aria-label="Volver al panel principal">🔙 Volver</a>
       </div>
     </header>
 
     <!-- 🔎 Filtros de búsqueda -->
-    <section class="filtros-productos mt-2 mb-2">
-      <input type="text" id="buscarProducto" placeholder="🔍 Buscar por nombre..." />
-      <select id="filtroCategoria">
-        <option value="">Todas las categorías</option>
-        <option value="hombres">Hombres</option>
-        <option value="mujeres">Mujeres</option>
-        <option value="accesorios">Accesorios</option>
-        <option value="ofertas">Ofertas</option>
-        <!-- Puedes añadir más categorías si lo necesitas -->
+    <section class="filtros-productos mt-2 mb-2" aria-label="Filtrar productos">
+
+      <label for="buscarProducto" class="sr-only">Buscar producto por nombre</label>
+      <input type="text" id="buscarProducto" placeholder="🔍 Buscar por nombre..." aria-label="Buscar por nombre de producto" />
+
+      <label for="filtroCategoria" class="sr-only">Filtrar por categoría</label>
+      <select id="filtroCategoria" aria-label="Filtrar por categoría">
+        <option value="">📂 Todas las categorías</option>
+        <option value="hombres">👔 Hombres</option>
+        <option value="mujeres">👗 Mujeres</option>
+        <option value="accesorios">🧢 Accesorios</option>
+        <option value="ofertas">🔥 Ofertas</option>
       </select>
+
+      <label for="filtroStock" class="sr-only">Filtrar por stock</label>
+      <select id="filtroStock" aria-label="Filtrar por stock">
+        <option value="">📦 Todos los stocks</option>
+        <option value="sinStock">❌ Sin stock</option>
+      </select>
+
+      <label class="check-destacados" aria-label="Filtrar productos destacados">
+        <input type="checkbox" id="filtroDestacados" />
+        ⭐ Solo destacados
+      </label>
+
+      <button id="btnExportar" class="btn-secundario" aria-label="Exportar productos a Excel">
+        📤 Exportar a Excel
+      </button>
     </section>
 
-    <!-- Mensajes -->
+    <!-- 🧾 Mensajes administrativos -->
     <div id="mensaje" class="admin-message oculto" role="status" aria-live="polite"></div>
 
-    <!-- Listado -->
-    <section class="menu-panel" id="listaProductos" aria-label="Listado de productos">
-      <!-- Se renderiza vía productos.js -->
+    <!-- 📋 Listado dinámico de productos -->
+    <section class="menu-panel" id="productosLista" aria-label="Listado de productos disponibles">
+      <!-- Se renderiza desde productos.js -->
     </section>
+
+    <!-- 📊 Contador de resultados -->
+    <p id="contadorProductos" class="text-center mt-2" aria-live="polite"></p>
+
+    <!-- 📍 Navegación de paginación -->
+    <div id="paginacion" class="paginacion text-center mt-2" role="navigation" aria-label="Paginación de productos"></div>
   </main>
 
-  <!-- No JS -->
+  <!-- 🚫 JS desactivado -->
   <noscript>
-    <p style="color: red; text-align: center;">⚠️ Esta página requiere JavaScript para funcionar.</p>
+    <p style="color: red; text-align: center;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
+
 </body>
 </html>

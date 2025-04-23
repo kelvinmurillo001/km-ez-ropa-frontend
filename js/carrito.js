@@ -1,22 +1,45 @@
 "use strict";
 
-// 📦 Elementos DOM
+// 📦 DOM Elements
 const carritoItems = document.getElementById("carritoItems");
 const carritoTotal = document.getElementById("carritoTotal");
 const btnIrCheckout = document.getElementById("btnIrCheckout");
+const btnVaciarCarrito = document.getElementById("btnVaciarCarrito");
 
-// 🔐 Clave de localStorage
+// 🔐 LocalStorage Key
 const STORAGE_KEY = "km_ez_cart";
 let carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
-// ▶️ Al cargar página
+// ▶️ On Load
 document.addEventListener("DOMContentLoaded", () => {
   limpiarItemsInvalidos();
   renderizarCarrito();
   btnIrCheckout?.addEventListener("click", irACheckout);
+  btnVaciarCarrito?.addEventListener("click", vaciarCarrito);
 });
 
-// ✅ Filtrar items inválidos
+// 🔍 Sanitiza texto
+function sanitizeText(str) {
+  const temp = document.createElement("div");
+  temp.textContent = str;
+  return temp.innerHTML;
+}
+
+// 🔍 Sanitiza URLs
+function sanitizeURL(url) {
+  try {
+    return new URL(url, window.location.origin).href;
+  } catch {
+    return "/assets/logo.jpg";
+  }
+}
+
+// 💾 Guardar carrito
+function guardarCarrito() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(carrito));
+}
+
+// 🧹 Filtra productos corruptos
 function limpiarItemsInvalidos() {
   carrito = carrito.filter(item =>
     item &&
@@ -29,15 +52,26 @@ function limpiarItemsInvalidos() {
   guardarCarrito();
 }
 
-// 🧠 Mostrar carrito visualmente
+// 💰 Calcula total
+function actualizarTotal() {
+  const total = carrito.reduce((acc, item) =>
+    acc + (item.precio || 0) * (item.cantidad || 0), 0);
+
+  carritoTotal.textContent = `$${total.toFixed(2)}`;
+  btnIrCheckout.disabled = carrito.length === 0;
+  btnVaciarCarrito.disabled = carrito.length === 0;
+}
+
+// 🛍️ Renderiza visualmente el carrito
 function renderizarCarrito() {
   if (!carrito.length) {
     carritoItems.innerHTML = `
       <div class="text-center fade-in">
-        <p>🛍️ Tu carrito está vacío. ¡Explora nuestras <a href='/categorias.html'>categorías</a> y encuentra tu estilo!</p>
+        <p>🛍️ Tu carrito está vacío. <a href='/categorias.html'>Explora nuestras categorías</a>.</p>
       </div>`;
     carritoTotal.textContent = "$0.00";
-    if (btnIrCheckout) btnIrCheckout.disabled = true;
+    btnIrCheckout.disabled = true;
+    btnVaciarCarrito.disabled = true;
     return;
   }
 
@@ -48,7 +82,7 @@ function renderizarCarrito() {
     const nombre = sanitizeText(item.nombre || "Producto");
     const talla = sanitizeText(item.talla || "Única");
     const precio = isNaN(item.precio) ? 0 : item.precio;
-    const cantidad = isNaN(item.cantidad) || item.cantidad < 1 ? 1 : item.cantidad;
+    const cantidad = Math.max(1, Math.min(100, isNaN(item.cantidad) ? 1 : item.cantidad));
     const subtotal = (precio * cantidad).toFixed(2);
 
     const div = document.createElement("div");
@@ -77,21 +111,8 @@ function renderizarCarrito() {
   agregarListeners();
 }
 
-// 💰 Calcular total
-function actualizarTotal() {
-  const total = carrito.reduce((acc, item) => {
-    const precio = isNaN(item.precio) ? 0 : item.precio;
-    const cantidad = isNaN(item.cantidad) ? 0 : item.cantidad;
-    return acc + precio * cantidad;
-  }, 0);
-
-  carritoTotal.textContent = `$${total.toFixed(2)}`;
-  if (btnIrCheckout) btnIrCheckout.disabled = carrito.length === 0;
-}
-
-// 🎯 Listeners de cantidad y eliminar
+// 🧠 Escucha eventos de cantidad o eliminar
 function agregarListeners() {
-  // Cambiar cantidad
   document.querySelectorAll(".carrito-cantidad input").forEach(input => {
     input.addEventListener("change", e => {
       const i = parseInt(e.target.dataset.index);
@@ -104,12 +125,11 @@ function agregarListeners() {
     });
   });
 
-  // Eliminar producto
   document.querySelectorAll(".btn-eliminar").forEach(btn => {
     btn.addEventListener("click", e => {
       const i = parseInt(e.target.dataset.index);
       if (!isNaN(i) && carrito[i]) {
-        const confirmar = confirm(`¿Eliminar "${carrito[i].nombre}" del carrito?`);
+        const confirmar = confirm(`❌ ¿Eliminar "${carrito[i].nombre}" del carrito?`);
         if (confirmar) {
           carrito.splice(i, 1);
           guardarCarrito();
@@ -120,30 +140,19 @@ function agregarListeners() {
   });
 }
 
-// 💾 Guardar en localStorage
-function guardarCarrito() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(carrito));
-}
-
-// 🚀 Navegar a checkout
+// ✅ Ir a checkout
 function irACheckout() {
   if (carrito.length > 0) {
     window.location.href = "/checkout.html";
   }
 }
 
-// 🔐 Sanitizar texto
-function sanitizeText(str) {
-  const temp = document.createElement("div");
-  temp.textContent = str;
-  return temp.innerHTML;
-}
-
-// 🔐 Sanitizar URL
-function sanitizeURL(url) {
-  try {
-    return new URL(url, window.location.origin).href;
-  } catch {
-    return "/assets/logo.jpg";
+// 🧹 Vaciar el carrito completo
+function vaciarCarrito() {
+  const confirmar = confirm("⚠️ ¿Estás seguro de vaciar todo el carrito?");
+  if (confirmar) {
+    carrito = [];
+    guardarCarrito();
+    renderizarCarrito();
   }
 }

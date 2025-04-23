@@ -8,7 +8,7 @@
   font-weight: bold;
   font-size: 1rem;
   line-height: 1.6;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   overflow: hidden;
   position: relative;
   transition: all 0.3s ease-in-out;
@@ -25,7 +25,7 @@
   max-width: 100%;
   border-radius: 8px;
   margin-top: 0.5rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 /* 🎨 Colores temáticos */
@@ -33,14 +33,17 @@
   background-color: #2196f3;
   color: #fff;
 }
+
 .promo-orange {
   background-color: #fb8c00;
   color: #fff;
 }
+
 .promo-green {
   background-color: #43a047;
   color: #fff;
 }
+
 .promo-red {
   background-color: #e53935;
   color: #fff;
@@ -50,14 +53,16 @@
 .promo-top {
   margin-top: 0;
 }
+
 .promo-middle {
   margin-top: 2rem;
 }
+
 .promo-bottom {
   margin-bottom: 2rem;
 }
 
-/* 📱 Responsive */
+/* 📱 Responsive para móviles */
 @media (max-width: 600px) {
   .promo-display {
     font-size: 0.95rem;

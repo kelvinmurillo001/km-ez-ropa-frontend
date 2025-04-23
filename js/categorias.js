@@ -3,77 +3,77 @@
 // ✅ Importar configuración
 import { API_BASE } from "./config.js";
 
-// === 🌐 Rutas de API ===
+// 🌐 Rutas de API
 const API_PRODUCTS = `${API_BASE}/api/products`;
 const API_PROMOS = `${API_BASE}/api/promos`;
 
-// === 📦 Elementos del DOM ===
+// 📦 Elementos del DOM
 const catalogo = document.getElementById("catalogo");
 const categoriaSelect = document.getElementById("categoriaSelect");
 const subcategoriaSelect = document.getElementById("subcategoriaSelect");
 const precioSelect = document.getElementById("precioSelect");
 const busquedaInput = document.getElementById("busquedaInput");
 const promoBanner = document.getElementById("promoBanner");
+const contadorCarrito = document.getElementById("cartCount");
 
-// === 🚀 Inicialización ===
+// 🚀 Inicialización
 document.addEventListener("DOMContentLoaded", () => {
   aplicarModoOscuro();
+  configurarFiltros();
   cargarPromocion();
   cargarProductos();
-  actualizarCarritoWidget();
-  configurarFiltros();
+  actualizarContadorCarrito();
 });
 
-// === 🌙 Modo oscuro persistente ===
+// 🌙 Modo oscuro
 function aplicarModoOscuro() {
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 
-  const btn = document.getElementById("modoOscuroBtn");
-  btn?.addEventListener("click", () => {
+  document.getElementById("modoOscuroBtn")?.addEventListener("click", () => {
     document.body.classList.toggle("modo-oscuro");
     localStorage.setItem("modoOscuro", document.body.classList.contains("modo-oscuro"));
   });
 }
 
-// === 🎯 Filtros dinámicos ===
+// 🎯 Listeners para filtros
 function configurarFiltros() {
-  [categoriaSelect, subcategoriaSelect, precioSelect].forEach(el => {
-    el.addEventListener("change", cargarProductos);
-  });
-
-  busquedaInput.addEventListener("input", cargarProductos);
+  [categoriaSelect, subcategoriaSelect, precioSelect].forEach(el =>
+    el.addEventListener("change", cargarProductos)
+  );
+  busquedaInput?.addEventListener("input", cargarProductos);
 }
 
-// === 🔄 Cargar productos desde la API ===
+// 📦 Cargar productos
 async function cargarProductos() {
+  catalogo.innerHTML = "<p class='text-center'>⏳ Cargando productos...</p>";
+
   try {
     const res = await fetch(API_PRODUCTS);
     const data = await res.json();
+    if (!res.ok || !Array.isArray(data)) throw new Error("Error al obtener productos");
 
-    if (!res.ok || !Array.isArray(data)) throw new Error(data.message || "Error al obtener productos");
-
-    const filtrados = aplicarFiltros(data);
-    renderizarCatalogo(filtrados);
+    const productosFiltrados = aplicarFiltros(data);
+    renderizarCatalogo(productosFiltrados);
     llenarSelects(data);
   } catch (err) {
-    console.error("❌ Error al cargar productos:", err.message);
-    catalogo.innerHTML = `<p style="text-align:center; color:red;">⚠️ No se pudo cargar el catálogo.</p>`;
+    console.error("❌", err.message);
+    catalogo.innerHTML = `<p class="text-center" style="color:red;">❌ No se pudo cargar el catálogo.</p>`;
   }
 }
 
-// === 🧠 Aplicar filtros ===
+// 🧠 Filtros activos
 function aplicarFiltros(productos) {
-  const cat = categoriaSelect.value.trim().toLowerCase();
-  const sub = subcategoriaSelect.value.trim().toLowerCase();
-  const precio = precioSelect.value;
-  const texto = busquedaInput.value.trim().toLowerCase();
+  const cat = categoriaSelect?.value?.toLowerCase() || "";
+  const sub = subcategoriaSelect?.value?.toLowerCase() || "";
+  const precio = precioSelect?.value || "";
+  const busqueda = busquedaInput?.value?.toLowerCase() || "";
 
   return productos
     .filter(p => !cat || p.category?.toLowerCase() === cat)
     .filter(p => !sub || p.subcategory?.toLowerCase() === sub)
-    .filter(p => !texto || p.name?.toLowerCase().includes(texto))
+    .filter(p => !busqueda || p.name?.toLowerCase().includes(busqueda))
     .sort((a, b) => {
       if (precio === "low") return a.price - b.price;
       if (precio === "high") return b.price - a.price;
@@ -81,18 +81,18 @@ function aplicarFiltros(productos) {
     });
 }
 
-// === 🎨 Renderizar productos ===
+// 🎨 Render productos
 function renderizarCatalogo(productos) {
   catalogo.innerHTML = "";
 
   if (!productos.length) {
-    catalogo.innerHTML = `<p style="text-align:center;">🛑 No se encontraron productos con esos filtros.</p>`;
+    catalogo.innerHTML = `<p class="text-center">📭 No se encontraron productos con esos filtros.</p>`;
     return;
   }
 
   for (const p of productos) {
     const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
-    const nombre = p.name || "Producto";
+    const nombre = p.name || "Producto sin nombre";
     const precio = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
 
     const card = document.createElement("div");
@@ -102,52 +102,53 @@ function renderizarCatalogo(productos) {
       <div class="product-info">
         <h3>${nombre}</h3>
         <p>$${precio}</p>
-        <button onclick="verDetalle('${p._id}')" class="btn-card">👁️ Ver</button>
+        <button class="btn-card" onclick="verDetalle('${p._id}')">👁️ Ver</button>
       </div>
     `;
     catalogo.appendChild(card);
   }
 }
 
-// === 🔁 Redirección a detalle ===
+// 🔁 Ver detalle
 function verDetalle(id) {
   if (!id) return;
   window.location.href = `/detalle.html?id=${id}`;
 }
 window.verDetalle = verDetalle;
 
-// === 📂 Llenar selectores de categorías ===
+// 📂 Llenar selects dinámicamente
 function llenarSelects(productos) {
   const categorias = [...new Set(productos.map(p => p.category).filter(Boolean))];
   const subcategorias = [...new Set(productos.map(p => p.subcategory).filter(Boolean))];
 
-  categoriaSelect.innerHTML = '<option value="">Todas</option>' +
+  categoriaSelect.innerHTML = '<option value="">📂 Todas</option>' +
     categorias.map(c => `<option value="${c}">${c}</option>`).join("");
 
-  subcategoriaSelect.innerHTML = '<option value="">Todas</option>' +
+  subcategoriaSelect.innerHTML = '<option value="">📁 Todas</option>' +
     subcategorias.map(s => `<option value="${s}">${s}</option>`).join("");
 }
 
-// === 🛒 Actualizar contador del carrito ===
-function actualizarCarritoWidget() {
+// 🛒 Contador del carrito
+function actualizarContadorCarrito() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
-  const total = carrito.reduce((sum, item) => sum + (item.quantity || item.cantidad || 0), 0);
-  const contador = document.getElementById("cartCount");
-  if (contador) contador.textContent = total;
+  const total = carrito.reduce((acc, item) => acc + (item.cantidad || item.quantity || 0), 0);
+  if (contadorCarrito) contadorCarrito.textContent = total;
 }
 
-// === 🎁 Cargar promo activa (si hay) ===
+// 🎁 Promo activa
 async function cargarPromocion() {
   try {
     const res = await fetch(API_PROMOS);
     const promo = await res.json();
-
-    if (res.ok && promo?.active && promo.message) {
-      promoBanner.style.display = "block";
-      promoBanner.style.backgroundColor = promo.color || "#ff6d00";
-      promoBanner.textContent = promo.message;
+    if (res.ok && promo?.active && promo?.message) {
+      const banner = document.createElement("div");
+      banner.id = "promoBanner";
+      banner.className = "promo-banner";
+      banner.style.backgroundColor = promo.color || "#ff6d00";
+      banner.textContent = promo.message;
+      document.getElementById("promo-display-container")?.appendChild(banner);
     }
   } catch (err) {
-    console.warn("⚠️ No se pudo cargar promoción activa.");
+    console.warn("⚠️ No se pudo cargar la promoción activa.");
   }
 }

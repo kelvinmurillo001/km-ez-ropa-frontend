@@ -10,32 +10,45 @@ const API_ORDERS = `${API_BASE}/api/orders`;
 // 📌 DOM
 const listaPedidos = document.getElementById("listaPedidos");
 const filtroEstado = document.getElementById("filtroEstado");
+const btnExportar = document.getElementById("btnExportarPedidos");
+const paginacion = document.getElementById("paginacionPedidos");
+const estadisticasVentas = document.getElementById("estadisticasVentas");
 
-// 🛡️ Verificar sesión y obtener token
+// 🛡️ Token
 const token = verificarSesion();
 
-document.addEventListener("DOMContentLoaded", () => {
-  if (listaPedidos) cargarPedidos();
-  filtroEstado?.addEventListener("change", cargarPedidos);
+let todosLosPedidos = [];
+let paginaActual = 1;
+const pedidosPorPagina = 10;
 
-  // 🌙 Modo oscuro persistente
+document.addEventListener("DOMContentLoaded", () => {
+  cargarPedidos();
+  filtroEstado?.addEventListener("change", () => {
+    paginaActual = 1;
+    renderPedidos();
+  });
+
+  btnExportar?.addEventListener("click", exportarPDF);
+
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 });
 
-// === 📦 Cargar Pedidos con Token ===
+/**
+ * 📦 Cargar todos los pedidos
+ */
 async function cargarPedidos() {
   try {
     const res = await fetch(API_ORDERS, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    if (!res.ok) throw new Error("Error al cargar pedidos");
     const data = await res.json();
+    if (!res.ok) throw new Error("Error al obtener pedidos");
 
-    const pedidosFiltrados = aplicarFiltro(data);
-    renderPedidos(pedidosFiltrados);
+    todosLosPedidos = Array.isArray(data) ? data : [];
+    renderPedidos();
 
   } catch (err) {
     console.error("❌ Error cargando pedidos:", err.message);
@@ -43,24 +56,27 @@ async function cargarPedidos() {
   }
 }
 
-// === 🔍 Aplicar filtro por estado ===
-function aplicarFiltro(pedidos = []) {
-  const estado = filtroEstado?.value || "todos";
-  return estado === "todos"
-    ? pedidos
-    : pedidos.filter(p => (p.estado || "").toLowerCase() === estado);
-}
+/**
+ * 🔍 Filtro y render
+ */
+function renderPedidos() {
+  let pedidosFiltrados = aplicarFiltro(todosLosPedidos);
 
-// === 🖼️ Renderizar pedidos en tabla ===
-function renderPedidos(pedidos = []) {
-  if (!pedidos.length) {
+  const totalPaginas = Math.ceil(pedidosFiltrados.length / pedidosPorPagina);
+  const inicio = (paginaActual - 1) * pedidosPorPagina;
+  const pagina = pedidosFiltrados.slice(inicio, inicio + pedidosPorPagina);
+
+  renderEstadisticas(pedidosFiltrados);
+
+  if (!pagina.length) {
     listaPedidos.innerHTML = `<p class="text-center">📭 No hay pedidos con este estado.</p>`;
+    paginacion.innerHTML = "";
     return;
   }
 
-  pedidos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  pagina.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-  const filas = pedidos.map(p => {
+  const filas = pagina.map(p => {
     const productos = p.items?.map(i =>
       `👕 <strong>${i.name}</strong> (${i.talla || "Única"}) x${i.cantidad}`
     ).join("<br>") || "-";
@@ -73,9 +89,7 @@ function renderPedidos(pedidos = []) {
     const cliente = sanitize(p.nombreCliente || "Sin nombre");
     const nota = sanitize(p.nota || "-");
 
-    const linkWA = p.metodoPago === "transferencia"
-      ? generarLinkWhatsapp(p)
-      : "";
+    const linkWA = p.metodoPago === "transferencia" ? generarLinkWhatsapp(p) : "";
 
     return `
       <tr>
@@ -95,7 +109,7 @@ function renderPedidos(pedidos = []) {
   }).join("");
 
   listaPedidos.innerHTML = `
-    <table class="tabla-admin">
+    <table class="tabla-admin fade-in">
       <thead>
         <tr>
           <th>Cliente</th>
@@ -109,9 +123,59 @@ function renderPedidos(pedidos = []) {
       </thead>
       <tbody>${filas}</tbody>
     </table>`;
+
+  renderPaginacion(totalPaginas);
 }
 
-// === 🔁 Cambiar estado del pedido ===
+/**
+ * 📊 Mostrar estadísticas básicas
+ */
+function renderEstadisticas(pedidos) {
+  const total = pedidos.length;
+  const totalVentas = pedidos.reduce((acc, p) => acc + (p.total || 0), 0);
+  const enviados = pedidos.filter(p => p.estado === "enviado").length;
+  const pendientes = pedidos.filter(p => p.estado === "pendiente").length;
+
+  estadisticasVentas.innerHTML = `
+    <p><strong>Total pedidos:</strong> ${total}</p>
+    <p><strong>Ventas acumuladas:</strong> $${totalVentas.toFixed(2)}</p>
+    <p><strong>Enviados:</strong> ${enviados}</p>
+    <p><strong>Pendientes:</strong> ${pendientes}</p>
+  `;
+}
+
+/**
+ * 🔢 Paginación dinámica
+ */
+function renderPaginacion(total) {
+  paginacion.innerHTML = "";
+  if (total <= 1) return;
+
+  for (let i = 1; i <= total; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    btn.className = i === paginaActual ? "btn paginacion-activa" : "btn-secundario";
+    btn.addEventListener("click", () => {
+      paginaActual = i;
+      renderPedidos();
+    });
+    paginacion.appendChild(btn);
+  }
+}
+
+/**
+ * 🔍 Filtro por estado
+ */
+function aplicarFiltro(pedidos = []) {
+  const estado = filtroEstado?.value || "todos";
+  return estado === "todos"
+    ? pedidos
+    : pedidos.filter(p => (p.estado || "").toLowerCase() === estado);
+}
+
+/**
+ * ✏️ Cambiar estado del pedido
+ */
 window.cambiarEstado = async (id, selectElem) => {
   const nuevoEstado = selectElem.value;
   if (!nuevoEstado) return;
@@ -128,28 +192,45 @@ window.cambiarEstado = async (id, selectElem) => {
       body: JSON.stringify({ estado: nuevoEstado })
     });
 
-    if (!res.ok) throw new Error("Error al actualizar el estado");
+    if (!res.ok) throw new Error("Error al actualizar estado");
 
     mostrarMensaje("✅ Estado actualizado correctamente", "success");
-    cargarPedidos(); // Refrescar lista
-
+    await cargarPedidos();
   } catch (err) {
-    console.error("❌ Error actualizando estado:", err.message);
+    console.error("❌", err);
     mostrarMensaje("❌ No se pudo cambiar el estado", "error");
   } finally {
     selectElem.disabled = false;
   }
 };
 
-// === 🎨 Opciones dinámicas del estado
-function generarOpcionesEstado(actual) {
-  const estados = ["pendiente", "en_proceso", "enviado", "cancelado"];
-  return estados.map(e =>
-    `<option value="${e}" ${e === actual ? "selected" : ""}>${formatearEstado(e)}</option>`
-  ).join("");
+/**
+ * 📄 Exportar a PDF
+ */
+async function exportarPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  doc.text("Resumen de Pedidos", 14, 14);
+  const filas = todosLosPedidos.map(p => [
+    p.nombreCliente,
+    p.total?.toFixed(2) || "0.00",
+    new Date(p.createdAt).toLocaleDateString("es-EC"),
+    p.estado
+  ]);
+
+  doc.autoTable({
+    head: [["Cliente", "Total", "Fecha", "Estado"]],
+    body: filas,
+    startY: 20
+  });
+
+  doc.save("pedidos_kmezropa.pdf");
 }
 
-// === 🎨 Formato visual de estado
+/**
+ * 🎨 Estado visual
+ */
 function formatearEstado(estado) {
   switch ((estado || "").toLowerCase()) {
     case "pendiente": return "⏳ Pendiente";
@@ -160,36 +241,47 @@ function formatearEstado(estado) {
   }
 }
 
-// ✅ Enlace para contacto por WhatsApp
-function generarLinkWhatsapp(pedido) {
-  const productos = pedido.items?.map(i =>
+/**
+ * 🧩 Opciones de estado
+ */
+function generarOpcionesEstado(actual) {
+  const estados = ["pendiente", "en_proceso", "enviado", "cancelado"];
+  return estados.map(e =>
+    `<option value="${e}" ${e === actual ? "selected" : ""}>${formatearEstado(e)}</option>`
+  ).join("");
+}
+
+/**
+ * 💬 Generar mensaje de WhatsApp
+ */
+function generarLinkWhatsapp(p) {
+  const productos = p.items?.map(i =>
     `• ${i.cantidad}x ${i.name} (${i.talla})`
   ).join("\n") || "";
 
   const texto = encodeURIComponent(`
-
-📦 Pedido de ${pedido.nombreCliente}
-📧 ${pedido.email}
-📞 ${pedido.telefono}
-📍 ${pedido.direccion}
+📦 Pedido de ${p.nombreCliente}
+📧 ${p.email}
+📞 ${p.telefono}
+📍 ${p.direccion}
 
 ${productos}
 
-💰 Total: $${pedido.total?.toFixed(2) || "0.00"}
+💰 Total: $${p.total?.toFixed(2) || "0.00"}
 💳 Pago: Transferencia
   `);
 
-  return `
-    <a href="https://wa.me/593990270864?text=${texto}" target="_blank" class="btn btn-wsp mt-1">💬 WhatsApp</a>
-  `;
+  return `<a href="https://wa.me/593990270864?text=${texto}" target="_blank" class="btn btn-wsp mt-1">💬 WhatsApp</a>`;
 }
 
-// ✅ Sanitizar texto para prevenir XSS
+/**
+ * 🔐 Evitar XSS
+ */
 function sanitize(text) {
   const temp = document.createElement("div");
   temp.textContent = text;
   return temp.innerHTML;
 }
 
-// ✅ Exponer funciones
+// 🔄 Global
 window.goBack = goBack;
