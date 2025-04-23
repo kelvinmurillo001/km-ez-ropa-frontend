@@ -1,6 +1,7 @@
 {
   "name": "km-ez-ropa-frontend",
   "version": "1.0.0",
+  "type": "module",
   "description": "Frontend de KM & EZ ROPA para Render",
   "main": "server.js",
   "scripts": {
