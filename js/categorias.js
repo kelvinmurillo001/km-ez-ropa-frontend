@@ -1,13 +1,13 @@
 "use strict";
 
-// ✅ Importar configuración
+// ✅ 1. Importar base de API
 import { API_BASE } from "./config.js";
 
-// 🌐 Rutas de API
+// 🌐 2. Definición de endpoints
 const API_PRODUCTS = `${API_BASE}/api/products`;
 const API_PROMOS = `${API_BASE}/api/promos`;
 
-// 📦 Elementos del DOM
+// 📦 3. Obtener elementos del DOM de forma segura
 const catalogo = document.getElementById("catalogo");
 const categoriaSelect = document.getElementById("categoriaSelect");
 const subcategoriaSelect = document.getElementById("subcategoriaSelect");
@@ -16,7 +16,7 @@ const busquedaInput = document.getElementById("busquedaInput");
 const contadorCarrito = document.getElementById("cartCount");
 const promoContainer = document.getElementById("promo-display-container");
 
-// 🚀 Inicialización
+// 🚀 4. Iniciar cuando el DOM esté listo
 document.addEventListener("DOMContentLoaded", () => {
   aplicarModoOscuro();
   configurarFiltros();
@@ -25,27 +25,28 @@ document.addEventListener("DOMContentLoaded", () => {
   actualizarContadorCarrito();
 });
 
-// 🌙 Modo oscuro
+// 🌙 5. Alternancia de modo oscuro
 function aplicarModoOscuro() {
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 
-  document.getElementById("modoOscuroBtn")?.addEventListener("click", () => {
+  const toggle = document.getElementById("modoOscuroBtn");
+  toggle?.addEventListener("click", () => {
     document.body.classList.toggle("modo-oscuro");
     localStorage.setItem("modoOscuro", document.body.classList.contains("modo-oscuro"));
   });
 }
 
-// 🎯 Listeners para filtros
+// 🎯 6. Listeners de filtros
 function configurarFiltros() {
-  [categoriaSelect, subcategoriaSelect, precioSelect].forEach(el =>
-    el?.addEventListener("change", cargarProductos)
-  );
+  [categoriaSelect, subcategoriaSelect, precioSelect].forEach(el => {
+    el?.addEventListener("change", cargarProductos);
+  });
   busquedaInput?.addEventListener("input", cargarProductos);
 }
 
-// 📦 Cargar productos
+// 📦 7. Cargar productos desde el backend
 async function cargarProductos() {
   if (!catalogo) return;
   catalogo.innerHTML = "<p class='text-center'>⏳ Cargando productos...</p>";
@@ -57,14 +58,14 @@ async function cargarProductos() {
 
     const productosFiltrados = aplicarFiltros(data);
     renderizarCatalogo(productosFiltrados);
-    llenarSelects(data);
+    llenarSelects(data); // Llenar filtros después de cargar
   } catch (err) {
     console.error("❌", err.message);
     catalogo.innerHTML = `<p class="text-center" style="color:red;">❌ No se pudo cargar el catálogo.</p>`;
   }
 }
 
-// 🧠 Filtros activos
+// 🧠 8. Filtros dinámicos
 function aplicarFiltros(productos) {
   const cat = categoriaSelect?.value?.toLowerCase() || "";
   const sub = subcategoriaSelect?.value?.toLowerCase() || "";
@@ -82,7 +83,7 @@ function aplicarFiltros(productos) {
     });
 }
 
-// 🎨 Render productos
+// 🎨 9. Renderizar catálogo
 function renderizarCatalogo(productos) {
   if (!catalogo) return;
   catalogo.innerHTML = "";
@@ -92,7 +93,7 @@ function renderizarCatalogo(productos) {
     return;
   }
 
-  for (const p of productos) {
+  productos.forEach(p => {
     const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
     const nombre = p.name || "Producto sin nombre";
     const precio = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
@@ -108,10 +109,10 @@ function renderizarCatalogo(productos) {
       </div>
     `;
     catalogo.appendChild(card);
-  }
+  });
 }
 
-// 🔁 Ver detalle
+// 🔁 10. Redirigir a detalle de producto
 function verDetalle(id) {
   if (!id) {
     alert("❌ ID de producto inválido");
@@ -121,7 +122,7 @@ function verDetalle(id) {
 }
 window.verDetalle = verDetalle;
 
-// 📂 Llenar selects dinámicamente
+// 📂 11. Llenar los filtros select dinámicamente
 function llenarSelects(productos) {
   if (!categoriaSelect || !subcategoriaSelect) return;
 
@@ -135,14 +136,14 @@ function llenarSelects(productos) {
     subcategorias.map(s => `<option value="${s}">${s}</option>`).join("");
 }
 
-// 🛒 Contador del carrito
+// 🛒 12. Contador del carrito localStorage
 function actualizarContadorCarrito() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
   const total = carrito.reduce((acc, item) => acc + (item.cantidad || item.quantity || 0), 0);
   if (contadorCarrito) contadorCarrito.textContent = total;
 }
 
-// 🎁 Promo activa
+// 🎁 13. Cargar promoción activa si está disponible
 async function cargarPromocion() {
   try {
     const res = await fetch(API_PROMOS);
