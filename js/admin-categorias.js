@@ -19,10 +19,9 @@ const API = `${API_BASE}/api/categories`;
 document.addEventListener("DOMContentLoaded", cargarCategorias);
 
 // ➕ Crear Categoría
-formCrear.addEventListener("submit", async (e) => {
+formCrear?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const nombre = sanitize(categoriaInput.value);
-
   if (!nombre) return mostrarMensaje("⚠️ Ingresa un nombre válido", "error");
 
   try {
@@ -40,18 +39,17 @@ formCrear.addEventListener("submit", async (e) => {
     mostrarMensaje("✅ Categoría creada");
     categoriaInput.value = "";
     categoriaInput.focus();
-    cargarCategorias();
+    await cargarCategorias();
   } catch (err) {
     mostrarMensaje(err.message, "error");
   }
 });
 
 // ➕ Crear Subcategoría
-formSub.addEventListener("submit", async (e) => {
+formSub?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const id = selectCategoria.value;
   const sub = sanitize(subcategoriaInput.value);
-
   if (!id || !sub) return mostrarMensaje("⚠️ Completa todos los campos", "error");
 
   try {
@@ -69,7 +67,7 @@ formSub.addEventListener("submit", async (e) => {
     mostrarMensaje("✅ Subcategoría agregada");
     subcategoriaInput.value = "";
     subcategoriaInput.focus();
-    cargarCategorias();
+    await cargarCategorias();
   } catch (err) {
     mostrarMensaje(err.message, "error");
   }
@@ -78,17 +76,24 @@ formSub.addEventListener("submit", async (e) => {
 // 🔄 Cargar Categorías
 async function cargarCategorias() {
   try {
-    const res = await fetch(API);
-    if (!res.ok) throw new Error("❌ Error al obtener categorías");
+    const res = await fetch(API, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
 
-    const categorias = await res.json();
-    renderCategorias(categorias);
+    const json = await res.json();
+    if (!res.ok || !json.ok || !Array.isArray(json.data)) {
+      throw new Error(json.message || "❌ Error al obtener categorías");
+    }
 
-    selectCategoria.innerHTML = '<option value="">Seleccionar categoría</option>' +
-      categorias.map(c => `<option value="${c._id}">${sanitize(c.name)}</option>`).join("");
+    renderCategorias(json.data);
+
+    selectCategoria.innerHTML =
+      '<option value="">Seleccionar categoría</option>' +
+      json.data.map(c => `<option value="${c._id}">${sanitize(c.name)}</option>`).join("");
 
   } catch (err) {
     mostrarMensaje(err.message, "error");
+    listaCategorias.innerHTML = `<p style="color:red;">${err.message}</p>`;
   }
 }
 
@@ -104,13 +109,16 @@ function renderCategorias(categorias = []) {
       <strong>${sanitize(c.name)}</strong>
       <button class="btn-danger" onclick="eliminarCategoria('${c._id}')">🗑️</button>
       <ul>
-        ${Array.isArray(c.subcategories) && c.subcategories.length
-          ? c.subcategories.map(s => `
+        ${
+          Array.isArray(c.subcategories) && c.subcategories.length
+            ? c.subcategories.map(s => `
               <li>
                 ${sanitize(s)}
                 <button class="btn-danger" onclick="eliminarSubcategoria('${c._id}', '${encodeURIComponent(s)}')">🗑️</button>
-              </li>`).join("")
-          : "<li><em>Sin subcategorías</em></li>"}
+              </li>
+            `).join("")
+            : "<li><em>Sin subcategorías</em></li>"
+        }
       </ul>
     </li>
   `).join("");
@@ -129,7 +137,7 @@ window.eliminarCategoria = async (id) => {
     if (!res.ok) throw new Error("❌ No se pudo eliminar la categoría");
 
     mostrarMensaje("✅ Categoría eliminada");
-    cargarCategorias();
+    await cargarCategorias();
   } catch (err) {
     mostrarMensaje(err.message, "error");
   }
@@ -148,18 +156,17 @@ window.eliminarSubcategoria = async (categoryId, subcategory) => {
     if (!res.ok) throw new Error("❌ No se pudo eliminar la subcategoría");
 
     mostrarMensaje("✅ Subcategoría eliminada");
-    cargarCategorias();
+    await cargarCategorias();
   } catch (err) {
     mostrarMensaje(err.message, "error");
   }
 };
 
-// 🔐 Sanitizar texto
+// 🧼 Sanitizar texto
 function sanitize(text = "") {
   const temp = document.createElement("div");
   temp.textContent = text;
   return temp.innerHTML.trim();
 }
 
-// 🌐 Global
 window.goBack = goBack;
