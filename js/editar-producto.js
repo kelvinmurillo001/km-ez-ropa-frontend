@@ -39,12 +39,12 @@ function validarCampo(valor, mensaje) {
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIAS);
-    const categorias = await res.json();
-    if (!res.ok || !Array.isArray(categorias)) throw new Error("Respuesta inválida");
+    const { data } = await res.json();
+    if (!res.ok || !Array.isArray(data)) throw new Error("Respuesta inválida");
 
     const select = document.getElementById("categoriaInput");
     select.innerHTML = '<option value="">Selecciona una categoría</option>';
-    categorias.forEach(cat => {
+    data.forEach(cat => {
       const option = document.createElement("option");
       option.value = cat.name;
       option.textContent = cat.name;
