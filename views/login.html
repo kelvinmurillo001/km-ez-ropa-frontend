@@ -9,18 +9,24 @@
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Accede al panel administrativo de KM & EZ ROPA y gestiona productos, pedidos y promociones." />
   <meta name="author" content="KM & EZ ROPA" />
+  <meta name="theme-color" content="#ff6d00" />
 
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/login.css" />
+  <link rel="stylesheet" href="/css/adminMensaje.css" />
 
   <!-- ✅ JS -->
   <script type="module" src="/js/login.js" defer></script>
 </head>
 <body>
 
+  <!-- ✅ Mensaje flotante admin -->
+  <div id="adminMensaje" class="oculto"></div>
+
+  <!-- 🧠 Contenedor Login -->
   <main class="login-container fade-in" role="main" aria-labelledby="tituloLogin">
     <h1 id="tituloLogin" class="text-center">🔐 Acceso Administrativo</h1>
 
@@ -58,7 +64,7 @@
       <!-- Botón de acceso -->
       <button type="submit" class="btn mt-2" aria-label="Ingresar al panel de control">🔓 Ingresar</button>
 
-      <!-- Mensaje de error -->
+      <!-- Mensaje de error (legacy por accesibilidad) -->
       <div 
         id="errorMensaje" 
         class="mensaje-error mt-2" 
@@ -80,12 +86,12 @@
     </form>
   </main>
 
-  <!-- Fallback para navegadores sin JS -->
+  <!-- ⚠️ JS Fallback -->
   <noscript>
     <p style="text-align:center; color:red;">⚠️ Debes activar JavaScript para iniciar sesión.</p>
   </noscript>
 
-  <!-- 🌙 Modo oscuro automático -->
+  <!-- 🌙 Activación de modo oscuro -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("modoOscuro") === "true") {
@@ -93,5 +99,6 @@
       }
     });
   </script>
+
 </body>
 </html>

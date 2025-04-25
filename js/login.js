@@ -10,12 +10,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!form || !btnSubmit || !inputUser || !inputPass) return;
 
-  // 🌙 Activar modo oscuro automáticamente si está guardado
+  // 🌙 Modo oscuro si está activado
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 
-  // 🎯 Evento submit del formulario
+  // 🎯 Enviar formulario
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return mostrarMensaje(msg, "error");
       }
 
-      // Guardar sesión
+      // ✅ Guardar en localStorage
       localStorage.setItem("admin_token", data.token);
       localStorage.setItem("admin_user", JSON.stringify({ ...data.user, isAdmin: true }));
 
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       setTimeout(() => {
         window.location.href = "/panel.html";
-      }, 2000);
+      }, 1500);
 
     } catch (err) {
       console.error("❌ Error:", err);
@@ -64,23 +64,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 🎯 Soporte para Enter desde cualquier input
+  // Tecla Enter para inputs
   form.querySelectorAll("input").forEach(input => {
     input.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") form.dispatchEvent(new Event("submit"));
+      if (e.key === "Enter") {
+        form.dispatchEvent(new Event("submit"));
+      }
     });
   });
 });
 
 /**
- * ✅ Muestra un mensaje visual flotante
+ * ✅ Mostrar mensaje en el componente #adminMensaje
  */
 function mostrarMensaje(texto, tipo = "info") {
   const box = document.getElementById("adminMensaje");
   if (!box) return alert(texto);
 
   box.textContent = texto;
-  box.className = ""; // Reset
+  box.className = "";
   box.classList.add(tipo);
   box.classList.remove("oculto");
 
