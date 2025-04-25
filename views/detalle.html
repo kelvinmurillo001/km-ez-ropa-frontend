@@ -28,6 +28,7 @@
   <script type="module" src="/js/detalle.js" defer></script>
   <script src="/js/promo-display.js" defer></script>
 </head>
+
 <body>
 
   <!-- 🔝 Encabezado -->
@@ -55,21 +56,7 @@
   <!-- 👕 Detalle del Producto -->
   <main class="detalle-container" role="main" aria-label="Detalle del producto">
     <section id="detalleProducto" class="detalle-grid fade-in" aria-live="polite">
-
-      <!-- Galería de Imágenes -->
-      <div class="galeria-producto">
-        <div class="miniaturas">
-          <img src="/assets/prod1.jpg" class="thumb activa" alt="Miniatura 1" loading="lazy" />
-          <img src="/assets/prod2.jpg" class="thumb" alt="Miniatura 2" loading="lazy" />
-          <img src="/assets/prod3.jpg" class="thumb" alt="Miniatura 3" loading="lazy" />
-        </div>
-        <div class="imagen-principal">
-          <img id="imagenGrande" src="/assets/prod1.jpg" alt="Imagen Principal del Producto" loading="lazy" />
-        </div>
-      </div>
-
-      <!-- 🔧 Contenido dinámico inyectado por JS -->
-
+      <!-- 🎯 Aquí `detalle.js` inyecta dinámicamente el producto -->
     </section>
 
     <!-- ❤️ Botón Favoritos -->
@@ -112,7 +99,7 @@
     <p style="text-align: center; color: red;">⚠️ Activa JavaScript para visualizar correctamente esta página.</p>
   </noscript>
 
-  <!-- 🔗 Compartir + galería -->
+  <!-- 🔗 Compartir -->
   <script>
     function compartirEnRed(red) {
       const url = window.location.href;
@@ -122,18 +109,6 @@
         : `https://wa.me/?text=${encodeURIComponent(titulo + ' ' + url)}`;
       window.open(enlace, "_blank");
     }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const thumbs = document.querySelectorAll(".thumb");
-      const imagenGrande = document.getElementById("imagenGrande");
-      thumbs.forEach(img => {
-        img.addEventListener("click", () => {
-          imagenGrande.src = img.src;
-          thumbs.forEach(i => i.classList.remove("activa"));
-          img.classList.add("activa");
-        });
-      });
-    });
   </script>
 
 </body>

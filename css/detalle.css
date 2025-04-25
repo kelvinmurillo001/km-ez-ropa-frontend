@@ -1,4 +1,4 @@
-/* === 🌑 BASE GENERAL === */
+/* 🌑 BASE GENERAL */
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
@@ -20,7 +20,7 @@ img {
   height: auto;
 }
 
-/* === 🔝 HEADER === */
+/* 🔝 HEADER */
 .main-header {
   display: flex;
   justify-content: space-between;
@@ -82,7 +82,7 @@ img {
   color: #121212;
 }
 
-/* === 🧾 DETALLE DE PRODUCTO === */
+/* 🧾 DETALLE PRODUCTO */
 .detalle-container {
   padding: 2rem 1rem;
   max-width: 1100px;
@@ -97,17 +97,20 @@ img {
   margin-top: 2rem;
 }
 
+/* 🖼️ Imagen principal */
 .detalle-img img {
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(255, 109, 0, 0.2);
+  box-shadow: 0 6px 18px rgba(255, 109, 0, 0.25);
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
 .detalle-img img:hover {
-  transform: scale(1.02);
+  transform: scale(1.03);
+  box-shadow: 0 8px 24px rgba(255, 109, 0, 0.4);
 }
 
+/* 📋 Información */
 .detalle-info h2 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
@@ -126,7 +129,7 @@ img {
   font-weight: bold;
 }
 
-/* === 🔽 SELECTORES === */
+/* 🔽 SELECTORES */
 .selectores {
   display: flex;
   flex-direction: column;
@@ -149,27 +152,17 @@ img {
   background-color: #1a1a1a;
   color: white;
   outline: none;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg fill='%23ff6d00' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 1rem;
+  transition: all 0.3s ease;
 }
 
 .selectores select:focus,
 .selectores input[type="number"]:focus {
   border-color: #ff6d00;
-  box-shadow: 0 0 0 2px rgba(255, 109, 0, 0.4);
+  box-shadow: 0 0 0 2px rgba(255, 109, 0, 0.5);
 }
 
-.selectores select:disabled {
-  color: #888;
-  background-color: #2a2a2a;
-  cursor: not-allowed;
-}
-
-/* === ℹ️ DETALLES ADICIONALES === */
+/* ℹ️ Extra detalles */
 .detalles-extra {
   background-color: #1e1e1e;
   border-left: 4px solid #ff6d00;
@@ -182,122 +175,52 @@ img {
   margin: 0.4rem 0;
   font-size: 0.95rem;
   color: #ccc;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 
-.detalles-extra p::before {
-  content: "📌";
-  color: #ff6d00;
-}
-
-.detalles-extra p[data-type="talla"]::before {
-  content: "📏";
-}
-
-.detalles-extra p[data-type="categoria"]::before {
-  content: "📁";
-}
-
-.detalles-extra p[data-type="subcategoria"]::before {
-  content: "🧷";
-}
-
-/* === 🛒 BOTÓN AGREGAR === */
+/* 🛒 Botón agregar */
 .btn-agregar {
-  padding: 0.9rem 1.6rem;
-  font-size: 1rem;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
   background-color: #ff6d00;
   color: #121212;
   font-weight: bold;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
   text-transform: uppercase;
+  transition: background-color 0.3s, transform 0.3s;
 }
 
 .btn-agregar:hover {
   background-color: #ffa733;
+  transform: translateY(-3px);
 }
 
-/* === 🖼️ GALERÍA MINIATURAS === */
+/* 🖼️ Galería miniaturas */
 .galeria-mini {
   display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  margin-top: 1rem;
   justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
 }
 
 .galeria-mini .mini-img {
   width: 70px;
   height: 70px;
+  border-radius: 8px;
   object-fit: cover;
-  border-radius: 6px;
-  cursor: pointer;
   border: 2px solid transparent;
-  transition: transform 0.2s, border-color 0.3s;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .galeria-mini .mini-img:hover {
-  transform: scale(1.1);
   border-color: #ff6d00;
+  transform: scale(1.1);
 }
 
-/* === 📲 BOTONES FLOTANTES === */
-.floating-buttons {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  z-index: 999;
-}
-
-.cart-icon,
-.whatsapp-icon {
-  position: relative;
-  width: 56px;
-  height: 56px;
-  background: #ff6d00;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-}
-
-.cart-icon img,
-.whatsapp-icon img {
-  width: 28px;
-  height: 28px;
-}
-
-#cartCount {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  background-color: red;
-  color: white;
-  font-size: 0.75rem;
-  padding: 2px 6px;
-  border-radius: 50%;
-  font-weight: bold;
-}
-
-/* === 🔚 FOOTER === */
-.site-footer {
-  text-align: center;
-  padding: 2rem;
-  font-size: 0.9rem;
-  background-color: #1a1a1a;
-  color: #999;
-}
-
-/* === 📱 RESPONSIVE === */
+/* 📱 Responsive */
 @media (max-width: 768px) {
   .detalle-grid {
     grid-template-columns: 1fr;
@@ -305,7 +228,6 @@ img {
 
   .nav-links {
     flex-direction: column;
-    gap: 0.5rem;
   }
 
   .btn-agregar,
