@@ -5,98 +5,87 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🔐 Iniciar Sesión | KM & EZ ROPA</title>
 
-  <!-- 🔒 Seguridad y SEO -->
+  <!-- Meta SEO -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Accede al panel administrativo de KM & EZ ROPA y gestiona productos, pedidos y promociones." />
-  <meta name="author" content="KM & EZ ROPA" />
   <meta name="theme-color" content="#ff6d00" />
 
-  <!-- 🎨 Estilos -->
+  <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/login.css" />
+  <link rel="stylesheet" href="/css/adminMensaje.css" />
 
-  <!-- ✅ Scripts -->
+  <!-- Script login -->
   <script type="module" src="/js/login.js" defer></script>
 </head>
 <body>
 
-  <!-- 👤 Login administrativo -->
+  <!-- 🧩 Container Login -->
   <main class="login-container fade-in" role="main" aria-labelledby="tituloLogin">
     <h1 id="tituloLogin" class="text-center">🔐 Acceso Administrativo</h1>
 
-    <form id="formLogin" class="formulario" aria-describedby="instruccionesLogin" novalidate>
-      <p id="instruccionesLogin" class="text-center mb-2">Introduce tus credenciales para entrar al panel.</p>
+    <form id="formLogin" class="formulario" novalidate>
+      <p class="text-center mb-2">Introduce tus credenciales para entrar al panel.</p>
 
       <fieldset>
-        <!-- Usuario -->
         <label for="username">Usuario:</label>
-        <input 
-          type="text"
-          name="username"
-          id="username"
-          placeholder="Ej: admin"
-          required
-          autocomplete="username"
-          aria-required="true"
-          maxlength="40"
-          inputmode="text"
-        />
+        <input type="text" id="username" name="username" placeholder="Ej: admin" autocomplete="username" required />
 
-        <!-- Contraseña -->
         <label for="password">Contraseña:</label>
-        <input 
-          type="password"
-          name="password"
-          id="password"
-          placeholder="••••••••"
-          required
-          autocomplete="current-password"
-          aria-required="true"
-          maxlength="100"
-          inputmode="text"
-        />
+        <input type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required />
       </fieldset>
 
-      <!-- Botón de acceso -->
-      <button type="submit" class="btn mt-2" aria-label="Ingresar al panel de control">🔓 Ingresar</button>
+      <button type="submit" class="btn mt-2">🔓 Ingresar</button>
 
-      <!-- Mensaje de error -->
-      <div 
-        id="errorMensaje" 
-        class="mensaje-error mt-2" 
-        role="alert" 
-        aria-live="assertive" 
-        style="display: none; color: red;">
+      <div class="text-center mt-2">
+        <button type="button" class="btn-secundario" onclick="window.location.href='/'">🔙 Volver al Inicio</button>
+        <button type="button" class="btn-secundario" onclick="mostrarRecuperar()">🔑 ¿Olvidaste tu contraseña?</button>
       </div>
 
-      <!-- Navegación secundaria -->
-      <div class="text-center mt-3">
-        <button 
-          type="button" 
-          class="btn-secundario" 
-          onclick="window.location.href='/'" 
-          aria-label="Volver al inicio del sitio">
-          🔙 Volver al Inicio
-        </button>
-      </div>
+      <div id="errorMensaje" class="mensaje-error" role="alert" style="display: none;"></div>
     </form>
   </main>
 
-  <!-- ⚠️ Fallback para navegadores sin JS -->
-  <noscript>
-    <p style="text-align:center; color:red;">⚠️ Debes activar JavaScript para iniciar sesión.</p>
-  </noscript>
+  <!-- ✅ Mensaje admin flotante -->
+  <div id="adminMensaje" class="oculto"></div>
 
-  <!-- 🌙 Modo oscuro automático -->
+  <!-- 🔧 Modal recuperación contraseña -->
+  <div id="modalRecuperar" class="modal-recuperar oculto" role="dialog" aria-modal="true">
+    <div class="modal-contenido">
+      <h2>🔑 Recuperar Contraseña</h2>
+      <p>Ingresa tu correo y recibirás instrucciones.</p>
+      <input type="email" id="recuperarCorreo" placeholder="ejemplo@mail.com" />
+      <div class="modal-botones">
+        <button onclick="enviarRecuperacion()" class="btn">📩 Enviar</button>
+        <button onclick="cerrarRecuperar()" class="btn-secundario">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS para modo oscuro -->
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      if (localStorage.getItem("modoOscuro") === "true") {
-        document.body.classList.add("modo-oscuro");
-      }
-    });
-  </script>
+    if (localStorage.getItem("modoOscuro") === "true") {
+      document.body.classList.add("modo-oscuro");
+    }
 
+    function mostrarRecuperar() {
+      document.getElementById("modalRecuperar").classList.remove("oculto");
+    }
+
+    function cerrarRecuperar() {
+      document.getElementById("modalRecuperar").classList.add("oculto");
+    }
+
+    function enviarRecuperacion() {
+      const email = document.getElementById("recuperarCorreo").value.trim();
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return mostrarMensaje("❌ Ingresa un correo válido.", "error");
+      }
+      mostrarMensaje("📩 Enlace de recuperación enviado (simulado).", "success");
+      cerrarRecuperar();
+    }
+  </script>
 </body>
 </html>

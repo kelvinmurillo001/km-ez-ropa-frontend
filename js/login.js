@@ -7,28 +7,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnSubmit = form?.querySelector("button[type='submit']");
   const inputUser = form?.username;
   const inputPass = form?.password;
-  const errorBox = document.getElementById("errorMensaje");
 
   if (!form || !btnSubmit || !inputUser || !inputPass) return;
 
-  // 🌙 Aplicar modo oscuro si está activado
+  // 🌙 Activar modo oscuro automáticamente si está guardado
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 
+  // 🎯 Evento submit del formulario
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    ocultarError();
 
     const username = inputUser.value.trim().toLowerCase();
     const password = inputPass.value.trim();
 
     if (!username || !password) {
-      return mostrarError("⚠️ Ingresa tu usuario y contraseña.");
+      return mostrarMensaje("⚠️ Ingresa tu usuario y contraseña.", "error");
     }
 
     btnSubmit.disabled = true;
-    btnSubmit.textContent = "🔐 Iniciando...";
+    btnSubmit.textContent = "🔄 Iniciando...";
 
     try {
       const res = await fetch(`${API_BASE}/api/auth/login`, {
@@ -39,34 +38,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await res.json();
 
-      if (!res.ok) {
+      if (!res.ok || !data.token) {
         const msg = res.status === 401
           ? "🔐 Usuario o contraseña incorrectos."
           : data.message || "❌ Error inesperado.";
-        return mostrarError(msg);
+        return mostrarMensaje(msg, "error");
       }
 
-      if (!data.token || !data.user) {
-        return mostrarError("❌ Respuesta del servidor inválida.");
-      }
-
-      // Guardar datos en localStorage con bandera admin
+      // Guardar sesión
       localStorage.setItem("admin_token", data.token);
       localStorage.setItem("admin_user", JSON.stringify({ ...data.user, isAdmin: true }));
 
-      // Redirigir
-      window.location.href = "/panel.html";
+      mostrarMensaje("✅ Acceso concedido. Redirigiendo...", "success");
+
+      setTimeout(() => {
+        window.location.href = "/panel.html";
+      }, 2000);
 
     } catch (err) {
       console.error("❌ Error:", err);
-      mostrarError("❌ No se pudo conectar al servidor.");
+      mostrarMensaje("❌ No se pudo conectar al servidor.", "error");
     } finally {
       btnSubmit.disabled = false;
-      btnSubmit.textContent = "Iniciar sesión";
+      btnSubmit.textContent = "🔓 Ingresar";
     }
   });
 
-  // Permitir Enter desde cualquier input
+  // 🎯 Soporte para Enter desde cualquier input
   form.querySelectorAll("input").forEach(input => {
     input.addEventListener("keypress", (e) => {
       if (e.key === "Enter") form.dispatchEvent(new Event("submit"));
@@ -75,28 +73,18 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**
- * Mostrar mensaje de error accesible
+ * ✅ Muestra un mensaje visual flotante
  */
-function mostrarError(msg = "⚠️ Ha ocurrido un error") {
-  const box = document.getElementById("errorMensaje");
-  if (box) {
-    box.textContent = msg;
-    box.style.display = "block";
-    box.setAttribute("role", "alert");
-    box.setAttribute("aria-live", "assertive");
-    box.focus?.();
-  } else {
-    alert(msg); // fallback
-  }
-}
+function mostrarMensaje(texto, tipo = "info") {
+  const box = document.getElementById("adminMensaje");
+  if (!box) return alert(texto);
 
-/**
- * Ocultar el mensaje de error
- */
-function ocultarError() {
-  const box = document.getElementById("errorMensaje");
-  if (box) {
-    box.textContent = "";
-    box.style.display = "none";
-  }
+  box.textContent = texto;
+  box.className = ""; // Reset
+  box.classList.add(tipo);
+  box.classList.remove("oculto");
+
+  setTimeout(() => {
+    box.classList.add("oculto");
+  }, 4000);
 }
