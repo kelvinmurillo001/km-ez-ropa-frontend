@@ -1,3 +1,5 @@
+//frontend/js/productos.js
+
 "use strict";
 
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";

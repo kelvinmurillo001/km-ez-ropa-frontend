@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// 🧠 Lógica de tallas por tipo
+// 🧠 Lógica de tallas automáticas
 tallaTipoInput.addEventListener("change", () => {
   const tipo = tallaTipoInput.value.toLowerCase();
   tallasInput.value = tallasPorTipo[tipo]?.join(", ") || "";
@@ -130,7 +130,7 @@ function agregarVariante() {
   variantes.push(index);
 }
 
-// ☁️ Subir imagen a servidor
+// ☁️ Subir imagen al servidor
 async function subirImagen(file) {
   if (!file || !file.type.startsWith("image/") || file.size > 2 * 1024 * 1024) {
     throw new Error("⚠️ Imagen inválida o demasiado grande");
@@ -164,7 +164,7 @@ form.addEventListener("submit", async (e) => {
     const precio = parseFloat(form.precioInput.value);
     const stock = parseInt(form.stockInput.value || "0");
     const categoria = categoriaInput.value;
-    const subcategoria = subcategoriaInput?.value || null;
+    const subcategoria = subcategoriaInput?.value || "";
     const tallaTipo = tallaTipoInput.value;
     const color = form.colorInput.value.trim();
     const tallas = form.tallasInput.value.split(",").map(t => t.trim()).filter(Boolean);
@@ -209,7 +209,7 @@ form.addEventListener("submit", async (e) => {
       price: precio,
       stock,
       category: categoria,
-      subcategory,
+      subcategory: subcategoria,
       tallaTipo,
       color,
       sizes: tallas,
@@ -243,10 +243,12 @@ form.addEventListener("submit", async (e) => {
     variantesContainer.innerHTML = "";
     variantes = [];
     agregarVariante();
+    msgEstado.textContent = "";
 
   } catch (err) {
     console.error("❌", err);
     mostrarMensaje("❌ " + err.message, "error");
+    msgEstado.textContent = "";
   }
 });
 
