@@ -14,17 +14,48 @@
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/crear-producto.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
+  <link rel="stylesheet" href="/css/adminMensaje.css" />
+
+  <!-- Estilos internos -->
+  <style>
+    .mensaje-global {
+      margin: 1rem auto;
+      text-align: center;
+      font-weight: bold;
+      padding: 10px;
+      border-radius: 5px;
+      max-width: 600px;
+      display: none;
+    }
+    .mensaje-global.success { background: #e0ffe8; color: #007a3d; }
+    .mensaje-global.error { background: #ffe0e0; color: #b20000; }
+    .mensaje-global.info { background: #e0f0ff; color: #004b8d; }
+    .mensaje-global.warning { background: #fff8e1; color: #c19000; }
+    .mensaje-global.show { display: block; }
+
+    .imagen-preview-principal {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
 
   <!-- JS -->
   <script type="module" src="/js/editar-producto.js" defer></script>
 </head>
+
 <body>
+
+<!-- 🔔 Contenedor para mensajes flotantes -->
+<div id="adminMensaje" class="mensaje-global" role="alert" aria-live="assertive"></div>
 
 <main class="formulario-container fade-in" role="main" aria-label="Formulario de edición de producto">
   <h1 class="text-center">✏️ Editar Producto</h1>
 
   <form id="formEditarProducto" class="form-producto" enctype="multipart/form-data" novalidate>
-    
+
     <!-- 📸 Imagen actual -->
     <label for="imagenPrincipalActual">Imagen Principal Actual:</label>
     <div id="imagenPrincipalActual" class="preview-imagen" aria-live="polite"></div>
@@ -90,6 +121,7 @@
 
     <!-- 🔔 Mensaje de estado -->
     <p id="msgEstado" class="form-msg text-center mt-2" role="status" aria-live="assertive"></p>
+
   </form>
 </main>
 
@@ -112,6 +144,12 @@
         };
         reader.readAsDataURL(file);
       }
+    });
+
+    // 👇 Extra UX: Clic en mensaje flotante para ocultarlo
+    const adminMensaje = document.getElementById('adminMensaje');
+    adminMensaje?.addEventListener('click', () => {
+      adminMensaje.style.display = 'none';
     });
   });
 </script>

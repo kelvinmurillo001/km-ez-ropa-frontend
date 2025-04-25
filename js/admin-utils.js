@@ -24,9 +24,9 @@ export function verificarSesion() {
 }
 
 /**
- * 💬 Muestra un mensaje accesible flotante.
- * @param {string} texto - El texto del mensaje.
- * @param {"success"|"error"|"info"|"warning"} tipo - Tipo visual.
+ * 💬 Muestra un mensaje visual accesible en pantalla.
+ * @param {string} texto - El contenido del mensaje.
+ * @param {"success"|"error"|"info"|"warning"} tipo - Tipo visual del mensaje.
  */
 export function mostrarMensaje(texto = "", tipo = "info") {
   const mensaje = document.getElementById("adminMensaje");
@@ -37,27 +37,30 @@ export function mostrarMensaje(texto = "", tipo = "info") {
     return;
   }
 
+  // Reiniciar clases
+  mensaje.className = `mensaje-global ${tipo}`;
   mensaje.textContent = texto;
-  mensaje.className = `admin-message ${tipo}`;
   mensaje.setAttribute("role", "alert");
   mensaje.setAttribute("aria-live", "assertive");
-  mensaje.classList.remove("oculto");
+
+  // Mostrar con animación
+  mensaje.classList.add("show");
 
   clearTimeout(mensaje._timeout);
   mensaje._timeout = setTimeout(() => {
-    mensaje.classList.add("oculto");
+    mensaje.classList.remove("show");
   }, 4000);
 }
 
 /**
- * 🔙 Redirige al panel de administración.
+ * 🔙 Redirige al panel principal de administrador.
  */
 export function goBack() {
   window.location.href = "/panel.html";
 }
 
 /**
- * 🚪 Cierra la sesión de administrador.
+ * 🚪 Cierra sesión limpiando localStorage y redirigiendo.
  */
 export function cerrarSesion() {
   localStorage.removeItem("admin_token");
@@ -66,8 +69,8 @@ export function cerrarSesion() {
 }
 
 /**
- * 👤 Devuelve los datos del usuario autenticado.
- * @returns {Object} Usuario autenticado o {} si no válido.
+ * 👤 Obtiene el usuario actualmente autenticado.
+ * @returns {Object} Usuario o {} si no hay válido.
  */
 export function getUsuarioActivo() {
   try {
@@ -78,5 +81,5 @@ export function getUsuarioActivo() {
   }
 }
 
-// 🌐 Exponer logout en global (uso en HTML onclick)
+// 🌐 Exponer logout global (uso en onclick del HTML)
 window.cerrarSesion = cerrarSesion;
