@@ -136,6 +136,13 @@ async function subirImagen(file) {
     throw new Error("⚠️ Imagen inválida o demasiado grande");
   }
 
+  const token = localStorage.getItem("admin_token"); // ✅ Leer token actualizado
+  if (!token) {
+    alert("⛔ Tu sesión expiró. Vuelve a iniciar sesión.");
+    window.location.href = "/login.html";
+    throw new Error("⛔ Token ausente o inválido");
+  }
+
   const formData = new FormData();
   formData.append("image", file);
 
@@ -144,6 +151,13 @@ async function subirImagen(file) {
     headers: { Authorization: `Bearer ${token}` },
     body: formData
   });
+
+  if (res.status === 401) {
+    localStorage.clear();
+    alert("⛔ Tu sesión expiró. Inicia sesión nuevamente.");
+    window.location.href = "/login.html";
+    throw new Error("⛔ Token expirado o inválido");
+  }
 
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || "Error al subir imagen");
