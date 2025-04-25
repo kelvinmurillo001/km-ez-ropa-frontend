@@ -1,5 +1,6 @@
 "use strict";
 
+// ✅ Importar dependencias necesarias
 import { verificarSesion, goBack } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
@@ -11,7 +12,7 @@ const API_ORDERS = `${API_BASE}/api/orders`;
 const API_PRODUCTS = `${API_BASE}/api/products`;
 const API_RESUMEN = `${API_BASE}/api/orders/stats/ventas`;
 
-// 📦 Variables globales
+// 📦 Estado global
 let resumenPedidos = null;
 let resumenVentas = null;
 let categoriasOrdenadas = [];
@@ -22,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**
- * 🚀 Cargar datos para el dashboard
+ * 🚀 Cargar datos y renderizar dashboard
  */
 async function loadDashboard() {
   try {
@@ -36,48 +37,47 @@ async function loadDashboard() {
       throw new Error("❌ Estructura de datos inválida");
     }
 
-    resumenPedidos = contarPedidos(pedidos);
+    resumenPedidos = procesarPedidos(pedidos);
     resumenVentas = resumen;
 
-    renderMetrics(resumenPedidos, resumenVentas, productos);
-    renderTopCategorias(productos);
+    renderResumen(resumenPedidos, resumenVentas, productos);
+    renderCategoriasTop(productos);
   } catch (err) {
     console.error("❌ Error al cargar dashboard:", err);
-    alert("⚠️ No se pudieron cargar los datos del dashboard.");
+    alert("⚠️ No se pudieron cargar los datos del panel.");
   }
 }
 
 /**
- * 🌐 Petición genérica con validación
+ * 🌐 Fetch genérico con headers opcionales
  */
-async function fetchData(url, necesitaToken = false) {
-  const headers = necesitaToken ? { Authorization: `Bearer ${token}` } : {};
+async function fetchData(url, usarToken = false) {
+  const headers = usarToken ? { Authorization: `Bearer ${token}` } : {};
   const res = await fetch(url, { headers });
-
   if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(`⚠️ ${url}: ${errorText}`);
+    const error = await res.text();
+    throw new Error(`❌ ${url} → ${error}`);
   }
-
   return await res.json();
 }
 
 /**
- * 📊 Procesar resumen de pedidos
+ * 📊 Procesar pedidos y contar estados
  */
-function contarPedidos(pedidos = []) {
+function procesarPedidos(pedidos = []) {
   const hoy = new Date().setHours(0, 0, 0, 0);
   return pedidos.reduce((resumen, p) => {
     const estado = (p.estado || "").toLowerCase();
-    const fechaPedido = new Date(p.createdAt).setHours(0, 0, 0, 0);
+    const fecha = new Date(p.createdAt).setHours(0, 0, 0, 0);
 
     if (estado.includes("pend")) resumen.pendiente++;
     else if (estado.includes("proceso")) resumen.en_proceso++;
     else if (estado.includes("env")) resumen.enviado++;
     else if (estado.includes("cancel")) resumen.cancelado++;
 
-    if (fechaPedido === hoy) resumen.hoy++;
+    if (fecha === hoy) resumen.hoy++;
     resumen.total++;
+
     return resumen;
   }, {
     pendiente: 0,
@@ -90,9 +90,9 @@ function contarPedidos(pedidos = []) {
 }
 
 /**
- * 📈 Renderizar métricas
+ * 📈 Renderizar resumen general
  */
-function renderMetrics(pedidos, ventas, productos = []) {
+function renderResumen(pedidos, ventas, productos = []) {
   setText("ventasTotales", `$${parseFloat(ventas.ventasTotales || 0).toFixed(2)}`);
   setText("visitasTotales", ventas.totalVisitas ?? 0);
   setText("totalProductos", productos.length);
@@ -107,45 +107,37 @@ function renderMetrics(pedidos, ventas, productos = []) {
 }
 
 /**
- * 🗂️ Renderizar top categorías
+ * 🗂️ Mostrar categorías más populares
  */
-function renderTopCategorias(productos = []) {
+function renderCategoriasTop(productos = []) {
   const conteo = {};
 
   productos.forEach(p => {
-    const cat = p.category?.trim().toLowerCase() || "sin categoría";
-    conteo[cat] = (conteo[cat] || 0) + 1;
+    const categoria = p.category?.trim().toLowerCase() || "sin categoría";
+    conteo[categoria] = (conteo[categoria] || 0) + 1;
   });
 
   categoriasOrdenadas = Object.entries(conteo).sort((a, b) => b[1] - a[1]);
 
-  const lista = document.getElementById("topCategorias");
-  lista.innerHTML = "";
+  const ul = document.getElementById("topCategorias");
+  ul.innerHTML = "";
 
-  categoriasOrdenadas.forEach(([nombre, cantidad]) => {
+  categoriasOrdenadas.forEach(([cat, total]) => {
     const li = document.createElement("li");
-    li.textContent = `📁 ${nombre}: ${cantidad}`;
-    lista.appendChild(li);
+    li.textContent = `📁 ${cat}: ${total}`;
+    ul.appendChild(li);
   });
 }
 
 /**
- * 🧾 Asignar texto en elementos del DOM
- */
-function setText(id, value) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = value;
-}
-
-/**
- * 📤 Exportar CSV con métricas
+ * 📤 Exportar métricas en formato CSV
  */
 function exportarEstadisticas() {
-  if (!resumenVentas || !resumenPedidos) {
-    return alert("⚠️ Carga completa antes de exportar.");
+  if (!resumenPedidos || !resumenVentas) {
+    return alert("⚠️ Espera a que se cargue todo antes de exportar.");
   }
 
-  const fecha = new Date().toLocaleString("es-ES");
+  const fecha = new Date().toLocaleString("es-EC");
   let csv = `Dashboard KM & EZ ROPA\nFecha:,${fecha}\n\n`;
 
   csv += "Resumen de Ventas\n";
@@ -172,6 +164,14 @@ function exportarEstadisticas() {
   a.click();
 }
 
-// 🌐 Exponer funciones globales
+/**
+ * 📌 Asignar texto a un elemento HTML por ID
+ */
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
+
+// 🌐 Funciones globales para botones HTML
 window.goBack = goBack;
 window.exportarEstadisticas = exportarEstadisticas;

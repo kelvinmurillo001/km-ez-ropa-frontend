@@ -3,9 +3,13 @@
 // ✅ Configuración base
 import { API_BASE } from "./config.js";
 
+// 🔐 Constantes globales
 const STORAGE_KEY = "km_ez_cart";
-let carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+const carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
+const API_ORDERS = `${API_BASE}/api/orders`;
+
+// 🎯 Elementos del DOM
 const resumenPedido = document.getElementById("resumenPedido");
 const totalFinal = document.getElementById("totalFinal");
 const form = document.getElementById("formCheckout");
@@ -13,23 +17,26 @@ const msgEstado = document.getElementById("msgEstado");
 const btnUbicacion = document.getElementById("btnUbicacion");
 const infoMetodoPago = document.getElementById("infoMetodoPago");
 
-const API_ORDERS = `${API_BASE}/api/orders`;
-
-/* -------------------------------------------------------------------------- */
-/* 🧾 Renderizado del pedido                                                  */
-/* -------------------------------------------------------------------------- */
+// ▶️ Renderizado inicial
 document.addEventListener("DOMContentLoaded", () => {
   if (!Array.isArray(carrito) || carrito.length === 0) {
-    resumenPedido.innerHTML = `<p class="text-center text-warn">⚠️ Tu carrito está vacío.</p>`;
+    mostrarMensaje("⚠️ Tu carrito está vacío.", "warn");
+    resumenPedido.innerHTML = "<p class='text-center text-warn'>Tu carrito está vacío.</p>";
     totalFinal.textContent = "$0.00";
     form?.querySelector("button[type='submit']")?.setAttribute("disabled", "true");
     return;
   }
 
+  renderResumenCarrito();
+  inicializarMetodoPago();
+});
+
+// 🧾 Renderiza los productos en resumen
+function renderResumenCarrito() {
   let total = 0;
   resumenPedido.innerHTML = carrito.map(item => {
-    const nombre = sanitizeText(item.nombre || "Producto");
-    const talla = sanitizeText(item.talla || "Única");
+    const nombre = sanitize(item.nombre || "Producto");
+    const talla = sanitize(item.talla || "Única");
     const cantidad = parseInt(item.cantidad) || 0;
     const precio = parseFloat(item.precio) || 0;
     const subtotal = precio * cantidad;
@@ -38,32 +45,30 @@ document.addEventListener("DOMContentLoaded", () => {
     return `
       <div class="resumen-item">
         <p>🧢 <strong>${nombre}</strong> | Talla: ${talla} | Cant: ${cantidad} | <strong>$${subtotal.toFixed(2)}</strong></p>
-      </div>
-    `;
+      </div>`;
   }).join("");
 
   totalFinal.textContent = `$${total.toFixed(2)}`;
-});
+}
 
-// 🔁 Mostrar información adicional de método de pago
-document.querySelectorAll("input[name='metodoPago']").forEach(radio => {
-  radio.addEventListener("change", e => {
-    const val = e.target.value;
-    infoMetodoPago.innerHTML = {
-      transferencia: `<p>🔐 Recibirás los datos bancarios por WhatsApp. Envío tras validación del pago.</p>`,
-      tarjeta: `<p>💳 Redirigiremos a una pasarela segura para completar el pago con tarjeta.</p>`,
-      paypal: `<p>🅿️ Serás dirigido a PayPal. Compra segura y protegida.</p>`
-    }[val] || "";
+// 💳 Mostrar info de método de pago
+function inicializarMetodoPago() {
+  document.querySelectorAll("input[name='metodoPago']").forEach(radio => {
+    radio.addEventListener("change", e => {
+      const val = e.target.value;
+      infoMetodoPago.innerHTML = {
+        transferencia: `<p>🔐 Recibirás los datos bancarios por WhatsApp. Envío tras validación del pago.</p>`,
+        tarjeta: `<p>💳 Serás redirigido a una pasarela de pago segura.</p>`,
+        paypal: `<p>🅿️ Compra segura con PayPal.</p>`
+      }[val] || "";
+    });
   });
-});
+}
 
-/* -------------------------------------------------------------------------- */
-/* 📤 Enviar pedido                                                           */
-/* -------------------------------------------------------------------------- */
+// 📤 Enviar pedido
 form?.addEventListener("submit", async e => {
   e.preventDefault();
-  msgEstado.textContent = "⏳ Enviando pedido...";
-  msgEstado.style.color = "#999";
+  mostrarMensaje("⏳ Enviando pedido...", "info");
 
   const nombre = form.nombreInput.value.trim();
   const email = form.emailInput.value.trim();
@@ -71,30 +76,29 @@ form?.addEventListener("submit", async e => {
   const direccion = form.direccionInput.value.trim();
   const metodoPago = document.querySelector("input[name='metodoPago']:checked")?.value;
 
-  // 🔐 Validaciones básicas
   if (!nombre || !email || !telefono || !direccion || !metodoPago) {
-    return mostrarError("❌ Todos los campos son obligatorios.");
+    return mostrarMensaje("❌ Todos los campos son obligatorios.", "error");
   }
 
-  if (!validarEmail(email)) return mostrarError("❌ Email inválido.");
-  if (!/^[0-9+\-\s]{7,20}$/.test(telefono)) return mostrarError("❌ Teléfono inválido. Usa dígitos, +, - o espacios.");
+  if (!validarEmail(email)) return mostrarMensaje("❌ Email inválido.", "error");
+  if (!/^[0-9+\-\s]{7,20}$/.test(telefono)) return mostrarMensaje("❌ Teléfono inválido.", "error");
 
   const total = carrito.reduce((acc, item) =>
     acc + (parseFloat(item.precio) || 0) * (parseInt(item.cantidad) || 0), 0
   );
 
   const pedido = {
-    nombreCliente: sanitizeText(nombre),
+    nombreCliente: sanitize(nombre),
     email,
     telefono,
-    direccion: sanitizeText(direccion),
+    direccion: sanitize(direccion),
     metodoPago,
     total,
     estado: metodoPago === "transferencia" ? "pendiente" : "pagado",
     items: carrito.map(item => ({
       productId: item.id || null,
-      name: sanitizeText(item.nombre || ""),
-      talla: sanitizeText(item.talla || ""),
+      name: sanitize(item.nombre || ""),
+      talla: sanitize(item.talla || ""),
       cantidad: parseInt(item.cantidad) || 1,
       precio: parseFloat(item.precio) || 0
     }))
@@ -109,69 +113,26 @@ form?.addEventListener("submit", async e => {
 
     if (!res.ok) throw new Error("Error al enviar el pedido");
 
-    msgEstado.textContent = "✅ Pedido enviado con éxito. ¡Gracias por tu compra!";
-    msgEstado.style.color = "limegreen";
-
-    // 🟡 INTEGRACIÓN CON MÉTODOS EXTERNOS
-    if (metodoPago === "paypal") {
-      // Redirección opcional si tienes backend PayPal integrado
-      // window.location.href = `${API_BASE}/api/paypal/session?orderId=XXX`;
-    }
+    mostrarMensaje("✅ Pedido enviado con éxito. ¡Gracias por tu compra!", "success");
+    localStorage.removeItem(STORAGE_KEY);
 
     if (metodoPago === "transferencia") {
-      const mensajeWA = `
-📦 *NUEVO PEDIDO*
-
-👤 *Cliente:* ${nombre}
-📞 *Teléfono:* ${telefono}
-📧 *Email:* ${email}
-📍 *Dirección:* ${direccion}
-
-🛍️ *Productos:*
-${carrito.map(i => `• ${i.cantidad} x ${i.nombre} - Talla: ${i.talla} - $${(i.precio * i.cantidad).toFixed(2)}`).join("\n")}
-
-💳 *Pago:* Transferencia Bancaria
-💰 *Total:* $${total.toFixed(2)}
-      `.trim();
-
-      const whatsappURL = `https://wa.me/593990270864?text=${encodeURIComponent(mensajeWA)}`;
-      window.open(whatsappURL, "_blank");
+      abrirWhatsappConfirmacion(pedido);
     }
 
-    localStorage.removeItem(STORAGE_KEY);
     setTimeout(() => window.location.href = "/index.html", 3000);
 
   } catch (err) {
     console.error("❌", err);
-    mostrarError("❌ No se pudo enviar el pedido. Intenta nuevamente.");
+    mostrarMensaje("❌ No se pudo enviar el pedido. Intenta nuevamente.", "error");
   }
 });
 
-/* -------------------------------------------------------------------------- */
-/* 🛠️ Funciones utilitarias                                                  */
-/* -------------------------------------------------------------------------- */
-function validarEmail(email) {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-  return regex.test(email);
-}
-
-function mostrarError(msg) {
-  msgEstado.textContent = msg;
-  msgEstado.style.color = "tomato";
-}
-
-function sanitizeText(text) {
-  const temp = document.createElement("div");
-  temp.textContent = text;
-  return temp.innerHTML;
-}
-
-/* -------------------------------------------------------------------------- */
-/* 📍 Obtener ubicación                                                      */
-/* -------------------------------------------------------------------------- */
+// 📍 Obtener dirección por geolocalización
 btnUbicacion?.addEventListener("click", () => {
-  if (!navigator.geolocation) return mostrarError("⚠️ Tu navegador no soporta geolocalización.");
-  msgEstado.textContent = "📍 Obteniendo ubicación...";
+  if (!navigator.geolocation) return mostrarMensaje("⚠️ Tu navegador no soporta geolocalización.", "warn");
+
+  mostrarMensaje("📍 Obteniendo ubicación...", "info");
 
   navigator.geolocation.getCurrentPosition(
     async ({ coords }) => {
@@ -179,12 +140,52 @@ btnUbicacion?.addEventListener("click", () => {
         const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.latitude}&lon=${coords.longitude}`);
         const data = await res.json();
         form.direccionInput.value = data.display_name || `${coords.latitude}, ${coords.longitude}`;
-        msgEstado.textContent = "✅ Dirección detectada automáticamente.";
-        msgEstado.style.color = "limegreen";
+        mostrarMensaje("✅ Dirección detectada automáticamente.", "success");
       } catch {
-        mostrarError("❌ No se pudo obtener la dirección.");
+        mostrarMensaje("❌ No se pudo obtener la dirección.", "error");
       }
     },
-    () => mostrarError("❌ No se pudo acceder a la ubicación.")
+    () => mostrarMensaje("❌ No se pudo acceder a la ubicación.", "error")
   );
 });
+
+// 💬 Mensaje a WhatsApp
+function abrirWhatsappConfirmacion(pedido) {
+  const mensaje = `
+📦 *NUEVO PEDIDO*
+
+👤 *Cliente:* ${pedido.nombreCliente}
+📞 *Teléfono:* ${pedido.telefono}
+📧 *Email:* ${pedido.email}
+📍 *Dirección:* ${pedido.direccion}
+
+🛍️ *Productos:*
+${pedido.items.map(i => `• ${i.cantidad} x ${i.name} - Talla: ${i.talla} - $${(i.precio * i.cantidad).toFixed(2)}`).join("\n")}
+
+💳 *Pago:* ${pedido.metodoPago === "transferencia" ? "Transferencia Bancaria" : pedido.metodoPago}
+💰 *Total:* $${pedido.total.toFixed(2)}
+  `.trim();
+
+  const url = `https://wa.me/593990270864?text=${encodeURIComponent(mensaje)}`;
+  window.open(url, "_blank");
+}
+
+// 📩 Validaciones
+function validarEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+}
+
+function sanitize(str = "") {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML.trim();
+}
+
+function mostrarMensaje(texto, tipo = "info") {
+  msgEstado.textContent = texto;
+  msgEstado.style.color =
+    tipo === "success" ? "limegreen" :
+    tipo === "error" ? "tomato" :
+    tipo === "warn" ? "orange" :
+    "#666";
+}

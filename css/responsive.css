@@ -107,6 +107,11 @@
     width: 48px;
     height: 48px;
   }
+
+  .modal {
+    width: 95% !important;
+    margin: auto;
+  }
 }
 
 /* 📞 Teléfonos Pequeños (≤ 480px) */
@@ -172,5 +177,16 @@
   .btn-comprar {
     font-size: 15px;
     padding: 10px 20px;
+  }
+
+  .top-bar {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .promo-banner {
+    font-size: 0.95rem;
+    padding: 0.8rem;
   }
 }

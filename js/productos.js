@@ -3,11 +3,11 @@
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
-// Verificación de sesión
+// 🔐 Verificación de sesión
 const token = verificarSesion();
 const API_PRODUCTS = `${API_BASE}/api/products`;
 
-// DOM Elements
+// 🌐 Elementos del DOM
 const productosLista = document.getElementById("productosLista");
 const btnNuevoProducto = document.getElementById("btnNuevoProducto");
 const inputBuscar = document.getElementById("buscarProducto");
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**
- * 📡 Obtener todos los productos
+ * 📡 Cargar productos desde la API
  */
 async function cargarProductos() {
   productosLista.innerHTML = `<p class='text-center'>⏳ Cargando productos...</p>`;
@@ -59,16 +59,16 @@ async function cargarProductos() {
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || "Error al obtener productos");
 
-    if (!Array.isArray(data) || data.length === 0) {
-      productosTodos = [];
+    productosTodos = Array.isArray(data) ? data : [];
+    paginaActual = 1;
+
+    if (!productosTodos.length) {
       productosLista.innerHTML = "<p class='text-center'>📭 No se encontraron productos.</p>";
+      contadorProductos.textContent = "";
       return;
     }
 
-    productosTodos = data;
-    paginaActual = 1;
     renderizarProductos();
-
   } catch (err) {
     console.error("❌", err);
     productosLista.innerHTML = `<p class='text-center' style='color:red;'>❌ ${err.message}</p>`;
@@ -76,12 +76,12 @@ async function cargarProductos() {
 }
 
 /**
- * 📋 Renderizar productos por página y con filtros
+ * 🧮 Renderizar productos con filtros y paginación
  */
 function renderizarProductos() {
   let filtrados = [...productosTodos];
 
-  // Filtrar por stock
+  // 📦 Filtrar por stock
   if (filtroStock?.value === "sinStock") {
     filtrados = filtrados.filter(p => {
       const total = p.variants?.reduce((a, v) => a + (v.stock || 0), 0) || p.stock || 0;
@@ -89,19 +89,19 @@ function renderizarProductos() {
     });
   }
 
-  // Filtrar por destacados
+  // ⭐ Filtrar por destacados
   if (filtroDestacados?.checked) {
-    filtrados = filtrados.filter(p => p.featured === true);
+    filtrados = filtrados.filter(p => p.featured);
   }
 
-  // Paginación
+  // 📄 Paginación
   const totalPaginas = Math.ceil(filtrados.length / productosPorPagina);
   const inicio = (paginaActual - 1) * productosPorPagina;
   const pagina = filtrados.slice(inicio, inicio + productosPorPagina);
 
   contadorProductos.textContent = `Mostrando ${pagina.length} de ${filtrados.length} producto(s)`;
 
-  if (pagina.length === 0) {
+  if (!pagina.length) {
     productosLista.innerHTML = "<p class='text-center'>📭 Sin resultados.</p>";
     paginacion.innerHTML = "";
     return;
@@ -120,9 +120,7 @@ function renderizarProductos() {
             <th>Acciones</th>
           </tr>
         </thead>
-        <tbody>
-          ${pagina.map(productoFilaHTML).join("")}
-        </tbody>
+        <tbody>${pagina.map(productoFilaHTML).join("")}</tbody>
       </table>
     </div>`;
 
@@ -130,13 +128,13 @@ function renderizarProductos() {
 }
 
 /**
- * 🔢 Render de paginación
+ * 🔢 Renderizar paginación
  */
-function renderPaginacion(total) {
+function renderPaginacion(totalPaginas) {
   paginacion.innerHTML = "";
-  if (total <= 1) return;
+  if (totalPaginas <= 1) return;
 
-  for (let i = 1; i <= total; i++) {
+  for (let i = 1; i <= totalPaginas; i++) {
     const btn = document.createElement("button");
     btn.textContent = i;
     btn.className = i === paginaActual ? "btn paginacion-activa" : "btn-secundario";
@@ -149,7 +147,7 @@ function renderPaginacion(total) {
 }
 
 /**
- * 🧾 Generar HTML de fila
+ * 🧾 Generar HTML por fila de producto
  */
 function productoFilaHTML(p) {
   const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
@@ -181,10 +179,11 @@ function productoFilaHTML(p) {
 }
 
 /**
- * 🗑️ Eliminar
+ * 🗑️ Eliminar producto
  */
 async function eliminarProducto(id, nombre) {
   if (!confirm(`¿Eliminar "${nombre}"?`)) return;
+
   try {
     const res = await fetch(`${API_PRODUCTS}/${id}`, {
       method: "DELETE",
@@ -197,21 +196,22 @@ async function eliminarProducto(id, nombre) {
     mostrarMensaje(`✅ "${nombre}" eliminado`, "success");
     await cargarProductos();
   } catch (err) {
-    console.error(err);
+    console.error("❌", err);
     mostrarMensaje("❌ No se pudo eliminar", "error");
   }
 }
 
 /**
- * 📤 Exportar a Excel
+ * 📤 Exportar productos a Excel
  */
 async function exportarExcel() {
   const { utils, writeFile } = await import("https://cdn.sheetjs.com/xlsx-0.20.0/package/xlsx.mjs");
+
   const hoja = productosTodos.map(p => ({
     ID: p._id,
     Nombre: p.name,
     Precio: p.price,
-    Stock: (p.stock ?? (p.variants?.reduce((a, v) => a + (v.stock || 0), 0))) || 0,
+    Stock: (p.stock ?? p.variants?.reduce((a, v) => a + (v.stock || 0), 0)) || 0,
     Categoría: p.category,
     Destacado: p.featured ? "Sí" : "No"
   }));
@@ -219,11 +219,11 @@ async function exportarExcel() {
   const ws = utils.json_to_sheet(hoja);
   const wb = utils.book_new();
   utils.book_append_sheet(wb, ws, "Inventario");
-  writeFile(wb, "inventario_kmezropa.xlsx");
+  writeFile(wb, `inventario_kmezropa_${Date.now()}.xlsx`);
 }
 
 /**
- * 🔐 Sanitizar texto
+ * 🔐 Sanitizar texto para evitar XSS
  */
 function sanitize(text) {
   const temp = document.createElement("div");
@@ -231,7 +231,7 @@ function sanitize(text) {
   return temp.innerHTML;
 }
 
-// Funciones globales
+// 🌐 Funciones globales
 window.goBack = goBack;
 window.editarProducto = id => window.location.href = `/editar-producto.html?id=${id}`;
 window.eliminarProducto = eliminarProducto;

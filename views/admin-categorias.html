@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>📁 Administrar Categorías | KM & EZ ROPA</title>
 
-  <!-- 🔒 Seguridad y SEO -->
+  <!-- 🔐 Seguridad & SEO -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="author" content="KM & EZ ROPA" />
   <meta name="description" content="Administra las categorías y subcategorías del catálogo de KM & EZ ROPA fácilmente." />
+  <meta name="author" content="KM & EZ ROPA" />
+  <meta name="theme-color" content="#ff6d00" />
 
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -25,59 +26,72 @@
 
     <!-- Encabezado -->
     <header class="text-center mt-2 mb-2" role="banner">
-      <h1>📁 Gestión de Categorías</h1>
+      <h1 tabindex="0">📁 Gestión de Categorías</h1>
       <p>Agrega, edita o elimina categorías para organizar el catálogo de productos.</p>
     </header>
 
-    <!-- Mensaje dinámico -->
+    <!-- 🗨️ Mensaje dinámico de feedback -->
     <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
 
-    <!-- Nueva Categoría -->
+    <!-- ➕ Nueva Categoría -->
     <section class="form-section" aria-labelledby="tituloCrearCategoria" role="region">
       <h2 id="tituloCrearCategoria">➕ Crear Categoría</h2>
-      <form id="formCrearCategoria" role="form" aria-describedby="categoriaInputHelp">
+      <form id="formCrearCategoria" role="form" aria-describedby="categoriaInputHelp" novalidate>
         <label for="categoriaInput" class="sr-only">Nombre de la categoría</label>
-        <input type="text" id="categoriaInput" placeholder="Nombre de la categoría" required aria-required="true" />
+        <input 
+          type="text" 
+          id="categoriaInput" 
+          placeholder="Nombre de la categoría" 
+          required 
+          aria-required="true" 
+          maxlength="50" 
+        />
         <button type="submit" class="btn">✅ Crear</button>
-        <small id="categoriaInputHelp" class="form-help">Ej: mujer, hombre, niño...</small>
+        <small id="categoriaInputHelp" class="form-help">Ej: mujer, hombre, niño, accesorios...</small>
       </form>
     </section>
 
-    <!-- Nueva Subcategoría -->
+    <!-- ➕ Nueva Subcategoría -->
     <section class="form-section" aria-labelledby="tituloSubcategoria" role="region">
       <h2 id="tituloSubcategoria">➕ Agregar Subcategoría</h2>
-      <form id="formSubcategoria" role="form">
+      <form id="formSubcategoria" role="form" novalidate>
         <label for="selectCategoria" class="sr-only">Seleccionar categoría principal</label>
         <select id="selectCategoria" required aria-label="Seleccionar categoría principal">
-          <option value="">Seleccionar categoría</option>
+          <option value="">📂 Selecciona una categoría</option>
         </select>
 
         <label for="subcategoriaInput" class="sr-only">Nombre de la subcategoría</label>
-        <input type="text" id="subcategoriaInput" placeholder="Nombre de subcategoría" required />
+        <input 
+          type="text" 
+          id="subcategoriaInput" 
+          placeholder="Nombre de subcategoría" 
+          required 
+          maxlength="50"
+        />
 
         <button type="submit" class="btn">✅ Agregar</button>
       </form>
     </section>
 
-    <!-- Lista Categorías -->
+    <!-- 📋 Lista de Categorías -->
     <section class="lista-categorias mt-4" aria-labelledby="tituloListaCategorias" role="region">
       <h2 id="tituloListaCategorias">📋 Categorías Registradas</h2>
       <ul id="listaCategorias" class="lista-render" aria-live="polite">
-        <!-- Renderizado dinámico con JS -->
+        <!-- Renderizado dinámicamente por JS -->
       </ul>
     </section>
 
-    <!-- Botón volver -->
+    <!-- 🔙 Volver al Panel -->
     <div class="text-center mt-4">
-      <button onclick="goBack()" class="btn-secundario" aria-label="Volver al panel administrativo">
+      <button onclick="window.location.href='/panel.html'" class="btn-secundario" aria-label="Volver al panel de administración">
         🔙 Volver al Panel
       </button>
     </div>
   </main>
 
-  <!-- JS inhabilitado -->
+  <!-- 🚫 JS desactivado -->
   <noscript>
-    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para utilizar esta sección de administración.</p>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para gestionar las categorías correctamente.</p>
   </noscript>
 
 </body>

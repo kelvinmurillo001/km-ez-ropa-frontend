@@ -51,14 +51,13 @@ body.modo-oscuro .dashboard-container {
   color: #222;
 }
 
+/* 🌙 Modo oscuro para tarjetas */
 body.modo-oscuro .metricas .card {
   background-color: #292929;
 }
-
 body.modo-oscuro .metricas .card h3 {
   color: #90caf9;
 }
-
 body.modo-oscuro .metricas .card p {
   color: #ffffff;
 }
@@ -96,14 +95,13 @@ body.modo-oscuro .metricas .card p {
   background-color: #f0f0f0;
 }
 
+/* 🌙 Modo oscuro extra */
 body.modo-oscuro .analitica-extra {
   background-color: #292929;
 }
-
 body.modo-oscuro .analitica-extra li {
   border-color: #444;
 }
-
 body.modo-oscuro .analitica-extra li:hover,
 body.modo-oscuro .analitica-extra li:focus-within {
   background-color: #333;

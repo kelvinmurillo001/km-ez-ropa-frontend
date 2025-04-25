@@ -2,6 +2,7 @@
 
 import { API_BASE } from "./config.js";
 import { verificarSesion } from "./admin-utils.js";
+import { abrirModal, cerrarModal } from "./modal.js";
 
 const token = verificarSesion();
 const API_PROMOS_ADMIN = `${API_BASE}/api/promos/admin`;
@@ -64,6 +65,8 @@ function renderPromos(promos = []) {
   promos.forEach(promo => {
     const card = document.createElement("div");
     card.className = `promo-card ${getPromoEstadoClass(promo)}`;
+    card.setAttribute("role", "article");
+    card.setAttribute("aria-label", `Promoción ${sanitize(promo.message || "sin mensaje")}`);
 
     card.innerHTML = `
       <div class="promo-header">
@@ -83,7 +86,7 @@ function renderPromos(promos = []) {
           ${promo.active ? '⛔ Desactivar' : '✅ Activar'}
         </button>
         <button class="btn" onclick="editarPromo('${promo._id}')">✏️ Editar</button>
-        <button class="btn-borrar" onclick="eliminarPromo('${promo._id}', this)">🗑️ Eliminar</button>
+        <button class="btn-borrar" onclick="confirmarEliminarPromo('${promo._id}')">🗑️ Eliminar</button>
       </div>
     `;
 
@@ -143,19 +146,29 @@ window.togglePromo = async (id, btn) => {
     await cargarTodasPromos();
   } catch (err) {
     console.error(err);
-    alert("⚠️ No se pudo cambiar el estado de la promoción.");
+    abrirModal("⚠️ Estado no actualizado", "No se pudo cambiar el estado de la promoción.");
   } finally {
     btn.disabled = false;
   }
 };
 
 /**
- * 🗑️ Eliminar promoción
+ * 🗑️ Confirmar y eliminar promoción
  */
-window.eliminarPromo = async (id, btn) => {
-  if (!id || !confirm("⚠️ ¿Eliminar esta promoción permanentemente?")) return;
-  btn.disabled = true;
+window.confirmarEliminarPromo = (id) => {
+  abrirModal("🗑️ Eliminar Promoción", `
+    <p>¿Estás seguro de eliminar esta promoción?</p>
+    <div class="mt-2 flex gap-1">
+      <button class="btn" onclick="eliminarPromo('${id}')">✅ Sí, eliminar</button>
+      <button class="btn-secundario" onclick="cerrarModal()">❌ Cancelar</button>
+    </div>
+  `);
+};
 
+/**
+ * ❌ Eliminar promoción
+ */
+window.eliminarPromo = async (id) => {
   try {
     const res = await fetch(API_PROMOS_DELETE(id), {
       method: "DELETE",
@@ -163,17 +176,17 @@ window.eliminarPromo = async (id, btn) => {
     });
 
     if (!res.ok) throw new Error("❌ Error al eliminar");
+    cerrarModal();
     await cargarTodasPromos();
   } catch (err) {
     console.error(err);
-    alert("❌ No se pudo eliminar la promoción.");
-  } finally {
-    btn.disabled = false;
+    cerrarModal();
+    abrirModal("Error", "❌ No se pudo eliminar la promoción.");
   }
 };
 
 /**
- * ✏️ Editar una promoción existente
+ * ✏️ Editar una promoción
  */
 window.editarPromo = async (id) => {
   try {
@@ -193,14 +206,12 @@ window.editarPromo = async (id) => {
     document.getElementById("promoFin").value = promo.endDate?.substring(0, 10) || "";
     document.getElementById("promoActivo").checked = !!promo.active;
 
-    // Limpiar y marcar checkboxes de páginas
     document.querySelectorAll("input[name='promoPages']").forEach(cb => cb.checked = false);
     promo.pages?.forEach(p => {
       const cb = document.querySelector(`input[name='promoPages'][value='${p}']`);
       if (cb) cb.checked = true;
     });
 
-    // Render multimedia editable
     const mediaContainer = document.getElementById("mediaUploadContainer");
     mediaContainer.innerHTML = "";
 
@@ -220,7 +231,7 @@ window.editarPromo = async (id) => {
     document.getElementById("formPromo")?.scrollIntoView({ behavior: "smooth" });
   } catch (err) {
     console.error("❌", err);
-    alert("⚠️ No se pudo cargar la promoción para edición.");
+    abrirModal("⚠️ Error", "No se pudo cargar la promoción para edición.");
   }
 };
 

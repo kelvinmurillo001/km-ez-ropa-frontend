@@ -101,6 +101,33 @@ h1 {
   background-color: #2a2a2a;
 }
 
+/* === 🏷️ BADGES DE ESTADO DE PRODUCTO === */
+.badge-producto {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.badge-sin-stock {
+  background-color: #f4433622;
+  color: #f44336;
+}
+
+.badge-bajo-stock {
+  background-color: #ff980022;
+  color: #ff9800;
+}
+
+.badge-destacado {
+  background-color: #ffd54f22;
+  color: #ffd54f;
+}
+
 /* 🔴 Estado visual para productos sin stock */
 .sin-stock {
   background-color: #2a2a2a !important;

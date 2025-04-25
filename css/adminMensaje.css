@@ -1,49 +1,52 @@
 /* 📦 adminMensaje.css – Estilos para mensajes flotantes del panel admin */
 
 #adminMensaje {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-    min-width: 260px;
-    max-width: 90%;
-    padding: 1rem 1.5rem;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 8px;
-    text-align: center;
-    opacity: 0.95;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    transition: all 0.3s ease-in-out;
-    border: 2px solid transparent;
-    display: none;
-  }
-  
-  #adminMensaje.success {
-    background-color: #163f16;
-    color: #adffad;
-    border-color: limegreen;
-    display: block;
-  }
-  
-  #adminMensaje.error {
-    background-color: #4a1212;
-    color: #ffc1c1;
-    border-color: red;
-    display: block;
-  }
-  
-  #adminMensaje.info {
-    background-color: #2e1a00;
-    color: #fff5d1;
-    border-color: #ffa733;
-    display: block;
-  }
-  
-  #adminMensaje.oculto {
-    display: none !important;
-    opacity: 0;
-    pointer-events: none;
-  }
-  
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  min-width: 260px;
+  max-width: 90%;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  text-align: center;
+  opacity: 0.95;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
+  border: 2px solid transparent;
+  display: none;
+}
+
+/* ✅ Éxito */
+#adminMensaje.success {
+  background-color: #163f16;
+  color: #adffad;
+  border-color: limegreen;
+  display: block;
+}
+
+/* ❌ Error */
+#adminMensaje.error {
+  background-color: #4a1212;
+  color: #ffc1c1;
+  border-color: red;
+  display: block;
+}
+
+/* ℹ️ Información */
+#adminMensaje.info {
+  background-color: #2e1a00;
+  color: #fff5d1;
+  border-color: #ffa733;
+  display: block;
+}
+
+/* 🕳️ Oculto */
+#adminMensaje.oculto {
+  display: none !important;
+  opacity: 0;
+  pointer-events: none;
+}

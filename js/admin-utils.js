@@ -1,42 +1,37 @@
 "use strict";
 
 /**
- * 🔐 Verifica si el usuario está autenticado y es admin.
- * Si no lo está, redirige a login y detiene ejecución.
+ * 🔐 Verifica si el usuario está autenticado como administrador.
+ * Redirige a login si no lo está.
  * @returns {string} token de autenticación
  */
 export function verificarSesion() {
   const token = localStorage.getItem("admin_token");
   const userRaw = localStorage.getItem("admin_user");
 
-  let user = {};
   try {
-    user = JSON.parse(userRaw);
+    const user = JSON.parse(userRaw);
+    if (!token || !user?.isAdmin) throw new Error();
+    return token;
   } catch (err) {
-    console.warn("⚠️ Datos de sesión corruptos. Limpiando...");
+    console.warn("⚠️ Sesión inválida o corrupta. Redirigiendo...");
     localStorage.clear();
-  }
-
-  if (!token || !user?.isAdmin) {
-    alert("⚠️ Acceso restringido. Debes iniciar sesión como administrador.");
-    localStorage.clear();
+    alert("⚠️ Acceso restringido. Inicia sesión como administrador.");
     window.location.href = "/login.html";
     throw new Error("🚫 Usuario no autenticado o sin permisos");
   }
-
-  return token;
 }
 
 /**
  * 💬 Muestra un mensaje accesible flotante.
- * @param {string} texto - El texto a mostrar.
- * @param {"success"|"error"|"info"} tipo - Tipo visual (para CSS).
+ * @param {string} texto - El texto del mensaje.
+ * @param {"success"|"error"|"info"|"warning"} tipo - Tipo visual.
  */
 export function mostrarMensaje(texto = "", tipo = "info") {
   const mensaje = document.getElementById("adminMensaje");
 
   if (!mensaje) {
-    console.warn("⚠️ Elemento #adminMensaje no encontrado. Usando alert()...");
+    console.warn("⚠️ #adminMensaje no encontrado. Usando alert...");
     alert(texto);
     return;
   }
@@ -54,14 +49,14 @@ export function mostrarMensaje(texto = "", tipo = "info") {
 }
 
 /**
- * 🔙 Redirige al panel de administración principal.
+ * 🔙 Redirige al panel de administración.
  */
 export function goBack() {
   window.location.href = "/panel.html";
 }
 
 /**
- * 🚪 Cierra la sesión y limpia almacenamiento.
+ * 🚪 Cierra la sesión de administrador.
  */
 export function cerrarSesion() {
   localStorage.removeItem("admin_token");
@@ -70,17 +65,17 @@ export function cerrarSesion() {
 }
 
 /**
- * 🧑‍💻 Obtiene los datos del usuario autenticado.
- * @returns {Object} objeto de usuario o {} si inválido.
+ * 👤 Devuelve los datos del usuario autenticado.
+ * @returns {Object} Usuario autenticado o {} si no válido.
  */
 export function getUsuarioActivo() {
   try {
     const raw = localStorage.getItem("admin_user");
     return raw ? JSON.parse(raw) : {};
-  } catch (err) {
+  } catch {
     return {};
   }
 }
 
-// 🌐 Exponer logout globalmente (para botones HTML)
+// 🌐 Exponer logout en global (uso en HTML onclick)
 window.cerrarSesion = cerrarSesion;

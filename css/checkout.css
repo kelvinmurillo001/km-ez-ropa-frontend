@@ -6,6 +6,35 @@ body {
   line-height: 1.6;
   margin: 0;
   padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* === MODO CLARO === */
+body:not(.modo-oscuro) {
+  background-color: #f9f9f9;
+  color: #222;
+}
+
+body:not(.modo-oscuro) .form-checkout {
+  background-color: #ffffff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.06);
+}
+
+body:not(.modo-oscuro) input,
+body:not(.modo-oscuro) textarea {
+  background-color: #fff;
+  color: #222;
+  border: 1px solid #ccc;
+}
+
+body:not(.modo-oscuro) .btn {
+  background-color: #ff6d00;
+  color: #fff;
+}
+
+body:not(.modo-oscuro) .btn-secundario {
+  border-color: #ff6d00;
+  color: #ff6d00;
 }
 
 /* === TÍTULO === */
@@ -16,7 +45,7 @@ h1 {
   font-size: 2rem;
 }
 
-/* === CONTENEDOR PRINCIPAL === */
+/* === CONTENEDOR === */
 .checkout-container {
   max-width: 800px;
   margin: auto;
@@ -34,7 +63,7 @@ h1 {
   gap: 1.5rem;
 }
 
-/* === FIELDSETS Y LEGENDS === */
+/* === FIELDSETS & LEGENDS === */
 .form-checkout fieldset {
   border: none;
   border-top: 1px solid #444;
@@ -66,8 +95,8 @@ h1 {
   border: 1px solid #444;
   border-radius: 6px;
   font-size: 1rem;
-  transition: border 0.2s ease;
   margin-top: 0.2rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .form-checkout input:focus,
@@ -80,6 +109,60 @@ h1 {
 textarea {
   resize: vertical;
   min-height: 80px;
+}
+
+/* === PASOS (WIZARD) === */
+.checkout-steps {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding: 0 1rem;
+  counter-reset: step;
+}
+
+.checkout-steps .step {
+  position: relative;
+  flex: 1;
+  text-align: center;
+  color: #aaa;
+  font-weight: bold;
+}
+
+.checkout-steps .step::before {
+  counter-increment: step;
+  content: counter(step);
+  width: 32px;
+  height: 32px;
+  display: inline-block;
+  background-color: #444;
+  color: #fff;
+  border-radius: 50%;
+  line-height: 32px;
+  margin-bottom: 0.5rem;
+}
+
+.checkout-steps .step.active::before,
+.checkout-steps .step.completed::before {
+  background-color: #ff6d00;
+}
+
+.checkout-steps .step.completed {
+  color: #ff6d00;
+}
+
+.checkout-steps .step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 16px;
+  right: -50%;
+  width: 100%;
+  height: 2px;
+  background-color: #444;
+  z-index: -1;
+}
+
+.checkout-steps .step.completed:not(:last-child)::after {
+  background-color: #ff6d00;
 }
 
 /* === RESUMEN DEL PEDIDO === */
@@ -154,17 +237,6 @@ h3 span#totalFinal {
   border-radius: 6px;
 }
 
-/* === RESPONSIVE === */
-@media (max-width: 600px) {
-  .form-actions {
-    flex-direction: column;
-  }
-
-  h1 {
-    font-size: 1.6rem;
-  }
-}
-
 /* === MÉTODO DE PAGO COMO BOTONES === */
 .metodo-pago-selector {
   display: flex;
@@ -197,4 +269,24 @@ h3 span#totalFinal {
 .pago-btn input:checked + label {
   border-color: #ff6d00;
   background-color: #1a1a1a;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 600px) {
+  .form-actions {
+    flex-direction: column;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  .checkout-steps {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .checkout-steps .step::after {
+    display: none;
+  }
 }

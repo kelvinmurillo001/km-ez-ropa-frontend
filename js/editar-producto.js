@@ -27,8 +27,14 @@ document.addEventListener("DOMContentLoaded", () => {
   cargarCategorias();
   cargarProducto();
 
-  document.getElementById("btnAgregarVariante")?.addEventListener("click", agregarVariante);
+  document.getElementById("btnAgregarVariante")?.addEventListener("click", renderVarianteNueva);
 });
+
+function validarCampo(valor, mensaje) {
+  if (!valor || valor.trim() === "") {
+    throw new Error(mensaje);
+  }
+}
 
 async function cargarCategorias() {
   try {
@@ -72,35 +78,58 @@ async function cargarProducto() {
       `;
     }
 
-    p.variants?.forEach((v, i) => {
-      const div = document.createElement("div");
-      div.className = "variante-box";
-      div.innerHTML = `
-        <p><strong>Variante #${i + 1}</strong></p>
-        <img src="${v.imageUrl}" alt="Variante" class="preview-mini" />
-        <label>Reemplazar imagen:</label>
-        <input type="file" class="variante-img" accept="image/*" />
-        <label>Color:</label>
-        <input type="text" class="variante-color" value="${v.color}" />
-        <label>Talla:</label>
-        <input type="text" class="variante-talla" value="${v.talla}" />
-        <label>Stock:</label>
-        <input type="number" class="variante-stock" min="0" value="${v.stock}" />
-        <input type="hidden" class="variante-id" value="${v.cloudinaryId}" />
-        <button type="button" class="btn-secundario btn-quitar-variante">🗑️ Quitar</button>
-        <hr />
-      `;
-      variantesDiv.appendChild(div);
-    });
-
-    variantesDiv.querySelectorAll(".btn-quitar-variante").forEach(btn => {
-      btn.addEventListener("click", () => btn.parentElement.remove());
-    });
-
+    p.variants?.forEach(renderVarianteExistente);
   } catch (err) {
     console.error("❌ Error al cargar producto:", err);
     msgEstado.innerHTML = `❌ Error al cargar producto.<br><button onclick="goBack()">🔙 Volver</button>`;
   }
+}
+
+function renderVarianteExistente(v, i) {
+  const div = document.createElement("div");
+  div.className = "variante-box";
+  div.innerHTML = `
+    <p><strong>Variante #${i + 1}</strong></p>
+    <img src="${v.imageUrl}" alt="Variante" class="preview-mini" />
+    <label>Reemplazar imagen:</label>
+    <input type="file" class="variante-img" accept="image/*" />
+    <label>Color:</label>
+    <input type="text" class="variante-color" value="${v.color}" />
+    <label>Talla:</label>
+    <input type="text" class="variante-talla" value="${v.talla}" />
+    <label>Stock:</label>
+    <input type="number" class="variante-stock" min="0" value="${v.stock}" />
+    <input type="hidden" class="variante-id" value="${v.cloudinaryId}" />
+    <button type="button" class="btn-secundario btn-quitar-variante">🗑️ Quitar</button>
+    <hr />
+  `;
+  variantesDiv.appendChild(div);
+  div.querySelector(".btn-quitar-variante").addEventListener("click", () => div.remove());
+}
+
+function renderVarianteNueva() {
+  if (document.querySelectorAll(".variante-box").length >= 4) {
+    mostrarMensaje("⚠️ Máximo 4 variantes permitidas", "warning");
+    return;
+  }
+
+  const div = document.createElement("div");
+  div.className = "variante-box";
+  div.innerHTML = `
+    <p><strong>Nueva Variante</strong></p>
+    <label>Imagen:</label>
+    <input type="file" class="variante-img" accept="image/*" required />
+    <label>Color:</label>
+    <input type="text" class="variante-color" placeholder="Ej: blanco, vino" required />
+    <label>Talla:</label>
+    <input type="text" class="variante-talla" required />
+    <label>Stock:</label>
+    <input type="number" class="variante-stock" min="0" required />
+    <button type="button" class="btn-secundario btn-quitar-variante">🗑️ Quitar</button>
+    <hr />
+  `;
+  variantesDiv.appendChild(div);
+  div.querySelector(".btn-quitar-variante").addEventListener("click", () => div.remove());
 }
 
 async function subirImagen(file) {
@@ -126,44 +155,10 @@ async function subirImagen(file) {
   };
 }
 
-function agregarVariante() {
-  if (document.querySelectorAll(".variante-box").length >= 4) {
-    mostrarMensaje("⚠️ Máximo 4 variantes permitidas", "warning");
-    return;
-  }
-
-  const div = document.createElement("div");
-  div.className = "variante-box";
-  div.innerHTML = `
-    <p><strong>Nueva Variante</strong></p>
-    <label>Imagen:</label>
-    <input type="file" class="variante-img" accept="image/*" required />
-    <label>Color:</label>
-    <input type="text" class="variante-color" placeholder="Ej: blanco, vino" required />
-    <label>Talla:</label>
-    <input type="text" class="variante-talla" required />
-    <label>Stock:</label>
-    <input type="number" class="variante-stock" min="0" required />
-    <button type="button" class="btn-secundario btn-quitar-variante">🗑️ Quitar</button>
-    <hr />
-  `;
-  variantesDiv.appendChild(div);
-  div.querySelector(".btn-quitar-variante").addEventListener("click", () => div.remove());
-}
-
-function mostrarMensaje(msg, tipo = "info") {
-  msgEstado.textContent = msg;
-  msgEstado.style.color =
-    tipo === "success" ? "limegreen" :
-    tipo === "error" ? "red" :
-    "orange";
-
-  msgEstado.scrollIntoView({ behavior: "smooth", block: "center" });
-}
-
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   mostrarMensaje("⏳ Guardando cambios...", "info");
+  form.classList.add("bloqueado");
 
   try {
     const nombre = form.nombreInput.value.trim();
@@ -176,10 +171,10 @@ form.addEventListener("submit", async (e) => {
     const color = form.colorInput.value.trim();
     const sizes = form.tallasInput.value.split(",").map(s => s.trim()).filter(Boolean);
 
-    if (!nombre || !descripcion || isNaN(precio) || !categoria) {
-      mostrarMensaje("⚠️ Completa todos los campos obligatorios", "warning");
-      return;
-    }
+    validarCampo(nombre, "⚠️ Nombre del producto obligatorio");
+    validarCampo(descripcion, "⚠️ Descripción del producto requerida");
+    validarCampo(categoria, "⚠️ Selecciona una categoría");
+    if (isNaN(precio)) throw new Error("⚠️ Precio inválido");
 
     const nuevaImg = form.imagenPrincipalNueva?.files[0];
     let nuevaImagen = null;
@@ -193,7 +188,9 @@ form.addEventListener("submit", async (e) => {
       const stock = parseInt(b.querySelector(".variante-stock")?.value || "0");
       const cloudinaryId = b.querySelector(".variante-id")?.value;
 
-      if (!talla || !color) throw new Error("⚠️ Color y talla requeridos en variante");
+      validarCampo(color, "⚠️ Color requerido en variante");
+      validarCampo(talla, "⚠️ Talla requerida en variante");
+      if (isNaN(stock) || stock < 0) throw new Error("⚠️ Stock inválido en variante");
 
       let imageUrl = null;
       let finalCloudinaryId = cloudinaryId;
@@ -209,7 +206,6 @@ form.addEventListener("submit", async (e) => {
       return { imageUrl, cloudinaryId: finalCloudinaryId, color, talla, stock };
     }));
 
-    // 🔁 Validar duplicados
     const claves = new Set();
     for (const v of variantes) {
       const clave = `${v.talla}-${v.color}`;
@@ -249,6 +245,8 @@ form.addEventListener("submit", async (e) => {
   } catch (err) {
     console.error("❌", err);
     mostrarMensaje(`❌ ${err.message}`, "error");
+  } finally {
+    form.classList.remove("bloqueado");
   }
 });
 

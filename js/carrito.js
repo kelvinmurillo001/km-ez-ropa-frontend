@@ -14,18 +14,23 @@ let carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 document.addEventListener("DOMContentLoaded", () => {
   limpiarItemsInvalidos();
   renderizarCarrito();
+
   btnIrCheckout?.addEventListener("click", irACheckout);
   btnVaciarCarrito?.addEventListener("click", vaciarCarrito);
+
+  if (localStorage.getItem("modoOscuro") === "true") {
+    document.body.classList.add("modo-oscuro");
+  }
 });
 
-// 🔍 Sanitiza texto
+// 🧼 Sanitiza texto
 function sanitizeText(str) {
   const temp = document.createElement("div");
   temp.textContent = str;
   return temp.innerHTML;
 }
 
-// 🔍 Sanitiza URLs
+// 🧼 Sanitiza URLs
 function sanitizeURL(url) {
   try {
     return new URL(url, window.location.origin).href;
@@ -39,7 +44,7 @@ function guardarCarrito() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(carrito));
 }
 
-// 🧹 Filtra productos corruptos
+// 🧹 Filtra productos inválidos
 function limpiarItemsInvalidos() {
   carrito = carrito.filter(item =>
     item &&
@@ -62,11 +67,11 @@ function actualizarTotal() {
   btnVaciarCarrito.disabled = carrito.length === 0;
 }
 
-// 🛍️ Renderiza visualmente el carrito
+// 🛍️ Renderiza el carrito completo
 function renderizarCarrito() {
   if (!carrito.length) {
     carritoItems.innerHTML = `
-      <div class="text-center fade-in">
+      <div class="text-center fade-in" role="status" aria-live="polite">
         <p>🛍️ Tu carrito está vacío. <a href='/categorias.html'>Explora nuestras categorías</a>.</p>
       </div>`;
     carritoTotal.textContent = "$0.00";
@@ -88,7 +93,7 @@ function renderizarCarrito() {
     const div = document.createElement("div");
     div.className = "carrito-item fade-in";
     div.setAttribute("role", "group");
-    div.setAttribute("aria-label", `Producto ${nombre}`);
+    div.setAttribute("aria-label", `Producto: ${nombre}, Talla: ${talla}, Cantidad: ${cantidad}`);
 
     div.innerHTML = `
       <img src="${imagen}" alt="${nombre}" class="carrito-img" />
@@ -98,10 +103,10 @@ function renderizarCarrito() {
         <p><strong>Precio:</strong> $${precio.toFixed(2)}</p>
         <div class="carrito-cantidad">
           <label for="cantidad_${index}">Cantidad:</label>
-          <input type="number" id="cantidad_${index}" min="1" max="100" value="${cantidad}" data-index="${index}" />
+          <input type="number" id="cantidad_${index}" min="1" max="100" value="${cantidad}" data-index="${index}" aria-label="Cantidad de ${nombre}" />
         </div>
         <p><strong>Subtotal:</strong> $${subtotal}</p>
-        <button class="btn-eliminar" data-index="${index}" aria-label="Eliminar ${nombre}">🗑️ Eliminar</button>
+        <button class="btn-eliminar" data-index="${index}" aria-label="Eliminar ${nombre} del carrito">🗑️ Eliminar</button>
       </div>
     `;
     carritoItems.appendChild(div);
@@ -111,7 +116,7 @@ function renderizarCarrito() {
   agregarListeners();
 }
 
-// 🧠 Escucha eventos de cantidad o eliminar
+// 🎧 Listeners para inputs y botones
 function agregarListeners() {
   document.querySelectorAll(".carrito-cantidad input").forEach(input => {
     input.addEventListener("change", e => {
@@ -140,14 +145,14 @@ function agregarListeners() {
   });
 }
 
-// ✅ Ir a checkout
+// ✅ Redirige a checkout
 function irACheckout() {
   if (carrito.length > 0) {
     window.location.href = "/checkout.html";
   }
 }
 
-// 🧹 Vaciar el carrito completo
+// 🧹 Vacía el carrito completo
 function vaciarCarrito() {
   const confirmar = confirm("⚠️ ¿Estás seguro de vaciar todo el carrito?");
   if (confirmar) {

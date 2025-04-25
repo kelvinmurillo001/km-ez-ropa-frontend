@@ -175,21 +175,6 @@ button.btn-secundario:hover {
   color: var(--color-bg);
 }
 
-/* 📱 RESPONSIVE */
-@media (max-width: 600px) {
-  .form-editar-promo form {
-    gap: 0.8rem;
-  }
-
-  .checkbox-group {
-    flex-direction: column;
-  }
-
-  .promo-actual video {
-    max-height: 250px;
-  }
-}
-
 /* 🔍 FILTROS DE BÚSQUEDA */
 .filtros-promos {
   display: flex;
@@ -208,4 +193,19 @@ button.btn-secundario:hover {
   border-radius: 6px;
   font-size: 1rem;
   min-width: 220px;
+}
+
+/* 📱 RESPONSIVE */
+@media (max-width: 600px) {
+  .form-editar-promo form {
+    gap: 0.8rem;
+  }
+
+  .checkbox-group {
+    flex-direction: column;
+  }
+
+  .promo-actual video {
+    max-height: 250px;
+  }
 }

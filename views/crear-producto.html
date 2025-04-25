@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>➕ Crear Producto | KM & EZ ROPA</title>
 
-  <!-- Meta -->
+  <!-- SEO -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Formulario profesional para agregar nuevos productos con tallas, colores, variantes e imágenes a la tienda KM & EZ ROPA." />
 
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="/css/crear-producto.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- JS principal -->
+  <!-- JS -->
   <script type="module" src="/js/crear-producto.js" defer></script>
 </head>
 <body>
@@ -25,41 +25,41 @@
 
     <form id="formProducto" class="form-producto" enctype="multipart/form-data" novalidate>
 
-      <!-- Imagen Principal -->
+      <!-- 📷 Imagen principal -->
       <label for="imagenPrincipalInput">📷 Imagen Principal *</label>
       <input type="file" id="imagenPrincipalInput" accept="image/jpeg,image/png,image/svg+xml" required aria-describedby="imagenHelp" />
       <small id="imagenHelp" class="help-text">Máx. 2MB. Formatos: JPG, PNG, SVG.</small>
       <div id="previewPrincipal" class="preview-imagen" aria-live="polite"></div>
 
-      <!-- Nombre del producto -->
+      <!-- 📝 Nombre -->
       <label for="nombreInput">📝 Nombre del Producto *</label>
       <input type="text" id="nombreInput" placeholder="Ej: Hoodie urbana" required maxlength="100" />
 
-      <!-- Descripción -->
+      <!-- 📄 Descripción -->
       <label for="descripcionInput">📄 Descripción *</label>
       <textarea id="descripcionInput" placeholder="Detalles sobre el corte, tela o diseño..." required maxlength="300"></textarea>
 
-      <!-- Precio -->
+      <!-- 💲 Precio -->
       <label for="precioInput">💲 Precio *</label>
       <input type="number" id="precioInput" step="0.01" min="0" required placeholder="Ej: 39.90" />
 
-      <!-- Stock Base -->
+      <!-- 📦 Stock -->
       <label for="stockInput">📦 Stock Base *</label>
       <input type="number" id="stockInput" min="0" required placeholder="Ej: 10" />
 
-      <!-- Categoría -->
+      <!-- 📂 Categoría -->
       <label for="categoriaInput">📂 Categoría *</label>
       <select id="categoriaInput" required>
         <option value="">Selecciona una categoría</option>
       </select>
 
-      <!-- Subcategoría -->
+      <!-- 📁 Subcategoría -->
       <label for="subcategoriaInput">📁 Subcategoría</label>
       <select id="subcategoriaInput" disabled>
         <option value="">Selecciona una subcategoría</option>
       </select>
 
-      <!-- Tipo de Talla -->
+      <!-- 📐 Tipo de Talla -->
       <label for="tallaTipoInput">📐 Tipo de Talla *</label>
       <select id="tallaTipoInput" required>
         <option value="">Selecciona tipo</option>
@@ -70,42 +70,43 @@
         <option value="bebé">Bebé</option>
       </select>
 
-      <!-- Tallas disponibles -->
+      <!-- 📏 Tallas disponibles -->
       <label for="tallasInput">📏 Tallas Disponibles</label>
       <input type="text" id="tallasInput" placeholder="Ej: S, M, L, XL" />
 
-      <!-- Color principal -->
+      <!-- 🎨 Color -->
       <label for="colorInput">🎨 Color Principal</label>
       <input type="text" id="colorInput" placeholder="Ej: negro, azul marino" />
 
-      <!-- Producto destacado -->
+      <!-- 🌟 Producto destacado -->
       <div class="mt-2">
         <input type="checkbox" id="destacadoInput" />
         <label for="destacadoInput">🌟 Producto destacado</label>
       </div>
 
-      <!-- Variantes -->
+      <!-- 🎨 Variantes -->
       <fieldset class="mt-3">
         <legend>🎨 Variantes (colores alternativos con imagen y stock):</legend>
         <div id="variantesContainer" aria-live="polite"></div>
         <button type="button" class="btn-secundario mt-1" id="btnAgregarVariante">➕ Añadir Variante</button>
       </fieldset>
 
-      <!-- Acciones -->
+      <!-- 🧾 Acciones -->
       <div class="form-actions mt-3">
         <button type="submit" class="btn">💾 Guardar Producto</button>
         <button type="button" id="btnCancelar" class="btn-secundario">🔙 Cancelar</button>
         <a href="/productos.html" class="btn-secundario" style="margin-left: 10px;">⬅️ Volver a Productos</a>
       </div>
 
+      <!-- 📣 Mensaje -->
       <p id="msgEstado" class="form-msg text-center mt-2" role="status" aria-live="polite"></p>
     </form>
   </main>
 
-  <!-- Mensaje flotante para feedback -->
+  <!-- 🧠 Feedback -->
   <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="assertive"></div>
 
-  <!-- Activar modo oscuro automáticamente -->
+  <!-- 🌙 Modo oscuro -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("modoOscuro") === "true") {
@@ -116,8 +117,10 @@
     });
   </script>
 
+  <!-- 🚫 JS fallback -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Activa JavaScript para poder crear un producto correctamente.</p>
   </noscript>
+
 </body>
 </html>

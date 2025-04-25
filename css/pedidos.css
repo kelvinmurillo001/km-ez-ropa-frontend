@@ -108,6 +108,44 @@ h1 {
   color: #121212;
 }
 
+/* === 🏷️ BADGES DE ESTADO === */
+.badge-estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
+  border-radius: 999px;
+  font-weight: bold;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.estado-pendiente {
+  background-color: #ffb30022;
+  color: #ffb300;
+}
+
+.estado-procesando {
+  background-color: #2196f322;
+  color: #2196f3;
+}
+
+.estado-enviado {
+  background-color: #00bcd422;
+  color: #00bcd4;
+}
+
+.estado-entregado {
+  background-color: #4caf5022;
+  color: #4caf50;
+}
+
+.estado-cancelado {
+  background-color: #f4433622;
+  color: #f44336;
+}
+
 /* === 📱 RESPONSIVE TABLE === */
 @media (max-width: 768px) {
   .tabla-admin thead {

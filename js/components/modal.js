@@ -3,19 +3,23 @@
  * @param {string} titulo - Título del modal.
  * @param {HTMLElement|string} contenido - Contenido HTML o texto plano.
  */
+let ultimoFoco = null;
+
 export function abrirModal(titulo, contenido) {
-  cerrarModal(); // Elimina modal anterior si existe
+  cerrarModal(); // Elimina cualquier modal anterior
+
+  ultimoFoco = document.activeElement;
 
   // 🛡️ Overlay
   const overlay = document.createElement("div");
-  overlay.className = "modal-overlay";
+  overlay.className = "modal-overlay fade-in";
   overlay.id = "modal-overlay";
   overlay.setAttribute("role", "dialog");
   overlay.setAttribute("aria-modal", "true");
   overlay.setAttribute("aria-labelledby", "modal-titulo");
   overlay.tabIndex = -1;
 
-  // 🎯 Modal
+  // 🎯 Modal principal
   const modal = document.createElement("div");
   modal.className = "modal";
   modal.tabIndex = -1;
@@ -32,7 +36,7 @@ export function abrirModal(titulo, contenido) {
   h3.id = "modal-titulo";
   h3.textContent = titulo;
 
-  // 📄 Contenido
+  // 📄 Contenido dinámico
   const contentNode = document.createElement("div");
   contentNode.className = "modal-contenido";
   if (typeof contenido === "string") {
@@ -41,33 +45,50 @@ export function abrirModal(titulo, contenido) {
     contentNode.appendChild(contenido);
   }
 
-  // 🧩 Ensamblar
+  // 🧩 Ensamblar estructura
   modal.appendChild(cerrar);
   modal.appendChild(h3);
   modal.appendChild(contentNode);
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
+  document.body.classList.add("no-scroll");
 
-  // 🔁 Enfocar el modal automáticamente
-  setTimeout(() => {
-    modal.focus();
-  }, 50);
+  // 🔁 Enfocar modal al renderizar
+  setTimeout(() => modal.focus(), 50);
 
-  // ⌨️ Cerrar con Esc
+  // ⌨️ Esc key
   document.addEventListener("keydown", cerrarConEscape);
+
+  // 🖱️ Cerrar al hacer clic fuera del modal
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) cerrarModal();
+  });
 }
 
 /**
- * ❌ Cierra el modal si está presente.
+ * ❌ Cierra el modal si existe.
  */
 export function cerrarModal() {
   const overlay = document.getElementById("modal-overlay");
-  if (overlay) overlay.remove();
+  if (overlay) {
+    overlay.classList.remove("fade-in");
+    overlay.classList.add("fade-out");
+
+    setTimeout(() => {
+      overlay.remove();
+      document.body.classList.remove("no-scroll");
+    }, 200);
+  }
+
+  if (ultimoFoco && typeof ultimoFoco.focus === "function") {
+    ultimoFoco.focus();
+  }
+
   document.removeEventListener("keydown", cerrarConEscape);
 }
 
 /**
- * ⌨️ Cerrar al presionar Esc
+ * ⌨️ Cierra con Escape
  */
 function cerrarConEscape(e) {
   if (e.key === "Escape") cerrarModal();

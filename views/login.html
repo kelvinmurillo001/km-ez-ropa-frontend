@@ -2,58 +2,62 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🔐 Iniciar Sesión | KM & EZ ROPA</title>
 
   <!-- 🔒 Seguridad y SEO -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Accede al panel administrativo de KM & EZ ROPA y gestiona productos, pedidos y promociones." />
   <meta name="author" content="KM & EZ ROPA" />
+  <meta name="theme-color" content="#ff6d00" />
 
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
-  <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
+  <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/login.css" />
 
-  <!-- ✅ JS -->
+  <!-- ✅ Scripts -->
   <script type="module" src="/js/login.js" defer></script>
 </head>
 <body>
 
+  <!-- 👤 Login administrativo -->
   <main class="login-container fade-in" role="main" aria-labelledby="tituloLogin">
     <h1 id="tituloLogin" class="text-center">🔐 Acceso Administrativo</h1>
 
     <form id="formLogin" class="formulario" aria-describedby="instruccionesLogin" novalidate>
       <p id="instruccionesLogin" class="text-center mb-2">Introduce tus credenciales para entrar al panel.</p>
 
-      <!-- Usuario -->
-      <label for="username">Usuario:</label>
-      <input 
-        type="text"
-        name="username"
-        id="username"
-        placeholder="Ej: admin"
-        required
-        autocomplete="username"
-        aria-required="true"
-        maxlength="40"
-        inputmode="text"
-      />
+      <fieldset>
+        <!-- Usuario -->
+        <label for="username">Usuario:</label>
+        <input 
+          type="text"
+          name="username"
+          id="username"
+          placeholder="Ej: admin"
+          required
+          autocomplete="username"
+          aria-required="true"
+          maxlength="40"
+          inputmode="text"
+        />
 
-      <!-- Contraseña -->
-      <label for="password">Contraseña:</label>
-      <input 
-        type="password"
-        name="password"
-        id="password"
-        placeholder="••••••••"
-        required
-        autocomplete="current-password"
-        aria-required="true"
-        maxlength="100"
-        inputmode="text"
-      />
+        <!-- Contraseña -->
+        <label for="password">Contraseña:</label>
+        <input 
+          type="password"
+          name="password"
+          id="password"
+          placeholder="••••••••"
+          required
+          autocomplete="current-password"
+          aria-required="true"
+          maxlength="100"
+          inputmode="text"
+        />
+      </fieldset>
 
       <!-- Botón de acceso -->
       <button type="submit" class="btn mt-2" aria-label="Ingresar al panel de control">🔓 Ingresar</button>
@@ -64,8 +68,8 @@
         class="mensaje-error mt-2" 
         role="alert" 
         aria-live="assertive" 
-        style="display: none; color: red;"
-      ></div>
+        style="display: none; color: red;">
+      </div>
 
       <!-- Navegación secundaria -->
       <div class="text-center mt-3">
@@ -80,7 +84,7 @@
     </form>
   </main>
 
-  <!-- Fallback para navegadores sin JS -->
+  <!-- ⚠️ Fallback para navegadores sin JS -->
   <noscript>
     <p style="text-align:center; color:red;">⚠️ Debes activar JavaScript para iniciar sesión.</p>
   </noscript>
@@ -93,5 +97,6 @@
       }
     });
   </script>
+
 </body>
 </html>

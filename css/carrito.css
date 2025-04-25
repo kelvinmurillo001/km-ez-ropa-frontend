@@ -6,6 +6,31 @@ body {
   margin: 0;
   padding: 0;
   line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* === ☀️ MODO CLARO === */
+body:not(.modo-oscuro) {
+  background-color: #f9f9f9;
+  color: #222;
+}
+body:not(.modo-oscuro) .carrito-item,
+body:not(.modo-oscuro) .carrito-resumen {
+  background-color: #fff;
+  border-color: #ddd;
+}
+body:not(.modo-oscuro) .carrito-cantidad input {
+  background-color: #fff;
+  color: #222;
+  border-color: #ccc;
+}
+body:not(.modo-oscuro) .btn-eliminar {
+  border-color: #e53935;
+  color: #e53935;
+}
+body:not(.modo-oscuro) .btn-eliminar:hover {
+  background-color: #e53935;
+  color: #fff;
 }
 
 /* === 🛒 TÍTULO === */
@@ -158,7 +183,6 @@ h1 {
   border: none;
   color: #121212;
 }
-
 .btn:hover {
   background-color: #ffa733;
 }
@@ -168,7 +192,6 @@ h1 {
   color: #ff6d00;
   border: 2px solid #ff6d00;
 }
-
 .btn-secundario:hover {
   background-color: #ff6d00;
   color: #121212;

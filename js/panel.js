@@ -6,7 +6,7 @@ import { API_BASE } from "./config.js";
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formLogin");
 
-  // 🌙 Aplicar modo oscuro si está activado
+  // 🌙 Modo oscuro persistente
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const inputUser = form.username;
   const inputPass = form.password;
 
-  // Escuchar envío del formulario
+  // 📨 Escuchar envío del formulario
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     ocultarError();
@@ -55,15 +55,15 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // ✅ Guardar sesión en localStorage
+      // 🧠 Guardar sesión
       localStorage.setItem("admin_token", data.token);
       localStorage.setItem("admin_user", JSON.stringify(data.user));
 
-      // Redireccionar al panel
+      // 🔁 Redirigir
       window.location.href = "/panel.html";
 
     } catch (err) {
-      console.error("❌ Error:", err);
+      console.error("❌ Error de conexión:", err);
       mostrarError("❌ No se pudo conectar al servidor.");
     } finally {
       btnSubmit.disabled = false;
@@ -71,10 +71,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Permitir Enter para enviar desde cualquier input
+  // ⌨️ Enviar con Enter en cualquier input
   form.querySelectorAll("input").forEach(input => {
     input.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") form.dispatchEvent(new Event("submit"));
+      if (e.key === "Enter") {
+        form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+      }
     });
   });
 });

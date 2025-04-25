@@ -1,13 +1,15 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>👕 Productos | Panel Admin | KM & EZ ROPA</title>
 
-  <!-- Meta -->
+  <!-- Meta SEO y Seguridad -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Administra los productos de tu tienda. Agrega, edita y elimina artículos fácilmente desde el panel de administración." />
+  <meta name="author" content="KM & EZ ROPA" />
+  <meta name="theme-color" content="#ff6d00" />
 
   <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -18,18 +20,18 @@
 </head>
 <body>
 
-<main class="productos-container fade-in" role="main">
+<main class="productos-container fade-in" role="main" aria-label="Gestión de productos">
   <h1 class="text-center" tabindex="0">👕 Gestión de Productos</h1>
 
-  <!-- 🔥 PROMOCIÓN DESTACADA -->
+  <!-- 🔥 Promoción dinámica -->
   <div id="promo-display-container" data-page="productos" role="region" aria-label="Promoción activa en productos"></div>
 
-  <!-- ➕ Crear nuevo -->
+  <!-- ➕ Crear nuevo producto -->
   <div class="text-center mt-2">
     <button id="btnNuevoProducto" class="btn" aria-label="Crear nuevo producto">➕ Nuevo Producto</button>
   </div>
 
-  <!-- 🔍 Filtros -->
+  <!-- 🔍 Filtros de búsqueda -->
   <div class="filtros text-center mt-2" role="search" aria-label="Filtrar productos">
     <input type="text" id="buscarProducto" placeholder="🔎 Buscar por nombre..." aria-label="Buscar producto por nombre" />
     <select id="filtroCategoria" aria-label="Filtrar por categoría">
@@ -42,49 +44,46 @@
     </select>
   </div>
 
-  <!-- 📦 Contador -->
+  <!-- 📦 Contador de productos -->
   <p id="contadorProductos" class="text-center mt-2" style="font-weight: bold; color: #ccc;" role="status" aria-live="polite"></p>
 
-  <!-- 📋 Lista -->
+  <!-- 📋 Listado dinámico de productos -->
   <section id="productosLista" class="productos-lista mt-3" aria-label="Listado dinámico de productos">
-    <!-- JS dinámico -->
+    <!-- Render dinámico por JS -->
   </section>
 
-  <!-- 🔢 Paginación (¡Agregado para evitar error!) -->
-  <div id="paginacion" class="paginacion text-center mt-3" aria-label="Paginación del listado de productos"></div>
+  <!-- 🔢 Paginación -->
+  <div id="paginacion" class="paginacion text-center mt-3" aria-label="Navegación por páginas de productos"></div>
 
-  <!-- 🔙 Botón regreso -->
+  <!-- 🔙 Botón de regreso -->
   <div class="text-center mt-3">
     <button id="btnVolverPanel" class="btn-secundario" aria-label="Volver al panel principal">🔙 Volver al Panel</button>
   </div>
 </main>
 
-<!-- 📣 Mensaje dinámico -->
+<!-- 📣 Mensajes flotantes -->
 <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
 
-<!-- 🌙 Modo oscuro automático -->
+<!-- 🌙 Activación automática de modo oscuro -->
 <script>
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 </script>
 
-<!-- ✅ Módulos principales -->
-<script type="module">
+<!-- ✅ Scripts principales -->
+<script type="module" defer>
   import { goBack } from "/js/admin-utils.js";
   import "/js/productos.js";
   import "/js/promo-display.js";
 
-  document.getElementById("btnVolverPanel").addEventListener("click", goBack);
+  document.getElementById("btnVolverPanel")?.addEventListener("click", goBack);
 </script>
 
-<!-- 🚫 No-JS fallback -->
+<!-- 🚫 Fallback sin JS -->
 <noscript>
   <p style="text-align:center; color:red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
 </noscript>
-<!-- 📣 Mensaje dinámico -->
-<div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
-
 
 </body>
 </html>

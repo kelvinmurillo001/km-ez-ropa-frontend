@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>✏️ Editar Producto | KM & EZ ROPA</title>
 
-  <!-- Meta -->
+  <!-- Meta SEO & Seguridad -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Editar detalles completos de un producto, incluyendo imágenes, tallas, variantes y más." />
 
@@ -25,38 +25,38 @@
 
   <form id="formEditarProducto" class="form-producto" enctype="multipart/form-data" novalidate>
     
-    <!-- 📸 Imagen Actual -->
+    <!-- 📸 Imagen actual -->
     <label for="imagenPrincipalActual">Imagen Principal Actual:</label>
     <div id="imagenPrincipalActual" class="preview-imagen" aria-live="polite"></div>
 
-    <!-- 🖼️ Cambiar Imagen -->
+    <!-- 🖼️ Subir nueva imagen -->
     <label for="imagenPrincipalNueva">Subir Nueva Imagen Principal:</label>
     <input type="file" id="imagenPrincipalNueva" accept="image/*" aria-describedby="imagenHelp" />
     <small id="imagenHelp" class="help-text">Opcional. Máx. 2MB. Formatos: JPG, PNG, WEBP.</small>
 
-    <!-- 🔤 Nombre -->
+    <!-- 📝 Nombre -->
     <label for="nombreInput">Nombre del Producto: *</label>
     <input type="text" id="nombreInput" required placeholder="Ej: Hoodie urbana oversize" maxlength="100" />
 
-    <!-- 📝 Descripción -->
+    <!-- 📄 Descripción -->
     <label for="descripcionInput">Descripción del Producto: *</label>
     <textarea id="descripcionInput" required placeholder="Describe estilo, tela, corte... máx. 300 caracteres." maxlength="300"></textarea>
 
-    <!-- 💰 Precio -->
+    <!-- 💲 Precio -->
     <label for="precioInput">Precio de venta: *</label>
     <input type="number" id="precioInput" step="0.01" min="0" required />
 
-    <!-- 📦 Stock base -->
+    <!-- 📦 Stock -->
     <label for="stockInput">Stock base (si no hay variantes):</label>
     <input type="number" id="stockInput" min="0" value="0" />
 
-    <!-- 🧩 Categoría -->
+    <!-- 🗂️ Categoría -->
     <label for="categoriaInput">Categoría principal: *</label>
     <select id="categoriaInput" required>
       <option value="">Selecciona una categoría</option>
     </select>
 
-    <!-- 🪪 Subcategoría -->
+    <!-- 📁 Subcategoría -->
     <label for="subcategoriaInput">Subcategoría:</label>
     <input type="text" id="subcategoriaInput" maxlength="100" placeholder="Ej: Camisetas básicas, Sportwear..." />
 
@@ -68,13 +68,13 @@
     <label for="colorInput">Color principal:</label>
     <input type="text" id="colorInput" placeholder="Ej: negro, beige, denim oscuro" />
 
-    <!-- 🔝 Producto destacado -->
+    <!-- ⭐ Destacado -->
     <div class="mt-2">
       <input type="checkbox" id="destacadoInput" />
       <label for="destacadoInput">✅ Producto destacado en inicio</label>
     </div>
 
-    <!-- 🧬 Variantes -->
+    <!-- 🔀 Variantes -->
     <fieldset class="mt-2">
       <legend>Variantes (colores, tallas y stock específicos)</legend>
       <div id="variantesExistentes" aria-live="polite"></div>
@@ -88,11 +88,12 @@
       <a href="/productos.html" class="btn-secundario" style="margin-left: 10px;">⬅️ Volver a Productos</a>
     </div>
 
+    <!-- 🔔 Mensaje de estado -->
     <p id="msgEstado" class="form-msg text-center mt-2" role="status" aria-live="assertive"></p>
   </form>
 </main>
 
-<!-- 🌙 Modo oscuro -->
+<!-- 🌓 Modo Oscuro + Previsualización de Imagen -->
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     if (localStorage.getItem("modoOscuro") === "true") {
@@ -101,8 +102,7 @@
 
     document.getElementById("btnCancelar")?.addEventListener("click", () => history.back());
 
-    // 🖼️ Vista previa imagen nueva
-    document.getElementById("imagenPrincipalNueva")?.addEventListener("change", e => {
+    document.getElementById("imagenPrincipalNueva")?.addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (file && file.type.startsWith("image/")) {
         const reader = new FileReader();
@@ -116,6 +116,7 @@
   });
 </script>
 
+<!-- 🚫 JS fallback -->
 <noscript>
   <p style="text-align: center; color: red;">⚠️ Activa JavaScript para poder editar el producto correctamente.</p>
 </noscript>

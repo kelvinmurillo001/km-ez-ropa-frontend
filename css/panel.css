@@ -1,35 +1,35 @@
-/* === 🎛️ PANEL ADMINISTRATIVO CSS COMPLETO === */
+/* === 🎛️ PANEL ADMIN CSS MEJORADO === */
 
-/* 🔲 CONTENEDOR PRINCIPAL */
+/* 🔲 CONTENEDOR */
 .panel-container {
   max-width: 1000px;
   margin: 0 auto;
   padding: 2rem;
   font-family: 'Segoe UI', sans-serif;
-  background-color: #ffffff;
-  color: #333;
+  background-color: #fff;
+  color: #222;
   border-radius: 12px;
-  animation: fadeIn 0.4s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.4s ease-out;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body.modo-oscuro .panel-container {
   background-color: #121212;
-  color: #eee;
+  color: #f1f1f1;
 }
 
-/* 🔰 ENCABEZADO */
+/* 🧭 ENCABEZADO PANEL */
 .header-panel {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #1976d2;
-  color: white;
+  color: #fff;
   padding: 1rem 1.5rem;
   border-radius: 10px;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  animation: fadeIn 0.4s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   transition: background-color 0.3s ease;
 }
 
@@ -37,16 +37,18 @@ body.modo-oscuro .panel-container {
   margin: 0;
   font-size: 1.6rem;
   font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .header-panel button {
   background-color: #e53935;
-  color: white;
+  color: #fff;
   border: none;
-  padding: 10px 16px;
+  padding: 10px 18px;
   border-radius: 6px;
   font-size: 15px;
   cursor: pointer;
+  font-weight: 500;
   transition: background-color 0.2s ease;
 }
 
@@ -71,15 +73,18 @@ body.modo-oscuro .panel-container {
   font-size: 15px;
   color: #333;
   text-decoration: none;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid transparent;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
   transition: all 0.25s ease;
 }
 
-.menu-panel a:hover {
-  background-color: #eeeeee;
+.menu-panel a:hover,
+.menu-panel a:focus-visible {
+  background-color: #e0e0e0;
   color: #1976d2;
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  outline: none;
 }
 
 .menu-panel a:focus {
@@ -90,9 +95,9 @@ body.modo-oscuro .panel-container {
 /* 🌙 MODO OSCURO */
 body.modo-oscuro .menu-panel a {
   background-color: #1e1e1e;
-  color: #eee;
+  color: #ddd;
   border: 1px solid #333;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 body.modo-oscuro .menu-panel a:hover {
@@ -100,11 +105,11 @@ body.modo-oscuro .menu-panel a:hover {
   color: #90caf9;
 }
 
-/* 🎞️ ANIMACIÓN DE ENTRADA */
+/* 🎞️ ANIMACIÓN */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -112,15 +117,15 @@ body.modo-oscuro .menu-panel a:hover {
   }
 }
 
-/* 📱 ADAPTACIÓN RESPONSIVE */
-@media (max-width: 600px) {
+/* 📱 RESPONSIVE */
+@media (max-width: 640px) {
   .menu-panel {
     grid-template-columns: 1fr;
   }
 
   .header-panel {
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
     text-align: center;
   }
 
@@ -130,6 +135,6 @@ body.modo-oscuro .menu-panel a:hover {
 
   .menu-panel a {
     font-size: 16px;
-    padding: 1.2rem;
+    padding: 1.3rem;
   }
 }

@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🎯 Promociones | KM & EZ ROPA</title>
 
-  <!-- SEO -->
+  <!-- 🔍 SEO -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="description" content="Administra promociones visuales impactantes para atraer clientes y aumentar ventas. Agrega texto, imagen o video.">
+  <meta name="description" content="Administra promociones visuales impactantes para atraer clientes y aumentar ventas. Agrega texto, imagen o video." />
+  <meta name="author" content="KM & EZ ROPA" />
 
-  <!-- Estilos -->
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
@@ -17,22 +18,17 @@
   <link rel="stylesheet" href="/css/promos-admin-panel.css" />
   <link rel="stylesheet" href="/css/adminMensaje.css" />
 
-  <!-- Scripts -->
+  <!-- ✅ Scripts -->
   <script type="module" src="/js/promociones.js" defer></script>
 </head>
 <body>
 
-<main class="promociones-container fade-in" role="main">
+<main class="promociones-container fade-in" role="main" aria-label="Gestión de promociones visuales">
   <h1 class="text-center">🚀 Promociones que Atraen y Convencen</h1>
 
-  <!-- Filtros -->
-  <section class="mt-2 filtros-promos" aria-label="Filtrar promociones existentes">
-    <input 
-      type="text" 
-      id="buscarPromo" 
-      placeholder="🔎 Buscar por mensaje atractivo..."
-      aria-label="Buscar promociones por mensaje"
-    />
+  <!-- 🔍 Filtros -->
+  <section class="mt-2 filtros-promos" aria-label="Filtrar promociones">
+    <input type="text" id="buscarPromo" placeholder="🔎 Buscar por mensaje atractivo..." aria-label="Buscar promociones por mensaje" />
     <select id="filtroEstado" aria-label="Filtrar por estado de promoción">
       <option value="">Todos los estados</option>
       <option value="activa">✅ Activa</option>
@@ -42,35 +38,28 @@
     </select>
   </section>
 
-  <!-- Dashboard Promos -->
-  <section class="promo-dashboard mt-2" aria-label="Panel de promociones existentes">
+  <!-- 📋 Dashboard Promos -->
+  <section class="promo-dashboard mt-2" aria-label="Listado de promociones">
     <h2>📋 Todas las Promociones</h2>
     <div id="promo-container" class="promo-grid" role="list">
-      <!-- Se carga dinámicamente -->
+      <!-- Renderizado dinámico -->
     </div>
   </section>
 
-  <!-- Promoción activa -->
-  <section class="promo-actual mt-3" id="estadoActual" aria-label="Vista previa de la promoción activa">
-    <!-- Se inserta dinámicamente -->
+  <!-- 🔎 Vista previa actual -->
+  <section class="promo-actual mt-3" id="estadoActual" aria-label="Vista previa de promoción activa">
+    <!-- Insertado dinámicamente -->
   </section>
 
-  <!-- Formulario creación / edición -->
-  <section class="form-editar-promo mt-3" aria-label="Formulario de promoción">
+  <!-- 📝 Formulario Promoción -->
+  <section class="form-editar-promo mt-3" aria-label="Crear o editar promoción visual">
     <h3>✏️ Crear o Editar una Promoción Visual</h3>
 
     <form id="formPromo" enctype="multipart/form-data" novalidate>
       <input type="hidden" id="promoId" />
 
       <label for="promoMensaje">Mensaje destacado: *</label>
-      <input 
-        type="text" 
-        id="promoMensaje" 
-        required 
-        placeholder="Ej: ¡Hasta 50% OFF solo hoy! 🔥" 
-        maxlength="120"
-        aria-required="true"
-      />
+      <input type="text" id="promoMensaje" required placeholder="Ej: ¡Hasta 50% OFF solo hoy! 🔥" maxlength="120" aria-required="true" />
 
       <label for="promoTema">Tema visual:</label>
       <select id="promoTema">
@@ -104,7 +93,7 @@
         <option value="video">🎬 Video Promocional</option>
       </select>
 
-      <!-- Contenedor de carga -->
+      <!-- 🖼️ Upload -->
       <div id="mediaUploadContainer" class="mt-1" aria-live="polite">
         <label for="mediaInput" class="oculto">Subir imagen o video</label>
         <input type="file" id="mediaInput" accept="image/*,video/*" />
@@ -117,25 +106,23 @@
       <label for="promoFin">Fecha de fin:</label>
       <input type="date" id="promoFin" />
 
-      <label>
-        <input type="checkbox" id="promoActivo" />
-        Activar promoción al guardar
-      </label>
+      <label><input type="checkbox" id="promoActivo" /> Activar promoción al guardar</label>
 
       <button type="submit" class="btn mt-2" aria-label="Guardar promoción">💾 Guardar promoción</button>
       <p id="msgPromo" class="form-msg text-center mt-2" role="alert" aria-live="assertive"></p>
     </form>
   </section>
 
-  <!-- Botón volver -->
+  <!-- 🔙 Regresar -->
   <div class="text-center mt-3">
-    <button onclick="goBack()" class="btn-secundario">🔙 Volver al panel</button>
+    <button onclick="goBack()" class="btn-secundario" aria-label="Volver al panel">🔙 Volver al panel</button>
   </div>
 </main>
 
-<!-- Mensaje global -->
+<!-- 🔔 Mensaje global -->
 <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="assertive"></div>
 
+<!-- 🚫 No-JS -->
 <noscript>
   <p style="text-align:center; color:red;">⚠️ Activa JavaScript para administrar las promociones.</p>
 </noscript>

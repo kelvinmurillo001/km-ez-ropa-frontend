@@ -1,27 +1,30 @@
 // 📁 js/utils.js
 import { API_BASE } from "./config.js";
 
+const DEBUG_VISITAS = false; // Activar logs detallados solo si es necesario
+
 /**
- * 📊 Registrar una visita pública anónima
- * Este registro se envía solo una vez cada 5 segundos por sesión
- * para evitar sobrecarga innecesaria en el backend.
+ * 📊 Registrar una visita pública anónima.
+ * Solo se registra una vez cada 5 segundos por sesión.
  */
 export function registrarVisitaPublica() {
   if (!navigator.onLine) {
-    console.warn("📴 Sin conexión: visita no registrada.");
+    if (DEBUG_VISITAS) console.warn("📴 Sin conexión: visita no registrada.");
     return;
   }
 
-  // Prevenir registros duplicados por sesión
   const cooldownKey = "visitaRegistrada";
-  if (sessionStorage.getItem(cooldownKey)) return;
+  if (sessionStorage.getItem(cooldownKey)) {
+    if (DEBUG_VISITAS) console.log("⏳ Ya se registró visita recientemente.");
+    return;
+  }
 
   const payload = {
-    pagina: window.location.pathname,
+    pagina: window.location.pathname || "desconocida",
     fecha: new Date().toISOString(),
     referrer: document.referrer || null,
-    userAgent: navigator.userAgent,
-    titulo: document.title || null
+    userAgent: navigator.userAgent || "desconocido",
+    titulo: document.title || "sin título"
   };
 
   fetch(`${API_BASE}/api/visitas/registrar`, {
@@ -34,7 +37,7 @@ export function registrarVisitaPublica() {
       return res.json();
     })
     .then(data => {
-      console.log("📊 Visita registrada:", data);
+      if (DEBUG_VISITAS) console.log("📊 Visita registrada:", data);
       sessionStorage.setItem(cooldownKey, "true");
       setTimeout(() => sessionStorage.removeItem(cooldownKey), 5000);
     })

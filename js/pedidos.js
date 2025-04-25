@@ -4,7 +4,7 @@
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
-// 🔗 Endpoints
+// 🌐 Endpoints
 const API_ORDERS = `${API_BASE}/api/orders`;
 
 // 📌 DOM
@@ -27,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
     paginaActual = 1;
     renderPedidos();
   });
-
   btnExportar?.addEventListener("click", exportarPDF);
 
   if (localStorage.getItem("modoOscuro") === "true") {
@@ -36,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**
- * 📦 Cargar todos los pedidos
+ * 📦 Obtener pedidos desde la API
  */
 async function cargarPedidos() {
   try {
@@ -57,20 +56,19 @@ async function cargarPedidos() {
 }
 
 /**
- * 🔍 Filtro y render
+ * 🧮 Renderizar pedidos según estado y página
  */
 function renderPedidos() {
-  let pedidosFiltrados = aplicarFiltro(todosLosPedidos);
-
+  const pedidosFiltrados = aplicarFiltro(todosLosPedidos);
   const totalPaginas = Math.ceil(pedidosFiltrados.length / pedidosPorPagina);
   const inicio = (paginaActual - 1) * pedidosPorPagina;
   const pagina = pedidosFiltrados.slice(inicio, inicio + pedidosPorPagina);
 
   renderEstadisticas(pedidosFiltrados);
+  renderPaginacion(totalPaginas);
 
   if (!pagina.length) {
     listaPedidos.innerHTML = `<p class="text-center">📭 No hay pedidos con este estado.</p>`;
-    paginacion.innerHTML = "";
     return;
   }
 
@@ -88,7 +86,6 @@ function renderPedidos() {
 
     const cliente = sanitize(p.nombreCliente || "Sin nombre");
     const nota = sanitize(p.nota || "-");
-
     const linkWA = p.metodoPago === "transferencia" ? generarLinkWhatsapp(p) : "";
 
     return `
@@ -123,12 +120,10 @@ function renderPedidos() {
       </thead>
       <tbody>${filas}</tbody>
     </table>`;
-
-  renderPaginacion(totalPaginas);
 }
 
 /**
- * 📊 Mostrar estadísticas básicas
+ * 📊 Renderizar estadísticas básicas
  */
 function renderEstadisticas(pedidos) {
   const total = pedidos.length;
@@ -145,13 +140,13 @@ function renderEstadisticas(pedidos) {
 }
 
 /**
- * 🔢 Paginación dinámica
+ * 🔢 Crear controles de paginación
  */
-function renderPaginacion(total) {
+function renderPaginacion(totalPaginas) {
   paginacion.innerHTML = "";
-  if (total <= 1) return;
+  if (totalPaginas <= 1) return;
 
-  for (let i = 1; i <= total; i++) {
+  for (let i = 1; i <= totalPaginas; i++) {
     const btn = document.createElement("button");
     btn.textContent = i;
     btn.className = i === paginaActual ? "btn paginacion-activa" : "btn-secundario";
@@ -164,7 +159,7 @@ function renderPaginacion(total) {
 }
 
 /**
- * 🔍 Filtro por estado
+ * 🔍 Aplicar filtro por estado
  */
 function aplicarFiltro(pedidos = []) {
   const estado = filtroEstado?.value || "todos";
@@ -181,7 +176,6 @@ window.cambiarEstado = async (id, selectElem) => {
   if (!nuevoEstado) return;
 
   selectElem.disabled = true;
-
   try {
     const res = await fetch(`${API_ORDERS}/${id}`, {
       method: "PUT",
@@ -205,13 +199,14 @@ window.cambiarEstado = async (id, selectElem) => {
 };
 
 /**
- * 📄 Exportar a PDF
+ * 📄 Exportar pedidos a PDF
  */
 async function exportarPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
 
   doc.text("Resumen de Pedidos", 14, 14);
+
   const filas = todosLosPedidos.map(p => [
     p.nombreCliente,
     p.total?.toFixed(2) || "0.00",
@@ -229,20 +224,20 @@ async function exportarPDF() {
 }
 
 /**
- * 🎨 Estado visual
+ * 🏷️ Formatear estado visual
  */
 function formatearEstado(estado) {
-  switch ((estado || "").toLowerCase()) {
-    case "pendiente": return "⏳ Pendiente";
-    case "en_proceso": return "⚙️ En Proceso";
-    case "enviado": return "📦 Enviado";
-    case "cancelado": return "❌ Cancelado";
-    default: return estado || "Desconocido";
-  }
+  const est = (estado || "").toLowerCase();
+  return {
+    pendiente: "⏳ Pendiente",
+    en_proceso: "⚙️ En Proceso",
+    enviado: "📦 Enviado",
+    cancelado: "❌ Cancelado"
+  }[est] || estado || "Desconocido";
 }
 
 /**
- * 🧩 Opciones de estado
+ * 🔄 Generar opciones <select> de estado
  */
 function generarOpcionesEstado(actual) {
   const estados = ["pendiente", "en_proceso", "enviado", "cancelado"];
@@ -252,7 +247,7 @@ function generarOpcionesEstado(actual) {
 }
 
 /**
- * 💬 Generar mensaje de WhatsApp
+ * 💬 Crear enlace a WhatsApp con mensaje de pedido
  */
 function generarLinkWhatsapp(p) {
   const productos = p.items?.map(i =>
@@ -268,14 +263,13 @@ function generarLinkWhatsapp(p) {
 ${productos}
 
 💰 Total: $${p.total?.toFixed(2) || "0.00"}
-💳 Pago: Transferencia
-  `);
+💳 Pago: Transferencia`);
 
   return `<a href="https://wa.me/593990270864?text=${texto}" target="_blank" class="btn btn-wsp mt-1">💬 WhatsApp</a>`;
 }
 
 /**
- * 🔐 Evitar XSS
+ * 🔐 Sanitiza texto para evitar XSS
  */
 function sanitize(text) {
   const temp = document.createElement("div");
@@ -283,5 +277,5 @@ function sanitize(text) {
   return temp.innerHTML;
 }
 
-// 🔄 Global
+// 🌍 Global export
 window.goBack = goBack;

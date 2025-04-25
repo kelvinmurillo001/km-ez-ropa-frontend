@@ -32,8 +32,8 @@ function aplicarModoOscuro() {
   }
 
   document.getElementById("modoOscuroBtn")?.addEventListener("click", () => {
-    document.body.classList.toggle("modo-oscuro");
-    localStorage.setItem("modoOscuro", document.body.classList.contains("modo-oscuro"));
+    const isDark = document.body.classList.toggle("modo-oscuro");
+    localStorage.setItem("modoOscuro", isDark);
   });
 }
 
@@ -86,10 +86,11 @@ function aplicarFiltros(productos) {
     });
 }
 
-// 🎨 9. Renderizar productos
+// 🎨 9. Renderizar productos con accesibilidad
 function renderizarCatalogo(productos) {
   if (!catalogo) return;
   catalogo.innerHTML = "";
+  catalogo.setAttribute("role", "list");
 
   if (!productos.length) {
     catalogo.innerHTML = `<p class="text-center">📭 No se encontraron productos con esos filtros.</p>`;
@@ -98,19 +99,26 @@ function renderizarCatalogo(productos) {
 
   productos.forEach(p => {
     const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
-    const nombre = p.name || "Producto sin nombre";
+    const nombre = sanitize(p.name || "Producto sin nombre");
     const precio = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
+    const id = p._id;
+
+    if (!id) return;
 
     const card = document.createElement("div");
-    card.className = "product-card";
+    card.className = "product-card fade-in";
+    card.setAttribute("role", "listitem");
+    card.setAttribute("aria-label", nombre);
+
     card.innerHTML = `
-      <img src="${imagen}" alt="${nombre}" loading="lazy" onerror="this.src='/assets/logo.jpg'" />
+      <img src="${imagen}" alt="Imagen de ${nombre}" loading="lazy" onerror="this.src='/assets/logo.jpg'" />
       <div class="product-info">
         <h3>${nombre}</h3>
         <p>$${precio}</p>
-        <button class="btn-card" onclick="verDetalle('${p._id}')">👁️ Ver</button>
+        <button class="btn-card" onclick="verDetalle('${id}')" aria-label="Ver detalles de ${nombre}">👁️ Ver</button>
       </div>
     `;
+
     catalogo.appendChild(card);
   });
 }
@@ -130,10 +138,10 @@ function llenarSelects(productos) {
   const subcategorias = [...new Set(productos.map(p => p.subcategory).filter(Boolean))];
 
   categoriaSelect.innerHTML = '<option value="">📂 Todas</option>' +
-    categorias.map(c => `<option value="${c}">${c}</option>`).join("");
+    categorias.map(c => `<option value="${sanitize(c)}">${sanitize(c)}</option>`).join("");
 
   subcategoriaSelect.innerHTML = '<option value="">📁 Todas</option>' +
-    subcategorias.map(s => `<option value="${s}">${s}</option>`).join("");
+    subcategorias.map(s => `<option value="${sanitize(s)}">${sanitize(s)}</option>`).join("");
 }
 
 // 🛒 12. Contador de carrito
@@ -149,15 +157,31 @@ async function cargarPromocion() {
     const res = await fetch(API_PROMOS);
     const promo = await res.json();
 
-    if (res.ok && promo?.active && promo?.message && promoContainer) {
-      const banner = document.createElement("div");
-      banner.id = "promoBanner";
-      banner.className = "promo-banner";
-      banner.style.backgroundColor = promo.color || "#ff6d00";
-      banner.textContent = promo.message;
-      promoContainer.appendChild(banner);
+    if (res.ok && promo?.data?.[0]?.active) {
+      const { message, mediaUrl, mediaType, color } = promo.data[0];
+      if (promoContainer && message) {
+        const banner = document.createElement("div");
+        banner.id = "promoBanner";
+        banner.className = "promo-banner";
+        banner.style.backgroundColor = color || "#ff6d00";
+        banner.setAttribute("role", "region");
+        banner.setAttribute("aria-label", "Promoción activa");
+
+        banner.innerHTML = `
+          ${mediaType === "image" ? `<img src="${mediaUrl}" alt="Promo activa" />` : ""}
+          <span>${message}</span>
+        `;
+        promoContainer.appendChild(banner);
+      }
     }
   } catch (err) {
     console.warn("⚠️ No se pudo cargar la promoción activa.");
   }
+}
+
+// 🧼 Utilidad
+function sanitize(text = "") {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML.trim();
 }

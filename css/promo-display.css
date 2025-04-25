@@ -12,6 +12,7 @@
   overflow: hidden;
   position: relative;
   transition: all 0.3s ease-in-out;
+  z-index: 20;
 }
 
 .promo-display p.promo-msg {
@@ -28,7 +29,7 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-/* 🎨 Colores temáticos */
+/* 🎨 Temas de colores accesibles */
 .promo-blue {
   background-color: #2196f3;
   color: #fff;
@@ -49,7 +50,23 @@
   color: #fff;
 }
 
-/* 🧭 Posicionamiento */
+.promo-purple {
+  background-color: #7e57c2;
+  color: #fff;
+}
+
+.promo-dark {
+  background-color: #333;
+  color: #eee;
+}
+
+/* 🌈 Efecto degradado alternativo (opcional) */
+.promo-gradient {
+  background: linear-gradient(135deg, #ff6d00, #ffa726);
+  color: white;
+}
+
+/* 🧭 Posicionamiento dentro del layout */
 .promo-top {
   margin-top: 0;
 }
@@ -62,7 +79,19 @@
   margin-bottom: 2rem;
 }
 
-/* 📱 Responsive para móviles */
+/* 🎞️ Modo slider */
+.promo-slider {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  will-change: transform;
+}
+
+.promo-slide {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+/* 🪟 Responsive para móviles */
 @media (max-width: 600px) {
   .promo-display {
     font-size: 0.95rem;
@@ -73,5 +102,9 @@
   .promo-display video {
     max-height: 280px;
     object-fit: cover;
+  }
+
+  .promo-display p.promo-msg {
+    font-size: 1rem;
   }
 }

@@ -24,7 +24,8 @@ form {
   margin-bottom: 2rem;
 }
 
-input, select {
+input,
+select {
   flex: 1;
   padding: 0.6rem;
   border-radius: 6px;
@@ -33,10 +34,18 @@ input, select {
   color: #fff;
   font-size: 1rem;
   max-width: 400px;
+  transition: border-color 0.3s ease;
 }
 
 input::placeholder {
   color: #bbb;
+}
+
+input:focus,
+select:focus {
+  border-color: #ff6d00;
+  outline: none;
+  box-shadow: 0 0 4px rgba(255, 109, 0, 0.4);
 }
 
 /* === BOTONES === */
@@ -68,6 +77,7 @@ button.btn-danger {
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.95rem;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 button.btn-danger:hover {
@@ -87,6 +97,7 @@ button.btn-danger:hover {
   background-color: #1a1a1a;
   padding: 1rem;
   border-radius: 6px;
+  transition: background-color 0.3s ease;
 }
 
 .lista-render strong {
@@ -115,7 +126,8 @@ button.btn-danger:hover {
     padding: 1rem;
   }
 
-  input, select {
+  input,
+  select {
     flex: 1 1 100%;
   }
 

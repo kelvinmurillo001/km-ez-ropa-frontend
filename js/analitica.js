@@ -15,6 +15,7 @@ const API_PRODUCTS = `${API_BASE}/api/products`;
 let estadisticas = null;
 let productos = [];
 let pedidosPorDia = [];
+let graficoPedidos = null;
 
 // ▶️ Inicializar
 document.addEventListener("DOMContentLoaded", () => {
@@ -101,11 +102,13 @@ function renderCategorias(productos = []) {
   if (!lista) return;
 
   lista.innerHTML = "";
+  lista.setAttribute("role", "list");
 
   Object.entries(conteo)
     .sort((a, b) => b[1] - a[1])
     .forEach(([cat, count]) => {
       const li = document.createElement("li");
+      li.setAttribute("role", "listitem");
       li.textContent = `📁 ${cat}: ${count}`;
       lista.appendChild(li);
     });
@@ -123,13 +126,20 @@ function renderGraficaPedidosPorDia(series = []) {
     return;
   }
 
-  const labels = series.map(s => s.fecha);
-  const valores = series.map(s => s.total);
-
   contenedor.innerHTML = `<canvas id="graficoPedidosCanvas" height="180"></canvas>`;
   const ctx = document.getElementById("graficoPedidosCanvas").getContext("2d");
 
-  new Chart(ctx, {
+  if (graficoPedidos) graficoPedidos.destroy(); // ✅ Destruye gráfico anterior
+
+  const labels = series.map(s =>
+    new Intl.DateTimeFormat("es-EC", {
+      day: "2-digit",
+      month: "short"
+    }).format(new Date(s.fecha))
+  );
+  const valores = series.map(s => s.total);
+
+  graficoPedidos = new Chart(ctx, {
     type: "bar",
     data: {
       labels,
@@ -140,6 +150,7 @@ function renderGraficaPedidosPorDia(series = []) {
       }]
     },
     options: {
+      responsive: true,
       scales: {
         y: { beginAtZero: true }
       }
@@ -151,9 +162,18 @@ function renderGraficaPedidosPorDia(series = []) {
  * 📤 Exportar CSV
  */
 function exportarEstadisticas() {
+  const btn = document.getElementById("btnExportarCSV");
   if (!estadisticas || !Array.isArray(productos)) {
     return alert("⚠️ Aún no se cargaron los datos.");
   }
+
+  btn.disabled = true;
+  btn.textContent = "⏳ Exportando...";
+
+  setTimeout(() => {
+    btn.disabled = false;
+    btn.textContent = "📤 Exportar CSV";
+  }, 2000);
 
   const fecha = new Date().toLocaleString("es-ES");
   let csv = `Estadísticas KM & EZ ROPA\nFecha:,${fecha}\n\n`;

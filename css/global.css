@@ -1,4 +1,4 @@
-/* 🌐 RESET GLOBAL */
+/* === 🌐 RESET GLOBAL === */
 * {
   margin: 0;
   padding: 0;
@@ -18,7 +18,7 @@ body {
   position: relative;
 }
 
-/* 🎨 VARIABLES */
+/* === 🎨 VARIABLES === */
 :root {
   --color-bg: #1a1a1e;
   --color-text: #f5f5f5;
@@ -35,14 +35,14 @@ body {
   --font-main: 'Segoe UI', sans-serif;
 }
 
-/* 📦 CONTENEDOR GENERAL */
+/* === 📦 CONTENEDOR GENERAL === */
 .container {
   max-width: 1200px;
   margin: auto;
   padding: 1rem;
 }
 
-/* 🔠 TIPOGRAFÍA */
+/* === 🔠 TIPOGRAFÍA === */
 h1, h2, h3 {
   color: var(--color-primario);
   margin-bottom: 0.5rem;
@@ -57,7 +57,7 @@ a:hover {
   text-decoration: underline;
 }
 
-/* ✍️ CAMPOS */
+/* === ✍️ CAMPOS DE FORMULARIO === */
 input,
 select,
 textarea {
@@ -78,7 +78,7 @@ textarea:focus-visible {
   outline-offset: 2px;
 }
 
-/* 🔘 BOTONES */
+/* === 🔘 BOTONES === */
 button,
 .btn {
   font-family: inherit;
@@ -101,7 +101,7 @@ button:focus-visible {
   outline-offset: 3px;
 }
 
-/* 💡 UTILIDADES */
+/* === 💡 UTILIDADES === */
 .text-center { text-align: center; }
 
 .mt-1 { margin-top: 0.5rem; }
@@ -115,7 +115,7 @@ button:focus-visible {
 .p-1 { padding: 0.5rem; }
 .p-2 { padding: 1rem; }
 
-/* 💬 PROMO BANNER */
+/* === 💬 PROMO BANNER === */
 .promo-banner {
   background-color: #ffe082;
   padding: 0.75rem;
@@ -126,7 +126,7 @@ button:focus-visible {
   display: none;
 }
 
-/* 🛒 CARRITO FLOTANTE */
+/* === 🛒 CARRITO FLOTANTE === */
 #cart-widget {
   position: fixed;
   bottom: 20px;
@@ -154,7 +154,7 @@ button:focus-visible {
   border-radius: 50%;
 }
 
-/* 📞 WHATSAPP FLOTANTE */
+/* === 📞 WHATSAPP FLOTANTE === */
 .whatsapp-float {
   position: fixed;
   bottom: 20px;
@@ -168,7 +168,7 @@ button:focus-visible {
   box-shadow: var(--shadow-soft);
 }
 
-/* 🧱 TARJETAS */
+/* === 🧱 TARJETAS === */
 .card {
   background: #fff;
   padding: 16px;
@@ -194,7 +194,7 @@ button:focus-visible {
   background-color: #216a94;
 }
 
-/* 🌚 MODO OSCURO */
+/* === 🌚 MODO OSCURO === */
 body.modo-oscuro {
   background-color: #121212;
   color: #eee;
@@ -230,7 +230,7 @@ body.modo-oscuro .btn:hover {
   background-color: #1e88e5;
 }
 
-/* ✨ ANIMACIONES */
+/* === ✨ ANIMACIONES === */
 .fade-in {
   animation: fadeIn 0.6s ease-in-out;
 }
@@ -246,7 +246,7 @@ body.modo-oscuro .btn:hover {
   }
 }
 
-/* 🧑‍🦯 ACCESIBILIDAD */
+/* === 🧑‍🦯 ACCESIBILIDAD === */
 img[alt=""] {
   display: none;
 }

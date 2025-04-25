@@ -2,13 +2,14 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>✅ Finalizar Compra | KM & EZ ROPA</title>
 
-  <!-- Meta Seguridad & SEO -->
+  <!-- SEO y Seguridad -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="description" content="Completa tu compra con seguridad y confianza en KM & EZ ROPA. Opciones flexibles de pago y envío rápido a nivel nacional." />
+  <meta name="description" content="Completa tu compra con seguridad y confianza. Elige entre varias opciones de pago y disfruta moda al instante." />
   <meta name="author" content="KM & EZ ROPA" />
+  <meta name="theme-color" content="#ff6d00" />
 
   <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -23,90 +24,89 @@
 </head>
 <body>
 
-  <!-- 🔥 BANNER PROMOCIONAL -->
-  <div id="promo-display-container" data-page="checkout" role="region" aria-label="Promoción activa"></div>
+  <!-- 🎉 Promoción Activa -->
+  <div id="promo-display-container" data-page="checkout" role="region" aria-label="Promoción activa en esta página"></div>
 
-  <!-- 🧾 CONTENEDOR PRINCIPAL -->
-  <main class="checkout-container fade-in" role="main">
-    <h1 class="text-center">🛍️ Finaliza tu Compra con Confianza</h1>
-    <p class="text-center subtitulo-checkout">💬 Asegúrate de revisar tus datos. ¡Tu estilo está a solo un clic de distancia!</p>
+  <!-- 🧾 Contenido principal -->
+  <main class="checkout-container fade-in" role="main" aria-label="Formulario para finalizar compra">
+    <h1 class="text-center">🛍️ Finaliza tu Compra</h1>
+    <p class="text-center subtitulo-checkout">Revisa tus datos y elige tu método de pago. ¡Tu estilo está por llegar! 🚚</p>
+
+    <!-- 🔄 Wizard visual -->
+    <div class="checkout-steps" aria-hidden="true">
+      <div class="step active">1. Datos</div>
+      <div class="step">2. Dirección</div>
+      <div class="step">3. Pago</div>
+      <div class="step">4. Confirmación</div>
+    </div>
 
     <form id="formCheckout" class="form-checkout" novalidate autocomplete="on">
-      
-      <!-- 🧾 DATOS DE FACTURACIÓN -->
+
+      <!-- 👤 Datos del Cliente -->
       <fieldset>
-        <legend>👤 Datos del Cliente</legend>
+        <legend>👤 Tus Datos</legend>
+        <label for="nombreInput">Nombre completo: *</label>
+        <input type="text" id="nombreInput" name="nombre" required placeholder="Ej: Ana López" autocomplete="name" />
 
-        <label for="nombreInput">Nombre Completo: *</label>
-        <input type="text" id="nombreInput" name="nombre" required placeholder="Ej: Juan Pérez" autocomplete="name" />
-
-        <label for="emailInput">Correo Electrónico: *</label>
-        <input type="email" id="emailInput" name="email" required placeholder="ejemplo@correo.com" autocomplete="email" />
+        <label for="emailInput">Correo electrónico: *</label>
+        <input type="email" id="emailInput" name="email" required placeholder="ejemplo@mail.com" autocomplete="email" />
 
         <label for="telefonoInput">Teléfono / WhatsApp: *</label>
         <input type="tel" id="telefonoInput" name="telefono" required placeholder="+593..." autocomplete="tel" />
       </fieldset>
 
-      <!-- 🚚 DIRECCIÓN -->
+      <!-- 🏠 Dirección -->
       <fieldset>
         <legend>📍 Dirección de Entrega</legend>
-
         <label for="direccionInput">Dirección completa: *</label>
-        <textarea id="direccionInput" name="direccion" required placeholder="Ej: Av. Amazonas y NNUU, Quito - Pichincha" autocomplete="street-address"></textarea>
+        <textarea id="direccionInput" name="direccion" required placeholder="Ej: Calle 1, Quito - Pichincha" autocomplete="street-address"></textarea>
 
-        <button type="button" class="btn-secundario" id="btnUbicacion" aria-label="Obtener ubicación actual">
-          📍 Usar mi ubicación actual
-        </button>
+        <button type="button" class="btn-secundario" id="btnUbicacion">📍 Usar mi ubicación actual</button>
       </fieldset>
 
-      <!-- 💳 MÉTODO DE PAGO -->
+      <!-- 💳 Método de Pago -->
       <fieldset>
-        <legend>💳 Elige tu Método de Pago</legend>
-
-        <div class="metodo-pago-opciones">
-          <label class="opcion-pago">
+        <legend>💳 Selecciona tu Forma de Pago</legend>
+        <div class="metodo-pago-selector">
+          <label class="pago-btn">
             <input type="radio" name="metodoPago" value="transferencia" required />
-            <span>🪙 Transferencia Bancaria (Pago anticipado)</span>
+            🪙 Transferencia Bancaria
           </label>
-
-          <label class="opcion-pago">
+          <label class="pago-btn">
             <input type="radio" name="metodoPago" value="tarjeta" />
-            <span>💳 Tarjeta de Crédito / Débito</span>
+            💳 Tarjeta (Crédito/Débito)
           </label>
-
-          <label class="opcion-pago">
+          <label class="pago-btn">
             <input type="radio" name="metodoPago" value="paypal" />
-            <span>🅿️ PayPal (Compra protegida)</span>
+            🅿️ PayPal (Compra protegida)
           </label>
         </div>
-
-        <!-- Info dinámica -->
-        <div id="infoMetodoPago" class="metodo-pago-info mt-1" aria-live="polite">
-          <!-- Aquí se mostrará información adicional -->
-        </div>
+        <div id="infoMetodoPago" class="metodo-pago-info mt-1" aria-live="polite" role="region"></div>
       </fieldset>
 
-      <!-- 🛍️ RESUMEN DEL PEDIDO -->
+      <!-- 🧾 Resumen del Pedido -->
       <fieldset>
         <legend>🧾 Tu Pedido</legend>
-        <div id="resumenPedido" aria-live="polite" aria-relevant="all">
-          <!-- Productos del carrito insertados por JS -->
+        <div id="resumenPedido" aria-live="polite">
+          <!-- Se inyecta desde checkout.js -->
         </div>
-        <h3>Total a pagar: <span id="totalFinal">$0.00</span></h3>
+        <h3>Total a pagar: <span id="totalFinal" role="status">$0.00</span></h3>
       </fieldset>
 
-      <!-- 🎯 BOTONES DE ACCIÓN -->
+      <!-- 🎯 Acciones -->
       <div class="form-actions mt-3">
         <button type="submit" class="btn">🛒 Confirmar Pedido</button>
         <button type="button" onclick="window.location.href='/carrito.html'" class="btn-secundario">🔙 Volver al Carrito</button>
       </div>
 
+      <!-- 💬 Estado -->
       <p id="msgEstado" class="form-msg text-center mt-2" role="alert" aria-live="assertive"></p>
     </form>
   </main>
 
+  <!-- ⚠️ Sin JavaScript -->
   <noscript>
-    <p style="text-align:center; color:red;">⚠️ Activa JavaScript para completar tu pedido correctamente.</p>
+    <p style="text-align:center; color:red;">⚠️ Este sitio necesita JavaScript para finalizar tu compra.</p>
   </noscript>
 
 </body>

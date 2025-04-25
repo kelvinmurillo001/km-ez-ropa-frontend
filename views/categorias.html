@@ -5,23 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🛍️ Categorías | KM & EZ ROPA</title>
 
-  <!-- 🔍 SEO y redes sociales -->
-  <meta name="description" content="Explora todas las categorías de ropa urbana disponibles en KM & EZ ROPA." />
-  <meta name="robots" content="index, follow" />
-  <meta name="author" content="KM & EZ ROPA" />
+  <!-- 🔍 SEO & Open Graph -->
+  <meta name="description" content="Explora todas las categorías de ropa urbana disponibles en KM & EZ ROPA.">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="KM & EZ ROPA">
+
   <meta property="og:title" content="Categorías de Productos | KM & EZ ROPA" />
-  <meta property="og:description" content="Explora estilos únicos de moda urbana por categoría, género y ocasión." />
+  <meta property="og:description" content="Explora estilos únicos de moda urbana por categoría, género y ocasión.">
   <meta property="og:image" content="/assets/og-image.jpg" />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://kmezropacatalogo.com/categorias.html" />
 
   <!-- 🎨 Estilos -->
-  <link rel="stylesheet" href="/css/global.css" />
-  <link rel="stylesheet" href="/css/componentes.css" />
-  <link rel="stylesheet" href="/css/categorias.css" />
-  <link rel="stylesheet" href="/css/promo-display.css" />
-  <link rel="stylesheet" href="/css/fondo.css" />
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/fondo.css">
+  <link rel="stylesheet" href="/css/componentes.css">
+  <link rel="stylesheet" href="/css/promo-display.css">
+  <link rel="stylesheet" href="/css/categorias.css">
 
-  <!-- ✅ Scripts -->
+  <!-- ✅ Scripts defer -->
   <script type="module" src="/js/categorias.js" defer></script>
   <script src="/js/promo-display.js" defer></script>
 </head>
@@ -30,22 +32,23 @@
   <!-- 🔝 Encabezado -->
   <header class="main-header" role="banner">
     <div class="logo">
-      <a href="/" aria-label="Ir a inicio">
-        <img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" />
+      <a href="/" aria-label="Ir al inicio">
+        <img src="/assets/logo.jpg" alt="Logo de KM & EZ ROPA" loading="lazy">
       </a>
       <div class="brand">
         <h1>KM & EZ ROPA</h1>
         <p>Explora tu estilo</p>
       </div>
     </div>
-    <nav class="nav-links" aria-label="Navegación principal">
+
+    <nav class="nav-links" role="navigation" aria-label="Navegación principal">
       <a href="/index.html">🏠 Inicio</a>
       <a href="/carrito.html">🛒 Carrito</a>
-      <button id="modoOscuroBtn" aria-label="Alternar modo oscuro">🌙</button>
+      <button id="modoOscuroBtn" aria-label="Alternar modo oscuro" aria-live="polite">🌙</button>
     </nav>
   </header>
 
-  <!-- 🔥 PROMOCIÓN ACTIVA -->
+  <!-- 🔥 Promociones -->
   <div id="promo-display-container" data-page="categorias" aria-label="Promociones activas"></div>
 
   <!-- 🔍 Filtros -->
@@ -72,30 +75,30 @@
     </div>
     <div class="filtro">
       <label for="busquedaInput" class="sr-only">Buscar producto:</label>
-      <input type="search" id="busquedaInput" placeholder="🔎 Buscar producto..." aria-label="Buscar producto por nombre" />
+      <input type="search" id="busquedaInput" placeholder="🔎 Buscar producto..." aria-label="Buscar producto por nombre" autocomplete="on" />
     </div>
   </section>
 
   <!-- 🧾 Catálogo -->
   <main class="catalogo-section" role="main" aria-label="Catálogo de productos">
     <h2 class="section-title">🧢 Productos Disponibles</h2>
-    <div id="catalogo" class="product-grid" aria-live="polite">
+    <div id="catalogo" class="product-grid" role="list" aria-live="polite">
       <!-- Productos renderizados dinámicamente -->
     </div>
   </main>
 
   <!-- 💬 Botones flotantes -->
-  <div class="floating-buttons" aria-hidden="false">
+  <div class="floating-buttons">
     <a href="/carrito.html" class="cart-icon" aria-label="Ir al carrito">
-      <img src="/assets/cart-icon.svg" alt="Icono de carrito" />
-      <span id="cartCount" role="status">0</span>
+      <img src="/assets/cart-icon.svg" alt="Icono de carrito" loading="lazy">
+      <span id="cartCount" role="status" aria-live="polite">0</span>
     </a>
     <a href="https://wa.me/593990270864" class="whatsapp-icon" target="_blank" rel="noopener noreferrer" aria-label="Chatear por WhatsApp">
-      <img src="/assets/whatsapp.svg" alt="Icono de WhatsApp" />
+      <img src="/assets/whatsapp.svg" alt="WhatsApp" loading="lazy">
     </a>
   </div>
 
-  <!-- 📣 Mensaje dinámico de errores -->
+  <!-- 📣 Errores / mensajes admin -->
   <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
 
   <!-- 🔚 Footer -->
@@ -103,7 +106,7 @@
     <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
   </footer>
 
-  <!-- 🚫 Fallback sin JS -->
+  <!-- ⚠️ Sin JavaScript -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Activa JavaScript para visualizar correctamente esta página.</p>
   </noscript>

@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🎛️ Panel Administrativo | KM & EZ ROPA</title>
 
-  <!-- 🔐 Meta Seguridad y SEO -->
+  <!-- 🔐 Seguridad y SEO -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="author" content="KM & EZ ROPA" />
   <meta name="description" content="Administra productos, pedidos, categorías, promociones y más desde este panel privado." />
+  <meta name="theme-color" content="#ff6d00" />
 
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -16,50 +17,52 @@
   <link rel="stylesheet" href="/css/panel.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
-  <link rel="stylesheet" href="/css/adminMensaje.css" /> <!-- ✅ Mensajes flotantes -->
+  <link rel="stylesheet" href="/css/adminMensaje.css" />
 </head>
 <body>
 
-  <!-- 🧭 Contenedor principal -->
-  <main class="panel-container fade-in" role="main" aria-label="Panel de administración principal">
-    
-    <!-- 🧑‍💼 Encabezado -->
-    <header class="header-panel">
+  <!-- 🧭 Panel principal -->
+  <main class="panel-container fade-in" role="main" aria-label="Área de administración">
+
+    <!-- 👤 Encabezado del panel -->
+    <header class="header-panel" role="banner">
       <h1 class="text-center">🎛️ Panel de Administración</h1>
-      <button id="btnCerrarSesion" class="btn-secundario" aria-label="Cerrar sesión del panel">🚪 Cerrar Sesión</button>
+      <button id="btnCerrarSesion" class="btn-secundario" aria-label="Cerrar sesión de administrador">🚪 Cerrar Sesión</button>
     </header>
 
-    <!-- 📋 Navegación -->
-    <section class="menu-panel" aria-label="Opciones de administración">
-      <a href="/productos.html" class="btn-panel" aria-label="Ir a gestión de productos">👕 Gestionar Productos</a>
-      <a href="/pedidos.html" class="btn-panel" aria-label="Ver pedidos de clientes">🧾 Ver Pedidos</a>
-      <a href="/admin-categorias.html" class="btn-panel" aria-label="Gestionar categorías y subcategorías">🗂️ Categorías y Subcategorías</a>
-      <a href="/promociones.html" class="btn-panel" aria-label="Gestionar promociones activas">🎯 Promociones</a>
-      <a href="/dashboard.html" class="btn-panel" aria-label="Ver estadísticas y métricas">📊 Analítica</a>
+    <!-- 📋 Navegación del panel -->
+    <section class="menu-panel" role="navigation" aria-label="Secciones de administración">
+      <a href="/productos.html" class="btn-panel" aria-label="Gestión de productos">👕 Gestionar Productos</a>
+      <a href="/pedidos.html" class="btn-panel" aria-label="Visualizar pedidos">🧾 Ver Pedidos</a>
+      <a href="/admin-categorias.html" class="btn-panel" aria-label="Categorías y subcategorías">🗂️ Categorías y Subcategorías</a>
+      <a href="/promociones.html" class="btn-panel" aria-label="Promociones activas">🎯 Promociones</a>
+      <a href="/dashboard.html" class="btn-panel" aria-label="Estadísticas del negocio">📊 Analítica</a>
     </section>
   </main>
 
-  <!-- 🔔 Mensaje flotante -->
+  <!-- 🔔 Mensajes flotantes -->
   <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="polite"></div>
 
-  <!-- 🌙 Modo Oscuro -->
+  <!-- 🌙 Modo Oscuro automático -->
   <script>
-    if (localStorage.getItem("modoOscuro") === "true") {
-      document.body.classList.add("modo-oscuro");
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("modoOscuro") === "true") {
+        document.body.classList.add("modo-oscuro");
+      }
+    });
   </script>
 
-  <!-- 🚫 Sin JS -->
-  <noscript>
-    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para utilizar este panel administrativo.</p>
-  </noscript>
-
-  <!-- 🔐 Verificación y logout -->
-  <script type="module">
+  <!-- 🔐 Verificación de sesión y logout seguro -->
+  <script type="module" defer>
     import { cerrarSesion, verificarSesion } from "/js/admin-utils.js";
     verificarSesion();
     document.getElementById("btnCerrarSesion")?.addEventListener("click", cerrarSesion);
   </script>
+
+  <!-- ⚠️ Fallback para JS desactivado -->
+  <noscript>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar este panel administrativo.</p>
+  </noscript>
 
 </body>
 </html>

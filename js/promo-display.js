@@ -1,31 +1,36 @@
 "use strict";
 
+// 📦 Cargar promociones al iniciar
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const res = await fetch("https://km-ez-ropa-backend.onrender.com/api/promos");
     if (!res.ok) throw new Error("❌ Error al obtener promociones");
+    
     const { data: promos = [] } = await res.json();
     if (!Array.isArray(promos) || promos.length === 0) return;
 
-    const pageKey = detectarClavePagina(window.location.pathname);
+    const clavePagina = detectarClavePagina(window.location.pathname);
     const hoy = new Date();
 
     const activas = promos.filter(p =>
       p.active &&
       Array.isArray(p.pages) &&
-      p.pages.includes(pageKey) &&
+      p.pages.includes(clavePagina) &&
       (!p.startDate || new Date(p.startDate) <= hoy) &&
       (!p.endDate || new Date(p.endDate) >= hoy)
     );
 
     const agrupadas = agruparPorPosicion(activas);
-    Object.entries(agrupadas).forEach(([posicion, promos]) => mostrarRotador(promos, posicion));
+    Object.entries(agrupadas).forEach(([posicion, grupoPromos]) => {
+      mostrarRotador(grupoPromos, posicion);
+    });
+
   } catch (err) {
     console.error("❌ Error al cargar promociones activas:", err.message);
   }
 });
 
-// 🧠 Determinar página actual
+// 🧠 Identificar página actual
 function detectarClavePagina(path) {
   if (path.includes("checkout")) return "checkout";
   if (path.includes("carrito")) return "carrito";
@@ -36,7 +41,7 @@ function detectarClavePagina(path) {
   return "otros";
 }
 
-// 🧠 Agrupar promociones por posición
+// 🔢 Agrupar promociones por posición
 function agruparPorPosicion(lista = []) {
   return lista.reduce((acc, promo) => {
     const pos = promo.position || "top";
@@ -46,14 +51,14 @@ function agruparPorPosicion(lista = []) {
   }, {});
 }
 
-// 🎯 Mostrar carrusel de promociones por posición
+// 🎯 Mostrar carrusel de promociones
 function mostrarRotador(promos = [], posicion = "top") {
   if (!promos.length) return;
 
   const wrapper = document.createElement("section");
   wrapper.className = `promo-display promo-${promos[0].theme || "blue"} promo-${posicion}`;
   wrapper.setAttribute("role", "region");
-  wrapper.setAttribute("aria-label", `Promociones ${posicion}`);
+  wrapper.setAttribute("aria-label", `Promociones en posición ${posicion}`);
   wrapper.style.position = "relative";
   wrapper.style.overflow = "hidden";
 
@@ -68,12 +73,11 @@ function mostrarRotador(promos = [], posicion = "top") {
     slide.setAttribute("aria-hidden", i > 0 ? "true" : "false");
     slide.style.display = "inline-block";
     slide.style.width = "100%";
-    slide.style.verticalAlign = "top";
 
     let contenido = `<p class="promo-msg">📣 ${sanitize(promo.message)}</p>`;
 
     if (promo.mediaType === "image" && promo.mediaUrl) {
-      contenido += `<img src="${promo.mediaUrl}" alt="Promoción" class="promo-img" loading="lazy" onerror="this.style.display='none'" />`;
+      contenido += `<img src="${promo.mediaUrl}" alt="Imagen promocional" class="promo-img" loading="lazy" onerror="this.style.display='none'" />`;
     }
 
     if (promo.mediaType === "video" && promo.mediaUrl) {
@@ -100,18 +104,18 @@ function mostrarRotador(promos = [], posicion = "top") {
       [...contenedor.children].forEach((slide, i) =>
         slide.setAttribute("aria-hidden", i !== index)
       );
-    }, 6000); // ⏱️ Cambiar cada 6 segundos
+    }, 6000);
   }
 }
 
-// 🧼 Sanear texto
+// 🧼 Sanear contenido
 function sanitize(text = "") {
   const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
 }
 
-// 📌 Insertar sección en la página
+// 🏗️ Insertar banner según posición
 function insertarSegunPosicion(elemento, posicion) {
   const main = document.querySelector("main");
   const body = document.body;

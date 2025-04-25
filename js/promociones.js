@@ -3,22 +3,30 @@
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
+// 🔐 Verificación de sesión
 const token = verificarSesion();
+
+// 🌐 Endpoints
 const API_PROMOS = `${API_BASE}/api/promos`;
 const API_UPLOAD = `${API_BASE}/api/uploads`;
 
+// 📌 Elementos DOM
 const formPromo = document.getElementById("formPromo");
 const msgPromo = document.getElementById("msgPromo");
 const estadoActual = document.getElementById("estadoActual");
 
 let promocionId = null;
 
+// 🚀 Inicialización
 document.addEventListener("DOMContentLoaded", () => {
   cargarPromocion();
   formPromo?.addEventListener("submit", guardarPromocion);
   document.getElementById("promoTipo")?.addEventListener("change", mostrarCampoMultimedia);
 });
 
+/* ───────────────────────────────────────────── */
+/* 📺 MOSTRAR CAMPO MULTIMEDIA                   */
+/* ───────────────────────────────────────────── */
 function mostrarCampoMultimedia() {
   const tipo = document.getElementById("promoTipo").value;
   const container = document.getElementById("mediaUploadContainer");
@@ -37,6 +45,9 @@ function mostrarCampoMultimedia() {
   }
 }
 
+/* ───────────────────────────────────────────── */
+/* 📦 CARGAR PROMOCIÓN ACTUAL                    */
+/* ───────────────────────────────────────────── */
 async function cargarPromocion() {
   try {
     const res = await fetch(API_PROMOS);
@@ -49,30 +60,32 @@ async function cargarPromocion() {
     }
 
     promocionId = promo._id;
-
-    const estadoTexto = promo.active ? "✅ Activa" : "⛔ Inactiva";
-    const inicio = promo.startDate ? new Date(promo.startDate).toLocaleDateString() : "No definido";
-    const fin = promo.endDate ? new Date(promo.endDate).toLocaleDateString() : "Sin fecha";
-    const mediaPreview = generarPreviewMedia(promo);
-
-    estadoActual.innerHTML = `
-      <div class="promo-actual">
-        <p><strong>Estado:</strong> ${estadoTexto}</p>
-        <p><strong>Mensaje:</strong> ${promo.message}</p>
-        <p><strong>Vigencia:</strong> ${inicio} - ${fin}</p>
-        <p><strong>Tema:</strong> ${promo.theme}</p>
-        <p><strong>Páginas:</strong> ${promo.pages?.join(", ")}</p>
-        <p><strong>Posición:</strong> ${promo.position}</p>
-        <p><strong>Tipo:</strong> ${promo.mediaType ?? "texto"}</p>
-        ${mediaPreview}
-      </div>
-    `;
-
+    renderPromocionActual(promo);
     cargarFormularioDesdePromocion(promo);
   } catch (err) {
     console.error("❌ Error al cargar promoción:", err);
     estadoActual.innerHTML = "<p style='color:red;'>❌ No se pudo cargar la promoción.</p>";
   }
+}
+
+function renderPromocionActual(promo) {
+  const estadoTexto = promo.active ? "✅ Activa" : "⛔ Inactiva";
+  const inicio = promo.startDate ? new Date(promo.startDate).toLocaleDateString() : "No definido";
+  const fin = promo.endDate ? new Date(promo.endDate).toLocaleDateString() : "Sin fecha";
+  const mediaPreview = generarPreviewMedia(promo);
+
+  estadoActual.innerHTML = `
+    <div class="promo-actual">
+      <p><strong>Estado:</strong> ${estadoTexto}</p>
+      <p><strong>Mensaje:</strong> ${promo.message}</p>
+      <p><strong>Vigencia:</strong> ${inicio} - ${fin}</p>
+      <p><strong>Tema:</strong> ${promo.theme}</p>
+      <p><strong>Páginas:</strong> ${promo.pages?.join(", ")}</p>
+      <p><strong>Posición:</strong> ${promo.position}</p>
+      <p><strong>Tipo:</strong> ${promo.mediaType ?? "texto"}</p>
+      ${mediaPreview}
+    </div>
+  `;
 }
 
 function generarPreviewMedia(promo) {
@@ -91,6 +104,9 @@ function generarPreviewMedia(promo) {
   return "";
 }
 
+/* ───────────────────────────────────────────── */
+/* ✏️ RELLENAR FORMULARIO CON PROMO EXISTENTE    */
+/* ───────────────────────────────────────────── */
 function cargarFormularioDesdePromocion(promo) {
   formPromo.promoMensaje.value = promo.message ?? "";
   formPromo.promoActivo.checked = promo.active ?? false;
@@ -112,6 +128,9 @@ function cargarFormularioDesdePromocion(promo) {
   });
 }
 
+/* ───────────────────────────────────────────── */
+/* 💾 GUARDAR PROMOCIÓN                          */
+/* ───────────────────────────────────────────── */
 async function guardarPromocion(e) {
   e.preventDefault();
   msgPromo.textContent = "";
@@ -140,7 +159,7 @@ async function guardarPromocion(e) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.message);
 
-    msgPromo.textContent = "✅ Promoción guardada.";
+    msgPromo.textContent = "✅ Promoción guardada correctamente.";
     msgPromo.style.color = "limegreen";
     await cargarPromocion();
   } catch (err) {
@@ -151,6 +170,9 @@ async function guardarPromocion(e) {
   }
 }
 
+/* ───────────────────────────────────────────── */
+/* 🧱 CONSTRUIR PAYLOAD                          */
+/* ───────────────────────────────────────────── */
 async function construirPayload() {
   const mensaje = formPromo.promoMensaje.value.trim();
   const tipo = formPromo.promoTipo.value;
@@ -164,7 +186,15 @@ async function construirPayload() {
   if (!mensaje || mensaje.length < 3) return mostrarError("⚠️ El mensaje debe tener al menos 3 caracteres.");
   if (!tipo || pages.length === 0) return mostrarError("⚠️ Elige tipo de contenido y al menos una página.");
 
-  const payload = { message: mensaje, active: activo, theme: tema, startDate: inicio, endDate: fin, pages, position };
+  const payload = {
+    message: mensaje,
+    active: activo,
+    theme: tema,
+    startDate: inicio,
+    endDate: fin,
+    pages,
+    position
+  };
 
   if (tipo === "video") {
     const url = document.getElementById("promoVideo")?.value?.trim();
@@ -188,6 +218,7 @@ async function construirPayload() {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
+
       payload.mediaType = "image";
       payload.mediaUrl = data.url || data.secure_url;
     } catch (err) {
@@ -199,10 +230,14 @@ async function construirPayload() {
   return payload;
 }
 
+/* ───────────────────────────────────────────── */
+/* ⚠️ MOSTRAR ERRORES AL USUARIO                */
+/* ───────────────────────────────────────────── */
 function mostrarError(msg) {
   msgPromo.textContent = msg;
   msgPromo.style.color = "orangered";
   return null;
 }
 
+// 🔙 Función global
 window.goBack = goBack;

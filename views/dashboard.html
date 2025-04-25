@@ -7,8 +7,9 @@
 
   <!-- 🔐 Seguridad y SEO -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="author" content="KM & EZ ROPA" />
   <meta name="description" content="Panel de control con estadísticas de ventas, productos, visitas y pedidos recibidos." />
+  <meta name="author" content="KM & EZ ROPA" />
+  <meta name="theme-color" content="#ff6d00" />
 
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -18,7 +19,7 @@
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/adminMensaje.css" />
 
-  <!-- ✅ Script del Dashboard -->
+  <!-- ✅ Script principal -->
   <script type="module" src="/js/dashboard.js" defer></script>
 </head>
 <body>
@@ -59,17 +60,17 @@
       </ul>
     </section>
 
-    <!-- 🗂️ Top Categorías -->
+    <!-- 📁 Top Categorías -->
     <section class="analitica-extra mt-3" aria-labelledby="tituloTopCategorias">
       <h2 id="tituloTopCategorias" class="text-center">📁 Top Categorías</h2>
       <ul id="topCategorias" class="listado-categorias" aria-live="polite">
-        <!-- Contenido dinámico -->
+        <!-- Contenido dinámico insertado por JS -->
       </ul>
     </section>
 
     <!-- 📤 Exportar CSV -->
     <div class="text-center mt-3">
-      <button type="button" id="btnExportar" class="btn-secundario" aria-label="Exportar estadísticas como CSV">
+      <button id="btnExportar" class="btn-secundario" aria-label="Exportar estadísticas como CSV">
         📤 Exportar Estadísticas (CSV)
       </button>
     </div>
@@ -82,15 +83,15 @@
     </div>
   </main>
 
-  <!-- 🔔 Mensaje flotante -->
+  <!-- 🔔 Mensajes flotantes -->
   <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="polite"></div>
 
-  <!-- ⚠️ Fallback -->
+  <!-- 🚫 Fallback para JS desactivado -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
 
-  <!-- 🌙 Activar Modo Oscuro -->
+  <!-- 🌙 Activar Modo Oscuro automático -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("modoOscuro") === "true") {
@@ -98,5 +99,6 @@
       }
     });
   </script>
+
 </body>
 </html>

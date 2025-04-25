@@ -1,4 +1,4 @@
-/* === GENERAL === */
+/* === 🎛️ DASHBOARD GENERAL === */
 body {
   margin: 0;
   padding: 0;
@@ -15,22 +15,17 @@ h1, h2, h3 {
   text-align: center;
 }
 
-.mt-2 {
-  margin-top: 1rem;
-}
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 2rem; }
 
-.mt-3 {
-  margin-top: 2rem;
-}
-
-/* === DASHBOARD CONTAINER === */
+/* === 📦 CONTENEDOR PRINCIPAL === */
 .dashboard-container {
   max-width: 1200px;
   margin: auto;
   padding: 2rem;
 }
 
-/* === GRID DE MÉTRICAS === */
+/* === 📊 GRID DE MÉTRICAS === */
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -38,7 +33,7 @@ h1, h2, h3 {
   margin-top: 2rem;
 }
 
-/* === TARJETAS DE KPI === */
+/* === 🧾 TARJETAS DE KPI === */
 .card {
   background-color: #1a1a1a;
   border: 1px solid #333;
@@ -46,7 +41,7 @@ h1, h2, h3 {
   padding: 1.5rem;
   text-align: center;
   box-shadow: 0 0 15px rgba(255, 109, 0, 0.1);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
@@ -60,13 +55,14 @@ h1, h2, h3 {
   color: #fff;
 }
 
-/* === SECCIONES EXTRAS === */
+/* === 📂 SECCIÓN EXTRA / LISTADOS === */
 .analitica-extra {
   background-color: #1a1a1a;
   border: 1px solid #333;
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 0 15px rgba(255, 109, 0, 0.1);
+  margin-top: 2rem;
 }
 
 .listado-categorias {
@@ -78,20 +74,29 @@ h1, h2, h3 {
 .listado-categorias li {
   margin-bottom: 0.5rem;
   color: #ccc;
+  font-size: 0.95rem;
 }
 
-/* === BOTONES === */
-button.btn, button.btn-secundario {
-  background-color: #ff6d00;
-  border: none;
-  color: #121212;
+/* === 🔘 BOTONES === */
+button.btn,
+button.btn-secundario {
   padding: 0.8rem 1.5rem;
   font-size: 1rem;
   font-weight: bold;
   border-radius: 6px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s ease;
   margin: 0.5rem;
+  border: none;
+}
+
+button.btn {
+  background-color: #ff6d00;
+  color: #121212;
+}
+
+button.btn:hover {
+  background-color: #ffa733;
 }
 
 button.btn-secundario {
@@ -100,18 +105,22 @@ button.btn-secundario {
   border: 2px solid #ff6d00;
 }
 
-button.btn:hover {
-  background-color: #ffa733;
-}
-
 button.btn-secundario:hover {
   background-color: #ff6d00;
   color: #121212;
 }
 
-/* === RESPONSIVE === */
+/* === 📱 RESPONSIVE === */
 @media (max-width: 768px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
+  }
+
+  .card p {
+    font-size: 1.6rem;
+  }
+
+  .dashboard-container {
+    padding: 1.2rem;
   }
 }
