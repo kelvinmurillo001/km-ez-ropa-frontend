@@ -59,26 +59,27 @@ async function cargarCategorias() {
 async function cargarProducto() {
   try {
     const res = await fetch(API_PRODUCTO);
-    const p = await res.json();
-    if (!res.ok || !p || p._id !== productId) throw new Error("Producto no encontrado");
+    const { producto } = await res.json(); // ✅ fix aplicado aquí
 
-    document.getElementById("nombreInput").value = p.name || "";
-    document.getElementById("descripcionInput").value = p.description || "";
-    document.getElementById("precioInput").value = p.price || "";
-    document.getElementById("stockInput").value = p.stock ?? 0;
-    document.getElementById("categoriaInput").value = p.category || "";
-    document.getElementById("subcategoriaInput").value = p.subcategory || "";
-    document.getElementById("tallasInput").value = p.sizes?.join(", ") || "";
-    document.getElementById("colorInput").value = p.color || "";
-    document.getElementById("destacadoInput").checked = !!p.featured;
+    if (!res.ok || !producto || producto._id !== productId) throw new Error("Producto no encontrado");
 
-    if (Array.isArray(p.images) && p.images.length > 0) {
+    document.getElementById("nombreInput").value = producto.name || "";
+    document.getElementById("descripcionInput").value = producto.description || "";
+    document.getElementById("precioInput").value = producto.price || "";
+    document.getElementById("stockInput").value = producto.stock ?? 0;
+    document.getElementById("categoriaInput").value = producto.category || "";
+    document.getElementById("subcategoriaInput").value = producto.subcategory || "";
+    document.getElementById("tallasInput").value = producto.sizes?.join(", ") || "";
+    document.getElementById("colorInput").value = producto.color || "";
+    document.getElementById("destacadoInput").checked = !!producto.featured;
+
+    if (Array.isArray(producto.images) && producto.images.length > 0) {
       document.getElementById("imagenPrincipalActual").innerHTML = `
-        <img src="${p.images[0].url}" alt="Imagen actual" class="imagen-preview-principal" />
+        <img src="${producto.images[0].url}" alt="Imagen actual" class="imagen-preview-principal" />
       `;
     }
 
-    p.variants?.forEach(renderVarianteExistente);
+    producto.variants?.forEach(renderVarianteExistente);
   } catch (err) {
     console.error("❌ Error al cargar producto:", err);
     msgEstado.innerHTML = `❌ Error al cargar producto.<br><button onclick="goBack()">🔙 Volver</button>`;
