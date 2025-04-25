@@ -10,12 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!form || !btnSubmit || !inputUser || !inputPass) return;
 
-  // 🌙 Modo oscuro si está activado
+  // 🌙 Activar modo oscuro si está guardado
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 
-  // 🎯 Enviar formulario
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -39,22 +38,29 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
 
       if (!res.ok || !data.accessToken) {
-        const msg = res.status === 401
-          ? "🔐 Usuario o contraseña incorrectos."
-          : data.message || "❌ Error inesperado.";
+        const msg =
+          res.status === 401
+            ? "🔐 Usuario o contraseña incorrectos."
+            : data.message || "❌ Error inesperado.";
         return mostrarMensaje(msg, "error");
       }
 
       // ✅ Guardar en localStorage
       localStorage.setItem("admin_token", data.accessToken);
-      localStorage.setItem("admin_user", JSON.stringify({ ...data.user, isAdmin: true }));
+      localStorage.setItem(
+        "admin_user",
+        JSON.stringify({ ...data.user, isAdmin: true })
+      );
 
-      // ✅ Mostrar mensaje y redirigir
       mostrarMensaje("✅ Acceso concedido. Redirigiendo...", "success");
-      setTimeout(() => {
-        window.location.href = "/panel.html";
-      }, 800); // Pequeño delay opcional
 
+      setTimeout(() => {
+        if (document.readyState === "complete") {
+          window.location.href = "/panel.html";
+        } else {
+          location.assign("/panel.html"); // fallback
+        }
+      }, 800);
     } catch (err) {
       console.error("❌ Error:", err);
       mostrarMensaje("❌ No se pudo conectar al servidor.", "error");
@@ -86,7 +92,8 @@ function mostrarMensaje(texto, tipo = "info") {
   box.classList.add(tipo);
   box.classList.remove("oculto");
 
-  setTimeout(() => {
+  clearTimeout(box._timeout);
+  box._timeout = setTimeout(() => {
     box.classList.add("oculto");
   }, 4000);
 }

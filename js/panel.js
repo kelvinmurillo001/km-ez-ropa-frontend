@@ -1,3 +1,4 @@
+//panel.js
 "use strict";
 
 // ✅ Importar configuración
