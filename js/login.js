@@ -33,12 +33,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password }),
       });
 
       const data = await res.json();
 
-      if (!res.ok || !data.token) {
+      if (!res.ok || !data.accessToken) {
         const msg = res.status === 401
           ? "🔐 Usuario o contraseña incorrectos."
           : data.message || "❌ Error inesperado.";
@@ -46,14 +46,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // ✅ Guardar en localStorage
-      localStorage.setItem("admin_token", data.token);
+      localStorage.setItem("admin_token", data.accessToken);
       localStorage.setItem("admin_user", JSON.stringify({ ...data.user, isAdmin: true }));
 
+      // ✅ Mostrar mensaje y redirigir
       mostrarMensaje("✅ Acceso concedido. Redirigiendo...", "success");
-
       setTimeout(() => {
         window.location.href = "/panel.html";
-      }, 1500);
+      }, 800); // Pequeño delay opcional
 
     } catch (err) {
       console.error("❌ Error:", err);
@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Tecla Enter para inputs
-  form.querySelectorAll("input").forEach(input => {
+  form.querySelectorAll("input").forEach((input) => {
     input.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
         form.dispatchEvent(new Event("submit"));
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**
- * ✅ Mostrar mensaje en el componente #adminMensaje
+ * ✅ Mostrar mensaje flotante
  */
 function mostrarMensaje(texto, tipo = "info") {
   const box = document.getElementById("adminMensaje");
