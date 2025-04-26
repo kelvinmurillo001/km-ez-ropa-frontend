@@ -1,98 +1,120 @@
-/* 🎯 Seguimiento de pedido */
+/* === SEGUIMIENTO PEDIDO === */
 
+/* 🎯 Contenedor Principal */
 .seguimiento-container {
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
-  }
-  
-  .subtitulo {
-    font-size: 1.2rem;
-    color: #555;
-    margin-top: 0.5rem;
-  }
-  
-  .buscar-codigo {
-    display: flex;
+  max-width: 700px;
+  margin: auto;
+  padding: 2rem 1rem;
+  background-color: #1a1a1a;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(255, 109, 0, 0.15);
+  color: #f5f5f5;
+}
+
+/* 🔎 Buscar Código */
+.buscar-codigo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.buscar-codigo input {
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background-color: #222;
+  color: #fff;
+  width: 100%;
+  max-width: 400px;
+}
+
+.buscar-codigo button {
+  padding: 0.7rem 1.5rem;
+  background-color: #ff6d00;
+  color: #121212;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.buscar-codigo button:hover {
+  background-color: #ffa733;
+}
+
+/* 📈 Barra de Progreso */
+.progreso {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3rem;
+  background-color: #1a1a1a;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255, 109, 0, 0.2);
+}
+
+.paso {
+  flex: 1;
+  text-align: center;
+  padding: 1rem 0;
+  color: #bbb;
+  font-weight: bold;
+  position: relative;
+}
+
+.paso::before {
+  content: "";
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin: 0 auto 8px;
+  background-color: #444;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.paso.active::before {
+  background-color: #ff6d00;
+}
+
+.paso.active {
+  color: #ff6d00;
+}
+
+/* 📋 Resumen Pedido */
+.resumen {
+  margin-top: 3rem;
+  background-color: #1e1e1e;
+  padding: 1.5rem;
+  border-radius: 10px;
+  border-left: 4px solid #ff6d00;
+  box-shadow: 0 0 10px rgba(255, 109, 0, 0.2);
+}
+
+.resumen p {
+  margin: 0.8rem 0;
+  font-size: 1rem;
+}
+
+/* 📱 Responsive */
+@media (max-width: 600px) {
+  .progreso {
     flex-direction: column;
     align-items: center;
   }
-  
-  .buscar-codigo input {
-    width: 90%;
-    max-width: 400px;
-    padding: 0.7rem;
-    font-size: 1rem;
-    margin-top: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-  }
-  
-  .buscar-codigo button {
-    margin-top: 1rem;
-    padding: 0.7rem 1.5rem;
-    font-size: 1rem;
-    background-color: #ff6d00;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-  
-  .buscar-codigo button:hover {
-    background-color: #e65c00;
-  }
-  
-  /* 📦 Barra de Progreso */
-  .progreso {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin-top: 2rem;
-    flex-wrap: wrap;
-  }
-  
+
   .paso {
-    flex: 1 1 20%;
-    min-width: 80px;
-    text-align: center;
-    padding: 0.5rem;
-    border-radius: 10px;
-    background-color: #eee;
-    margin: 0.5rem;
-    transition: background 0.4s, color 0.4s;
-    font-size: 0.9rem;
+    padding: 0.5rem 0;
   }
-  
-  .paso.active {
-    background-color: #ff6d00;
-    color: white;
-    font-weight: bold;
+
+  .buscar-codigo {
+    flex-direction: column;
   }
-  
-  /* 🧾 Resumen de Pedido */
-  .resumen {
-    background: #fafafa;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 1.5rem;
-    margin-top: 2rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+
+  .buscar-codigo input {
+    max-width: 100%;
   }
-  
-  .resumen p {
-    margin: 0.5rem 0;
-    font-size: 1rem;
-  }
-  
-  .resumen span {
-    color: #333;
-  }
-  
-  /* 📱 Responsive */
-  @media (max-width: 600px) {
-    .progreso {
-      flex-direction: column;
-    }
-  }
-  
+}

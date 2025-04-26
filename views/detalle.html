@@ -5,10 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>👕 Detalle del Producto | KM & EZ ROPA</title>
 
-  <!-- 🔍 SEO dinámico -->
-  <meta name="description" content="Explora los detalles exclusivos de nuestras prendas urbanas." id="descriptionTag">
+  <!-- 🔍 SEO básico -->
+  <meta name="description" content="Explora los detalles exclusivos de nuestras prendas urbanas. KM & EZ ROPA te viste con estilo y autenticidad.">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="KM & EZ ROPA">
+
+  <!-- 🌐 Open Graph para compartir -->
   <meta property="og:title" content="Detalle del Producto | KM & EZ ROPA" id="ogTitle">
-  <meta property="og:description" content="Encuentra tu prenda ideal con promociones destacadas." id="ogDescription">
+  <meta property="og:description" content="Estilo callejero, diseño premium. Encuentra tu prenda ideal con promociones destacadas." id="ogDescription">
   <meta property="og:image" content="/assets/og-image.jpg" id="ogImage">
   <meta property="og:type" content="product">
   <meta property="og:url" content="https://kmezropacatalogo.com/detalle.html">
@@ -20,14 +24,14 @@
   <link rel="stylesheet" href="/css/detalle.css">
   <link rel="stylesheet" href="/css/promo-display.css">
 
-  <!-- ✅ Scripts defer -->
+  <!-- ✅ Scripts -->
   <script type="module" src="/js/detalle.js" defer></script>
   <script src="/js/promo-display.js" defer></script>
 </head>
 
 <body>
 
-  <!-- 🔝 Encabezado -->
+  <!-- 🔝 Header -->
   <header class="main-header" role="banner">
     <div class="logo">
       <a href="/" aria-label="Ir al inicio">
@@ -46,13 +50,13 @@
     </nav>
   </header>
 
-  <!-- 🔥 Promo -->
+  <!-- 🔥 Promociones -->
   <div id="promo-display-container" data-page="detalle" aria-label="Promociones activas"></div>
 
-  <!-- 👕 Detalle del Producto -->
-  <main class="detalle-container fade-in" role="main" aria-label="Detalle del producto">
-    <section id="detalleProducto" class="detalle-grid" aria-live="polite">
-      <!-- Cargado dinámicamente por detalle.js -->
+  <!-- 👕 Detalle del producto -->
+  <main class="detalle-container" role="main" aria-label="Detalle del producto">
+    <section id="detalleProducto" class="detalle-grid fade-in" aria-live="polite">
+      <!-- 🎯 Producto se carga dinámicamente vía JS -->
     </section>
 
     <!-- ❤️ Botón Favoritos -->
@@ -75,13 +79,13 @@
   </main>
 
   <!-- 🛒 Botones flotantes -->
-  <div class="floating-buttons">
+  <div class="floating-buttons" aria-hidden="false">
     <a href="/carrito.html" class="cart-icon" aria-label="Ir al carrito">
-      <img src="/assets/cart-icon.svg" alt="Icono de carrito" loading="lazy">
+      <img src="/assets/cart-icon.svg" alt="Carrito" loading="lazy">
       <span id="cartCount" role="status" aria-live="polite">0</span>
     </a>
     <a href="https://wa.me/593990270864" class="whatsapp-icon" target="_blank" rel="noopener noreferrer" aria-label="Chatear por WhatsApp">
-      <img src="/assets/whatsapp.svg" alt="Icono de WhatsApp" loading="lazy">
+      <img src="/assets/whatsapp.svg" alt="WhatsApp" loading="lazy">
     </a>
   </div>
 
@@ -90,7 +94,12 @@
     <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
   </footer>
 
-  <!-- 🔗 Compartir -->
+  <!-- ⚠️ No JS -->
+  <noscript>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para visualizar correctamente esta página.</p>
+  </noscript>
+
+  <!-- 🔗 Función Compartir -->
   <script>
     function compartirEnRed(red) {
       const url = window.location.href;

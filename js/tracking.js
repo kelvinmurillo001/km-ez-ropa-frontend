@@ -81,6 +81,7 @@ function mostrarProgreso(estado) {
   }
 }
 
+// ⚡ Activar un paso específico
 function activarPaso(id) {
   document.getElementById(id)?.classList.add("active");
 }
@@ -94,7 +95,7 @@ function mostrarResumen(resumen = {}) {
   document.getElementById("totalPedido").textContent = `$${(resumen.total || 0).toFixed(2)}`;
 }
 
-// 💬 Mostrar mensajes
+// 💬 Mostrar mensajes de estado
 function mostrarMensaje(texto, tipo = "info") {
   mensajeEstado.textContent = texto;
   mensajeEstado.style.color =
