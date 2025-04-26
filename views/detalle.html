@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>👕 Detalle del Producto | KM & EZ ROPA</title>
+  <title id="pageTitle">👕 Detalle del Producto | KM & EZ ROPA</title>
 
-  <!-- 🔍 SEO -->
-  <meta name="description" content="Explora los detalles exclusivos de nuestras prendas urbanas. KM & EZ ROPA te viste con estilo y autenticidad.">
+  <!-- 🔍 SEO dinámico -->
+  <meta name="description" id="metaDescription" content="Explora los detalles exclusivos de nuestras prendas urbanas. KM & EZ ROPA te viste con estilo y autenticidad.">
   <meta name="robots" content="index, follow">
   <meta name="author" content="KM & EZ ROPA">
 
-  <!-- 🌐 Open Graph -->
-  <meta property="og:title" content="Detalle del Producto | KM & EZ ROPA">
-  <meta property="og:description" content="Estilo callejero, diseño premium. Encuentra tu prenda ideal con promociones destacadas.">
-  <meta property="og:image" content="/assets/og-image.jpg">
+  <!-- 🌐 Open Graph dinámico -->
+  <meta property="og:title" id="ogTitle" content="Detalle del Producto | KM & EZ ROPA">
+  <meta property="og:description" id="ogDescription" content="Estilo callejero, diseño premium. Encuentra tu prenda ideal con promociones destacadas.">
+  <meta property="og:image" id="ogImage" content="/assets/og-image.jpg">
   <meta property="og:type" content="product">
   <meta property="og:url" content="https://kmezropacatalogo.com/detalle.html">
 
@@ -104,10 +104,16 @@
     function compartirEnRed(red) {
       const url = window.location.href;
       const titulo = document.title;
-      const enlace = red === "facebook"
-        ? `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
-        : `https://wa.me/?text=${encodeURIComponent(titulo + ' ' + url)}`;
-      window.open(enlace, "_blank");
+
+      if (navigator.share) {
+        navigator.share({ title: titulo, url: url })
+          .catch(console.error);
+      } else {
+        const enlace = red === "facebook"
+          ? `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
+          : `https://wa.me/?text=${encodeURIComponent(titulo + ' ' + url)}`;
+        window.open(enlace, "_blank");
+      }
     }
   </script>
 

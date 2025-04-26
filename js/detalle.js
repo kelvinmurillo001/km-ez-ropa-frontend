@@ -35,6 +35,7 @@ async function cargarProducto(id) {
     }
 
     renderizarProducto(data.producto);
+    actualizarSEO(data.producto); // 🆕 Actualizar SEO dinámico
   } catch (err) {
     console.error("❌ Error cargando producto:", err.message);
     mostrarError(err.message);
@@ -42,7 +43,7 @@ async function cargarProducto(id) {
 }
 
 /**
- * 🖼️ Renderizar producto
+ * 🖼️ Renderizar producto en la página
  */
 function renderizarProducto(p = {}) {
   const detalle = document.getElementById("detalleProducto");
@@ -158,7 +159,7 @@ function toggleFavorito(id) {
 }
 
 /**
- * 🛒 Actualizar contador
+ * 🛒 Actualizar contador carrito
  */
 function actualizarCarritoWidget() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
@@ -168,7 +169,7 @@ function actualizarCarritoWidget() {
 }
 
 /**
- * 🔔 Toast
+ * 🔔 Toast visual
  */
 function mostrarToast(mensaje) {
   const toast = document.createElement("div");
@@ -190,7 +191,7 @@ function mostrarToast(mensaje) {
 }
 
 /**
- * ❌ Error visual
+ * ❌ Mostrar error de producto
  */
 function mostrarError(msg = "❌ Error inesperado") {
   const detalle = document.getElementById("detalleProducto");
@@ -203,7 +204,7 @@ function mostrarError(msg = "❌ Error inesperado") {
 }
 
 /**
- * 🌙 Modo oscuro
+ * 🌙 Activar modo oscuro
  */
 function activarModoOscuro() {
   if (localStorage.getItem("modoOscuro") === "true") {
@@ -226,6 +227,28 @@ function sanitize(text = "") {
   return div.innerHTML;
 }
 
-// Globales
+/**
+ * 🔍 Actualizar SEO dinámico
+ */
+function actualizarSEO(producto = {}) {
+  const nombre = sanitize(producto.name || "Producto | KM & EZ ROPA");
+  const descripcion = sanitize(producto.description || "Moda urbana exclusiva para ti.");
+  const imagen = producto.image || producto.images?.[0]?.url || "/assets/og-image.jpg";
+
+  document.title = `${nombre} | KM & EZ ROPA`;
+
+  const descTag = document.querySelector('meta[name="description"]');
+  if (descTag) descTag.setAttribute("content", descripcion);
+
+  const ogTitle = document.getElementById("ogTitle");
+  const ogDescription = document.getElementById("ogDescription");
+  const ogImage = document.getElementById("ogImage");
+
+  if (ogTitle) ogTitle.setAttribute("content", nombre);
+  if (ogDescription) ogDescription.setAttribute("content", descripcion);
+  if (ogImage) ogImage.setAttribute("content", imagen);
+}
+
+// 🪄 Exponer funciones para botones inline
 window.agregarAlCarrito = agregarAlCarrito;
 window.toggleFavorito = toggleFavorito;

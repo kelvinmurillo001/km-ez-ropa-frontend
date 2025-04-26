@@ -110,7 +110,7 @@ img {
   box-shadow: 0 8px 24px rgba(255, 109, 0, 0.4);
 }
 
-/* 📋 Información */
+/* 📋 Información del Producto */
 .detalle-info h2 {
   font-size: 2rem;
   color: #ff6d00;
@@ -129,7 +129,7 @@ img {
   font-weight: bold;
 }
 
-/* 🔽 SELECTORES DE OPCIONES */
+/* 🔽 SELECTORES */
 .selectores {
   display: flex;
   flex-direction: column;
@@ -162,7 +162,7 @@ img {
   box-shadow: 0 0 0 2px rgba(255, 109, 0, 0.5);
 }
 
-/* ℹ️ EXTRA DETALLES */
+/* ℹ️ Extra detalles */
 .detalles-extra {
   background-color: #1e1e1e;
   border-left: 4px solid #ff6d00;
@@ -177,7 +177,7 @@ img {
   color: #ccc;
 }
 
-/* 🛒 BOTÓN AGREGAR */
+/* 🛒 Botón Agregar */
 .btn-agregar {
   display: inline-block;
   padding: 1rem 2rem;
@@ -197,7 +197,7 @@ img {
   transform: translateY(-3px);
 }
 
-/* 🖼️ GALERÍA DE MINIATURAS */
+/* 🖼️ Galería de miniaturas */
 .galeria-mini {
   display: flex;
   justify-content: center;
@@ -221,7 +221,7 @@ img {
   transform: scale(1.1);
 }
 
-/* 📱 RESPONSIVE */
+/* 📱 Responsive */
 @media (max-width: 768px) {
   .detalle-grid {
     grid-template-columns: 1fr;
