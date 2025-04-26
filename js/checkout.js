@@ -57,9 +57,7 @@ function inicializarMetodoPago() {
       const val = e.target.value;
       infoMetodoPago.innerHTML = {
         transferencia: `<p>🔐 Recibirás los datos bancarios por WhatsApp. El pedido se procesa al validar el pago.</p>`,
-        tarjeta: `<p>💳 Redirección a pasarela segura. Recibirás confirmación por email/WhatsApp.</p>`,
-        paypal: `<p>🅿️ Serás redirigido a PayPal para confirmar la compra.</p>`,
-        efectivo: `<p>💵 Paga al recibir tu pedido (solo en zonas disponibles).</p>`
+        paypal: `<p>🅿️ Serás redirigido a PayPal para confirmar la compra.</p>`
       }[val] || "";
     });
   });
@@ -93,7 +91,6 @@ form?.addEventListener("submit", async e => {
     metodoPago,
     total,
     estado: metodoPago === "transferencia" ? "pendiente" : "pagado",
-    nota: "", // futura nota opcional
     items: carrito.map(item => ({
       id: item.id || null,
       nombre: sanitize(item.nombre || ""),
@@ -115,7 +112,7 @@ form?.addEventListener("submit", async e => {
     mostrarMensaje("✅ Pedido enviado con éxito. ¡Gracias!", "success");
     localStorage.removeItem(STORAGE_KEY);
 
-    if (metodoPago === "transferencia" || metodoPago === "efectivo") {
+    if (metodoPago === "transferencia") {
       abrirWhatsappConfirmacion(pedido);
     }
 
@@ -151,7 +148,7 @@ btnUbicacion?.addEventListener("click", () => {
 // 💬 WhatsApp automático
 function abrirWhatsappConfirmacion(pedido) {
   const mensaje = `
-📦 *NUEVO PEDIDO*
+📦 *NUEVO PEDIDO* 
 
 👤 *Cliente:* ${pedido.nombreCliente}
 📞 *Teléfono:* ${pedido.telefono}

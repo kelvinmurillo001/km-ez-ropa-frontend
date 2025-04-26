@@ -1,0 +1,111 @@
+.confirmacion-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 2rem 1rem;
+    text-align: center;
+    animation: fadeIn 0.8s ease-in-out;
+  }
+  
+  .confirmacion-icono {
+    font-size: 5rem;
+    color: limegreen;
+    margin-bottom: 1rem;
+  }
+  
+  .confirmacion-mensaje {
+    font-size: 2rem;
+    color: var(--color-primario);
+    margin-bottom: 1rem;
+  }
+  
+  .confirmacion-subtexto {
+    font-size: 1.1rem;
+    color: #ccc;
+    margin-bottom: 2rem;
+  }
+  
+  .botones-confirmacion {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+  
+  .botones-confirmacion a {
+    padding: 0.75rem 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background 0.3s, color 0.3s;
+    flex: 1 1 45%;
+    min-width: 150px;
+  }
+  
+  .btn-volver {
+    background-color: var(--color-secundario);
+    color: #fff;
+  }
+  
+  .btn-volver:hover {
+    background-color: #1e88e5;
+  }
+  
+  .btn-seguir {
+    background-color: var(--color-primario);
+    color: #121212;
+  }
+  
+  .btn-seguir:hover {
+    background-color: #ffa733;
+  }
+  
+  /* 🎯 Spinner */
+  .spinner-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+  
+  .spinner {
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid var(--color-primario);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg);}
+    100% { transform: rotate(360deg);}
+  }
+  
+  /* ✨ Fade In Animation */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px);}
+    to { opacity: 1; transform: translateY(0);}
+  }
+  
+  /* 📱 Responsive */
+  @media (max-width: 480px) {
+    .confirmacion-mensaje {
+      font-size: 1.5rem;
+    }
+  
+    .confirmacion-subtexto {
+      font-size: 1rem;
+    }
+  
+    .botones-confirmacion {
+      flex-direction: column;
+    }
+  
+    .botones-confirmacion a {
+      flex: 1 1 100%;
+    }
+  }
+  
