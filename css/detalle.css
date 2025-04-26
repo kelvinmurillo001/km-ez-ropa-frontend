@@ -82,19 +82,19 @@ img {
   color: #121212;
 }
 
-/* 🧾 DETALLE PRODUCTO */
+/* 🧾 DETALLE DE PRODUCTO */
 .detalle-container {
-  padding: 2rem 1rem;
   max-width: 1100px;
   margin: auto;
+  padding: 2rem 1rem;
 }
 
 .detalle-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2rem;
-  align-items: flex-start;
   margin-top: 2rem;
+  align-items: start;
 }
 
 /* 🖼️ Imagen principal */
@@ -113,8 +113,8 @@ img {
 /* 📋 Información */
 .detalle-info h2 {
   font-size: 2rem;
-  margin-bottom: 0.5rem;
   color: #ff6d00;
+  margin-bottom: 0.5rem;
 }
 
 .detalle-info p {
@@ -129,7 +129,7 @@ img {
   font-weight: bold;
 }
 
-/* 🔽 SELECTORES */
+/* 🔽 SELECTORES DE OPCIONES */
 .selectores {
   display: flex;
   flex-direction: column;
@@ -145,15 +145,15 @@ img {
 
 .selectores select,
 .selectores input[type="number"] {
-  padding: 0.75rem 1rem;
+  width: 100%;
+  padding: 0.75rem;
   font-size: 1rem;
   border-radius: 6px;
-  border: 1px solid #444;
   background-color: #1a1a1a;
-  color: white;
-  outline: none;
+  border: 1px solid #444;
+  color: #fff;
+  transition: border-color 0.3s, box-shadow 0.3s;
   appearance: none;
-  transition: all 0.3s ease;
 }
 
 .selectores select:focus,
@@ -162,13 +162,13 @@ img {
   box-shadow: 0 0 0 2px rgba(255, 109, 0, 0.5);
 }
 
-/* ℹ️ Extra detalles */
+/* ℹ️ EXTRA DETALLES */
 .detalles-extra {
   background-color: #1e1e1e;
   border-left: 4px solid #ff6d00;
   padding: 1rem;
-  margin-top: 1.5rem;
   border-radius: 8px;
+  margin-top: 1.5rem;
 }
 
 .detalles-extra p {
@@ -177,12 +177,13 @@ img {
   color: #ccc;
 }
 
-/* 🛒 Botón agregar */
+/* 🛒 BOTÓN AGREGAR */
 .btn-agregar {
+  display: inline-block;
   padding: 1rem 2rem;
-  font-size: 1.1rem;
   background-color: #ff6d00;
   color: #121212;
+  font-size: 1.1rem;
   font-weight: bold;
   border: none;
   border-radius: 6px;
@@ -196,7 +197,7 @@ img {
   transform: translateY(-3px);
 }
 
-/* 🖼️ Galería miniaturas */
+/* 🖼️ GALERÍA DE MINIATURAS */
 .galeria-mini {
   display: flex;
   justify-content: center;
@@ -205,22 +206,22 @@ img {
   margin-top: 1rem;
 }
 
-.galeria-mini .mini-img {
+.mini-img {
   width: 70px;
   height: 70px;
   border-radius: 8px;
   object-fit: cover;
   border: 2px solid transparent;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.3s, border-color 0.3s;
 }
 
-.galeria-mini .mini-img:hover {
+.mini-img:hover {
   border-color: #ff6d00;
   transform: scale(1.1);
 }
 
-/* 📱 Responsive */
+/* 📱 RESPONSIVE */
 @media (max-width: 768px) {
   .detalle-grid {
     grid-template-columns: 1fr;
