@@ -6,7 +6,6 @@ import { API_BASE } from "./config.js";
 // 🔐 Constantes
 const STORAGE_KEY = "km_ez_cart";
 const carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-
 const API_ORDERS = `${API_BASE}/api/orders`;
 
 // 🎯 Elementos del DOM
@@ -91,13 +90,19 @@ form?.addEventListener("submit", async e => {
     metodoPago,
     total,
     estado: metodoPago === "transferencia" ? "pendiente" : "pagado",
+    nota: "", // importante enviar nota aunque sea vacío
     items: carrito.map(item => ({
-      id: item.id || null,
-      nombre: sanitize(item.nombre || ""),
+      productId: item.id || null,
+      name: sanitize(item.nombre || ""),
       talla: sanitize(item.talla || ""),
       cantidad: parseInt(item.cantidad) || 1,
       precio: parseFloat(item.precio) || 0
-    }))
+    })),
+    factura: {
+      razonSocial: sanitize(form.facturaNombre?.value || ""),
+      ruc: sanitize(form.facturaRUC?.value || ""),
+      email: sanitize(form.facturaCorreo?.value || "")
+    }
   };
 
   try {
@@ -148,7 +153,7 @@ btnUbicacion?.addEventListener("click", () => {
 // 💬 WhatsApp automático
 function abrirWhatsappConfirmacion(pedido) {
   const mensaje = `
-📦 *NUEVO PEDIDO* 
+📦 *NUEVO PEDIDO*
 
 👤 *Cliente:* ${pedido.nombreCliente}
 📞 *Teléfono:* ${pedido.telefono}
@@ -156,7 +161,7 @@ function abrirWhatsappConfirmacion(pedido) {
 📍 *Dirección:* ${pedido.direccion}
 
 🛍️ *Productos:*
-${pedido.items.map(i => `• ${i.cantidad} x ${i.nombre} - Talla: ${i.talla} - $${(i.precio * i.cantidad).toFixed(2)}`).join("\n")}
+${pedido.items.map(i => `• ${i.cantidad} x ${i.name} - Talla: ${i.talla} - $${(i.precio * i.cantidad).toFixed(2)}`).join("\n")}
 
 💳 *Pago:* ${pedido.metodoPago}
 💰 *Total:* $${pedido.total.toFixed(2)}
