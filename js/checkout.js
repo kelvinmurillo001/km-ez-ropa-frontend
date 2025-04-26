@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
   inicializarMetodoPago();
 });
 
-// 🧾 Renderiza los productos en resumen
+// 🧾 Renderiza los productos
 function renderResumenCarrito() {
   let total = 0;
   resumenPedido.innerHTML = carrito.map(item => {
@@ -42,8 +42,7 @@ function renderResumenCarrito() {
     const subtotal = precio * cantidad;
     total += subtotal;
 
-    return `
-      <div class="resumen-item">
+    return `<div class="resumen-item">
         <p>🧢 <strong>${nombre}</strong> | Talla: ${talla} | Cant: ${cantidad} | <strong>$${subtotal.toFixed(2)}</strong></p>
       </div>`;
   }).join("");
@@ -51,15 +50,16 @@ function renderResumenCarrito() {
   totalFinal.textContent = `$${total.toFixed(2)}`;
 }
 
-// 💳 Mostrar info de método de pago
+// 💳 Mostrar descripción según método de pago
 function inicializarMetodoPago() {
   document.querySelectorAll("input[name='metodoPago']").forEach(radio => {
     radio.addEventListener("change", e => {
       const val = e.target.value;
       infoMetodoPago.innerHTML = {
-        transferencia: `<p>🔐 Recibirás los datos bancarios por WhatsApp. Envío tras validación del pago.</p>`,
-        tarjeta: `<p>💳 Serás redirigido a una pasarela de pago segura.</p>`,
-        paypal: `<p>🅿️ Compra segura con PayPal.</p>`
+        transferencia: `<p>🔐 Recibirás los datos bancarios por WhatsApp. El pedido se procesa al validar el pago.</p>`,
+        tarjeta: `<p>💳 Redirección a pasarela segura. Recibirás confirmación por email/WhatsApp.</p>`,
+        paypal: `<p>🅿️ Serás redirigido a PayPal para confirmar la compra.</p>`,
+        efectivo: `<p>💵 Paga al recibir tu pedido (solo áreas seleccionadas).</p>`
       }[val] || "";
     });
   });
@@ -101,7 +101,13 @@ form?.addEventListener("submit", async e => {
       talla: sanitize(item.talla || ""),
       cantidad: parseInt(item.cantidad) || 1,
       precio: parseFloat(item.precio) || 0
-    }))
+    })),
+    // Facturación opcional
+    factura: {
+      razonSocial: sanitize(form.facturaNombre?.value || ""),
+      ruc: sanitize(form.facturaRUC?.value || ""),
+      email: sanitize(form.facturaCorreo?.value || "")
+    }
   };
 
   try {
@@ -116,11 +122,11 @@ form?.addEventListener("submit", async e => {
     mostrarMensaje("✅ Pedido enviado con éxito. ¡Gracias por tu compra!", "success");
     localStorage.removeItem(STORAGE_KEY);
 
-    if (metodoPago === "transferencia") {
+    if (metodoPago === "transferencia" || metodoPago === "efectivo") {
       abrirWhatsappConfirmacion(pedido);
     }
 
-    setTimeout(() => window.location.href = "/index.html", 3000);
+    setTimeout(() => window.location.href = "/seguimiento.html?pedido=enviado", 3000);
 
   } catch (err) {
     console.error("❌", err);
@@ -128,11 +134,11 @@ form?.addEventListener("submit", async e => {
   }
 });
 
-// 📍 Obtener dirección por geolocalización
+// 📍 Geolocalización automática
 btnUbicacion?.addEventListener("click", () => {
-  if (!navigator.geolocation) return mostrarMensaje("⚠️ Tu navegador no soporta geolocalización.", "warn");
+  if (!navigator.geolocation) return mostrarMensaje("⚠️ Tu navegador no soporta ubicación.", "warn");
 
-  mostrarMensaje("📍 Obteniendo ubicación...", "info");
+  mostrarMensaje("📍 Obteniendo tu ubicación...", "info");
 
   navigator.geolocation.getCurrentPosition(
     async ({ coords }) => {
@@ -145,11 +151,11 @@ btnUbicacion?.addEventListener("click", () => {
         mostrarMensaje("❌ No se pudo obtener la dirección.", "error");
       }
     },
-    () => mostrarMensaje("❌ No se pudo acceder a la ubicación.", "error")
+    () => mostrarMensaje("❌ No se pudo acceder a tu ubicación.", "error")
   );
 });
 
-// 💬 Mensaje a WhatsApp
+// 💬 WhatsApp automático
 function abrirWhatsappConfirmacion(pedido) {
   const mensaje = `
 📦 *NUEVO PEDIDO*
@@ -170,7 +176,7 @@ ${pedido.items.map(i => `• ${i.cantidad} x ${i.name} - Talla: ${i.talla} - $${
   window.open(url, "_blank");
 }
 
-// 📩 Validaciones
+// ✅ Utilidades
 function validarEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
 }
