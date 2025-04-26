@@ -7,9 +7,9 @@
 
   <!-- Meta -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="description" content="Completa tu compra con seguridad y confianza. Elige entre varias opciones de pago y recibe actualizaciones de tu pedido." />
-  <meta name="author" content="KM & EZ ROPA" />
+  <meta name="description" content="Completa tu compra de forma segura y recibe tus productos de moda urbana. 🚀" />
   <meta name="theme-color" content="#ff6d00" />
+  <meta name="author" content="KM & EZ ROPA" />
 
   <!-- CSS -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -18,21 +18,22 @@
   <link rel="stylesheet" href="/css/promo-display.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- JS -->
+  <!-- Scripts -->
   <script src="/js/promo-display.js" defer></script>
   <script type="module" src="/js/checkout.js" defer></script>
 </head>
+
 <body>
 
-  <!-- 🎉 Promo -->
-  <div id="promo-display-container" data-page="checkout" role="region" aria-label="Promoción activa"></div>
+  <!-- 🎉 Promo banner -->
+  <div id="promo-display-container" data-page="checkout" role="region" aria-label="Promociones activas"></div>
 
-  <!-- 🧾 MAIN -->
-  <main class="checkout-container fade-in" role="main" aria-label="Finalizar compra">
-    <h1 class="text-center">🛍️ Finaliza tu Compra</h1>
-    <p class="text-center subtitulo-checkout">Revisa tus datos, elige el pago y recibe tu pedido con estilo. 🚚</p>
+  <!-- 🛍️ Main Checkout -->
+  <main class="checkout-container fade-in" role="main" aria-label="Formulario de pago">
+    <h1 class="text-center">🛒 Finalizar Compra</h1>
+    <p class="text-center subtitulo-checkout">Completa tus datos y recibe tu pedido sin problemas. 🚚</p>
 
-    <!-- Pasos -->
+    <!-- Pasos visuales -->
     <div class="checkout-steps" aria-hidden="true">
       <div class="step active">1. Datos</div>
       <div class="step">2. Dirección</div>
@@ -40,51 +41,51 @@
       <div class="step">4. Confirmación</div>
     </div>
 
-    <!-- FORM -->
+    <!-- Formulario de checkout -->
     <form id="formCheckout" class="form-checkout" novalidate autocomplete="on">
-
-      <!-- 🧍 Datos -->
+      
+      <!-- 👤 Datos del cliente -->
       <fieldset>
         <legend>👤 Tus Datos</legend>
         <label for="nombreInput">Nombre completo: *</label>
-        <input type="text" id="nombreInput" name="nombre" required placeholder="Ej: Ana López" autocomplete="name" />
+        <input type="text" id="nombreInput" name="nombreInput" required placeholder="Ej: Ana Pérez" autocomplete="name" />
 
         <label for="emailInput">Correo electrónico: *</label>
-        <input type="email" id="emailInput" name="email" required placeholder="ejemplo@mail.com" autocomplete="email" />
+        <input type="email" id="emailInput" name="emailInput" required placeholder="ejemplo@email.com" autocomplete="email" />
 
-        <label for="telefonoInput">WhatsApp / Teléfono: *</label>
-        <input type="tel" id="telefonoInput" name="telefono" required placeholder="+593..." autocomplete="tel" />
+        <label for="telefonoInput">Teléfono / WhatsApp: *</label>
+        <input type="tel" id="telefonoInput" name="telefonoInput" required placeholder="+593..." autocomplete="tel" />
       </fieldset>
 
-      <!-- 🧾 Facturación -->
+      <!-- 🧾 Facturación opcional -->
       <fieldset>
         <legend>🧾 Datos de Facturación <small>(opcional)</small></legend>
-        <label for="facturaNombre">Nombre / Razón social:</label>
-        <input type="text" id="facturaNombre" placeholder="Ej: Ana Textiles S.A." />
+        <label for="facturaNombre">Razón social:</label>
+        <input type="text" id="facturaNombre" name="facturaNombre" placeholder="Ej: Ana Textiles S.A." />
 
         <label for="facturaRUC">RUC / Cédula:</label>
-        <input type="text" id="facturaRUC" placeholder="Ej: 0912345678" />
+        <input type="text" id="facturaRUC" name="facturaRUC" placeholder="Ej: 0912345678" />
 
         <label for="facturaCorreo">Correo de facturación:</label>
-        <input type="email" id="facturaCorreo" placeholder="correo@empresa.com" />
+        <input type="email" id="facturaCorreo" name="facturaCorreo" placeholder="facturas@empresa.com" />
       </fieldset>
 
-      <!-- 📍 Dirección -->
+      <!-- 📍 Dirección de entrega -->
       <fieldset>
-        <legend>📦 Dirección de Entrega</legend>
+        <legend>📍 Dirección de Entrega</legend>
         <label for="direccionInput">Dirección completa: *</label>
-        <textarea id="direccionInput" name="direccion" required placeholder="Ej: Calle 1, Quito - Pichincha" autocomplete="street-address"></textarea>
+        <textarea id="direccionInput" name="direccionInput" required placeholder="Ej: Av. Principal 123, Quito - Pichincha" autocomplete="street-address"></textarea>
 
-        <button type="button" class="btn-secundario" id="btnUbicacion">📍 Usar ubicación actual</button>
+        <button type="button" class="btn-secundario mt-1" id="btnUbicacion">📍 Detectar ubicación</button>
       </fieldset>
 
-      <!-- 💳 Pago -->
+      <!-- 💳 Métodos de pago -->
       <fieldset>
         <legend>💳 Método de Pago</legend>
         <div class="metodo-pago-selector">
           <label class="pago-btn">
             <input type="radio" name="metodoPago" value="transferencia" required />
-            🪙 Transferencia Bancaria
+            🏦 Transferencia Bancaria
           </label>
           <label class="pago-btn">
             <input type="radio" name="metodoPago" value="tarjeta" />
@@ -96,35 +97,36 @@
           </label>
           <label class="pago-btn">
             <input type="radio" name="metodoPago" value="efectivo" />
-            💵 Contra entrega
+            💵 Pago Contra Entrega
           </label>
         </div>
-        <div id="infoMetodoPago" class="metodo-pago-info mt-1" aria-live="polite" role="region"></div>
+        <div id="infoMetodoPago" class="metodo-pago-info mt-1" aria-live="polite"></div>
       </fieldset>
 
-      <!-- 🧾 Resumen -->
+      <!-- 🧾 Resumen del pedido -->
       <fieldset>
-        <legend>🧾 Resumen de tu Pedido</legend>
+        <legend>🛒 Resumen de tu Pedido</legend>
         <div id="resumenPedido" aria-live="polite">
-          <!-- Se llena dinámicamente -->
+          <!-- Aquí renderiza dinámicamente -->
         </div>
-        <h3>Total: <span id="totalFinal" role="status">$0.00</span></h3>
+        <h3>Total: <span id="totalFinal">$0.00</span></h3>
       </fieldset>
 
-      <!-- ✅ Acciones -->
+      <!-- 🚀 Acciones -->
       <div class="form-actions mt-3">
-        <button type="submit" class="btn">📦 Confirmar Pedido</button>
+        <button type="submit" class="btn">✅ Confirmar Pedido</button>
         <button type="button" onclick="window.location.href='/carrito.html'" class="btn-secundario">🔙 Volver al Carrito</button>
       </div>
 
-      <!-- 🔔 Mensaje -->
+      <!-- 🔔 Mensajes de estado -->
       <p id="msgEstado" class="form-msg text-center mt-2" role="alert" aria-live="assertive"></p>
     </form>
   </main>
 
-  <!-- No JS -->
+  <!-- Fallback NoJS -->
   <noscript>
-    <p style="text-align:center; color:red;">⚠️ Activa JavaScript para continuar con tu compra.</p>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para procesar tu compra correctamente.</p>
   </noscript>
+
 </body>
 </html>

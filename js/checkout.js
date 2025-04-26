@@ -3,7 +3,7 @@
 // ✅ Configuración base
 import { API_BASE } from "./config.js";
 
-// 🔐 Constantes globales
+// 🔐 Constantes
 const STORAGE_KEY = "km_ez_cart";
 const carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
   inicializarMetodoPago();
 });
 
-// 🧾 Renderiza los productos
+// 🧾 Renderizar resumen carrito
 function renderResumenCarrito() {
   let total = 0;
   resumenPedido.innerHTML = carrito.map(item => {
@@ -43,14 +43,14 @@ function renderResumenCarrito() {
     total += subtotal;
 
     return `<div class="resumen-item">
-        <p>🧢 <strong>${nombre}</strong> | Talla: ${talla} | Cant: ${cantidad} | <strong>$${subtotal.toFixed(2)}</strong></p>
-      </div>`;
+      <p>🧢 <strong>${nombre}</strong> | Talla: ${talla} | Cant: ${cantidad} | <strong>$${subtotal.toFixed(2)}</strong></p>
+    </div>`;
   }).join("");
 
   totalFinal.textContent = `$${total.toFixed(2)}`;
 }
 
-// 💳 Mostrar descripción según método de pago
+// 💳 Inicializar método de pago
 function inicializarMetodoPago() {
   document.querySelectorAll("input[name='metodoPago']").forEach(radio => {
     radio.addEventListener("change", e => {
@@ -59,7 +59,7 @@ function inicializarMetodoPago() {
         transferencia: `<p>🔐 Recibirás los datos bancarios por WhatsApp. El pedido se procesa al validar el pago.</p>`,
         tarjeta: `<p>💳 Redirección a pasarela segura. Recibirás confirmación por email/WhatsApp.</p>`,
         paypal: `<p>🅿️ Serás redirigido a PayPal para confirmar la compra.</p>`,
-        efectivo: `<p>💵 Paga al recibir tu pedido (solo áreas seleccionadas).</p>`
+        efectivo: `<p>💵 Paga al recibir tu pedido (solo en zonas disponibles).</p>`
       }[val] || "";
     });
   });
@@ -83,9 +83,7 @@ form?.addEventListener("submit", async e => {
   if (!validarEmail(email)) return mostrarMensaje("❌ Email inválido.", "error");
   if (!/^[0-9+\-\s]{7,20}$/.test(telefono)) return mostrarMensaje("❌ Teléfono inválido.", "error");
 
-  const total = carrito.reduce((acc, item) =>
-    acc + (parseFloat(item.precio) || 0) * (parseInt(item.cantidad) || 0), 0
-  );
+  const total = carrito.reduce((acc, item) => acc + (parseFloat(item.precio) || 0) * (parseInt(item.cantidad) || 0), 0);
 
   const pedido = {
     nombreCliente: sanitize(nombre),
@@ -95,19 +93,14 @@ form?.addEventListener("submit", async e => {
     metodoPago,
     total,
     estado: metodoPago === "transferencia" ? "pendiente" : "pagado",
+    nota: "", // futura nota opcional
     items: carrito.map(item => ({
-      productId: item.id || null,
-      name: sanitize(item.nombre || ""),
+      id: item.id || null,
+      nombre: sanitize(item.nombre || ""),
       talla: sanitize(item.talla || ""),
       cantidad: parseInt(item.cantidad) || 1,
       precio: parseFloat(item.precio) || 0
-    })),
-    // Facturación opcional
-    factura: {
-      razonSocial: sanitize(form.facturaNombre?.value || ""),
-      ruc: sanitize(form.facturaRUC?.value || ""),
-      email: sanitize(form.facturaCorreo?.value || "")
-    }
+    }))
   };
 
   try {
@@ -119,14 +112,14 @@ form?.addEventListener("submit", async e => {
 
     if (!res.ok) throw new Error("Error al enviar el pedido");
 
-    mostrarMensaje("✅ Pedido enviado con éxito. ¡Gracias por tu compra!", "success");
+    mostrarMensaje("✅ Pedido enviado con éxito. ¡Gracias!", "success");
     localStorage.removeItem(STORAGE_KEY);
 
     if (metodoPago === "transferencia" || metodoPago === "efectivo") {
       abrirWhatsappConfirmacion(pedido);
     }
 
-    setTimeout(() => window.location.href = "/seguimiento.html?pedido=enviado", 3000);
+    setTimeout(() => window.location.href = "/checkout-confirmacion.html", 3000);
 
   } catch (err) {
     console.error("❌", err);
@@ -134,7 +127,7 @@ form?.addEventListener("submit", async e => {
   }
 });
 
-// 📍 Geolocalización automática
+// 📍 Ubicación automática
 btnUbicacion?.addEventListener("click", () => {
   if (!navigator.geolocation) return mostrarMensaje("⚠️ Tu navegador no soporta ubicación.", "warn");
 
@@ -166,11 +159,11 @@ function abrirWhatsappConfirmacion(pedido) {
 📍 *Dirección:* ${pedido.direccion}
 
 🛍️ *Productos:*
-${pedido.items.map(i => `• ${i.cantidad} x ${i.name} - Talla: ${i.talla} - $${(i.precio * i.cantidad).toFixed(2)}`).join("\n")}
+${pedido.items.map(i => `• ${i.cantidad} x ${i.nombre} - Talla: ${i.talla} - $${(i.precio * i.cantidad).toFixed(2)}`).join("\n")}
 
-💳 *Pago:* ${pedido.metodoPago === "transferencia" ? "Transferencia Bancaria" : pedido.metodoPago}
+💳 *Pago:* ${pedido.metodoPago}
 💰 *Total:* $${pedido.total.toFixed(2)}
-  `.trim();
+`.trim();
 
   const url = `https://wa.me/593990270864?text=${encodeURIComponent(mensaje)}`;
   window.open(url, "_blank");
