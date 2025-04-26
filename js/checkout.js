@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
   inicializarMetodoPago();
 });
 
-// 🧾 Renderizar resumen carrito
+// 🧾 Renderizar resumen de carrito
 function renderResumenCarrito() {
   let total = 0;
   resumenPedido.innerHTML = carrito.map(item => {
@@ -49,14 +49,14 @@ function renderResumenCarrito() {
   totalFinal.textContent = `$${total.toFixed(2)}`;
 }
 
-// 💳 Inicializar método de pago
+// 💳 Mostrar información según método de pago
 function inicializarMetodoPago() {
   document.querySelectorAll("input[name='metodoPago']").forEach(radio => {
     radio.addEventListener("change", e => {
       const val = e.target.value;
       infoMetodoPago.innerHTML = {
         transferencia: `<p>🔐 Recibirás los datos bancarios por WhatsApp. El pedido se procesa al validar el pago.</p>`,
-        paypal: `<p>🅿️ Serás redirigido a PayPal para confirmar la compra.</p>`
+        paypal: `<p>🅿️ Serás redirigido a PayPal para confirmar tu compra.</p>`
       }[val] || "";
     });
   });
@@ -73,15 +73,17 @@ form?.addEventListener("submit", async e => {
   const direccion = form.direccionInput.value.trim();
   const metodoPago = document.querySelector("input[name='metodoPago']:checked")?.value;
 
+  // Validaciones básicas
   if (!nombre || !email || !telefono || !direccion || !metodoPago) {
     return mostrarMensaje("❌ Todos los campos son obligatorios.", "error");
   }
-
   if (!validarEmail(email)) return mostrarMensaje("❌ Email inválido.", "error");
   if (!/^[0-9+\-\s]{7,20}$/.test(telefono)) return mostrarMensaje("❌ Teléfono inválido.", "error");
 
+  // Calcular total
   const total = carrito.reduce((acc, item) => acc + (parseFloat(item.precio) || 0) * (parseInt(item.cantidad) || 0), 0);
 
+  // Construir objeto de pedido
   const pedido = {
     nombreCliente: sanitize(nombre),
     email,
@@ -90,7 +92,7 @@ form?.addEventListener("submit", async e => {
     metodoPago,
     total,
     estado: metodoPago === "transferencia" ? "pendiente" : "pagado",
-    nota: "", // importante enviar nota aunque sea vacío
+    nota: "",
     items: carrito.map(item => ({
       productId: item.id || null,
       name: sanitize(item.nombre || ""),
@@ -105,6 +107,7 @@ form?.addEventListener("submit", async e => {
     }
   };
 
+  // Intentar enviar a la API
   try {
     const res = await fetch(API_ORDERS, {
       method: "POST",
@@ -129,7 +132,7 @@ form?.addEventListener("submit", async e => {
   }
 });
 
-// 📍 Ubicación automática
+// 📍 Detectar ubicación
 btnUbicacion?.addEventListener("click", () => {
   if (!navigator.geolocation) return mostrarMensaje("⚠️ Tu navegador no soporta ubicación.", "warn");
 
@@ -150,11 +153,10 @@ btnUbicacion?.addEventListener("click", () => {
   );
 });
 
-// 💬 WhatsApp automático
+// 💬 Confirmación por WhatsApp
 function abrirWhatsappConfirmacion(pedido) {
   const mensaje = `
 📦 *NUEVO PEDIDO*
-
 👤 *Cliente:* ${pedido.nombreCliente}
 📞 *Teléfono:* ${pedido.telefono}
 📧 *Email:* ${pedido.email}
