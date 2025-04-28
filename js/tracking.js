@@ -3,13 +3,14 @@
 // ✅ Configuración base
 import { API_BASE } from "./config.js";
 
-// 🎯 Elementos del DOM
+// 🔎 Elementos del DOM
 const codigoInput = document.getElementById("codigoSeguimiento");
 const btnBuscar = document.getElementById("btnBuscar");
 const barraProgreso = document.getElementById("barraProgreso");
 const resumenPedido = document.getElementById("resumenPedido");
 const mensajeEstado = document.getElementById("mensajeEstado");
 
+// 📡 URL API
 const API_TRACK = `${API_BASE}/api/orders/track`;
 
 // ▶️ Evento inicial
@@ -22,14 +23,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// 🔍 Evento de botón buscar
+// 🔍 Buscar pedido al hacer click
 btnBuscar?.addEventListener("click", () => {
   const codigo = codigoInput.value.trim();
   if (!codigo) return mostrarMensaje("⚠️ Debes ingresar un código de pedido.", "warn");
   buscarPedido(codigo);
 });
 
-// 📦 Buscar el pedido en la API
+// 📦 Función buscar pedido
 async function buscarPedido(codigo) {
   mostrarMensaje("⏳ Buscando pedido...", "info");
   try {
@@ -50,7 +51,7 @@ async function buscarPedido(codigo) {
   }
 }
 
-// 🚚 Mostrar la barra de progreso
+// 🚚 Mostrar progreso de envío
 function mostrarProgreso(estado) {
   barraProgreso.hidden = false;
   document.querySelectorAll(".paso").forEach(p => p.classList.remove("active"));
@@ -81,12 +82,12 @@ function mostrarProgreso(estado) {
   }
 }
 
-// ⚡ Activar un paso específico
+// ⭐ Activar un paso en progreso
 function activarPaso(id) {
   document.getElementById(id)?.classList.add("active");
 }
 
-// 🧾 Mostrar el resumen del pedido
+// 🧾 Mostrar resumen de pedido
 function mostrarResumen(resumen = {}) {
   resumenPedido.hidden = false;
   document.getElementById("nombreCliente").textContent = resumen.nombre || "-";

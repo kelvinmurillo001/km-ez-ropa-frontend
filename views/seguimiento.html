@@ -18,12 +18,12 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://kmezropacatalogo.com/seguimiento.html">
 
-  <!-- 🎨 Estilos -->
+  <!-- 🎨 CSS Global -->
   <link rel="stylesheet" href="/css/global.css">
   <link rel="stylesheet" href="/css/componentes.css">
   <link rel="stylesheet" href="/css/seguimiento.css">
 
-  <!-- ✅ Scripts -->
+  <!-- ✅ Script de Seguimiento -->
   <script type="module" src="/js/tracking.js" defer></script>
 </head>
 
@@ -33,37 +33,38 @@
   <h1 class="text-center">🚚 Seguimiento de tu Pedido</h1>
   <p class="text-center subtitulo">Consulta el estado actual de tu compra en tiempo real.</p>
 
-  <!-- 🔎 Buscar Código de Pedido -->
-  <section class="buscar-codigo mt-3" role="search" aria-label="Formulario de búsqueda de código de pedido">
+  <!-- 🔎 Formulario Buscar Código -->
+  <section class="buscar-codigo mt-3" role="search" aria-label="Formulario para buscar pedido">
     <label for="codigoSeguimiento">Introduce tu código de pedido:</label>
     <input type="text" id="codigoSeguimiento" placeholder="Ej: KM12345" required>
-    <button id="btnBuscar" class="btn mt-1">🔍 Buscar</button>
+    <button id="btnBuscar" class="btn mt-1">🔍 Buscar Pedido</button>
   </section>
 
   <!-- 📈 Barra de Progreso -->
-  <section id="barraProgreso" class="progreso mt-4" hidden aria-label="Progreso del pedido">
+  <section id="barraProgreso" class="progreso mt-4" hidden aria-label="Progreso de envío">
     <div class="paso" id="paso-recibido">📥 Recibido</div>
     <div class="paso" id="paso-preparando">🛠 Preparando</div>
     <div class="paso" id="paso-en-camino">🚚 En camino</div>
     <div class="paso" id="paso-entregado">✅ Entregado</div>
   </section>
 
-  <!-- 📋 Resumen de Pedido -->
-  <section id="resumenPedido" class="resumen mt-4" hidden aria-label="Resumen de pedido">
-    <h2>🧾 Resumen de tu Pedido</h2>
+  <!-- 📋 Detalles del Pedido -->
+  <section id="resumenPedido" class="resumen mt-4" hidden aria-label="Resumen de Pedido">
+    <h2>🧾 Detalles del Pedido</h2>
     <p><strong>Cliente:</strong> <span id="nombreCliente"></span></p>
     <p><strong>Dirección:</strong> <span id="direccionCliente"></span></p>
     <p><strong>Método de Pago:</strong> <span id="metodoPago"></span></p>
     <p><strong>Total:</strong> <span id="totalPedido"></span></p>
   </section>
 
-  <!-- 🔔 Mensaje de Estado -->
-  <p id="mensajeEstado" class="text-center mt-2" role="alert" aria-live="polite"></p>
+  <!-- 🔔 Estado o Errores -->
+  <p id="mensajeEstado" class="text-center mt-3" role="alert" aria-live="polite"></p>
+
 </main>
 
-<!-- 🚫 No JavaScript -->
+<!-- 🚫 No JavaScript Warning -->
 <noscript>
-  <p style="text-align: center; color: red;">⚠️ Activa JavaScript para poder seguir el estado de tu pedido correctamente.</p>
+  <p style="text-align: center; color: red;">⚠️ Activa JavaScript para poder consultar tu pedido correctamente.</p>
 </noscript>
 
 </body>
