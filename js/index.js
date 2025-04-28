@@ -21,20 +21,25 @@ async function mostrarProductosDestacados() {
   const catalogo = document.getElementById("catalogo");
   if (!catalogo) return;
 
+  catalogo.innerHTML = `<p class="text-center">⏳ Cargando productos...</p>`;
+
   try {
     const res = await fetch(`${API_BASE}/api/products?featured=true`);
-    const productos = await res.json();
+    const data = await res.json();
 
-    if (!res.ok || !Array.isArray(productos)) {
-      throw new Error(productos.message || "Error al cargar productos destacados");
+    if (!res.ok) {
+      throw new Error(data.message || "Error al cargar productos destacados");
     }
 
-    if (productos.length === 0) {
+    // Si el servidor devuelve directamente un array:
+    const productos = Array.isArray(data) ? data : (data.productos || []);
+
+    if (!productos.length) {
       catalogo.innerHTML = `<p class="text-center">😢 No hay productos destacados en este momento.</p>`;
       return;
     }
 
-    catalogo.innerHTML = ""; // Limpiar antes de renderizar
+    catalogo.innerHTML = ""; // Limpiar catálogo antes de renderizar
 
     productos.forEach(producto => {
       const imagen = producto.image || producto.images?.[0]?.url || "/assets/logo.jpg";
