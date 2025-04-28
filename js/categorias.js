@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ───────────────────────────────────────────── */
-/* 🌙 5. Modo oscuro persistente                  */
+/* 🌙 5. Activar modo oscuro persistente          */
 /* ───────────────────────────────────────────── */
 function aplicarModoOscuro() {
   if (localStorage.getItem("modoOscuro") === "true") {
@@ -39,7 +39,7 @@ function aplicarModoOscuro() {
 }
 
 /* ───────────────────────────────────────────── */
-/* 🎯 6. Configurar eventos de filtros            */
+/* 🎯 6. Configurar filtros dinámicos             */
 /* ───────────────────────────────────────────── */
 function configurarFiltros() {
   [categoriaSelect, subcategoriaSelect, precioSelect].forEach(el =>
@@ -49,7 +49,7 @@ function configurarFiltros() {
 }
 
 /* ───────────────────────────────────────────── */
-/* 📦 7. Cargar productos                         */
+/* 📦 7. Cargar productos desde API               */
 /* ───────────────────────────────────────────── */
 async function cargarProductos() {
   if (!catalogo) return;
@@ -66,15 +66,13 @@ async function cargarProductos() {
     if (busqueda) params.append("nombre", busqueda);
 
     const res = await fetch(`${API_PRODUCTS}?${params.toString()}`);
-    
+    const data = await res.json();
+
     if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.message || "❌ Error al obtener productos.");
+      throw new Error(data.message || "❌ Error al obtener productos.");
     }
 
-    const data = await res.json();
     const productos = Array.isArray(data) ? data : (data.productos || []);
-    
     if (!Array.isArray(productos)) {
       throw new Error("❌ Respuesta inválida de productos.");
     }
@@ -90,7 +88,7 @@ async function cargarProductos() {
 }
 
 /* ───────────────────────────────────────────── */
-/* 🧠 8. Aplicar filtros activos                  */
+/* 🧠 8. Aplicar filtros en frontend              */
 /* ───────────────────────────────────────────── */
 function aplicarFiltros(productos) {
   const cat = categoriaSelect?.value?.toLowerCase() || "";
@@ -110,7 +108,7 @@ function aplicarFiltros(productos) {
 }
 
 /* ───────────────────────────────────────────── */
-/* 🎨 9. Renderizar productos en catálogo         */
+/* 🎨 9. Renderizar catálogo de productos         */
 /* ───────────────────────────────────────────── */
 function renderizarCatalogo(productos) {
   if (!catalogo) return;
@@ -148,7 +146,7 @@ function renderizarCatalogo(productos) {
 }
 
 /* ───────────────────────────────────────────── */
-/* 🔁 10. Ir a detalle de producto                */
+/* 🔁 10. Redirigir a detalle de producto         */
 /* ───────────────────────────────────────────── */
 function verDetalle(id) {
   if (!id) return alert("❌ ID inválido");
@@ -157,7 +155,7 @@ function verDetalle(id) {
 window.verDetalle = verDetalle;
 
 /* ───────────────────────────────────────────── */
-/* 📂 11. Llenar selectores de categorías         */
+/* 📂 11. Llenar selects de categorías dinámicos  */
 /* ───────────────────────────────────────────── */
 function llenarSelects(productos) {
   if (!categoriaSelect || !subcategoriaSelect) return;
@@ -182,7 +180,7 @@ function actualizarContadorCarrito() {
 }
 
 /* ───────────────────────────────────────────── */
-/* 🎁 13. Cargar promoción activa                 */
+/* 🎁 13. Cargar promociones activas              */
 /* ───────────────────────────────────────────── */
 async function cargarPromocion() {
   try {
@@ -200,7 +198,7 @@ async function cargarPromocion() {
         banner.setAttribute("aria-label", "Promoción activa");
 
         banner.innerHTML = `
-          ${mediaType === "image" ? `<img src="${mediaUrl}" alt="Promo activa" />` : ""}
+          ${mediaType === "image" ? `<img src="${mediaUrl}" alt="Promoción activa" />` : ""}
           <span>${message}</span>
         `;
         promoContainer.appendChild(banner);
@@ -212,7 +210,7 @@ async function cargarPromocion() {
 }
 
 /* ───────────────────────────────────────────── */
-/* 🧼 14. Sanitizar texto seguro                  */
+/* 🧼 14. Función para sanitizar texto seguro     */
 /* ───────────────────────────────────────────── */
 function sanitize(text = "") {
   const div = document.createElement("div");

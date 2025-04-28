@@ -25,14 +25,14 @@ async function mostrarProductosDestacados() {
 
   try {
     const res = await fetch(`${API_BASE}/api/products?featured=true`);
-    const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.message || "Error al cargar productos destacados");
+      const errorData = await res.json();
+      throw new Error(errorData.message || "Error al cargar productos destacados.");
     }
 
-    // ✅ Adaptarse si el backend responde con { productos: [...] }
-    const productos = Array.isArray(data) ? data : (data.productos || []);
+    const data = await res.json();
+    const productos = Array.isArray(data.productos) ? data.productos : [];
 
     if (!productos.length) {
       catalogo.innerHTML = `<p class="text-center">😢 No hay productos destacados en este momento.</p>`;
@@ -62,7 +62,7 @@ async function mostrarProductosDestacados() {
 
   } catch (error) {
     console.error("❌ Error cargando productos destacados:", error);
-    catalogo.innerHTML = `<p class="text-center" style="color:red;">⚠️ No se pudieron cargar los productos destacados.</p>`;
+    catalogo.innerHTML = `<p class="text-center" style="color:red;">⚠️ ${error.message}</p>`;
   }
 }
 
