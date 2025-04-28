@@ -30,7 +30,7 @@ async function mostrarProductosDestacados() {
     }
 
     if (productos.length === 0) {
-      catalogo.innerHTML = `<p style="text-align:center;">😢 No hay productos destacados en este momento.</p>`;
+      catalogo.innerHTML = `<p class="text-center">😢 No hay productos destacados en este momento.</p>`;
       return;
     }
 
@@ -57,7 +57,7 @@ async function mostrarProductosDestacados() {
 
   } catch (error) {
     console.error("❌ Error cargando productos destacados:", error);
-    catalogo.innerHTML = `<p style="text-align:center; color:red;">⚠️ No se pudieron cargar los productos.</p>`;
+    catalogo.innerHTML = `<p class="text-center" style="color:red;">⚠️ No se pudieron cargar los productos destacados.</p>`;
   }
 }
 
