@@ -51,11 +51,28 @@ async function cargarProductos() {
   catalogo.innerHTML = "<p class='text-center'>⏳ Cargando productos...</p>";
 
   try {
-    const res = await fetch(API_PRODUCTS);
+    const params = new URLSearchParams();
+
+    const cat = categoriaSelect?.value?.trim();
+    if (cat) params.append("categoria", cat);
+
+    const sub = subcategoriaSelect?.value?.trim();
+    if (sub) params.append("subcategoria", sub);
+
+    const busqueda = busquedaInput?.value?.trim();
+    if (busqueda) params.append("nombre", busqueda);
+
+    const res = await fetch(`${API_PRODUCTS}?${params.toString()}`);
+    
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || "❌ Error al obtener productos.");
+    }
+
     const data = await res.json();
 
-    if (!res.ok || !Array.isArray(data)) {
-      throw new Error(data.message || "❌ Error al obtener productos.");
+    if (!Array.isArray(data)) {
+      throw new Error("❌ Respuesta inválida de productos.");
     }
 
     const productosFiltrados = aplicarFiltros(data);
@@ -86,7 +103,7 @@ function aplicarFiltros(productos) {
     });
 }
 
-// 🎨 9. Renderizar productos con accesibilidad
+// 🎨 9. Renderizar productos
 function renderizarCatalogo(productos) {
   if (!catalogo) return;
   catalogo.innerHTML = "";
@@ -151,7 +168,7 @@ function actualizarContadorCarrito() {
   if (contadorCarrito) contadorCarrito.textContent = total;
 }
 
-// 🎁 13. Cargar promoción
+// 🎁 13. Cargar promoción activa
 async function cargarPromocion() {
   try {
     const res = await fetch(API_PROMOS);
@@ -179,7 +196,7 @@ async function cargarPromocion() {
   }
 }
 
-// 🧼 Utilidad
+// 🧼 14. Sanitizar texto
 function sanitize(text = "") {
   const div = document.createElement("div");
   div.textContent = text;

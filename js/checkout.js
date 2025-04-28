@@ -17,7 +17,7 @@ const msgEstado = document.getElementById("msgEstado");
 const btnUbicacion = document.getElementById("btnUbicacion");
 const infoMetodoPago = document.getElementById("infoMetodoPago");
 
-let enviandoPedido = false; // ✅ Nueva protección contra doble envío
+let enviandoPedido = false; // ✅ Protección contra doble envío
 
 // ▶️ Renderizado inicial
 document.addEventListener("DOMContentLoaded", () => {
@@ -68,7 +68,6 @@ function inicializarMetodoPago() {
 // 📤 Enviar pedido
 form?.addEventListener("submit", async e => {
   e.preventDefault();
-
   if (enviandoPedido) return;
   enviandoPedido = true;
 
@@ -135,7 +134,6 @@ form?.addEventListener("submit", async e => {
     });
 
     const data = await res.json();
-
     if (!res.ok) {
       throw new Error(data.message || "Error al registrar el pedido.");
     }
@@ -155,7 +153,6 @@ form?.addEventListener("submit", async e => {
       });
 
       const dataPaypal = await resPaypal.json();
-
       if (!resPaypal.ok || !dataPaypal.id) {
         throw new Error(dataPaypal.message || "❌ Error creando la orden PayPal.");
       }
