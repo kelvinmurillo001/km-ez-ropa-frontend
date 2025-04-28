@@ -17,6 +17,8 @@ const msgEstado = document.getElementById("msgEstado");
 const btnUbicacion = document.getElementById("btnUbicacion");
 const infoMetodoPago = document.getElementById("infoMetodoPago");
 
+let enviandoPedido = false; // ✅ Nueva protección contra doble envío
+
 // ▶️ Renderizado inicial
 document.addEventListener("DOMContentLoaded", () => {
   if (!Array.isArray(carrito) || carrito.length === 0) {
@@ -66,6 +68,13 @@ function inicializarMetodoPago() {
 // 📤 Enviar pedido
 form?.addEventListener("submit", async e => {
   e.preventDefault();
+
+  if (enviandoPedido) return;
+  enviandoPedido = true;
+
+  const botonSubmit = form.querySelector("button[type='submit']");
+  botonSubmit.disabled = true;
+
   mostrarMensaje("⏳ Enviando pedido...", "info");
 
   const nombre = form.nombreInput.value.trim();
@@ -75,10 +84,23 @@ form?.addEventListener("submit", async e => {
   const metodoPago = document.querySelector("input[name='metodoPago']:checked")?.value;
 
   if (!nombre || !email || !telefono || !direccion || !metodoPago) {
-    return mostrarMensaje("❌ Todos los campos son obligatorios.", "error");
+    mostrarMensaje("❌ Todos los campos son obligatorios.", "error");
+    botonSubmit.disabled = false;
+    enviandoPedido = false;
+    return;
   }
-  if (!validarEmail(email)) return mostrarMensaje("❌ Email inválido.", "error");
-  if (!/^[0-9+\-\s]{7,20}$/.test(telefono)) return mostrarMensaje("❌ Teléfono inválido.", "error");
+  if (!validarEmail(email)) {
+    mostrarMensaje("❌ Email inválido.", "error");
+    botonSubmit.disabled = false;
+    enviandoPedido = false;
+    return;
+  }
+  if (!/^[0-9+\-\s]{7,20}$/.test(telefono)) {
+    mostrarMensaje("❌ Teléfono inválido.", "error");
+    botonSubmit.disabled = false;
+    enviandoPedido = false;
+    return;
+  }
 
   const total = carrito.reduce((acc, item) => acc + (parseFloat(item.precio) || 0) * (parseInt(item.cantidad) || 0), 0);
 
@@ -123,8 +145,7 @@ form?.addEventListener("submit", async e => {
       localStorage.removeItem(STORAGE_KEY);
       abrirWhatsappConfirmacion(pedido);
       setTimeout(() => window.location.href = "/checkout-confirmacion.html", 3000);
-    } 
-    else if (metodoPago === "paypal") {
+    } else if (metodoPago === "paypal") {
       mostrarMensaje("✅ Redirigiendo a PayPal...", "success");
 
       const resPaypal = await fetch(API_PAYPAL_CREATE, {
@@ -135,12 +156,8 @@ form?.addEventListener("submit", async e => {
 
       const dataPaypal = await resPaypal.json();
 
-      if (!resPaypal.ok) {
+      if (!resPaypal.ok || !dataPaypal.id) {
         throw new Error(dataPaypal.message || "❌ Error creando la orden PayPal.");
-      }
-
-      if (!dataPaypal.id) {
-        throw new Error("❌ Respuesta de PayPal inválida.");
       }
 
       window.location.href = `https://www.sandbox.paypal.com/checkoutnow?token=${dataPaypal.id}`;
@@ -148,7 +165,10 @@ form?.addEventListener("submit", async e => {
 
   } catch (err) {
     console.error("❌", err);
-    mostrarMensaje(`❌ ${err.message}`, "error"); // Aquí mostramos el error exacto
+    mostrarMensaje(`❌ ${err.message}`, "error");
+  } finally {
+    botonSubmit.disabled = false;
+    enviandoPedido = false;
   }
 });
 

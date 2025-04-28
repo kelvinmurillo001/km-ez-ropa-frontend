@@ -1,5 +1,3 @@
-//frontend/js/productos.js
-
 "use strict";
 
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
@@ -22,12 +20,13 @@ const paginacion = document.getElementById("paginacion");
 
 let productosTodos = [];
 let paginaActual = 1;
+let totalPaginas = 1;
 const productosPorPagina = 10;
 
 document.addEventListener("DOMContentLoaded", () => {
   btnNuevoProducto?.addEventListener("click", () => window.location.href = "/crear-producto.html");
-  inputBuscar?.addEventListener("input", cargarProductos);
-  filtroCategoria?.addEventListener("change", cargarProductos);
+  inputBuscar?.addEventListener("input", () => { paginaActual = 1; cargarProductos(); });
+  filtroCategoria?.addEventListener("change", () => { paginaActual = 1; cargarProductos(); });
   filtroStock?.addEventListener("change", renderizarProductos);
   filtroDestacados?.addEventListener("change", renderizarProductos);
   btnExportar?.addEventListener("click", exportarExcel);
@@ -53,6 +52,8 @@ async function cargarProductos() {
     const params = new URLSearchParams();
     if (nombre) params.append("nombre", nombre);
     if (categoria) params.append("categoria", categoria);
+    params.append("pagina", paginaActual);
+    params.append("limite", productosPorPagina);
 
     const res = await fetch(`${API_PRODUCTS}?${params.toString()}`, {
       headers: { Authorization: `Bearer ${token}` }
@@ -61,12 +62,13 @@ async function cargarProductos() {
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || "Error al obtener productos");
 
-    productosTodos = Array.isArray(data) ? data : [];
-    paginaActual = 1;
+    productosTodos = Array.isArray(data.productos) ? data.productos : [];
+    totalPaginas = data.totalPaginas || 1;
 
     if (!productosTodos.length) {
       productosLista.innerHTML = "<p class='text-center'>📭 No se encontraron productos.</p>";
       contadorProductos.textContent = "";
+      paginacion.innerHTML = "";
       return;
     }
 
@@ -78,7 +80,7 @@ async function cargarProductos() {
 }
 
 /**
- * 🧮 Renderizar productos con filtros y paginación
+ * 🧮 Renderizar productos
  */
 function renderizarProductos() {
   let filtrados = [...productosTodos];
@@ -96,14 +98,9 @@ function renderizarProductos() {
     filtrados = filtrados.filter(p => p.featured);
   }
 
-  // 📄 Paginación
-  const totalPaginas = Math.ceil(filtrados.length / productosPorPagina);
-  const inicio = (paginaActual - 1) * productosPorPagina;
-  const pagina = filtrados.slice(inicio, inicio + productosPorPagina);
+  contadorProductos.textContent = `Mostrando ${filtrados.length} producto(s) en página ${paginaActual} de ${totalPaginas}`;
 
-  contadorProductos.textContent = `Mostrando ${pagina.length} de ${filtrados.length} producto(s)`;
-
-  if (!pagina.length) {
+  if (!filtrados.length) {
     productosLista.innerHTML = "<p class='text-center'>📭 Sin resultados.</p>";
     paginacion.innerHTML = "";
     return;
@@ -122,17 +119,17 @@ function renderizarProductos() {
             <th>Acciones</th>
           </tr>
         </thead>
-        <tbody>${pagina.map(productoFilaHTML).join("")}</tbody>
+        <tbody>${filtrados.map(productoFilaHTML).join("")}</tbody>
       </table>
     </div>`;
 
-  renderPaginacion(totalPaginas);
+  renderPaginacion();
 }
 
 /**
  * 🔢 Renderizar paginación
  */
-function renderPaginacion(totalPaginas) {
+function renderPaginacion() {
   paginacion.innerHTML = "";
   if (totalPaginas <= 1) return;
 
@@ -142,7 +139,7 @@ function renderPaginacion(totalPaginas) {
     btn.className = i === paginaActual ? "btn paginacion-activa" : "btn-secundario";
     btn.addEventListener("click", () => {
       paginaActual = i;
-      renderizarProductos();
+      cargarProductos();
     });
     paginacion.appendChild(btn);
   }
