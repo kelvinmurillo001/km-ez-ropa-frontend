@@ -7,6 +7,7 @@ import { API_BASE } from "./config.js";
 const STORAGE_KEY = "km_ez_cart";
 const carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 const API_ORDERS = `${API_BASE}/api/orders`;
+const API_PAYPAL_CREATE = `${API_BASE}/api/paypal/create-order`;
 
 // 🎯 Elementos del DOM
 const resumenPedido = document.getElementById("resumenPedido");
@@ -105,37 +106,43 @@ form?.addEventListener("submit", async e => {
   };
 
   try {
+    // 1️⃣ Primero registrar el pedido
     const res = await fetch(API_ORDERS, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(pedido)
     });
 
-    if (!res.ok) throw new Error("Error al enviar el pedido");
+    if (!res.ok) throw new Error("Error al registrar el pedido.");
 
-    mostrarMensaje("✅ Pedido registrado correctamente.", "success");
-    localStorage.removeItem(STORAGE_KEY);
-
+    // 2️⃣ Si método es transferencia
     if (metodoPago === "transferencia") {
+      mostrarMensaje("✅ Pedido registrado. Redirigiendo...", "success");
+      localStorage.removeItem(STORAGE_KEY);
       abrirWhatsappConfirmacion(pedido);
       setTimeout(() => window.location.href = "/checkout-confirmacion.html", 3000);
-    } else if (metodoPago === "paypal") {
-      // Crear orden en backend y redirigir a PayPal
-      const respPaypal = await fetch(`${API_BASE}/api/paypal/create-order`, {
+    } 
+    
+    // 3️⃣ Si método es PayPal
+    else if (metodoPago === "paypal") {
+      mostrarMensaje("✅ Redirigiendo a PayPal...", "success");
+
+      const resPaypal = await fetch(API_PAYPAL_CREATE, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ total })
       });
-      const dataPaypal = await respPaypal.json();
 
-      if (!dataPaypal.id) throw new Error("Error creando la orden PayPal.");
+      const dataPaypal = await resPaypal.json();
+
+      if (!dataPaypal.id) throw new Error("❌ Error creando la orden PayPal.");
 
       window.location.href = `https://www.sandbox.paypal.com/checkoutnow?token=${dataPaypal.id}`;
     }
-
+    
   } catch (err) {
     console.error("❌", err);
-    mostrarMensaje("❌ No se pudo completar el proceso. Intenta nuevamente.", "error");
+    mostrarMensaje("❌ Error inesperado. Intenta nuevamente.", "error");
   }
 });
 
@@ -164,7 +171,6 @@ btnUbicacion?.addEventListener("click", () => {
 function abrirWhatsappConfirmacion(pedido) {
   const mensaje = `
 📦 *NUEVO PEDIDO*
-
 👤 *Cliente:* ${pedido.nombreCliente}
 📞 *Teléfono:* ${pedido.telefono}
 📧 *Email:* ${pedido.email}
