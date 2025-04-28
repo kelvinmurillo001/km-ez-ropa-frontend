@@ -32,7 +32,6 @@ function aplicarModoOscuro() {
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
-
   document.getElementById("modoOscuroBtn")?.addEventListener("click", () => {
     const isDark = document.body.classList.toggle("modo-oscuro");
     localStorage.setItem("modoOscuro", isDark);
@@ -58,14 +57,12 @@ async function cargarProductos() {
 
   try {
     const params = new URLSearchParams();
-
     const cat = categoriaSelect?.value?.trim();
-    if (cat) params.append("categoria", cat);
-
     const sub = subcategoriaSelect?.value?.trim();
-    if (sub) params.append("subcategoria", sub);
-
     const busqueda = busquedaInput?.value?.trim();
+
+    if (cat) params.append("categoria", cat);
+    if (sub) params.append("subcategoria", sub);
     if (busqueda) params.append("nombre", busqueda);
 
     const res = await fetch(`${API_PRODUCTS}?${params.toString()}`);
@@ -76,8 +73,8 @@ async function cargarProductos() {
     }
 
     const data = await res.json();
-
     const productos = Array.isArray(data) ? data : (data.productos || []);
+    
     if (!Array.isArray(productos)) {
       throw new Error("❌ Respuesta inválida de productos.");
     }
@@ -146,7 +143,6 @@ function renderizarCatalogo(productos) {
         <button class="btn-card" onclick="verDetalle('${id}')" aria-label="Ver detalles de ${nombre}">👁️ Ver</button>
       </div>
     `;
-
     catalogo.appendChild(card);
   });
 }
