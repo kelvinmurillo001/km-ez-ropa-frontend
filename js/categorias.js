@@ -25,7 +25,9 @@ document.addEventListener("DOMContentLoaded", () => {
   actualizarContadorCarrito();
 });
 
-// 🌙 5. Modo oscuro
+/* ───────────────────────────────────────────── */
+/* 🌙 5. Modo oscuro persistente                  */
+/* ───────────────────────────────────────────── */
 function aplicarModoOscuro() {
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
@@ -37,7 +39,9 @@ function aplicarModoOscuro() {
   });
 }
 
-// 🎯 6. Eventos de filtros
+/* ───────────────────────────────────────────── */
+/* 🎯 6. Configurar eventos de filtros            */
+/* ───────────────────────────────────────────── */
 function configurarFiltros() {
   [categoriaSelect, subcategoriaSelect, precioSelect].forEach(el =>
     el?.addEventListener("change", cargarProductos)
@@ -45,7 +49,9 @@ function configurarFiltros() {
   busquedaInput?.addEventListener("input", cargarProductos);
 }
 
-// 📦 7. Cargar productos
+/* ───────────────────────────────────────────── */
+/* 📦 7. Cargar productos                         */
+/* ───────────────────────────────────────────── */
 async function cargarProductos() {
   if (!catalogo) return;
   catalogo.innerHTML = "<p class='text-center'>⏳ Cargando productos...</p>";
@@ -71,13 +77,14 @@ async function cargarProductos() {
 
     const data = await res.json();
 
-    if (!Array.isArray(data)) {
+    const productos = Array.isArray(data) ? data : (data.productos || []);
+    if (!Array.isArray(productos)) {
       throw new Error("❌ Respuesta inválida de productos.");
     }
 
-    const productosFiltrados = aplicarFiltros(data);
+    const productosFiltrados = aplicarFiltros(productos);
     renderizarCatalogo(productosFiltrados);
-    llenarSelects(data);
+    llenarSelects(productos);
 
   } catch (err) {
     console.error("❌", err.message);
@@ -85,7 +92,9 @@ async function cargarProductos() {
   }
 }
 
-// 🧠 8. Aplicar filtros activos
+/* ───────────────────────────────────────────── */
+/* 🧠 8. Aplicar filtros activos                  */
+/* ───────────────────────────────────────────── */
 function aplicarFiltros(productos) {
   const cat = categoriaSelect?.value?.toLowerCase() || "";
   const sub = subcategoriaSelect?.value?.toLowerCase() || "";
@@ -103,7 +112,9 @@ function aplicarFiltros(productos) {
     });
 }
 
-// 🎨 9. Renderizar productos
+/* ───────────────────────────────────────────── */
+/* 🎨 9. Renderizar productos en catálogo         */
+/* ───────────────────────────────────────────── */
 function renderizarCatalogo(productos) {
   if (!catalogo) return;
   catalogo.innerHTML = "";
@@ -140,14 +151,18 @@ function renderizarCatalogo(productos) {
   });
 }
 
-// 🔁 10. Redirigir a detalle
+/* ───────────────────────────────────────────── */
+/* 🔁 10. Ir a detalle de producto                */
+/* ───────────────────────────────────────────── */
 function verDetalle(id) {
   if (!id) return alert("❌ ID inválido");
   window.location.href = `/detalle.html?id=${id}`;
 }
 window.verDetalle = verDetalle;
 
-// 📂 11. Llenar selects de categorías y subcategorías
+/* ───────────────────────────────────────────── */
+/* 📂 11. Llenar selectores de categorías         */
+/* ───────────────────────────────────────────── */
 function llenarSelects(productos) {
   if (!categoriaSelect || !subcategoriaSelect) return;
 
@@ -161,14 +176,18 @@ function llenarSelects(productos) {
     subcategorias.map(s => `<option value="${sanitize(s)}">${sanitize(s)}</option>`).join("");
 }
 
-// 🛒 12. Contador de carrito
+/* ───────────────────────────────────────────── */
+/* 🛒 12. Actualizar contador de carrito          */
+/* ───────────────────────────────────────────── */
 function actualizarContadorCarrito() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
   const total = carrito.reduce((acc, item) => acc + (item.cantidad || item.quantity || 0), 0);
   if (contadorCarrito) contadorCarrito.textContent = total;
 }
 
-// 🎁 13. Cargar promoción activa
+/* ───────────────────────────────────────────── */
+/* 🎁 13. Cargar promoción activa                 */
+/* ───────────────────────────────────────────── */
 async function cargarPromocion() {
   try {
     const res = await fetch(API_PROMOS);
@@ -196,7 +215,9 @@ async function cargarPromocion() {
   }
 }
 
-// 🧼 14. Sanitizar texto
+/* ───────────────────────────────────────────── */
+/* 🧼 14. Sanitizar texto seguro                  */
+/* ───────────────────────────────────────────── */
 function sanitize(text = "") {
   const div = document.createElement("div");
   div.textContent = text;

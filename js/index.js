@@ -8,7 +8,7 @@ import { API_BASE } from "./config.js";
 document.addEventListener("DOMContentLoaded", async () => {
   registrarVisitaPublica(); // 📊 Registro de visita
   mostrarSaludo(); // 👋 Saludo dinámico
-  aplicarModoOscuro(); // 🌙 Oscuro
+  aplicarModoOscuro(); // 🌙 Modo oscuro
 
   await mostrarProductosDestacados();
   actualizarCarritoWidget();
@@ -31,7 +31,7 @@ async function mostrarProductosDestacados() {
       throw new Error(data.message || "Error al cargar productos destacados");
     }
 
-    // Si el servidor devuelve directamente un array:
+    // ✅ Adaptarse si el backend responde con { productos: [...] }
     const productos = Array.isArray(data) ? data : (data.productos || []);
 
     if (!productos.length) {
