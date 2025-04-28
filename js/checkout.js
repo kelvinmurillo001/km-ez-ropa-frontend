@@ -106,24 +106,24 @@ form?.addEventListener("submit", async e => {
   };
 
   try {
-    // 1️⃣ Primero registrar el pedido
     const res = await fetch(API_ORDERS, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(pedido)
     });
 
-    if (!res.ok) throw new Error("Error al registrar el pedido.");
+    const data = await res.json();
 
-    // 2️⃣ Si método es transferencia
+    if (!res.ok) {
+      throw new Error(data.message || "Error al registrar el pedido.");
+    }
+
     if (metodoPago === "transferencia") {
       mostrarMensaje("✅ Pedido registrado. Redirigiendo...", "success");
       localStorage.removeItem(STORAGE_KEY);
       abrirWhatsappConfirmacion(pedido);
       setTimeout(() => window.location.href = "/checkout-confirmacion.html", 3000);
     } 
-    
-    // 3️⃣ Si método es PayPal
     else if (metodoPago === "paypal") {
       mostrarMensaje("✅ Redirigiendo a PayPal...", "success");
 
@@ -135,14 +135,20 @@ form?.addEventListener("submit", async e => {
 
       const dataPaypal = await resPaypal.json();
 
-      if (!dataPaypal.id) throw new Error("❌ Error creando la orden PayPal.");
+      if (!resPaypal.ok) {
+        throw new Error(dataPaypal.message || "❌ Error creando la orden PayPal.");
+      }
+
+      if (!dataPaypal.id) {
+        throw new Error("❌ Respuesta de PayPal inválida.");
+      }
 
       window.location.href = `https://www.sandbox.paypal.com/checkoutnow?token=${dataPaypal.id}`;
     }
-    
+
   } catch (err) {
     console.error("❌", err);
-    mostrarMensaje("❌ Error inesperado. Intenta nuevamente.", "error");
+    mostrarMensaje(`❌ ${err.message}`, "error"); // Aquí mostramos el error exacto
   }
 });
 
