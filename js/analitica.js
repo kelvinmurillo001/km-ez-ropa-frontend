@@ -23,9 +23,9 @@ document.addEventListener("DOMContentLoaded", () => {
   cargarEstadisticas();
 });
 
-/**
- * 📊 Obtener datos principales
- */
+/* -------------------------------------------------------------------------- */
+/* 📦 Cargar estadísticas                                                      */
+/* -------------------------------------------------------------------------- */
 async function cargarEstadisticas() {
   try {
     const [resumen, productosData] = await Promise.all([
@@ -49,9 +49,9 @@ async function cargarEstadisticas() {
   }
 }
 
-/**
- * 🌐 Fetch genérico con token
- */
+/* -------------------------------------------------------------------------- */
+/* 🌐 Fetch protegido con token                                                */
+/* -------------------------------------------------------------------------- */
 async function fetchAPI(url, auth = false) {
   const res = await fetch(url, {
     headers: auth ? { Authorization: `Bearer ${token}` } : {}
@@ -64,20 +64,17 @@ async function fetchAPI(url, auth = false) {
   return data;
 }
 
-/**
- * ⏳ Mostrar estado cargando
- */
+/* -------------------------------------------------------------------------- */
+/* ⏳ Mostrar estado cargando                                                   */
+/* -------------------------------------------------------------------------- */
 function mostrarCargando() {
-  const campos = [
-    "totalProductos", "promosActivas", "visitas",
-    "ventasTotales", "pedidosTotales", "pedidosHoy"
-  ];
-  campos.forEach(id => setTexto(id, "⏳"));
+  ["totalProductos", "promosActivas", "visitas", "ventasTotales", "pedidosTotales", "pedidosHoy"]
+    .forEach(id => setTexto(id, "⏳"));
 }
 
-/**
- * 🧾 Resumen general
- */
+/* -------------------------------------------------------------------------- */
+/* 🧾 Renderizar resumen                                                       */
+/* -------------------------------------------------------------------------- */
 function renderResumen(data = {}) {
   setTexto("totalProductos", data.totalProductos ?? 0);
   setTexto("promosActivas", data.productosDestacados ?? 0);
@@ -87,9 +84,9 @@ function renderResumen(data = {}) {
   setTexto("pedidosHoy", data.pedidosHoy ?? 0);
 }
 
-/**
- * 📁 Categorías populares
- */
+/* -------------------------------------------------------------------------- */
+/* 📁 Renderizar categorías populares                                          */
+/* -------------------------------------------------------------------------- */
 function renderCategorias(productos = []) {
   const conteo = {};
 
@@ -114,9 +111,9 @@ function renderCategorias(productos = []) {
     });
 }
 
-/**
- * 📉 Gráfico de pedidos por día
- */
+/* -------------------------------------------------------------------------- */
+/* 📉 Renderizar gráfico de pedidos por día                                   */
+/* -------------------------------------------------------------------------- */
 function renderGraficaPedidosPorDia(series = []) {
   const contenedor = document.getElementById("graficaPedidos");
   if (!contenedor) return;
@@ -129,13 +126,10 @@ function renderGraficaPedidosPorDia(series = []) {
   contenedor.innerHTML = `<canvas id="graficoPedidosCanvas" height="180"></canvas>`;
   const ctx = document.getElementById("graficoPedidosCanvas").getContext("2d");
 
-  if (graficoPedidos) graficoPedidos.destroy(); // ✅ Destruye gráfico anterior
+  if (graficoPedidos) graficoPedidos.destroy();
 
   const labels = series.map(s =>
-    new Intl.DateTimeFormat("es-EC", {
-      day: "2-digit",
-      month: "short"
-    }).format(new Date(s.fecha))
+    new Intl.DateTimeFormat("es-EC", { day: "2-digit", month: "short" }).format(new Date(s.fecha))
   );
   const valores = series.map(s => s.total);
 
@@ -151,16 +145,14 @@ function renderGraficaPedidosPorDia(series = []) {
     },
     options: {
       responsive: true,
-      scales: {
-        y: { beginAtZero: true }
-      }
+      scales: { y: { beginAtZero: true } }
     }
   });
 }
 
-/**
- * 📤 Exportar CSV
- */
+/* -------------------------------------------------------------------------- */
+/* 📤 Exportar estadísticas a CSV                                              */
+/* -------------------------------------------------------------------------- */
 function exportarEstadisticas() {
   const btn = document.getElementById("btnExportarCSV");
   if (!estadisticas || !Array.isArray(productos)) {
@@ -206,14 +198,16 @@ function exportarEstadisticas() {
   link.click();
 }
 
-/**
- * 🔠 Insertar texto en el DOM
- */
+/* -------------------------------------------------------------------------- */
+/* 🔠 Función para insertar texto en el DOM                                   */
+/* -------------------------------------------------------------------------- */
 function setTexto(id, value) {
   const el = document.getElementById(id);
   if (el) el.textContent = value;
 }
 
-// 🌐 Globales
+/* -------------------------------------------------------------------------- */
+/* 🌎 Funciones globales                                                       */
+/* -------------------------------------------------------------------------- */
 window.exportarEstadisticas = exportarEstadisticas;
 window.goBack = goBack;

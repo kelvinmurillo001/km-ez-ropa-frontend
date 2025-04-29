@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>📊 Dashboard Analítico | KM & EZ ROPA</title>
 
-  <!-- 🔐 Seguridad y SEO -->
+  <!-- 🔒 Seguridad y SEO -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Panel de control con estadísticas de ventas, productos, visitas y pedidos recibidos." />
   <meta name="author" content="KM & EZ ROPA" />
@@ -22,83 +22,84 @@
   <!-- ✅ Script principal -->
   <script type="module" src="/js/dashboard.js" defer></script>
 </head>
+
 <body>
 
-  <main class="dashboard-container fade-in" role="main" aria-label="Panel de estadísticas KM & EZ ROPA">
-    <h1 class="text-center">📊 Panel de Analítica</h1>
+<main class="dashboard-container fade-in" role="main" aria-label="Panel de estadísticas KM & EZ ROPA">
+  <h1 class="text-center">📊 Panel de Analítica</h1>
 
-    <!-- 🔢 Métricas Globales -->
-    <section class="dashboard-grid" aria-label="Métricas globales">
-      <article class="card" role="region" aria-labelledby="tituloVentas">
-        <h3 id="tituloVentas">🛒 Ventas Totales</h3>
-        <p><span id="ventasTotales" aria-live="polite">$0.00</span></p>
-      </article>
-      <article class="card" role="region" aria-labelledby="tituloVisitas">
-        <h3 id="tituloVisitas">👥 Visitas</h3>
-        <p><span id="visitasTotales" aria-live="polite">0</span></p>
-      </article>
-      <article class="card" role="region" aria-labelledby="tituloProductos">
-        <h3 id="tituloProductos">📦 Productos</h3>
-        <p><span id="totalProductos" aria-live="polite">0</span></p>
-      </article>
-      <article class="card" role="region" aria-labelledby="tituloPromos">
-        <h3 id="tituloPromos">🎯 Promos Activas</h3>
-        <p><span id="promosActivas" aria-live="polite">0</span></p>
-      </article>
-    </section>
+  <!-- 🔢 Métricas Globales -->
+  <section class="dashboard-grid" aria-label="Métricas globales">
+    <article class="card" role="region" aria-labelledby="tituloVentas">
+      <h3 id="tituloVentas">🛒 Ventas Totales</h3>
+      <p><span id="ventasTotales" aria-live="polite">$0.00</span></p>
+    </article>
+    <article class="card" role="region" aria-labelledby="tituloVisitas">
+      <h3 id="tituloVisitas">👥 Visitas</h3>
+      <p><span id="visitasTotales" aria-live="polite">0</span></p>
+    </article>
+    <article class="card" role="region" aria-labelledby="tituloProductos">
+      <h3 id="tituloProductos">📦 Productos</h3>
+      <p><span id="totalProductos" aria-live="polite">0</span></p>
+    </article>
+    <article class="card" role="region" aria-labelledby="tituloPromos">
+      <h3 id="tituloPromos">🎯 Promos Activas</h3>
+      <p><span id="promosActivas" aria-live="polite">0</span></p>
+    </article>
+  </section>
 
-    <!-- 📋 Estado de Pedidos -->
-    <section class="analitica-extra mt-3" aria-labelledby="tituloPedidos">
-      <h2 id="tituloPedidos" class="text-center">🧾 Estado de Pedidos</h2>
-      <ul class="listado-categorias">
-        <li><strong>Total:</strong> <span id="total">-</span></li>
-        <li><strong>Pendientes:</strong> <span id="pendientes">-</span></li>
-        <li><strong>En Proceso:</strong> <span id="en_proceso">-</span></li>
-        <li><strong>Enviados:</strong> <span id="enviado">-</span></li>
-        <li><strong>Cancelados:</strong> <span id="cancelado">-</span></li>
-        <li><strong>Hoy:</strong> <span id="hoy">-</span></li>
-      </ul>
-    </section>
+  <!-- 📋 Estado de Pedidos -->
+  <section class="analitica-extra mt-3" aria-labelledby="tituloPedidos">
+    <h2 id="tituloPedidos" class="text-center">🧾 Estado de Pedidos</h2>
+    <ul class="listado-categorias">
+      <li><strong>Total:</strong> <span id="total">-</span></li>
+      <li><strong>Pendientes:</strong> <span id="pendientes">-</span></li>
+      <li><strong>En Proceso:</strong> <span id="en_proceso">-</span></li>
+      <li><strong>Enviados:</strong> <span id="enviado">-</span></li>
+      <li><strong>Cancelados:</strong> <span id="cancelado">-</span></li>
+      <li><strong>Hoy:</strong> <span id="hoy">-</span></li>
+    </ul>
+  </section>
 
-    <!-- 📁 Top Categorías -->
-    <section class="analitica-extra mt-3" aria-labelledby="tituloTopCategorias">
-      <h2 id="tituloTopCategorias" class="text-center">📁 Top Categorías</h2>
-      <ul id="topCategorias" class="listado-categorias" aria-live="polite">
-        <!-- Contenido dinámico insertado por JS -->
-      </ul>
-    </section>
+  <!-- 📁 Top Categorías -->
+  <section class="analitica-extra mt-3" aria-labelledby="tituloTopCategorias">
+    <h2 id="tituloTopCategorias" class="text-center">📁 Top Categorías</h2>
+    <ul id="topCategorias" class="listado-categorias" aria-live="polite">
+      <!-- Contenido dinámico insertado por JS -->
+    </ul>
+  </section>
 
-    <!-- 📤 Exportar CSV -->
-    <div class="text-center mt-3">
-      <button id="btnExportar" class="btn-secundario" aria-label="Exportar estadísticas como CSV">
-        📤 Exportar Estadísticas (CSV)
-      </button>
-    </div>
+  <!-- 📤 Exportar CSV -->
+  <div class="text-center mt-3">
+    <button id="btnExportar" class="btn-secundario" aria-label="Exportar estadísticas como CSV">
+      📤 Exportar Estadísticas (CSV)
+    </button>
+  </div>
 
-    <!-- 🔙 Navegación -->
-    <div class="text-center mt-2">
-      <button type="button" onclick="goBack()" class="btn" aria-label="Volver al panel administrativo">
-        🔙 Volver al Panel
-      </button>
-    </div>
-  </main>
+  <!-- 🔙 Volver -->
+  <div class="text-center mt-2">
+    <button type="button" onclick="goBack()" class="btn" aria-label="Volver al panel administrativo">
+      🔙 Volver al Panel
+    </button>
+  </div>
+</main>
 
-  <!-- 🔔 Mensajes flotantes -->
-  <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="polite"></div>
+<!-- 🔔 Mensajes Flotantes -->
+<div id="adminMensaje" class="admin-message oculto" role="status" aria-live="polite"></div>
 
-  <!-- 🚫 Fallback para JS desactivado -->
-  <noscript>
-    <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
-  </noscript>
+<!-- 🚫 Fallback si JS desactivado -->
+<noscript>
+  <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+</noscript>
 
-  <!-- 🌙 Activar Modo Oscuro automático -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      if (localStorage.getItem("modoOscuro") === "true") {
-        document.body.classList.add("modo-oscuro");
-      }
-    });
-  </script>
+<!-- 🌙 Activar Modo Oscuro automático -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if (localStorage.getItem("modoOscuro") === "true") {
+      document.body.classList.add("modo-oscuro");
+    }
+  });
+</script>
 
 </body>
 </html>

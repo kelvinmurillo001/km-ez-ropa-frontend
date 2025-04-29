@@ -1,11 +1,8 @@
-// 📁 js/admin-utils.js
 "use strict";
 
-/**
- * 🔐 Verifica si el usuario está autenticado como administrador.
- * Redirige a login si no lo está.
- * @returns {string} token de autenticación
- */
+/* -------------------------------------------------------------------------- */
+/* 🔐 Verificar sesión de administrador                                        */
+/* -------------------------------------------------------------------------- */
 export function verificarSesion() {
   const token = localStorage.getItem("admin_token");
   const userRaw = localStorage.getItem("admin_user");
@@ -23,11 +20,9 @@ export function verificarSesion() {
   }
 }
 
-/**
- * 💬 Muestra un mensaje visual accesible en pantalla.
- * @param {string} texto - El contenido del mensaje.
- * @param {"success"|"error"|"info"|"warning"} tipo - Tipo visual del mensaje.
- */
+/* -------------------------------------------------------------------------- */
+/* 💬 Mostrar mensaje global accesible                                         */
+/* -------------------------------------------------------------------------- */
 export function mostrarMensaje(texto = "", tipo = "info") {
   const mensaje = document.getElementById("adminMensaje");
 
@@ -37,13 +32,11 @@ export function mostrarMensaje(texto = "", tipo = "info") {
     return;
   }
 
-  // Reiniciar clases
   mensaje.className = `mensaje-global ${tipo}`;
   mensaje.textContent = texto;
   mensaje.setAttribute("role", "alert");
   mensaje.setAttribute("aria-live", "assertive");
 
-  // Mostrar con animación
   mensaje.classList.add("show");
 
   clearTimeout(mensaje._timeout);
@@ -52,26 +45,25 @@ export function mostrarMensaje(texto = "", tipo = "info") {
   }, 4000);
 }
 
-/**
- * 🔙 Redirige al panel principal de administrador.
- */
+/* -------------------------------------------------------------------------- */
+/* 🔙 Redirigir al panel principal                                              */
+/* -------------------------------------------------------------------------- */
 export function goBack() {
   window.location.href = "/panel.html";
 }
 
-/**
- * 🚪 Cierra sesión limpiando localStorage y redirigiendo.
- */
+/* -------------------------------------------------------------------------- */
+/* 🚪 Cerrar sesión                                                            */
+/* -------------------------------------------------------------------------- */
 export function cerrarSesion() {
   localStorage.removeItem("admin_token");
   localStorage.removeItem("admin_user");
   window.location.href = "/login.html";
 }
 
-/**
- * 👤 Obtiene el usuario actualmente autenticado.
- * @returns {Object} Usuario o {} si no hay válido.
- */
+/* -------------------------------------------------------------------------- */
+/* 👤 Obtener usuario activo                                                    */
+/* -------------------------------------------------------------------------- */
 export function getUsuarioActivo() {
   try {
     const raw = localStorage.getItem("admin_user");
@@ -81,5 +73,7 @@ export function getUsuarioActivo() {
   }
 }
 
-// 🌐 Exponer logout global (uso en onclick del HTML)
+/* -------------------------------------------------------------------------- */
+/* 🌐 Exponer logout global para HTML                                           */
+/* -------------------------------------------------------------------------- */
 window.cerrarSesion = cerrarSesion;

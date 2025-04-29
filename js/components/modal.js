@@ -1,12 +1,19 @@
+"use strict";
+
 /**
  * 📦 Crea y muestra un modal accesible con contenido dinámico.
  * @param {string} titulo - Título del modal.
  * @param {HTMLElement|string} contenido - Contenido HTML o texto plano.
  */
+
+// 🌟 Controla el último elemento enfocado antes de abrir el modal
 let ultimoFoco = null;
 
+/* ───────────────────────────────────────────── */
+/* ➡️ Abrir Modal                                 */
+/* ───────────────────────────────────────────── */
 export function abrirModal(titulo, contenido) {
-  cerrarModal(); // Elimina cualquier modal anterior
+  cerrarModal(); // ❌ Cierra cualquier modal anterior
 
   ultimoFoco = document.activeElement;
 
@@ -24,7 +31,7 @@ export function abrirModal(titulo, contenido) {
   modal.className = "modal";
   modal.tabIndex = -1;
 
-  // ❌ Botón cerrar
+  // ❌ Botón de cerrar
   const cerrar = document.createElement("button");
   cerrar.className = "modal-cerrar";
   cerrar.innerHTML = "✖";
@@ -39,6 +46,7 @@ export function abrirModal(titulo, contenido) {
   // 📄 Contenido dinámico
   const contentNode = document.createElement("div");
   contentNode.className = "modal-contenido";
+
   if (typeof contenido === "string") {
     contentNode.innerHTML = contenido;
   } else {
@@ -53,21 +61,21 @@ export function abrirModal(titulo, contenido) {
   document.body.appendChild(overlay);
   document.body.classList.add("no-scroll");
 
-  // 🔁 Enfocar modal al renderizar
+  // 🔁 Foco automático al modal
   setTimeout(() => modal.focus(), 50);
 
-  // ⌨️ Esc key
+  // ⌨️ Escape key
   document.addEventListener("keydown", cerrarConEscape);
 
-  // 🖱️ Cerrar al hacer clic fuera del modal
+  // 🖱️ Cerrar al clickear fuera del modal
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) cerrarModal();
   });
 }
 
-/**
- * ❌ Cierra el modal si existe.
- */
+/* ───────────────────────────────────────────── */
+/* ❌ Cerrar Modal                                */
+/* ───────────────────────────────────────────── */
 export function cerrarModal() {
   const overlay = document.getElementById("modal-overlay");
   if (overlay) {
@@ -80,6 +88,7 @@ export function cerrarModal() {
     }, 200);
   }
 
+  // 🔁 Devolver el foco al último elemento
   if (ultimoFoco && typeof ultimoFoco.focus === "function") {
     ultimoFoco.focus();
   }
@@ -87,9 +96,9 @@ export function cerrarModal() {
   document.removeEventListener("keydown", cerrarConEscape);
 }
 
-/**
- * ⌨️ Cierra con Escape
- */
+/* ───────────────────────────────────────────── */
+/* ⌨️ Cerrar Modal con Tecla Escape               */
+/* ───────────────────────────────────────────── */
 function cerrarConEscape(e) {
   if (e.key === "Escape") cerrarModal();
 }

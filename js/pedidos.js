@@ -44,11 +44,10 @@ async function cargarPedidos() {
     });
 
     const data = await res.json();
-    if (!res.ok) throw new Error("Error al obtener pedidos");
+    if (!res.ok) throw new Error(data.message || "Error al obtener pedidos");
 
-    todosLosPedidos = Array.isArray(data) ? data : [];
+    todosLosPedidos = Array.isArray(data.data) ? data.data : [];
     renderPedidos();
-
   } catch (err) {
     console.error("❌ Error cargando pedidos:", err.message);
     listaPedidos.innerHTML = `<p class="text-center" style="color:red;">❌ No se pudo cargar los pedidos</p>`;
@@ -76,7 +75,7 @@ function renderPedidos() {
 
   const filas = pagina.map(p => {
     const productos = p.items?.map(i =>
-      `👕 <strong>${i.name}</strong> (${i.talla || "Única"}) x${i.cantidad}`
+      `👕 <strong>${sanitize(i.name)}</strong> (${sanitize(i.talla) || "Única"}) x${i.cantidad}`
     ).join("<br>") || "-";
 
     const total = typeof p.total === "number" ? `$${p.total.toFixed(2)}` : "$0.00";
@@ -128,8 +127,8 @@ function renderPedidos() {
 function renderEstadisticas(pedidos) {
   const total = pedidos.length;
   const totalVentas = pedidos.reduce((acc, p) => acc + (p.total || 0), 0);
-  const enviados = pedidos.filter(p => p.estado === "enviado").length;
-  const pendientes = pedidos.filter(p => p.estado === "pendiente").length;
+  const enviados = pedidos.filter(p => (p.estado || "").toLowerCase() === "enviado").length;
+  const pendientes = pedidos.filter(p => (p.estado || "").toLowerCase() === "pendiente").length;
 
   estadisticasVentas.innerHTML = `
     <p><strong>Total pedidos:</strong> ${total}</p>
@@ -186,12 +185,13 @@ window.cambiarEstado = async (id, selectElem) => {
       body: JSON.stringify({ estado: nuevoEstado })
     });
 
-    if (!res.ok) throw new Error("Error al actualizar estado");
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Error al actualizar estado");
 
     mostrarMensaje("✅ Estado actualizado correctamente", "success");
     await cargarPedidos();
   } catch (err) {
-    console.error("❌", err);
+    console.error("❌", err.message);
     mostrarMensaje("❌ No se pudo cambiar el estado", "error");
   } finally {
     selectElem.disabled = false;
@@ -251,19 +251,10 @@ function generarOpcionesEstado(actual) {
  */
 function generarLinkWhatsapp(p) {
   const productos = p.items?.map(i =>
-    `• ${i.cantidad}x ${i.name} (${i.talla})`
+    `• ${i.cantidad}x ${sanitize(i.name)} (${sanitize(i.talla)})`
   ).join("\n") || "";
 
-  const texto = encodeURIComponent(`
-📦 Pedido de ${p.nombreCliente}
-📧 ${p.email}
-📞 ${p.telefono}
-📍 ${p.direccion}
-
-${productos}
-
-💰 Total: $${p.total?.toFixed(2) || "0.00"}
-💳 Pago: Transferencia`);
+  const texto = encodeURIComponent(`Pedido de ${p.nombreCliente}\n\n${productos}\n\nTotal: $${p.total?.toFixed(2) || "0.00"}`);
 
   return `<a href="https://wa.me/593990270864?text=${texto}" target="_blank" class="btn btn-wsp mt-1">💬 WhatsApp</a>`;
 }
@@ -273,9 +264,9 @@ ${productos}
  */
 function sanitize(text) {
   const temp = document.createElement("div");
-  temp.textContent = text;
+  temp.textContent = text || "";
   return temp.innerHTML;
 }
 
-// 🌍 Global export
+// 🌍 Exportaciones globales
 window.goBack = goBack;

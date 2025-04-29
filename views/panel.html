@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🎛️ Panel Administrativo | KM & EZ ROPA</title>
 
   <!-- 🔐 Seguridad y SEO -->
@@ -18,6 +18,9 @@
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/adminMensaje.css" />
+
+  <!-- 🔥 Icono -->
+  <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 
@@ -44,7 +47,7 @@
   <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="polite"></div>
 
   <!-- 🌙 Modo Oscuro automático -->
-  <script>
+  <script defer>
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
@@ -61,7 +64,7 @@
 
   <!-- ⚠️ Fallback para JS desactivado -->
   <noscript>
-    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar este panel administrativo.</p>
+    <p style="text-align: center; color: red;">⚠️ Este panel requiere JavaScript para funcionar correctamente.</p>
   </noscript>
 
 </body>

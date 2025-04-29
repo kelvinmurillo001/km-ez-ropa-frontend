@@ -30,12 +30,14 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnAgregarVariante")?.addEventListener("click", renderVarianteNueva);
 });
 
+/* 📦 Validar campos */
 function validarCampo(valor, mensaje) {
   if (!valor || valor.trim() === "") {
     throw new Error(mensaje);
   }
 }
 
+/* 📦 Cargar categorías */
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIAS);
@@ -56,10 +58,11 @@ async function cargarCategorias() {
   }
 }
 
+/* 📦 Cargar producto existente */
 async function cargarProducto() {
   try {
     const res = await fetch(API_PRODUCTO);
-    const { producto } = await res.json(); // ✅ fix aplicado aquí
+    const { producto } = await res.json();
 
     if (!res.ok || !producto || producto._id !== productId) throw new Error("Producto no encontrado");
 
@@ -86,6 +89,7 @@ async function cargarProducto() {
   }
 }
 
+/* 🎨 Renderizar variante existente */
 function renderVarianteExistente(v, i) {
   const div = document.createElement("div");
   div.className = "variante-box";
@@ -108,6 +112,7 @@ function renderVarianteExistente(v, i) {
   div.querySelector(".btn-quitar-variante").addEventListener("click", () => div.remove());
 }
 
+/* ➕ Renderizar variante nueva */
 function renderVarianteNueva() {
   if (document.querySelectorAll(".variante-box").length >= 4) {
     mostrarMensaje("⚠️ Máximo 4 variantes permitidas", "warning");
@@ -133,6 +138,7 @@ function renderVarianteNueva() {
   div.querySelector(".btn-quitar-variante").addEventListener("click", () => div.remove());
 }
 
+/* 📤 Subir imagen */
 async function subirImagen(file) {
   if (!file || !file.type.startsWith("image/") || file.size > 2 * 1024 * 1024) {
     throw new Error("⚠️ Imagen inválida o muy pesada");
@@ -156,6 +162,7 @@ async function subirImagen(file) {
   };
 }
 
+/* 📋 Enviar formulario */
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   mostrarMensaje("⏳ Guardando cambios...", "info");
@@ -251,4 +258,5 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
+/* 🔙 Función volver */
 window.goBack = goBack;

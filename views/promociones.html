@@ -2,10 +2,10 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🎯 Promociones | KM & EZ ROPA</title>
 
-  <!-- 🔍 SEO -->
+  <!-- 🔍 Meta SEO -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Administra promociones visuales impactantes para atraer clientes y aumentar ventas. Agrega texto, imagen o video." />
   <meta name="author" content="KM & EZ ROPA" />
@@ -21,6 +21,7 @@
   <!-- ✅ Scripts -->
   <script type="module" src="/js/promociones.js" defer></script>
 </head>
+
 <body>
 
 <main class="promociones-container fade-in" role="main" aria-label="Gestión de promociones visuales">
@@ -28,32 +29,32 @@
 
   <!-- 🔍 Filtros -->
   <section class="mt-2 filtros-promos" aria-label="Filtrar promociones">
-    <input type="text" id="buscarPromo" placeholder="🔎 Buscar por mensaje atractivo..." aria-label="Buscar promociones por mensaje" />
-    <select id="filtroEstado" aria-label="Filtrar por estado de promoción">
+    <input type="text" id="buscarPromo" placeholder="🔎 Buscar mensaje..." aria-label="Buscar promociones por mensaje" />
+    <select id="filtroEstado" aria-label="Filtrar por estado">
       <option value="">Todos los estados</option>
-      <option value="activa">✅ Activa</option>
-      <option value="inactiva">⛔ Inactiva</option>
+      <option value="activa">✅ Activas</option>
+      <option value="inactiva">⛔ Inactivas</option>
       <option value="futura">🕒 Próximas</option>
       <option value="expirada">📅 Expiradas</option>
     </select>
   </section>
 
-  <!-- 📋 Dashboard Promos -->
+  <!-- 📋 Listado de Promociones -->
   <section class="promo-dashboard mt-2" aria-label="Listado de promociones">
     <h2>📋 Todas las Promociones</h2>
     <div id="promo-container" class="promo-grid" role="list">
-      <!-- Renderizado dinámico -->
+      <!-- Render dinámico -->
     </div>
   </section>
 
   <!-- 🔎 Vista previa actual -->
-  <section class="promo-actual mt-3" id="estadoActual" aria-label="Vista previa de promoción activa">
+  <section id="estadoActual" class="promo-actual mt-3" aria-label="Vista previa de promoción activa">
     <!-- Insertado dinámicamente -->
   </section>
 
-  <!-- 📝 Formulario Promoción -->
-  <section class="form-editar-promo mt-3" aria-label="Crear o editar promoción visual">
-    <h3>✏️ Crear o Editar una Promoción Visual</h3>
+  <!-- 📝 Formulario de Promoción -->
+  <section class="form-editar-promo mt-3" aria-label="Formulario para crear o editar promociones">
+    <h3>✏️ Crear o Editar una Promoción</h3>
 
     <form id="formPromo" enctype="multipart/form-data" novalidate>
       <input type="hidden" id="promoId" />
@@ -87,13 +88,13 @@
 
       <label for="promoTipo">Tipo de contenido:</label>
       <select id="promoTipo" required>
-        <option value="">Selecciona tipo</option>
+        <option value="">Seleccionar tipo</option>
         <option value="texto">📢 Solo Texto</option>
-        <option value="imagen">🖼️ Imagen Impactante</option>
-        <option value="video">🎬 Video Promocional</option>
+        <option value="imagen">🖼️ Imagen</option>
+        <option value="video">🎬 Video</option>
       </select>
 
-      <!-- 🖼️ Upload -->
+      <!-- 🖼️ Subida de Media -->
       <div id="mediaUploadContainer" class="mt-1" aria-live="polite">
         <label for="mediaInput" class="oculto">Subir imagen o video</label>
         <input type="file" id="mediaInput" accept="image/*,video/*" />
@@ -108,23 +109,24 @@
 
       <label><input type="checkbox" id="promoActivo" /> Activar promoción al guardar</label>
 
-      <button type="submit" class="btn mt-2" aria-label="Guardar promoción">💾 Guardar promoción</button>
+      <button type="submit" class="btn mt-2" aria-label="Guardar promoción">💾 Guardar Promoción</button>
       <p id="msgPromo" class="form-msg text-center mt-2" role="alert" aria-live="assertive"></p>
     </form>
   </section>
 
-  <!-- 🔙 Regresar -->
+  <!-- 🔙 Botón Regresar -->
   <div class="text-center mt-3">
-    <button onclick="goBack()" class="btn-secundario" aria-label="Volver al panel">🔙 Volver al panel</button>
+    <button onclick="goBack()" class="btn-secundario" aria-label="Volver al panel">🔙 Volver al Panel</button>
   </div>
+
 </main>
 
-<!-- 🔔 Mensaje global -->
+<!-- 🔔 Mensaje Global -->
 <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="assertive"></div>
 
-<!-- 🚫 No-JS -->
+<!-- 🚫 Advertencia sin JavaScript -->
 <noscript>
-  <p style="text-align:center; color:red;">⚠️ Activa JavaScript para administrar las promociones.</p>
+  <p style="text-align:center; color:red;">⚠️ Activa JavaScript para administrar las promociones correctamente.</p>
 </noscript>
 
 </body>

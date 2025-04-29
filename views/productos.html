@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/promo-display.css" />
 </head>
+
 <body>
 
 <main class="productos-container fade-in" role="main" aria-label="Gestión de productos">
@@ -33,7 +34,7 @@
 
   <!-- 🔍 Filtros de búsqueda -->
   <div class="filtros text-center mt-2" role="search" aria-label="Filtrar productos">
-    <input type="text" id="buscarProducto" placeholder="🔎 Buscar por nombre..." aria-label="Buscar producto por nombre" />
+    <input type="text" id="buscarProducto" placeholder="🔎 Buscar producto por nombre..." aria-label="Buscar por nombre" />
     <select id="filtroCategoria" aria-label="Filtrar por categoría">
       <option value="">📂 Todas las categorías</option>
       <option value="mujer">👩 Mujer</option>
@@ -47,15 +48,15 @@
   <!-- 📦 Contador de productos -->
   <p id="contadorProductos" class="text-center mt-2" style="font-weight: bold; color: #ccc;" role="status" aria-live="polite"></p>
 
-  <!-- 📋 Listado dinámico de productos -->
-  <section id="productosLista" class="productos-lista mt-3" aria-label="Listado dinámico de productos">
-    <!-- Render dinámico por JS -->
+  <!-- 📋 Listado dinámico -->
+  <section id="productosLista" class="productos-lista mt-3" aria-label="Listado de productos">
+    <!-- Render dinámico con JavaScript -->
   </section>
 
   <!-- 🔢 Paginación -->
-  <div id="paginacion" class="paginacion text-center mt-3" aria-label="Navegación por páginas de productos"></div>
+  <div id="paginacion" class="paginacion text-center mt-3" aria-label="Paginación de productos"></div>
 
-  <!-- 🔙 Botón de regreso -->
+  <!-- 🔙 Regresar al panel -->
   <div class="text-center mt-3">
     <button id="btnVolverPanel" class="btn-secundario" aria-label="Volver al panel principal">🔙 Volver al Panel</button>
   </div>
@@ -64,7 +65,7 @@
 <!-- 📣 Mensajes flotantes -->
 <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
 
-<!-- 🌙 Activación automática de modo oscuro -->
+<!-- 🌙 Activar modo oscuro automático -->
 <script>
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
@@ -80,9 +81,9 @@
   document.getElementById("btnVolverPanel")?.addEventListener("click", goBack);
 </script>
 
-<!-- 🚫 Fallback sin JS -->
+<!-- 🚫 Fallback para navegadores sin JS -->
 <noscript>
-  <p style="text-align:center; color:red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
+  <p style="text-align: center; color: red;">⚠️ Activa JavaScript para gestionar productos correctamente.</p>
 </noscript>
 
 </body>

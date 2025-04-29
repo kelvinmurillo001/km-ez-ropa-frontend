@@ -1,15 +1,15 @@
 "use strict";
 
-// ✅ Configuración base
 import { API_BASE } from "./config.js";
 
 // 🔐 Constantes
 const STORAGE_KEY = "km_ez_cart";
+const LAST_ORDER_KEY = "km_ez_last_order";
 const carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 const API_ORDERS = `${API_BASE}/api/orders`;
 const API_PAYPAL_CREATE = `${API_BASE}/api/paypal/create-order`;
 
-// 🎯 Elementos del DOM
+// 🎯 DOM Elements
 const resumenPedido = document.getElementById("resumenPedido");
 const totalFinal = document.getElementById("totalFinal");
 const form = document.getElementById("formCheckout");
@@ -17,9 +17,8 @@ const msgEstado = document.getElementById("msgEstado");
 const btnUbicacion = document.getElementById("btnUbicacion");
 const infoMetodoPago = document.getElementById("infoMetodoPago");
 
-let enviandoPedido = false; // ✅ Protección contra doble envío
+let enviandoPedido = false; 
 
-// ▶️ Renderizado inicial
 document.addEventListener("DOMContentLoaded", () => {
   if (!Array.isArray(carrito) || carrito.length === 0) {
     mostrarMensaje("⚠️ Tu carrito está vacío.", "warn");
@@ -33,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
   inicializarMetodoPago();
 });
 
-// 🧾 Renderizar resumen carrito
 function renderResumenCarrito() {
   let total = 0;
   resumenPedido.innerHTML = carrito.map(item => {
@@ -52,7 +50,6 @@ function renderResumenCarrito() {
   totalFinal.textContent = `$${total.toFixed(2)}`;
 }
 
-// 💳 Inicializar método de pago
 function inicializarMetodoPago() {
   document.querySelectorAll("input[name='metodoPago']").forEach(radio => {
     radio.addEventListener("change", e => {
@@ -65,7 +62,6 @@ function inicializarMetodoPago() {
   });
 }
 
-// 📤 Enviar pedido
 form?.addEventListener("submit", async e => {
   e.preventDefault();
   if (enviandoPedido) return;
@@ -73,8 +69,7 @@ form?.addEventListener("submit", async e => {
 
   const botonSubmit = form.querySelector("button[type='submit']");
   botonSubmit.disabled = true;
-
-  mostrarMensaje("⏳ Enviando pedido...", "info");
+  mostrarCargando(true);
 
   const nombre = form.nombreInput.value.trim();
   const email = form.emailInput.value.trim();
@@ -84,20 +79,27 @@ form?.addEventListener("submit", async e => {
 
   if (!nombre || !email || !telefono || !direccion || !metodoPago) {
     mostrarMensaje("❌ Todos los campos son obligatorios.", "error");
-    botonSubmit.disabled = false;
-    enviandoPedido = false;
+    finalizarEnvio();
     return;
   }
   if (!validarEmail(email)) {
     mostrarMensaje("❌ Email inválido.", "error");
-    botonSubmit.disabled = false;
-    enviandoPedido = false;
+    finalizarEnvio();
     return;
   }
   if (!/^[0-9+\-\s]{7,20}$/.test(telefono)) {
     mostrarMensaje("❌ Teléfono inválido.", "error");
-    botonSubmit.disabled = false;
-    enviandoPedido = false;
+    finalizarEnvio();
+    return;
+  }
+  if (nombre.length < 3 || nombre.length > 50) {
+    mostrarMensaje("❌ Nombre debe tener entre 3 y 50 caracteres.", "error");
+    finalizarEnvio();
+    return;
+  }
+  if (direccion.length < 5 || direccion.length > 120) {
+    mostrarMensaje("❌ Dirección debe ser más específica.", "error");
+    finalizarEnvio();
     return;
   }
 
@@ -138,6 +140,8 @@ form?.addEventListener("submit", async e => {
       throw new Error(data.message || "Error al registrar el pedido.");
     }
 
+    localStorage.setItem(LAST_ORDER_KEY, JSON.stringify(pedido)); // Guardar último pedido
+
     if (metodoPago === "transferencia") {
       mostrarMensaje("✅ Pedido registrado. Redirigiendo...", "success");
       localStorage.removeItem(STORAGE_KEY);
@@ -154,9 +158,10 @@ form?.addEventListener("submit", async e => {
 
       const dataPaypal = await resPaypal.json();
       if (!resPaypal.ok || !dataPaypal.id) {
-        throw new Error(dataPaypal.message || "❌ Error creando la orden PayPal.");
+        throw new Error(dataPaypal.message || "❌ Error creando orden PayPal.");
       }
 
+      localStorage.removeItem(STORAGE_KEY);
       window.location.href = `https://www.sandbox.paypal.com/checkoutnow?token=${dataPaypal.id}`;
     }
 
@@ -164,16 +169,15 @@ form?.addEventListener("submit", async e => {
     console.error("❌", err);
     mostrarMensaje(`❌ ${err.message}`, "error");
   } finally {
-    botonSubmit.disabled = false;
-    enviandoPedido = false;
+    finalizarEnvio();
   }
 });
 
-// 📍 Ubicación automática
+// 📍 Autocompletar dirección
 btnUbicacion?.addEventListener("click", () => {
   if (!navigator.geolocation) return mostrarMensaje("⚠️ Tu navegador no soporta ubicación.", "warn");
 
-  mostrarMensaje("📍 Obteniendo tu ubicación...", "info");
+  mostrarMensaje("📍 Obteniendo ubicación...", "info");
 
   navigator.geolocation.getCurrentPosition(
     async ({ coords }) => {
@@ -183,14 +187,14 @@ btnUbicacion?.addEventListener("click", () => {
         form.direccionInput.value = data.display_name || `${coords.latitude}, ${coords.longitude}`;
         mostrarMensaje("✅ Dirección detectada automáticamente.", "success");
       } catch {
-        mostrarMensaje("❌ No se pudo obtener la dirección.", "error");
+        mostrarMensaje("❌ No se pudo obtener dirección.", "error");
       }
     },
-    () => mostrarMensaje("❌ No se pudo acceder a tu ubicación.", "error")
+    () => mostrarMensaje("❌ No se pudo acceder a ubicación.", "error")
   );
 });
 
-// 💬 WhatsApp confirmación
+// ✅ Helper Functions
 function abrirWhatsappConfirmacion(pedido) {
   const mensaje = `
 📦 *NUEVO PEDIDO*
@@ -210,7 +214,6 @@ ${pedido.items.map(i => `• ${i.cantidad} x ${i.name} - Talla: ${i.talla} - $${
   window.open(url, "_blank");
 }
 
-// ✅ Utilidades
 function validarEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
 }
@@ -223,9 +226,24 @@ function sanitize(str = "") {
 
 function mostrarMensaje(texto, tipo = "info") {
   msgEstado.textContent = texto;
-  msgEstado.style.color =
+  msgEstado.style.color = 
     tipo === "success" ? "limegreen" :
     tipo === "error" ? "tomato" :
     tipo === "warn" ? "orange" :
     "#666";
+}
+
+function mostrarCargando(show = true) {
+  if (show) {
+    msgEstado.innerHTML = "⏳ Procesando... <span class='spinner'></span>";
+  } else {
+    msgEstado.innerHTML = "";
+  }
+}
+
+function finalizarEnvio() {
+  const botonSubmit = form.querySelector("button[type='submit']");
+  botonSubmit.disabled = false;
+  enviandoPedido = false;
+  mostrarCargando(false);
 }

@@ -5,18 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>✏️ Editar Producto | KM & EZ ROPA</title>
 
-  <!-- Meta SEO & Seguridad -->
+  <!-- 🔒 Meta SEO & Seguridad -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Editar detalles completos de un producto, incluyendo imágenes, tallas, variantes y más." />
+  <meta name="author" content="KM & EZ ROPA" />
+  <meta name="theme-color" content="#ff6d00" />
 
-  <!-- Estilos -->
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/crear-producto.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/adminMensaje.css" />
 
-  <!-- Estilos internos -->
+  <!-- 🎨 Estilos internos rápidos -->
   <style>
     .mensaje-global {
       margin: 1rem auto;
@@ -42,13 +44,13 @@
     }
   </style>
 
-  <!-- JS -->
+  <!-- ✅ Scripts -->
   <script type="module" src="/js/editar-producto.js" defer></script>
 </head>
 
 <body>
 
-<!-- 🔔 Contenedor para mensajes flotantes -->
+<!-- 🔔 Mensajes flotantes -->
 <div id="adminMensaje" class="mensaje-global" role="alert" aria-live="assertive"></div>
 
 <main class="formulario-container fade-in" role="main" aria-label="Formulario de edición de producto">
@@ -60,44 +62,37 @@
     <label for="imagenPrincipalActual">Imagen Principal Actual:</label>
     <div id="imagenPrincipalActual" class="preview-imagen" aria-live="polite"></div>
 
-    <!-- 🖼️ Subir nueva imagen -->
+    <!-- 🖼️ Nueva Imagen -->
     <label for="imagenPrincipalNueva">Subir Nueva Imagen Principal:</label>
     <input type="file" id="imagenPrincipalNueva" accept="image/*" aria-describedby="imagenHelp" />
     <small id="imagenHelp" class="help-text">Opcional. Máx. 2MB. Formatos: JPG, PNG, WEBP.</small>
 
-    <!-- 📝 Nombre -->
+    <!-- 📝 Datos del Producto -->
     <label for="nombreInput">Nombre del Producto: *</label>
     <input type="text" id="nombreInput" required placeholder="Ej: Hoodie urbana oversize" maxlength="100" />
 
-    <!-- 📄 Descripción -->
     <label for="descripcionInput">Descripción del Producto: *</label>
-    <textarea id="descripcionInput" required placeholder="Describe estilo, tela, corte... máx. 300 caracteres." maxlength="300"></textarea>
+    <textarea id="descripcionInput" required placeholder="Describe estilo, tela, corte..." maxlength="300"></textarea>
 
-    <!-- 💲 Precio -->
     <label for="precioInput">Precio de venta: *</label>
     <input type="number" id="precioInput" step="0.01" min="0" required />
 
-    <!-- 📦 Stock -->
-    <label for="stockInput">Stock base (si no hay variantes):</label>
+    <label for="stockInput">Stock base:</label>
     <input type="number" id="stockInput" min="0" value="0" />
 
-    <!-- 🗂️ Categoría -->
     <label for="categoriaInput">Categoría principal: *</label>
     <select id="categoriaInput" required>
       <option value="">Selecciona una categoría</option>
     </select>
 
-    <!-- 📁 Subcategoría -->
     <label for="subcategoriaInput">Subcategoría:</label>
     <input type="text" id="subcategoriaInput" maxlength="100" placeholder="Ej: Camisetas básicas, Sportwear..." />
 
-    <!-- 📏 Tallas -->
-    <label for="tallasInput">Tallas disponibles (separadas por coma):</label>
+    <label for="tallasInput">Tallas disponibles:</label>
     <input type="text" id="tallasInput" placeholder="Ej: S, M, L, XL" />
 
-    <!-- 🎨 Color -->
     <label for="colorInput">Color principal:</label>
-    <input type="text" id="colorInput" placeholder="Ej: negro, beige, denim oscuro" />
+    <input type="text" id="colorInput" placeholder="Ej: Negro, Beige, Denim" />
 
     <!-- ⭐ Destacado -->
     <div class="mt-2">
@@ -112,11 +107,11 @@
       <button type="button" id="btnAgregarVariante" class="btn-secundario mt-1">➕ Añadir Variante</button>
     </fieldset>
 
-    <!-- 💾 Acciones -->
+    <!-- 🚀 Acciones -->
     <div class="form-actions mt-3">
       <button type="submit" class="btn">💾 Guardar Cambios</button>
       <button type="button" id="btnCancelar" class="btn-secundario">🔙 Cancelar</button>
-      <a href="/productos.html" class="btn-secundario" style="margin-left: 10px;">⬅️ Volver a Productos</a>
+      <a href="/productos.html" class="btn-secundario" style="margin-left:10px;">⬅️ Volver a Productos</a>
     </div>
 
     <!-- 🔔 Mensaje de estado -->
@@ -125,36 +120,35 @@
   </form>
 </main>
 
-<!-- 🌓 Modo Oscuro + Previsualización de Imagen -->
+<!-- 🌓 Modo Oscuro + Previsualización -->
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    if (localStorage.getItem("modoOscuro") === "true") {
-      document.body.classList.add("modo-oscuro");
+document.addEventListener("DOMContentLoaded", () => {
+  if (localStorage.getItem("modoOscuro") === "true") {
+    document.body.classList.add("modo-oscuro");
+  }
+
+  document.getElementById("btnCancelar")?.addEventListener("click", () => history.back());
+
+  document.getElementById("imagenPrincipalNueva")?.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        document.getElementById("imagenPrincipalActual").innerHTML =
+          `<img src="${reader.result}" alt="Vista previa nueva imagen" class="imagen-preview-principal" />`;
+      };
+      reader.readAsDataURL(file);
     }
-
-    document.getElementById("btnCancelar")?.addEventListener("click", () => history.back());
-
-    document.getElementById("imagenPrincipalNueva")?.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (file && file.type.startsWith("image/")) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          document.getElementById("imagenPrincipalActual").innerHTML =
-            `<img src="${reader.result}" alt="Vista previa nueva imagen" class="imagen-preview-principal" />`;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    // 👇 Extra UX: Clic en mensaje flotante para ocultarlo
-    const adminMensaje = document.getElementById('adminMensaje');
-    adminMensaje?.addEventListener('click', () => {
-      adminMensaje.style.display = 'none';
-    });
   });
+
+  const adminMensaje = document.getElementById('adminMensaje');
+  adminMensaje?.addEventListener('click', () => {
+    adminMensaje.style.display = 'none';
+  });
+});
 </script>
 
-<!-- 🚫 JS fallback -->
+<!-- 🚫 Fallback sin JavaScript -->
 <noscript>
   <p style="text-align: center; color: red;">⚠️ Activa JavaScript para poder editar el producto correctamente.</p>
 </noscript>

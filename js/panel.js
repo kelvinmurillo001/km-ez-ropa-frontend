@@ -1,104 +1,99 @@
-//panel.js
+// 📁 js/panel.js
 "use strict";
 
-// ✅ Importar configuración
 import { API_BASE } from "./config.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("formLogin");
+// ▶️ Al cargar el DOM
+document.addEventListener("DOMContentLoaded", async () => {
+  const token = localStorage.getItem("admin_token");
+  const user = JSON.parse(localStorage.getItem("admin_user") || "{}");
 
-  // 🌙 Modo oscuro persistente
-  if (localStorage.getItem("modoOscuro") === "true") {
-    document.body.classList.add("modo-oscuro");
+  // 🔒 Si no hay token o no es admin, redirigir
+  if (!token || !user.isAdmin) {
+    window.location.href = "/login.html";
+    return;
   }
 
-  if (!form) return;
-
-  const btnSubmit = form.querySelector("button[type='submit']");
-  const inputUser = form.username;
-  const inputPass = form.password;
-
-  // 📨 Escuchar envío del formulario
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    ocultarError();
-
-    const username = inputUser.value.trim().toLowerCase();
-    const password = inputPass.value.trim();
-
-    if (!username || !password) {
-      mostrarError("⚠️ Ingresa tu usuario y contraseña.");
-      return;
-    }
-
-    try {
-      btnSubmit.disabled = true;
-      btnSubmit.textContent = "🔐 Iniciando sesión...";
-
-      const res = await fetch(`${API_BASE}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        const msg = res.status === 401
-          ? "🔐 Usuario o contraseña incorrectos."
-          : data.message || "❌ Error inesperado.";
-        mostrarError(msg);
-        return;
-      }
-
-      if (!data.token || !data.user) {
-        mostrarError("❌ Respuesta inválida del servidor.");
-        return;
-      }
-
-      // 🧠 Guardar sesión
-      localStorage.setItem("admin_token", data.token);
-      localStorage.setItem("admin_user", JSON.stringify(data.user));
-
-      // 🔁 Redirigir
-      window.location.href = "/panel.html";
-
-    } catch (err) {
-      console.error("❌ Error de conexión:", err);
-      mostrarError("❌ No se pudo conectar al servidor.");
-    } finally {
-      btnSubmit.disabled = false;
-      btnSubmit.textContent = "Iniciar sesión";
-    }
-  });
-
-  // ⌨️ Enviar con Enter en cualquier input
-  form.querySelectorAll("input").forEach(input => {
-    input.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
-      }
-    });
-  });
+  mostrarBienvenida(user.name || user.username || "Admin");
+  await cargarProductos();
+  configurarLogout();
 });
 
-// ⚠️ Mostrar error accesible
-function mostrarError(msg = "❌ Error desconocido") {
-  const div = document.getElementById("errorMensaje");
-  if (div) {
-    div.textContent = msg;
-    div.style.display = "block";
-    div.setAttribute("role", "alert");
-    div.setAttribute("aria-live", "assertive");
-    div.focus?.();
+/* ───────────────────────────────────────────── */
+/* 👋 Mostrar bienvenida                         */
+/* ───────────────────────────────────────────── */
+function mostrarBienvenida(nombre) {
+  const saludo = document.getElementById("adminSaludo");
+  if (saludo) {
+    saludo.textContent = `👋 Bienvenido, ${nombre}`;
   }
 }
 
-// ✅ Ocultar error
-function ocultarError() {
-  const div = document.getElementById("errorMensaje");
-  if (div) {
-    div.textContent = "";
-    div.style.display = "none";
+/* ───────────────────────────────────────────── */
+/* 📦 Cargar productos y mostrarlos              */
+/* ───────────────────────────────────────────── */
+async function cargarProductos() {
+  const contenedor = document.getElementById("listaProductos");
+  if (!contenedor) return;
+
+  contenedor.innerHTML = `<p>⏳ Cargando productos...</p>`;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/products?limite=50`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("admin_token")}`
+      }
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.message || "Error cargando productos.");
+
+    if (!Array.isArray(data.productos) || data.productos.length === 0) {
+      contenedor.innerHTML = `<p>😢 No hay productos cargados.</p>`;
+      return;
+    }
+
+    contenedor.innerHTML = ""; // Limpiar
+
+    data.productos.forEach(prod => {
+      const card = document.createElement("div");
+      card.className = "producto-card";
+      card.innerHTML = `
+        <h3>${sanitize(prod.name)}</h3>
+        <p>💲 ${prod.price ? `$${prod.price.toFixed(2)}` : "--"}</p>
+        <p>📦 ${sanitize(prod.category)}</p>
+        <p>⭐ ${prod.featured ? "Destacado" : "Normal"}</p>
+      `;
+      contenedor.appendChild(card);
+    });
+  } catch (err) {
+    console.error("❌ Error cargando productos:", err.message);
+    contenedor.innerHTML = `<p style="color:red;">❌ ${err.message}</p>`;
   }
+}
+
+/* ───────────────────────────────────────────── */
+/* 🚪 Logout seguro                              */
+/* ───────────────────────────────────────────── */
+function configurarLogout() {
+  const btnLogout = document.getElementById("btnLogout");
+  if (!btnLogout) return;
+
+  btnLogout.addEventListener("click", () => {
+    if (confirm("¿Seguro que quieres salir?")) {
+      localStorage.removeItem("admin_token");
+      localStorage.removeItem("admin_user");
+      window.location.href = "/login.html";
+    }
+  });
+}
+
+/* ───────────────────────────────────────────── */
+/* 🧼 Sanitizar texto                            */
+/* ───────────────────────────────────────────── */
+function sanitize(text = "") {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
 }

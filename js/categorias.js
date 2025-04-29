@@ -25,32 +25,32 @@ document.addEventListener("DOMContentLoaded", () => {
   actualizarContadorCarrito();
 });
 
-/* ───────────────────────────────────────────── */
-/* 🌙 5. Activar modo oscuro persistente          */
-/* ───────────────────────────────────────────── */
+/* -------------------------------------------------------------------------- */
+/* 🌙 5. Activar modo oscuro persistente                                       */
+/* -------------------------------------------------------------------------- */
 function aplicarModoOscuro() {
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
   document.getElementById("modoOscuroBtn")?.addEventListener("click", () => {
-    const isDark = document.body.classList.toggle("modo-oscuro");
-    localStorage.setItem("modoOscuro", isDark);
+    const dark = document.body.classList.toggle("modo-oscuro");
+    localStorage.setItem("modoOscuro", dark);
   });
 }
 
-/* ───────────────────────────────────────────── */
-/* 🎯 6. Configurar filtros dinámicos             */
-/* ───────────────────────────────────────────── */
+/* -------------------------------------------------------------------------- */
+/* 🎯 6. Configurar filtros dinámicos                                          */
+/* -------------------------------------------------------------------------- */
 function configurarFiltros() {
   [categoriaSelect, subcategoriaSelect, precioSelect].forEach(el =>
     el?.addEventListener("change", cargarProductos)
   );
-  busquedaInput?.addEventListener("input", cargarProductos);
+  busquedaInput?.addEventListener("input", debounce(cargarProductos, 500));
 }
 
-/* ───────────────────────────────────────────── */
-/* 📦 7. Cargar productos desde API               */
-/* ───────────────────────────────────────────── */
+/* -------------------------------------------------------------------------- */
+/* 📦 7. Cargar productos desde API                                            */
+/* -------------------------------------------------------------------------- */
 async function cargarProductos() {
   if (!catalogo) return;
   catalogo.innerHTML = "<p class='text-center'>⏳ Cargando productos...</p>";
@@ -72,13 +72,8 @@ async function cargarProductos() {
       throw new Error(data.message || "❌ Error al obtener productos.");
     }
 
-    const productos = Array.isArray(data) ? data : (data.productos || []);
-    if (!Array.isArray(productos)) {
-      throw new Error("❌ Respuesta inválida de productos.");
-    }
-
-    const productosFiltrados = aplicarFiltros(productos);
-    renderizarCatalogo(productosFiltrados);
+    const productos = Array.isArray(data.productos) ? data.productos : [];
+    renderizarCatalogo(aplicarFiltros(productos));
     llenarSelects(productos);
 
   } catch (err) {
@@ -87,9 +82,9 @@ async function cargarProductos() {
   }
 }
 
-/* ───────────────────────────────────────────── */
-/* 🧠 8. Aplicar filtros en frontend              */
-/* ───────────────────────────────────────────── */
+/* -------------------------------------------------------------------------- */
+/* 🧠 8. Aplicar filtros en frontend                                           */
+/* -------------------------------------------------------------------------- */
 function aplicarFiltros(productos) {
   const cat = categoriaSelect?.value?.toLowerCase() || "";
   const sub = subcategoriaSelect?.value?.toLowerCase() || "";
@@ -97,9 +92,9 @@ function aplicarFiltros(productos) {
   const busqueda = busquedaInput?.value?.toLowerCase() || "";
 
   return productos
-    .filter(p => !cat || p.category?.toLowerCase() === cat)
-    .filter(p => !sub || p.subcategory?.toLowerCase() === sub)
-    .filter(p => !busqueda || p.name?.toLowerCase().includes(busqueda))
+    .filter(p => (!cat || p.category?.toLowerCase() === cat))
+    .filter(p => (!sub || p.subcategory?.toLowerCase() === sub))
+    .filter(p => (!busqueda || p.name?.toLowerCase().includes(busqueda)))
     .sort((a, b) => {
       if (precio === "low") return a.price - b.price;
       if (precio === "high") return b.price - a.price;
@@ -107,16 +102,15 @@ function aplicarFiltros(productos) {
     });
 }
 
-/* ───────────────────────────────────────────── */
-/* 🎨 9. Renderizar catálogo de productos         */
-/* ───────────────────────────────────────────── */
+/* -------------------------------------------------------------------------- */
+/* 🎨 9. Renderizar catálogo de productos                                      */
+/* -------------------------------------------------------------------------- */
 function renderizarCatalogo(productos) {
-  if (!catalogo) return;
   catalogo.innerHTML = "";
   catalogo.setAttribute("role", "list");
 
   if (!productos.length) {
-    catalogo.innerHTML = `<p class="text-center">📭 No se encontraron productos con esos filtros.</p>`;
+    catalogo.innerHTML = `<p class="text-center">📭 No hay productos que coincidan con los filtros seleccionados.</p>`;
     return;
   }
 
@@ -126,40 +120,35 @@ function renderizarCatalogo(productos) {
     const precio = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
     const id = p._id;
 
-    if (!id) return;
-
     const card = document.createElement("div");
     card.className = "product-card fade-in";
     card.setAttribute("role", "listitem");
     card.setAttribute("aria-label", nombre);
-
     card.innerHTML = `
       <img src="${imagen}" alt="Imagen de ${nombre}" loading="lazy" onerror="this.src='/assets/logo.jpg'" />
       <div class="product-info">
         <h3>${nombre}</h3>
         <p>$${precio}</p>
-        <button class="btn-card" onclick="verDetalle('${id}')" aria-label="Ver detalles de ${nombre}">👁️ Ver</button>
+        <button class="btn-card" onclick="verDetalle('${id}')">👁️ Ver</button>
       </div>
     `;
     catalogo.appendChild(card);
   });
 }
 
-/* ───────────────────────────────────────────── */
-/* 🔁 10. Redirigir a detalle de producto         */
-/* ───────────────────────────────────────────── */
+/* -------------------------------------------------------------------------- */
+/* 🔁 10. Redirigir a detalle de producto                                       */
+/* -------------------------------------------------------------------------- */
 function verDetalle(id) {
-  if (!id) return alert("❌ ID inválido");
+  if (!id) return;
   window.location.href = `/detalle.html?id=${id}`;
 }
 window.verDetalle = verDetalle;
 
-/* ───────────────────────────────────────────── */
-/* 📂 11. Llenar selects de categorías dinámicos  */
-/* ───────────────────────────────────────────── */
+/* -------------------------------------------------------------------------- */
+/* 📂 11. Llenar selects de categorías dinámicos                              */
+/* -------------------------------------------------------------------------- */
 function llenarSelects(productos) {
-  if (!categoriaSelect || !subcategoriaSelect) return;
-
   const categorias = [...new Set(productos.map(p => p.category).filter(Boolean))];
   const subcategorias = [...new Set(productos.map(p => p.subcategory).filter(Boolean))];
 
@@ -170,18 +159,18 @@ function llenarSelects(productos) {
     subcategorias.map(s => `<option value="${sanitize(s)}">${sanitize(s)}</option>`).join("");
 }
 
-/* ───────────────────────────────────────────── */
-/* 🛒 12. Actualizar contador de carrito          */
-/* ───────────────────────────────────────────── */
+/* -------------------------------------------------------------------------- */
+/* 🛒 12. Actualizar contador de carrito                                       */
+/* -------------------------------------------------------------------------- */
 function actualizarContadorCarrito() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
-  const total = carrito.reduce((acc, item) => acc + (item.cantidad || item.quantity || 0), 0);
+  const total = carrito.reduce((sum, item) => sum + (item.cantidad || item.quantity || 0), 0);
   if (contadorCarrito) contadorCarrito.textContent = total;
 }
 
-/* ───────────────────────────────────────────── */
-/* 🎁 13. Cargar promociones activas              */
-/* ───────────────────────────────────────────── */
+/* -------------------------------------------------------------------------- */
+/* 🎁 13. Cargar promociones activas                                           */
+/* -------------------------------------------------------------------------- */
 async function cargarPromocion() {
   try {
     const res = await fetch(API_PROMOS);
@@ -189,31 +178,37 @@ async function cargarPromocion() {
 
     if (res.ok && promo?.data?.[0]?.active) {
       const { message, mediaUrl, mediaType, color } = promo.data[0];
-      if (promoContainer && message) {
-        const banner = document.createElement("div");
-        banner.id = "promoBanner";
-        banner.className = "promo-banner";
-        banner.style.backgroundColor = color || "#ff6d00";
-        banner.setAttribute("role", "region");
-        banner.setAttribute("aria-label", "Promoción activa");
 
-        banner.innerHTML = `
-          ${mediaType === "image" ? `<img src="${mediaUrl}" alt="Promoción activa" />` : ""}
-          <span>${message}</span>
+      if (promoContainer && message) {
+        promoContainer.innerHTML = `
+          <div id="promoBanner" class="promo-banner" style="background-color:${color || "#ff6d00"}" role="region" aria-label="Promoción activa">
+            ${mediaType === "image" ? `<img src="${mediaUrl}" alt="Promoción activa" />` : ""}
+            <span>${sanitize(message)}</span>
+          </div>
         `;
-        promoContainer.appendChild(banner);
       }
     }
-  } catch (err) {
+  } catch {
     console.warn("⚠️ No se pudo cargar la promoción activa.");
   }
 }
 
-/* ───────────────────────────────────────────── */
-/* 🧼 14. Función para sanitizar texto seguro     */
-/* ───────────────────────────────────────────── */
+/* -------------------------------------------------------------------------- */
+/* 🧼 14. Función para sanitizar texto seguro                                 */
+/* -------------------------------------------------------------------------- */
 function sanitize(text = "") {
   const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML.trim();
+}
+
+/* -------------------------------------------------------------------------- */
+/* ⏳ 15. Función debounce para optimizar búsqueda                           */
+/* -------------------------------------------------------------------------- */
+function debounce(fn, delay) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
 }

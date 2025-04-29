@@ -10,7 +10,7 @@ const btnVaciarCarrito = document.getElementById("btnVaciarCarrito");
 const STORAGE_KEY = "km_ez_cart";
 let carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
-// ▶️ On Load
+// ▶️ Al cargar página
 document.addEventListener("DOMContentLoaded", () => {
   limpiarItemsInvalidos();
   renderizarCarrito();
@@ -23,14 +23,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// 🧼 Sanitiza texto
+/* -------------------------------------------------------------------------- */
+/* 🧼 Funciones utilitarias                                                     */
+/* -------------------------------------------------------------------------- */
 function sanitizeText(str) {
   const temp = document.createElement("div");
   temp.textContent = str;
-  return temp.innerHTML;
+  return temp.innerHTML.trim();
 }
 
-// 🧼 Sanitiza URLs
 function sanitizeURL(url) {
   try {
     return new URL(url, window.location.origin).href;
@@ -39,12 +40,13 @@ function sanitizeURL(url) {
   }
 }
 
-// 💾 Guardar carrito
+/* -------------------------------------------------------------------------- */
+/* 💾 Gestión del carrito en LocalStorage                                      */
+/* -------------------------------------------------------------------------- */
 function guardarCarrito() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(carrito));
 }
 
-// 🧹 Filtra productos inválidos
 function limpiarItemsInvalidos() {
   carrito = carrito.filter(item =>
     item &&
@@ -57,17 +59,22 @@ function limpiarItemsInvalidos() {
   guardarCarrito();
 }
 
-// 💰 Calcula total
+/* -------------------------------------------------------------------------- */
+/* 💰 Calcular y mostrar total                                                 */
+/* -------------------------------------------------------------------------- */
 function actualizarTotal() {
   const total = carrito.reduce((acc, item) =>
     acc + (item.precio || 0) * (item.cantidad || 0), 0);
 
   carritoTotal.textContent = `$${total.toFixed(2)}`;
-  btnIrCheckout.disabled = carrito.length === 0;
-  btnVaciarCarrito.disabled = carrito.length === 0;
+  const disabled = carrito.length === 0;
+  btnIrCheckout.disabled = disabled;
+  btnVaciarCarrito.disabled = disabled;
 }
 
-// 🛍️ Renderiza el carrito completo
+/* -------------------------------------------------------------------------- */
+/* 🛍️ Renderizar carrito completo                                              */
+/* -------------------------------------------------------------------------- */
 function renderizarCarrito() {
   if (!carrito.length) {
     carritoItems.innerHTML = `
@@ -116,7 +123,9 @@ function renderizarCarrito() {
   agregarListeners();
 }
 
-// 🎧 Listeners para inputs y botones
+/* -------------------------------------------------------------------------- */
+/* 🎧 Listeners dinámicos para cantidad y eliminar                            */
+/* -------------------------------------------------------------------------- */
 function agregarListeners() {
   document.querySelectorAll(".carrito-cantidad input").forEach(input => {
     input.addEventListener("change", e => {
@@ -145,16 +154,17 @@ function agregarListeners() {
   });
 }
 
-// ✅ Redirige a checkout
+/* -------------------------------------------------------------------------- */
+/* ✅ Funciones extra: Checkout y Vaciar carrito                               */
+/* -------------------------------------------------------------------------- */
 function irACheckout() {
   if (carrito.length > 0) {
     window.location.href = "/checkout.html";
   }
 }
 
-// 🧹 Vacía el carrito completo
 function vaciarCarrito() {
-  const confirmar = confirm("⚠️ ¿Estás seguro de vaciar todo el carrito?");
+  const confirmar = confirm("⚠️ ¿Seguro que quieres vaciar todo el carrito?");
   if (confirmar) {
     carrito = [];
     guardarCarrito();

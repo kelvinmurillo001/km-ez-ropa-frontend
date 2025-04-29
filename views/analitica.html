@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>📊 Analítica | KM & EZ ROPA</title>
 
-  <!-- 🔒 Seguridad y metadatos -->
+  <!-- 🔒 Seguridad y Metadatos -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="author" content="KM & EZ ROPA" />
   <meta name="description" content="Panel de analítica con métricas clave de la tienda: ventas, visitas, productos y pedidos." />
+  <meta name="theme-color" content="#ff6d00" />
 
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -17,11 +18,13 @@
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- 📊 Chart.js para gráficas -->
+  <!-- 📊 Librería Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <!-- ✅ Script principal -->
   <script type="module" src="/js/analitica.js" defer></script>
 </head>
+
 <body>
 
   <!-- 🧭 Encabezado -->
@@ -30,7 +33,7 @@
     <p>Resumen de la actividad reciente en KM & EZ ROPA</p>
   </header>
 
-  <!-- 🧾 Contenido Principal -->
+  <!-- 🧾 Contenido principal -->
   <main class="admin-container fade-in" role="main" aria-label="Contenido principal del dashboard">
     <section aria-labelledby="tituloResumen" class="panel-analitico mt-2" aria-live="polite">
       <h2 id="tituloResumen" class="mb-1">📋 Resumen General</h2>
@@ -43,19 +46,19 @@
         <li><strong>👁️ Visitas al sitio:</strong> <span id="visitas" aria-live="polite">-</span></li>
       </ul>
 
-      <!-- 📂 Categorías principales -->
+      <!-- 📂 Top Categorías -->
       <h3 class="mt-2">📂 Top Categorías</h3>
       <ul id="topCategorias" class="mt-1" aria-live="polite">
-        <!-- Cargado dinámicamente por JS -->
+        <!-- Insertado dinámicamente por JS -->
       </ul>
 
-      <!-- 📈 Gráfico -->
+      <!-- 📈 Gráfico de Pedidos -->
       <h3 class="mt-3">📈 Pedidos por Día</h3>
       <div id="graficaPedidos" class="grafica-container" aria-label="Gráfico de pedidos diarios">
-        <!-- Gráfico inyectado dinámicamente -->
+        <!-- Chart.js inyectará aquí -->
       </div>
 
-      <!-- 📤 Exportar -->
+      <!-- 📤 Botón de Exportar -->
       <div class="text-center mt-3">
         <button type="button" onclick="exportarEstadisticas()" class="btn-secundario" aria-label="Exportar estadísticas como CSV">
           📤 Exportar Estadísticas (CSV)
@@ -63,20 +66,20 @@
       </div>
     </section>
 
-    <!-- 🔙 Navegación -->
-    <section class="text-center mt-3" role="region" aria-label="Navegación">
+    <!-- 🔙 Botón de Volver -->
+    <section class="text-center mt-3" role="region" aria-label="Navegación de regreso">
       <button type="button" onclick="goBack()" class="btn" aria-label="Volver al panel principal">
         🔙 Volver al Panel
       </button>
     </section>
   </main>
 
-  <!-- 🚫 JS Fallback -->
+  <!-- 🚫 Fallback si JS está desactivado -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
 
-  <!-- 🌙 Modo oscuro automático -->
+  <!-- 🌙 Activación automática de modo oscuro -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("modoOscuro") === "true") {
@@ -84,5 +87,6 @@
       }
     });
   </script>
+
 </body>
 </html>

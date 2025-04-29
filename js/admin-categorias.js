@@ -1,5 +1,6 @@
 "use strict";
 
+// 📥 Imports
 import { API_BASE } from "./config.js";
 import { verificarSesion, mostrarMensaje, goBack } from "./admin-utils.js";
 
@@ -7,7 +8,7 @@ import { verificarSesion, mostrarMensaje, goBack } from "./admin-utils.js";
 const token = verificarSesion();
 const API = `${API_BASE}/api/categories`;
 
-// 📌 Elementos del DOM
+// 📌 DOM Elements
 const formCrear = document.getElementById("formCrearCategoria");
 const formSub = document.getElementById("formSubcategoria");
 const categoriaInput = document.getElementById("categoriaInput");
@@ -15,30 +16,25 @@ const subcategoriaInput = document.getElementById("subcategoriaInput");
 const selectCategoria = document.getElementById("selectCategoria");
 const listaCategorias = document.getElementById("listaCategorias");
 
-// 🚀 Inicio
+// 🚀 Inicialización
 document.addEventListener("DOMContentLoaded", () => {
   if (token) cargarCategorias();
 });
 
 /* ───────────────────────────────────────────── */
-/* ➕ CREAR NUEVA CATEGORÍA                       */
+/* ➕ Crear Nueva Categoría                       */
 /* ───────────────────────────────────────────── */
 formCrear?.addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const nombre = sanitize(categoriaInput.value.trim());
   if (!nombre) return mostrarMensaje("⚠️ Ingresa un nombre válido", "error");
 
   try {
     const res = await fetch(API, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify({ name: nombre })
     });
-
     const data = await res.json();
     if (!res.ok || !data.ok) throw new Error(data.message || "❌ No se pudo crear la categoría");
 
@@ -52,11 +48,10 @@ formCrear?.addEventListener("submit", async (e) => {
 });
 
 /* ───────────────────────────────────────────── */
-/* ➕ CREAR SUBCATEGORÍA                          */
+/* ➕ Agregar Subcategoría                        */
 /* ───────────────────────────────────────────── */
 formSub?.addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const categoriaId = selectCategoria.value;
   const sub = sanitize(subcategoriaInput.value.trim());
 
@@ -65,13 +60,9 @@ formSub?.addEventListener("submit", async (e) => {
   try {
     const res = await fetch(`${API}/${categoriaId}/subcategories`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify({ subcategory: sub })
     });
-
     const data = await res.json();
     if (!res.ok || !data.ok) throw new Error(data.message || "❌ Error al agregar subcategoría");
 
@@ -85,18 +76,13 @@ formSub?.addEventListener("submit", async (e) => {
 });
 
 /* ───────────────────────────────────────────── */
-/* 🔄 CARGAR TODAS LAS CATEGORÍAS                */
+/* 🔄 Cargar Categorías                          */
 /* ───────────────────────────────────────────── */
 async function cargarCategorias() {
   try {
-    const res = await fetch(API, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-
+    const res = await fetch(API, { headers: { Authorization: `Bearer ${token}` } });
     const data = await res.json();
-    if (!res.ok || !data.ok || !Array.isArray(data.data)) {
-      throw new Error(data.message || "❌ Error al obtener categorías");
-    }
+    if (!res.ok || !data.ok || !Array.isArray(data.data)) throw new Error(data.message || "❌ Error al obtener categorías");
 
     renderCategorias(data.data);
     actualizarSelect(data.data);
@@ -107,7 +93,7 @@ async function cargarCategorias() {
 }
 
 /* ───────────────────────────────────────────── */
-/* 📂 ACTUALIZAR SELECT CATEGORÍAS               */
+/* 📂 Actualizar Select de Categorías             */
 /* ───────────────────────────────────────────── */
 function actualizarSelect(categorias = []) {
   selectCategoria.innerHTML = '<option value="">Seleccionar categoría</option>';
@@ -117,7 +103,7 @@ function actualizarSelect(categorias = []) {
 }
 
 /* ───────────────────────────────────────────── */
-/* 🖼️ RENDERIZAR CATEGORÍAS Y SUBCATEGORÍAS      */
+/* 🖼️ Renderizar Categorías y Subcategorías       */
 /* ───────────────────────────────────────────── */
 function renderCategorias(categorias = []) {
   if (!categorias.length) {
@@ -146,7 +132,7 @@ function renderCategorias(categorias = []) {
 }
 
 /* ───────────────────────────────────────────── */
-/* ❌ ELIMINAR CATEGORÍA                         */
+/* ❌ Eliminar Categoría                          */
 /* ───────────────────────────────────────────── */
 window.eliminarCategoria = async (id) => {
   if (!confirm("⚠️ ¿Eliminar esta categoría y todas sus subcategorías?")) return;
@@ -156,7 +142,6 @@ window.eliminarCategoria = async (id) => {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` }
     });
-
     const data = await res.json();
     if (!res.ok || !data.ok) throw new Error(data.message || "❌ No se pudo eliminar la categoría");
 
@@ -168,7 +153,7 @@ window.eliminarCategoria = async (id) => {
 };
 
 /* ───────────────────────────────────────────── */
-/* ❌ ELIMINAR SUBCATEGORÍA                      */
+/* ❌ Eliminar Subcategoría                       */
 /* ───────────────────────────────────────────── */
 window.eliminarSubcategoria = async (categoryId, subcategory) => {
   if (!confirm("⚠️ ¿Eliminar esta subcategoría?")) return;
@@ -178,7 +163,6 @@ window.eliminarSubcategoria = async (categoryId, subcategory) => {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` }
     });
-
     const data = await res.json();
     if (!res.ok || !data.ok) throw new Error(data.message || "❌ No se pudo eliminar la subcategoría");
 
@@ -190,7 +174,7 @@ window.eliminarSubcategoria = async (categoryId, subcategory) => {
 };
 
 /* ───────────────────────────────────────────── */
-/* 🧼 SANITIZAR TEXTO                            */
+/* 🧼 Sanitizar Texto                             */
 /* ───────────────────────────────────────────── */
 function sanitize(text = "") {
   const temp = document.createElement("div");
@@ -198,5 +182,5 @@ function sanitize(text = "") {
   return temp.innerHTML.trim();
 }
 
-// 🔙 Función global para volver atrás
+// 🔙 Exponer volver atrás globalmente
 window.goBack = goBack;

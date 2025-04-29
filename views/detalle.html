@@ -10,7 +10,7 @@
   <meta name="robots" content="index, follow">
   <meta name="author" content="KM & EZ ROPA">
 
-  <!-- 🌐 Open Graph para compartir -->
+  <!-- 🌐 Open Graph -->
   <meta property="og:title" content="Detalle del Producto | KM & EZ ROPA" id="ogTitle">
   <meta property="og:description" content="Estilo callejero, diseño premium. Encuentra tu prenda ideal con promociones destacadas." id="ogDescription">
   <meta property="og:image" content="/assets/og-image.jpg" id="ogImage">
@@ -31,85 +31,89 @@
 
 <body>
 
-  <!-- 🔝 Header -->
-  <header class="main-header" role="banner">
-    <div class="logo">
-      <a href="/" aria-label="Ir al inicio">
-        <img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" loading="lazy" />
-      </a>
-      <div class="brand">
-        <h1>KM & EZ ROPA</h1>
-        <p>Moda Urbana con Estilo</p>
-      </div>
-    </div>
-
-    <nav class="nav-links" aria-label="Navegación principal">
-      <a href="/index.html">🏠 Inicio</a>
-      <a href="/categorias.html">🛍️ Catálogo</a>
-      <button id="modoOscuroBtn" aria-label="Activar modo oscuro">🌙</button>
-    </nav>
-  </header>
-
-  <!-- 🔥 Promociones -->
-  <div id="promo-display-container" data-page="detalle" aria-label="Promociones activas"></div>
-
-  <!-- 👕 Detalle del producto -->
-  <main class="detalle-container" role="main" aria-label="Detalle del producto">
-    <section id="detalleProducto" class="detalle-grid fade-in" aria-live="polite">
-      <!-- 🎯 Producto se carga dinámicamente vía JS -->
-    </section>
-
-    <!-- ❤️ Botón Favoritos -->
-    <div class="text-center mt-2">
-      <button id="btnFavorito" class="btn-secundario" aria-label="Agregar producto a favoritos">❤️ Agregar a Favoritos</button>
-    </div>
-
-    <!-- 🧾 Opiniones -->
-    <section id="reseñas" aria-label="Opiniones del producto" class="mt-3">
-      <h2 class="text-center">🗣️ Opiniones y Reseñas</h2>
-      <p class="text-center">✨ Próximamente podrás dejar tu valoración aquí.</p>
-    </section>
-
-    <!-- 📤 Compartir -->
-    <section class="redes-sociales mt-3 text-center" aria-label="Compartir producto">
-      <p>🔗 Compartir este producto:</p>
-      <a href="#" onclick="compartirEnRed('facebook')" aria-label="Compartir en Facebook">📘 Facebook</a> |
-      <a href="#" onclick="compartirEnRed('whatsapp')" aria-label="Compartir por WhatsApp">💬 WhatsApp</a>
-    </section>
-  </main>
-
-  <!-- 🛒 Botones flotantes -->
-  <div class="floating-buttons" aria-hidden="false">
-    <a href="/carrito.html" class="cart-icon" aria-label="Ir al carrito">
-      <img src="/assets/cart-icon.svg" alt="Carrito" loading="lazy">
-      <span id="cartCount" role="status" aria-live="polite">0</span>
+<!-- 🔝 Encabezado -->
+<header class="main-header" role="banner">
+  <div class="logo">
+    <a href="/" aria-label="Ir al inicio">
+      <img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" loading="lazy" />
     </a>
-    <a href="https://wa.me/593990270864" class="whatsapp-icon" target="_blank" rel="noopener noreferrer" aria-label="Chatear por WhatsApp">
-      <img src="/assets/whatsapp.svg" alt="WhatsApp" loading="lazy">
-    </a>
+    <div class="brand">
+      <h1>KM & EZ ROPA</h1>
+      <p>Moda Urbana con Estilo</p>
+    </div>
   </div>
 
-  <!-- 🔚 Footer -->
-  <footer class="site-footer" role="contentinfo">
-    <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
-  </footer>
+  <nav class="nav-links" aria-label="Menú principal">
+    <a href="/index.html">🏠 Inicio</a>
+    <a href="/categorias.html">🛍️ Catálogo</a>
+    <button id="modoOscuroBtn" aria-label="Activar modo oscuro">🌙</button>
+  </nav>
+</header>
 
-  <!-- ⚠️ No JS -->
-  <noscript>
-    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para visualizar correctamente esta página.</p>
-  </noscript>
+<!-- 🔥 Promociones dinámicas -->
+<div id="promo-display-container" data-page="detalle" aria-label="Promociones activas"></div>
 
-  <!-- 🔗 Función Compartir -->
-  <script>
-    function compartirEnRed(red) {
-      const url = window.location.href;
-      const titulo = document.title;
-      const enlace = red === "facebook"
-        ? `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
-        : `https://wa.me/?text=${encodeURIComponent(titulo + ' ' + url)}`;
-      window.open(enlace, "_blank");
-    }
-  </script>
+<!-- 👕 Contenido Principal -->
+<main class="detalle-container" role="main" aria-label="Detalle del producto">
+  
+  <!-- 📦 Detalle del producto -->
+  <section id="detalleProducto" class="detalle-grid fade-in" aria-live="polite">
+    <!-- Cargado dinámicamente con JS -->
+  </section>
+
+  <!-- ❤️ Agregar a Favoritos -->
+  <div class="text-center mt-2">
+    <button id="btnFavorito" class="btn-secundario" aria-label="Agregar producto a favoritos">
+      ❤️ Agregar a Favoritos
+    </button>
+  </div>
+
+  <!-- 🧾 Reseñas -->
+  <section id="reseñas" aria-label="Opiniones del producto" class="mt-3">
+    <h2 class="text-center">🗣️ Opiniones y Reseñas</h2>
+    <p class="text-center">✨ Próximamente podrás dejar tu valoración aquí.</p>
+  </section>
+
+  <!-- 📤 Compartir -->
+  <section class="redes-sociales mt-3 text-center" aria-label="Compartir producto">
+    <p>🔗 Compartir este producto:</p>
+    <a href="#" onclick="compartirEnRed('facebook')" aria-label="Compartir en Facebook">📘 Facebook</a> |
+    <a href="#" onclick="compartirEnRed('whatsapp')" aria-label="Compartir por WhatsApp">💬 WhatsApp</a>
+  </section>
+</main>
+
+<!-- 🛒 Botones flotantes -->
+<div class="floating-buttons" aria-hidden="false">
+  <a href="/carrito.html" class="cart-icon" aria-label="Ir al carrito">
+    <img src="/assets/cart-icon.svg" alt="Carrito de compras" loading="lazy" />
+    <span id="cartCount" role="status" aria-live="polite">0</span>
+  </a>
+  <a href="https://wa.me/593990270864" class="whatsapp-icon" target="_blank" rel="noopener noreferrer" aria-label="Chatear por WhatsApp">
+    <img src="/assets/whatsapp.svg" alt="WhatsApp" loading="lazy" />
+  </a>
+</div>
+
+<!-- 🔚 Pie de Página -->
+<footer class="site-footer" role="contentinfo">
+  <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
+</footer>
+
+<!-- ⚠️ Fallback No-JS -->
+<noscript>
+  <p style="text-align: center; color: red;">⚠️ Activa JavaScript para visualizar correctamente esta página.</p>
+</noscript>
+
+<!-- 🔗 Función Compartir en redes -->
+<script>
+function compartirEnRed(red) {
+  const url = window.location.href;
+  const titulo = document.title;
+  const enlace = red === "facebook"
+    ? `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
+    : `https://wa.me/?text=${encodeURIComponent(titulo + ' ' + url)}`;
+  window.open(enlace, "_blank");
+}
+</script>
 
 </body>
 </html>

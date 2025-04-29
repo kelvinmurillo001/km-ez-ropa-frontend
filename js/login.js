@@ -22,7 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = inputPass.value.trim();
 
     if (!username || !password) {
-      return mostrarMensaje("⚠️ Ingresa tu usuario y contraseña.", "error");
+      mostrarMensaje("⚠️ Ingresa tu usuario y contraseña.", "error");
+      return;
     }
 
     btnSubmit.disabled = true;
@@ -42,7 +43,8 @@ document.addEventListener("DOMContentLoaded", () => {
           res.status === 401
             ? "🔐 Usuario o contraseña incorrectos."
             : data.message || "❌ Error inesperado.";
-        return mostrarMensaje(msg, "error");
+        mostrarMensaje(msg, "error");
+        return; // 🛑 ¡Ahora aquí terminamos si falla!
       }
 
       // ✅ Guardar en localStorage
@@ -55,12 +57,9 @@ document.addEventListener("DOMContentLoaded", () => {
       mostrarMensaje("✅ Acceso concedido. Redirigiendo...", "success");
 
       setTimeout(() => {
-        if (document.readyState === "complete") {
-          window.location.href = "/panel.html";
-        } else {
-          location.assign("/panel.html"); // fallback
-        }
+        window.location.href = "/panel.html";
       }, 800);
+
     } catch (err) {
       console.error("❌ Error:", err);
       mostrarMensaje("❌ No se pudo conectar al servidor.", "error");
@@ -70,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Tecla Enter para inputs
+  // Enter directo
   form.querySelectorAll("input").forEach((input) => {
     input.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
@@ -85,7 +84,10 @@ document.addEventListener("DOMContentLoaded", () => {
  */
 function mostrarMensaje(texto, tipo = "info") {
   const box = document.getElementById("adminMensaje");
-  if (!box) return alert(texto);
+  if (!box) {
+    alert(texto);
+    return;
+  }
 
   box.textContent = texto;
   box.className = "";

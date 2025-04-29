@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ───────────────────────────────────────────── */
-/* 📺 MOSTRAR CAMPO MULTIMEDIA                   */
+/* 📺 Mostrar Campo de Multimedia                 */
 /* ───────────────────────────────────────────── */
 function mostrarCampoMultimedia() {
   const tipo = document.getElementById("promoTipo").value;
@@ -46,7 +46,7 @@ function mostrarCampoMultimedia() {
 }
 
 /* ───────────────────────────────────────────── */
-/* 📦 CARGAR PROMOCIÓN ACTUAL                    */
+/* 📦 Cargar Promoción Actual                     */
 /* ───────────────────────────────────────────── */
 async function cargarPromocion() {
   try {
@@ -105,7 +105,7 @@ function generarPreviewMedia(promo) {
 }
 
 /* ───────────────────────────────────────────── */
-/* ✏️ RELLENAR FORMULARIO CON PROMO EXISTENTE    */
+/* ✏️ Rellenar Formulario                         */
 /* ───────────────────────────────────────────── */
 function cargarFormularioDesdePromocion(promo) {
   formPromo.promoMensaje.value = promo.message ?? "";
@@ -129,7 +129,7 @@ function cargarFormularioDesdePromocion(promo) {
 }
 
 /* ───────────────────────────────────────────── */
-/* 💾 GUARDAR PROMOCIÓN                          */
+/* 💾 Guardar Promoción                           */
 /* ───────────────────────────────────────────── */
 async function guardarPromocion(e) {
   e.preventDefault();
@@ -171,7 +171,7 @@ async function guardarPromocion(e) {
 }
 
 /* ───────────────────────────────────────────── */
-/* 🧱 CONSTRUIR PAYLOAD                          */
+/* 🧱 Construir Payload                           */
 /* ───────────────────────────────────────────── */
 async function construirPayload() {
   const mensaje = formPromo.promoMensaje.value.trim();
@@ -231,7 +231,7 @@ async function construirPayload() {
 }
 
 /* ───────────────────────────────────────────── */
-/* ⚠️ MOSTRAR ERRORES AL USUARIO                */
+/* ⚠️ Mostrar Error                              */
 /* ───────────────────────────────────────────── */
 function mostrarError(msg) {
   msgPromo.textContent = msg;
@@ -239,5 +239,5 @@ function mostrarError(msg) {
   return null;
 }
 
-// 🔙 Función global
+// 🔙 Función Global
 window.goBack = goBack;

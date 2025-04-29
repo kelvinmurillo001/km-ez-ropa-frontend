@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const res = await fetch("https://km-ez-ropa-backend.onrender.com/api/promos");
     if (!res.ok) throw new Error("❌ Error al obtener promociones");
-    
+
     const { data: promos = [] } = await res.json();
     if (!Array.isArray(promos) || promos.length === 0) return;
 
@@ -30,7 +30,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// 🧠 Identificar página actual
+/* ───────────────────────────────────────────── */
+/* 🧠 Identificar Página Actual                   */
+/* ───────────────────────────────────────────── */
 function detectarClavePagina(path) {
   if (path.includes("checkout")) return "checkout";
   if (path.includes("carrito")) return "carrito";
@@ -41,7 +43,9 @@ function detectarClavePagina(path) {
   return "otros";
 }
 
-// 🔢 Agrupar promociones por posición
+/* ───────────────────────────────────────────── */
+/* 🔢 Agrupar promociones por posición            */
+/* ───────────────────────────────────────────── */
 function agruparPorPosicion(lista = []) {
   return lista.reduce((acc, promo) => {
     const pos = promo.position || "top";
@@ -51,7 +55,9 @@ function agruparPorPosicion(lista = []) {
   }, {});
 }
 
-// 🎯 Mostrar carrusel de promociones
+/* ───────────────────────────────────────────── */
+/* 🎯 Mostrar Carrusel de Promociones             */
+/* ───────────────────────────────────────────── */
 function mostrarRotador(promos = [], posicion = "top") {
   if (!promos.length) return;
 
@@ -108,14 +114,18 @@ function mostrarRotador(promos = [], posicion = "top") {
   }
 }
 
-// 🧼 Sanear contenido
+/* ───────────────────────────────────────────── */
+/* 🧼 Sanear Texto para Seguridad                 */
+/* ───────────────────────────────────────────── */
 function sanitize(text = "") {
   const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
 }
 
-// 🏗️ Insertar banner según posición
+/* ───────────────────────────────────────────── */
+/* 🏗️ Insertar Banner Según Posición             */
+/* ───────────────────────────────────────────── */
 function insertarSegunPosicion(elemento, posicion) {
   const main = document.querySelector("main");
   const body = document.body;

@@ -23,13 +23,10 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnFavorito")?.addEventListener("click", () => toggleFavorito(id));
 });
 
-/* ───────────────────────────────────────────── */
-/* 📦 Cargar producto desde la API                */
-/* ───────────────────────────────────────────── */
+/* 📦 Cargar producto */
 async function cargarProducto(id) {
   try {
     const res = await fetch(`${API_BASE}/api/products/${id}`);
-
     if (!res.ok) {
       const errorData = await res.json();
       throw new Error(errorData.message || "⚠️ El producto no fue encontrado.");
@@ -51,9 +48,7 @@ async function cargarProducto(id) {
   }
 }
 
-/* ───────────────────────────────────────────── */
-/* 🖼️ Renderizar producto en la página            */
-/* ───────────────────────────────────────────── */
+/* 🖼️ Renderizar producto */
 function renderizarProducto(p = {}) {
   const detalle = document.getElementById("detalleProducto");
   if (!detalle) return;
@@ -120,9 +115,7 @@ function renderizarProducto(p = {}) {
   `;
 }
 
-/* ───────────────────────────────────────────── */
-/* 🛒 Agregar producto al carrito                 */
-/* ───────────────────────────────────────────── */
+/* 🛒 Agregar al carrito */
 function agregarAlCarrito(id, nombre, imagen, precio) {
   const talla = document.getElementById("tallaSelect")?.value || "Única";
   const cantidad = parseInt(document.getElementById("cantidadInput")?.value || "1");
@@ -147,9 +140,7 @@ function agregarAlCarrito(id, nombre, imagen, precio) {
   mostrarToast("🛒 Producto agregado al carrito.");
 }
 
-/* ───────────────────────────────────────────── */
-/* ❤️ Agregar/Quitar favorito                    */
-/* ───────────────────────────────────────────── */
+/* ❤️ Agregar/Quitar favoritos */
 function toggleFavorito(id) {
   const key = "km_ez_favs";
   const favs = JSON.parse(localStorage.getItem(key)) || [];
@@ -166,9 +157,7 @@ function toggleFavorito(id) {
   localStorage.setItem(key, JSON.stringify(favs));
 }
 
-/* ───────────────────────────────────────────── */
-/* 🛒 Actualizar contador de carrito             */
-/* ───────────────────────────────────────────── */
+/* 🛒 Actualizar contador de carrito */
 function actualizarCarritoWidget() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
   const total = carrito.reduce((sum, i) => sum + (i.cantidad || 0), 0);
@@ -176,9 +165,7 @@ function actualizarCarritoWidget() {
   if (contador) contador.textContent = total;
 }
 
-/* ───────────────────────────────────────────── */
-/* 🔔 Mostrar notificaciones tipo toast           */
-/* ───────────────────────────────────────────── */
+/* 🔔 Mostrar notificaciones tipo toast */
 function mostrarToast(mensaje) {
   const toast = document.createElement("div");
   toast.textContent = mensaje;
@@ -198,9 +185,7 @@ function mostrarToast(mensaje) {
   setTimeout(() => toast.remove(), 2500);
 }
 
-/* ───────────────────────────────────────────── */
-/* ❌ Mostrar error general                      */
-/* ───────────────────────────────────────────── */
+/* ❌ Mostrar error */
 function mostrarError(msg = "❌ Error inesperado") {
   const detalle = document.getElementById("detalleProducto");
   if (detalle) {
@@ -213,9 +198,7 @@ function mostrarError(msg = "❌ Error inesperado") {
   }
 }
 
-/* ───────────────────────────────────────────── */
-/* 🌙 Activar modo oscuro                       */
-/* ───────────────────────────────────────────── */
+/* 🌙 Activar modo oscuro */
 function activarModoOscuro() {
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
@@ -228,18 +211,14 @@ function activarModoOscuro() {
   });
 }
 
-/* ───────────────────────────────────────────── */
-/* 🧼 Sanitizar para evitar XSS                   */
-/* ───────────────────────────────────────────── */
+/* 🧼 Sanitizar para evitar XSS */
 function sanitize(text = "") {
   const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
 }
 
-/* ───────────────────────────────────────────── */
-/* 🔍 Actualizar dinámicamente SEO y OG Tags      */
-/* ───────────────────────────────────────────── */
+/* 🔍 Actualizar SEO dinámicamente */
 function actualizarSEO(producto = {}) {
   const nombre = sanitize(producto.name || "Producto | KM & EZ ROPA");
   const descripcion = sanitize(producto.description || "Moda urbana exclusiva para ti.");
@@ -259,6 +238,6 @@ function actualizarSEO(producto = {}) {
   if (ogImage) ogImage.setAttribute("content", imagen);
 }
 
-// 🌎 Exponer funciones globales
+// 🌍 Exponer funciones globales
 window.agregarAlCarrito = agregarAlCarrito;
 window.toggleFavorito = toggleFavorito;
