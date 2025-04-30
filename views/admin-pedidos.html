@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📋 Gestión de Pedidos | Admin</title>
+
+  <!-- Meta SEO -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ff6d00">
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/admin.css">
+
+  <!-- Scripts -->
+  <script type="module" src="/js/admin-utils.js"></script>
+  <script type="module" src="/js/admin-pedidos.js" defer></script>
+</head>
+
+<body>
+  <main class="admin-container fade-in">
+    <h1>📦 Pedidos Recibidos</h1>
+    <p class="subtitulo">Visualiza y administra todos los pedidos registrados en el sistema.</p>
+
+    <!-- 📋 Tabla de Pedidos -->
+    <section id="tablaPedidos" class="tabla-admin mt-3"></section>
+    <p id="estadoPedidos" class="text-center mt-2"></p>
+
+    <!-- 🔙 Botón de retorno -->
+    <div class="text-center mt-3">
+      <a href="/admin-panel.html" class="btn-secundario">🔙 Volver al panel</a>
+    </div>
+  </main>
+
+  <!-- Sin JS -->
+  <noscript>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar esta página.</p>
+  </noscript>
+</body>
+</html>

@@ -17,7 +17,7 @@ const msgEstado = document.getElementById("msgEstado");
 const btnUbicacion = document.getElementById("btnUbicacion");
 const infoMetodoPago = document.getElementById("infoMetodoPago");
 
-let enviandoPedido = false; 
+let enviandoPedido = false;
 
 document.addEventListener("DOMContentLoaded", () => {
   if (!Array.isArray(carrito) || carrito.length === 0) {
@@ -136,11 +136,13 @@ form?.addEventListener("submit", async e => {
     });
 
     const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.message || "Error al registrar el pedido.");
-    }
+    if (!res.ok) throw new Error(data.message || "Error al registrar el pedido.");
 
-    localStorage.setItem(LAST_ORDER_KEY, JSON.stringify(pedido)); // Guardar último pedido
+    // 💾 Guardar seguimiento y último pedido
+    if (data?.data?.codigoSeguimiento) {
+      localStorage.setItem("codigoSeguimiento", data.data.codigoSeguimiento);
+    }
+    localStorage.setItem(LAST_ORDER_KEY, JSON.stringify(pedido));
 
     if (metodoPago === "transferencia") {
       mostrarMensaje("✅ Pedido registrado. Redirigiendo...", "success");
@@ -226,7 +228,7 @@ function sanitize(str = "") {
 
 function mostrarMensaje(texto, tipo = "info") {
   msgEstado.textContent = texto;
-  msgEstado.style.color = 
+  msgEstado.style.color =
     tipo === "success" ? "limegreen" :
     tipo === "error" ? "tomato" :
     tipo === "warn" ? "orange" :
@@ -234,11 +236,7 @@ function mostrarMensaje(texto, tipo = "info") {
 }
 
 function mostrarCargando(show = true) {
-  if (show) {
-    msgEstado.innerHTML = "⏳ Procesando... <span class='spinner'></span>";
-  } else {
-    msgEstado.innerHTML = "";
-  }
+  msgEstado.innerHTML = show ? "⏳ Procesando... <span class='spinner'></span>" : "";
 }
 
 function finalizarEnvio() {

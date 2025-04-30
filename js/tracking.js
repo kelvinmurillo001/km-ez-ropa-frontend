@@ -13,87 +13,80 @@ const mensajeEstado = document.getElementById("mensajeEstado");
 // 📡 URL API
 const API_TRACK = `${API_BASE}/api/orders/track`;
 
-// ▶️ Evento inicial
+// ▶️ Evento inicial con parámetro GET ?codigo=
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const codigo = params.get("codigo");
+
   if (codigo) {
-    codigoInput.value = codigo;
-    buscarPedido(codigo);
+    codigoInput.value = codigo.trim().toUpperCase();
+    buscarPedido(codigo.trim());
   }
 });
 
 // 🔍 Buscar pedido al hacer click
 btnBuscar?.addEventListener("click", () => {
-  const codigo = codigoInput.value.trim();
-  if (!codigo) return mostrarMensaje("⚠️ Debes ingresar un código de pedido.", "warn");
+  const codigo = codigoInput.value.trim().toUpperCase();
+  if (!codigo || codigo.length < 3) {
+    return mostrarMensaje("⚠️ Ingresa un código válido.", "warn");
+  }
   buscarPedido(codigo);
 });
 
-// 📦 Función buscar pedido
+// 📦 Buscar pedido desde backend
 async function buscarPedido(codigo) {
   mostrarMensaje("⏳ Buscando pedido...", "info");
+
   try {
-    const res = await fetch(`${API_TRACK}/${codigo}`);
+    const res = await fetch(`${API_TRACK}/${encodeURIComponent(codigo)}`);
     const data = await res.json();
 
-    if (!res.ok) throw new Error(data.message || "Error desconocido");
+    if (!res.ok) throw new Error(data.message || "❌ Pedido no encontrado");
 
     mostrarProgreso(data.estadoActual);
     mostrarResumen(data.resumen);
-    mostrarMensaje("✅ Pedido encontrado.", "success");
+    mostrarMensaje("✅ Pedido encontrado", "success");
 
   } catch (err) {
-    console.error("❌", err);
+    console.error("❌", err.message);
     barraProgreso.hidden = true;
     resumenPedido.hidden = true;
-    mostrarMensaje(err.message || "❌ No se pudo buscar el pedido.", "error");
+    mostrarMensaje(err.message || "❌ Error al buscar pedido", "error");
   }
 }
 
-// 🚚 Mostrar progreso de envío
-function mostrarProgreso(estado) {
+// 🚚 Visualizar progreso de pedido
+function mostrarProgreso(estado = "") {
   barraProgreso.hidden = false;
   document.querySelectorAll(".paso").forEach(p => p.classList.remove("active"));
 
-  switch (estado?.toLowerCase()) {
-    case "pendiente":
-    case "recibido":
-      activarPaso("paso-recibido");
-      break;
-    case "preparando":
-      activarPaso("paso-recibido");
-      activarPaso("paso-preparando");
-      break;
-    case "en camino":
-    case "enviado":
-      activarPaso("paso-recibido");
-      activarPaso("paso-preparando");
-      activarPaso("paso-en-camino");
-      break;
-    case "entregado":
-      activarPaso("paso-recibido");
-      activarPaso("paso-preparando");
-      activarPaso("paso-en-camino");
-      activarPaso("paso-entregado");
-      break;
-    default:
-      activarPaso("paso-recibido");
-  }
+  const estados = {
+    pendiente: ["paso-recibido"],
+    recibido: ["paso-recibido"],
+    preparando: ["paso-recibido", "paso-preparando"],
+    "en proceso": ["paso-recibido", "paso-preparando"],
+    enviado: ["paso-recibido", "paso-preparando", "paso-en-camino"],
+    "en camino": ["paso-recibido", "paso-preparando", "paso-en-camino"],
+    entregado: ["paso-recibido", "paso-preparando", "paso-en-camino", "paso-entregado"],
+    cancelado: [] // opcional: podrías mostrar un estado de cancelación si agregas diseño
+  };
+
+  const pasosActivos = estados[estado.toLowerCase()] || ["paso-recibido"];
+  pasosActivos.forEach(activarPaso);
 }
 
-// ⭐ Activar un paso en progreso
+// ⭐ Activar un paso visualmente
 function activarPaso(id) {
   document.getElementById(id)?.classList.add("active");
 }
 
-// 🧾 Mostrar resumen de pedido
+// 🧾 Mostrar datos resumen del pedido
 function mostrarResumen(resumen = {}) {
   resumenPedido.hidden = false;
   document.getElementById("nombreCliente").textContent = resumen.nombre || "-";
   document.getElementById("direccionCliente").textContent = resumen.direccion || "-";
   document.getElementById("metodoPago").textContent = resumen.metodoPago || "-";
-  document.getElementById("totalPedido").textContent = `$${(resumen.total || 0).toFixed(2)}`;
+  document.getElementById("totalPedido").textContent = `$${parseFloat(resumen.total || 0).toFixed(2)}`;
 }
 
 // 💬 Mostrar mensajes de estado
