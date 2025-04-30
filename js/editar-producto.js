@@ -30,19 +30,15 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnAgregarVariante")?.addEventListener("click", renderVarianteNueva);
 });
 
-/* 📦 Validar campos */
 function validarCampo(valor, mensaje) {
-  if (!valor || valor.trim() === "") {
-    throw new Error(mensaje);
-  }
+  if (!valor || valor.trim() === "") throw new Error(mensaje);
 }
 
-/* 📦 Cargar categorías */
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIAS);
     const { data } = await res.json();
-    if (!res.ok || !Array.isArray(data)) throw new Error("Respuesta inválida");
+    if (!res.ok || !Array.isArray(data)) throw new Error();
 
     const select = document.getElementById("categoriaInput");
     select.innerHTML = '<option value="">Selecciona una categoría</option>';
@@ -58,7 +54,6 @@ async function cargarCategorias() {
   }
 }
 
-/* 📦 Cargar producto existente */
 async function cargarProducto() {
   try {
     const res = await fetch(API_PRODUCTO);
@@ -66,15 +61,15 @@ async function cargarProducto() {
 
     if (!res.ok || !producto || producto._id !== productId) throw new Error("Producto no encontrado");
 
-    document.getElementById("nombreInput").value = producto.name || "";
-    document.getElementById("descripcionInput").value = producto.description || "";
-    document.getElementById("precioInput").value = producto.price || "";
-    document.getElementById("stockInput").value = producto.stock ?? 0;
-    document.getElementById("categoriaInput").value = producto.category || "";
-    document.getElementById("subcategoriaInput").value = producto.subcategory || "";
-    document.getElementById("tallasInput").value = producto.sizes?.join(", ") || "";
-    document.getElementById("colorInput").value = producto.color || "";
-    document.getElementById("destacadoInput").checked = !!producto.featured;
+    form.nombreInput.value = producto.name || "";
+    form.descripcionInput.value = producto.description || "";
+    form.precioInput.value = producto.price || "";
+    form.stockInput.value = producto.stock ?? 0;
+    form.categoriaInput.value = producto.category || "";
+    form.subcategoriaInput.value = producto.subcategory || "";
+    form.tallasInput.value = producto.sizes?.join(", ") || "";
+    form.colorInput.value = producto.color || "";
+    form.destacadoInput.checked = !!producto.featured;
 
     if (Array.isArray(producto.images) && producto.images.length > 0) {
       document.getElementById("imagenPrincipalActual").innerHTML = `
@@ -89,7 +84,6 @@ async function cargarProducto() {
   }
 }
 
-/* 🎨 Renderizar variante existente */
 function renderVarianteExistente(v, i) {
   const div = document.createElement("div");
   div.className = "variante-box";
@@ -112,7 +106,6 @@ function renderVarianteExistente(v, i) {
   div.querySelector(".btn-quitar-variante").addEventListener("click", () => div.remove());
 }
 
-/* ➕ Renderizar variante nueva */
 function renderVarianteNueva() {
   if (document.querySelectorAll(".variante-box").length >= 4) {
     mostrarMensaje("⚠️ Máximo 4 variantes permitidas", "warning");
@@ -126,7 +119,7 @@ function renderVarianteNueva() {
     <label>Imagen:</label>
     <input type="file" class="variante-img" accept="image/*" required />
     <label>Color:</label>
-    <input type="text" class="variante-color" placeholder="Ej: blanco, vino" required />
+    <input type="text" class="variante-color" placeholder="Ej: rojo" required />
     <label>Talla:</label>
     <input type="text" class="variante-talla" required />
     <label>Stock:</label>
@@ -138,7 +131,6 @@ function renderVarianteNueva() {
   div.querySelector(".btn-quitar-variante").addEventListener("click", () => div.remove());
 }
 
-/* 📤 Subir imagen */
 async function subirImagen(file) {
   if (!file || !file.type.startsWith("image/") || file.size > 2 * 1024 * 1024) {
     throw new Error("⚠️ Imagen inválida o muy pesada");
@@ -162,7 +154,6 @@ async function subirImagen(file) {
   };
 }
 
-/* 📋 Enviar formulario */
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   mostrarMensaje("⏳ Guardando cambios...", "info");
@@ -179,14 +170,13 @@ form.addEventListener("submit", async (e) => {
     const color = form.colorInput.value.trim();
     const sizes = form.tallasInput.value.split(",").map(s => s.trim()).filter(Boolean);
 
-    validarCampo(nombre, "⚠️ Nombre del producto obligatorio");
-    validarCampo(descripcion, "⚠️ Descripción del producto requerida");
+    validarCampo(nombre, "⚠️ Nombre obligatorio");
+    validarCampo(descripcion, "⚠️ Descripción requerida");
     validarCampo(categoria, "⚠️ Selecciona una categoría");
     if (isNaN(precio)) throw new Error("⚠️ Precio inválido");
 
     const nuevaImg = form.imagenPrincipalNueva?.files[0];
-    let nuevaImagen = null;
-    if (nuevaImg) nuevaImagen = await subirImagen(nuevaImg);
+    const nuevaImagen = nuevaImg ? await subirImagen(nuevaImg) : null;
 
     const bloques = document.querySelectorAll(".variante-box");
     const variantes = await Promise.all(Array.from(bloques).map(async (b) => {
@@ -196,19 +186,17 @@ form.addEventListener("submit", async (e) => {
       const stock = parseInt(b.querySelector(".variante-stock")?.value || "0");
       const cloudinaryId = b.querySelector(".variante-id")?.value;
 
-      validarCampo(color, "⚠️ Color requerido en variante");
-      validarCampo(talla, "⚠️ Talla requerida en variante");
-      if (isNaN(stock) || stock < 0) throw new Error("⚠️ Stock inválido en variante");
+      validarCampo(color, "⚠️ Color requerido");
+      validarCampo(talla, "⚠️ Talla requerida");
+      if (isNaN(stock) || stock < 0) throw new Error("⚠️ Stock inválido");
 
-      let imageUrl = null;
+      let imageUrl = b.querySelector("img")?.src;
       let finalCloudinaryId = cloudinaryId;
 
       if (file) {
         const subida = await subirImagen(file);
         imageUrl = subida.url;
         finalCloudinaryId = subida.cloudinaryId;
-      } else if (cloudinaryId) {
-        imageUrl = b.querySelector("img")?.src;
       }
 
       return { imageUrl, cloudinaryId: finalCloudinaryId, color, talla, stock };
@@ -216,8 +204,8 @@ form.addEventListener("submit", async (e) => {
 
     const claves = new Set();
     for (const v of variantes) {
-      const clave = `${v.talla}-${v.color}`;
-      if (claves.has(clave)) throw new Error("⚠️ Hay variantes duplicadas (talla + color)");
+      const clave = `${v.talla.toLowerCase()}-${v.color.toLowerCase()}`;
+      if (claves.has(clave)) throw new Error("⚠️ Variantes duplicadas (talla + color)");
       claves.add(clave);
     }
 
@@ -246,9 +234,9 @@ form.addEventListener("submit", async (e) => {
     });
 
     const result = await res.json();
-    if (!res.ok) throw new Error(result.message || "Error actualizando producto");
+    if (!res.ok) throw new Error(result.message || "Error al actualizar producto");
 
-    mostrarMensaje("✅ Producto actualizado con éxito", "success");
+    mostrarMensaje("✅ Producto actualizado correctamente", "success");
 
   } catch (err) {
     console.error("❌", err);
@@ -258,5 +246,4 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-/* 🔙 Función volver */
 window.goBack = goBack;

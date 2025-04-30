@@ -86,7 +86,7 @@ function renderizarProductos() {
 
   if (filtroStock?.value === "sinStock") {
     filtrados = filtrados.filter(p => {
-      const total = p.variants?.reduce((a, v) => a + (v.stock || 0), 0) || p.stock || 0;
+      const total = typeof p.stockTotal === "number" ? p.stockTotal : 0;
       return total === 0;
     });
   }
@@ -146,14 +146,7 @@ function productoFilaHTML(p) {
   const nombre = sanitize(p.name || "Sin nombre");
   const precio = isNaN(p.price) ? "0.00" : parseFloat(p.price).toFixed(2);
   const categoria = sanitize(p.category || "-");
-
-  let stock = 0;
-  if (Array.isArray(p.variants) && p.variants.length > 0) {
-    stock = p.variants.reduce((a, v) => a + (v.stock || 0), 0);
-  } else if (typeof p.stock === "number") {
-    stock = p.stock;
-  }
-
+  const stock = typeof p.stockTotal === "number" ? p.stockTotal : 0;
   const claseStock = stock === 0 ? "sin-stock" : "";
 
   return `
@@ -199,7 +192,7 @@ async function exportarExcel() {
     ID: p._id,
     Nombre: p.name,
     Precio: p.price,
-    Stock: (p.stock ?? p.variants?.reduce((a, v) => a + (v.stock || 0), 0)) || 0,
+    Stock: typeof p.stockTotal === "number" ? p.stockTotal : 0,
     Categoría: p.category,
     Destacado: p.featured ? "Sí" : "No"
   }));

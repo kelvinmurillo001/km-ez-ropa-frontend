@@ -61,15 +61,15 @@ function renderizarProducto(p = {}) {
   const id = p._id || "";
 
   let tallasDisponibles = [];
-  let maxCantidad = 1;
+  let stockTotal = 0;
 
   if (Array.isArray(p.variants) && p.variants.length > 0) {
     const conStock = p.variants.filter(v => v.stock > 0);
     tallasDisponibles = [...new Set(conStock.map(v => v.talla?.toUpperCase()))];
-    maxCantidad = conStock.reduce((acc, v) => acc + (v.stock || 0), 0);
+    stockTotal = conStock.reduce((acc, v) => acc + (v.stock || 0), 0);
   } else {
     tallasDisponibles = p.sizes?.map(t => t.toUpperCase()) || ["Única"];
-    maxCantidad = p.stock || 1;
+    stockTotal = typeof p.stock === "number" ? p.stock : 0;
   }
 
   const galeriaHTML = imagenes.map(img =>
@@ -105,7 +105,7 @@ function renderizarProducto(p = {}) {
         <select id="tallaSelect">${tallasHTML}</select>
 
         <label for="cantidadInput">Cantidad:</label>
-        <input type="number" id="cantidadInput" min="1" max="${maxCantidad}" value="1" />
+        <input type="number" id="cantidadInput" min="1" max="${stockTotal}" value="1" />
       </div>
 
       <button class="btn-agregar" onclick="agregarAlCarrito('${id}', \`${nombre}\`, \`${imagenPrincipal}\`, ${p.price || 0})">

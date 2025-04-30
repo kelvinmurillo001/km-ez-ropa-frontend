@@ -136,7 +136,7 @@ async function subirImagen(file) {
     throw new Error("⚠️ Imagen inválida o demasiado grande");
   }
 
-  const token = localStorage.getItem("admin_token"); // ✅ Leer token actualizado
+  const token = localStorage.getItem("admin_token");
   if (!token) {
     alert("⛔ Tu sesión expiró. Vuelve a iniciar sesión.");
     window.location.href = "/login.html";
@@ -176,7 +176,6 @@ form.addEventListener("submit", async (e) => {
     const nombre = form.nombreInput.value.trim();
     const descripcion = form.descripcionInput.value.trim();
     const precio = parseFloat(form.precioInput.value);
-    const stock = parseInt(form.stockInput.value || "0");
     const categoria = categoriaInput.value;
     const subcategoria = subcategoriaInput?.value || "";
     const tallaTipo = tallaTipoInput.value;
@@ -205,7 +204,6 @@ form.addEventListener("submit", async (e) => {
 
       const file = fileInput.files[0];
       msgEstado.textContent = "⏳ Subiendo imagen de variante...";
-
       const subida = await subirImagen(file);
 
       variantesFinales.push({
@@ -217,11 +215,13 @@ form.addEventListener("submit", async (e) => {
       });
     }
 
+    const usarStockDirecto = variantesFinales.length === 0;
+    const stock = usarStockDirecto ? parseInt(form.stockInput.value || "0") : undefined;
+
     const nuevoProducto = {
       name: nombre,
       description: descripcion,
       price: precio,
-      stock,
       category: categoria,
       subcategory: subcategoria,
       tallaTipo,
@@ -237,6 +237,8 @@ form.addEventListener("submit", async (e) => {
       }],
       createdBy: user?.name || "admin"
     };
+
+    if (usarStockDirecto) nuevoProducto.stock = stock;
 
     msgEstado.textContent = "⏳ Guardando producto...";
     const res = await fetch(API_PRODUCTS, {
