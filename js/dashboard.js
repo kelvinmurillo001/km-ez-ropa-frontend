@@ -1,4 +1,4 @@
-"use strict";
+"use strict"; 
 
 // ✅ Importar dependencias necesarias
 import { verificarSesion, goBack } from "./admin-utils.js";
@@ -27,11 +27,13 @@ document.addEventListener("DOMContentLoaded", () => {
  */
 async function loadDashboard() {
   try {
-    const [pedidos, productos, resumen] = await Promise.all([
+    const [ordenesRaw, productos, resumen] = await Promise.all([
       fetchData(API_ORDERS, true),
       fetchData(API_PRODUCTS),
       fetchData(API_RESUMEN, true)
     ]);
+
+    const pedidos = Array.isArray(ordenesRaw.data) ? ordenesRaw.data : [];
 
     if (!Array.isArray(pedidos) || !Array.isArray(productos) || typeof resumen !== "object") {
       throw new Error("❌ Estructura de datos inválida");
