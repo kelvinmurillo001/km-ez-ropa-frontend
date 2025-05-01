@@ -1,9 +1,11 @@
 "use strict";
 
+const API_PROMOS = "https://km-ez-ropa-backend.onrender.com/api/promos";
+
 // 📦 Cargar promociones al iniciar
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    const res = await fetch("https://km-ez-ropa-backend.onrender.com/api/promos");
+    const res = await fetch(API_PROMOS);
     if (!res.ok) throw new Error("❌ Error al obtener promociones");
 
     const { data: promos = [] } = await res.json();
@@ -16,17 +18,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       p.active &&
       Array.isArray(p.pages) &&
       p.pages.includes(clavePagina) &&
-      (!p.startDate || new Date(p.startDate) <= hoy) &&
-      (!p.endDate || new Date(p.endDate) >= hoy)
+      (!p.startDate || Date.parse(p.startDate) <= hoy) &&
+      (!p.endDate || Date.parse(p.endDate) >= hoy)
     );
 
     const agrupadas = agruparPorPosicion(activas);
-    Object.entries(agrupadas).forEach(([posicion, grupoPromos]) => {
-      mostrarRotador(grupoPromos, posicion);
+    Object.entries(agrupadas).forEach(([posicion, grupo]) => {
+      mostrarRotador(grupo, posicion);
     });
 
   } catch (err) {
-    console.error("❌ Error al cargar promociones activas:", err.message);
+    console.error("❌ Error al cargar promociones activas:", err.message || err);
   }
 });
 
@@ -80,7 +82,9 @@ function mostrarRotador(promos = [], posicion = "top") {
     slide.style.display = "inline-block";
     slide.style.width = "100%";
 
-    let contenido = `<p class="promo-msg">📣 ${sanitize(promo.message)}</p>`;
+    const mensaje = sanitize(promo.message || "");
+
+    let contenido = `<p class="promo-msg">📣 ${mensaje}</p>`;
 
     if (promo.mediaType === "image" && promo.mediaUrl) {
       contenido += `<img src="${promo.mediaUrl}" alt="Imagen promocional" class="promo-img" loading="lazy" onerror="this.style.display='none'" />`;
@@ -88,7 +92,7 @@ function mostrarRotador(promos = [], posicion = "top") {
 
     if (promo.mediaType === "video" && promo.mediaUrl) {
       contenido += `
-        <video controls class="promo-video" preload="metadata">
+        <video controls class="promo-video" preload="metadata" aria-label="Video promocional">
           <source src="${promo.mediaUrl}" type="video/mp4" />
           Tu navegador no soporta video.
         </video>`;
@@ -101,6 +105,7 @@ function mostrarRotador(promos = [], posicion = "top") {
   wrapper.appendChild(contenedor);
   insertarSegunPosicion(wrapper, posicion);
 
+  // Rotador automático si hay más de una promoción
   if (promos.length > 1) {
     let index = 0;
     setInterval(() => {

@@ -136,13 +136,6 @@ async function subirImagen(file) {
     throw new Error("⚠️ Imagen inválida o demasiado grande");
   }
 
-  const token = localStorage.getItem("admin_token");
-  if (!token) {
-    alert("⛔ Tu sesión expiró. Vuelve a iniciar sesión.");
-    window.location.href = "/login.html";
-    throw new Error("⛔ Token ausente o inválido");
-  }
-
   const formData = new FormData();
   formData.append("image", file);
 
@@ -151,13 +144,6 @@ async function subirImagen(file) {
     headers: { Authorization: `Bearer ${token}` },
     body: formData
   });
-
-  if (res.status === 401) {
-    localStorage.clear();
-    alert("⛔ Tu sesión expiró. Inicia sesión nuevamente.");
-    window.location.href = "/login.html";
-    throw new Error("⛔ Token expirado o inválido");
-  }
 
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || "Error al subir imagen");
@@ -171,6 +157,8 @@ async function subirImagen(file) {
 // 💾 Guardar producto
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+  form.classList.add("bloqueado");
+  msgEstado.textContent = "";
 
   try {
     const nombre = form.nombreInput.value.trim();
@@ -184,15 +172,25 @@ form.addEventListener("submit", async (e) => {
     const destacado = document.getElementById("destacadoInput")?.checked || false;
     const filePrincipal = imagenInput.files[0];
 
-    if (!filePrincipal) return mostrarMensaje("⚠️ Imagen principal requerida", "error");
-    if (!nombre || !descripcion || isNaN(precio) || !categoria || !tallaTipo) {
-      return mostrarMensaje("⚠️ Completa todos los campos obligatorios", "error");
+    // Validaciones básicas
+    if (!filePrincipal) {
+      mostrarMensaje("⚠️ Imagen principal requerida", "error");
+      imagenInput.focus();
+      return;
     }
 
+    if (!nombre || !descripcion || isNaN(precio) || !categoria || !tallaTipo) {
+      mostrarMensaje("⚠️ Completa todos los campos obligatorios", "error");
+      return;
+    }
+
+    // Subida principal
     msgEstado.textContent = "⏳ Subiendo imagen principal...";
     const imagenPrincipal = await subirImagen(filePrincipal);
 
+    // Variantes
     const variantesFinales = [];
+    const claves = new Set();
 
     for (const v of variantesContainer.querySelectorAll(".variante-item")) {
       const colorInput = v.querySelector("input[name^='color']");
@@ -202,10 +200,13 @@ form.addEventListener("submit", async (e) => {
 
       if (!fileInput.files.length) continue;
 
-      const file = fileInput.files[0];
-      msgEstado.textContent = "⏳ Subiendo imagen de variante...";
-      const subida = await subirImagen(file);
+      const clave = `${colorInput.value.trim().toLowerCase()}-${tallaInput.value.trim().toLowerCase()}`;
+      if (claves.has(clave)) {
+        throw new Error("⚠️ Variantes duplicadas (color + talla)");
+      }
+      claves.add(clave);
 
+      const subida = await subirImagen(fileInput.files[0]);
       variantesFinales.push({
         imageUrl: subida.url,
         cloudinaryId: subida.cloudinaryId,
@@ -223,7 +224,7 @@ form.addEventListener("submit", async (e) => {
       description: descripcion,
       price: precio,
       category: categoria,
-      subcategory: subcategoria,
+      subcategory,
       tallaTipo,
       color,
       sizes: tallas,
@@ -264,7 +265,8 @@ form.addEventListener("submit", async (e) => {
   } catch (err) {
     console.error("❌", err);
     mostrarMensaje("❌ " + err.message, "error");
-    msgEstado.textContent = "";
+  } finally {
+    form.classList.remove("bloqueado");
   }
 });
 

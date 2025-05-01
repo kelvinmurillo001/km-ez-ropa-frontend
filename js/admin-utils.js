@@ -9,10 +9,10 @@ export function verificarSesion() {
 
   try {
     const user = JSON.parse(userRaw);
-    if (!token || !user?.isAdmin) throw new Error();
+    if (!token || typeof user !== "object" || !user?.isAdmin) throw new Error();
     return token;
   } catch (err) {
-    console.warn("⚠️ Sesión inválida o corrupta. Redirigiendo...");
+    console.warn("⚠️ Sesión inválida. Redirigiendo a login...");
     localStorage.clear();
     alert("⚠️ Acceso restringido. Inicia sesión como administrador.");
     window.location.href = "/login.html";
@@ -27,19 +27,20 @@ export function mostrarMensaje(texto = "", tipo = "info") {
   const mensaje = document.getElementById("adminMensaje");
 
   if (!mensaje) {
-    console.warn("⚠️ #adminMensaje no encontrado. Usando alert...");
+    console.warn("⚠️ No se encontró #adminMensaje. Usando alert como fallback...");
     alert(texto);
     return;
   }
 
-  mensaje.className = `mensaje-global ${tipo}`;
   mensaje.textContent = texto;
   mensaje.setAttribute("role", "alert");
   mensaje.setAttribute("aria-live", "assertive");
+  mensaje.className = `mensaje-global ${tipo} show`;
 
-  mensaje.classList.add("show");
+  // Limpiar timeout anterior si existe
+  if (mensaje._timeout) clearTimeout(mensaje._timeout);
 
-  clearTimeout(mensaje._timeout);
+  // Ocultar después de 4 segundos
   mensaje._timeout = setTimeout(() => {
     mensaje.classList.remove("show");
   }, 4000);
@@ -48,7 +49,11 @@ export function mostrarMensaje(texto = "", tipo = "info") {
 /* -------------------------------------------------------------------------- */
 /* 🔙 Redirigir al panel principal                                              */
 /* -------------------------------------------------------------------------- */
-export function goBack() {
+export function goBack(confirmar = false) {
+  if (confirmar) {
+    const salir = confirm("¿Seguro que quieres volver al panel principal?");
+    if (!salir) return;
+  }
   window.location.href = "/panel.html";
 }
 

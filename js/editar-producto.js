@@ -19,14 +19,12 @@ const form = document.getElementById("formEditarProducto");
 const msgEstado = document.getElementById("msgEstado");
 const variantesDiv = document.getElementById("variantesExistentes");
 const subcategoriaInput = document.getElementById("subcategoriaInput");
-
 let categorias = [];
 
 document.addEventListener("DOMContentLoaded", () => {
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
-
   cargarCategorias().then(cargarProducto);
   document.getElementById("btnAgregarVariante")?.addEventListener("click", renderVarianteNueva);
 });
@@ -44,7 +42,6 @@ async function cargarCategorias() {
     if (!res.ok || !Array.isArray(data)) throw new Error();
 
     categorias = data;
-
     const categoriaSelect = document.getElementById("categoriaInput");
     categoriaSelect.innerHTML = '<option value="">Selecciona una categoría</option>';
     categorias.forEach(cat => {
@@ -57,7 +54,6 @@ async function cargarCategorias() {
     categoriaSelect.addEventListener("change", () => {
       const seleccionada = categoriaSelect.value;
       const categoriaObj = categorias.find(c => c.name === seleccionada);
-
       if (categoriaObj?.subcategories?.length) {
         subcategoriaInput.innerHTML = `<option value="">Selecciona subcategoría</option>` +
           categoriaObj.subcategories.map(sub => `<option value="${sub}">${sub}</option>`).join("");
@@ -88,6 +84,8 @@ async function cargarProducto() {
     form.colorInput.value = producto.color || "";
     form.tallasInput.value = producto.sizes?.join(", ") || "";
     form.destacadoInput.checked = !!producto.featured;
+    form.activoInput.checked = !!producto.isActive;
+    form.tallaTipoInput.value = producto.tallaTipo || "";
 
     document.getElementById("categoriaInput").dispatchEvent(new Event("change"));
     form.subcategoriaInput.value = producto.subcategory || "";
@@ -141,7 +139,7 @@ function renderVarianteNueva() {
     <label>Imagen:</label>
     <input type="file" class="variante-img" accept="image/*" required />
     <label>Color:</label>
-    <input type="text" class="variante-color" placeholder="Ej: rojo" required />
+    <input type="text" class="variante-color" required />
     <label>Talla:</label>
     <input type="text" class="variante-talla" required />
     <label>Stock:</label>
@@ -189,12 +187,15 @@ form.addEventListener("submit", async (e) => {
     const categoria = form.categoriaInput.value;
     const subcategoria = form.subcategoriaInput?.value?.trim() || "";
     const destacado = form.destacadoInput?.checked || false;
+    const activo = form.activoInput?.checked || false;
+    const tallaTipo = form.tallaTipoInput.value;
     const color = form.colorInput.value.trim();
     const sizes = form.tallasInput.value.split(",").map(s => s.trim()).filter(Boolean);
 
     validarCampo(nombre, "⚠️ Nombre obligatorio");
     validarCampo(descripcion, "⚠️ Descripción requerida");
     validarCampo(categoria, "⚠️ Selecciona una categoría");
+    validarCampo(tallaTipo, "⚠️ Tipo de talla requerido");
     if (isNaN(precio)) throw new Error("⚠️ Precio inválido");
 
     const nuevaImg = form.imagenPrincipalNueva?.files?.[0];
@@ -237,9 +238,11 @@ form.addEventListener("submit", async (e) => {
       price: precio,
       category: categoria,
       subcategory,
+      tallaTipo,
       color,
       sizes,
       featured: destacado,
+      isActive: activo,
       variants
     };
 

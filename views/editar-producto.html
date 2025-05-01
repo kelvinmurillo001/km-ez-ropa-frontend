@@ -52,24 +52,29 @@
 
   <form id="formEditarProducto" class="form-producto" enctype="multipart/form-data" novalidate>
 
+    <input type="hidden" id="productoId" />
+
+    <!-- Imagen actual -->
     <label for="imagenPrincipalActual">Imagen Principal Actual:</label>
     <div id="imagenPrincipalActual" class="preview-imagen" aria-live="polite"></div>
 
+    <!-- Nueva imagen -->
     <label for="imagenPrincipalNueva">Subir Nueva Imagen Principal:</label>
     <input type="file" id="imagenPrincipalNueva" accept="image/*" aria-describedby="imagenHelp" />
     <small id="imagenHelp" class="help-text">Opcional. Máx. 2MB. Formatos: JPG, PNG, WEBP.</small>
 
+    <!-- Campos del producto -->
     <label for="nombreInput">Nombre del Producto: *</label>
-    <input type="text" id="nombreInput" required placeholder="Ej: Hoodie urbana oversize" maxlength="100" />
+    <input type="text" id="nombreInput" required maxlength="100" />
 
     <label for="descripcionInput">Descripción del Producto: *</label>
-    <textarea id="descripcionInput" required placeholder="Describe estilo, tela, corte..." maxlength="300"></textarea>
+    <textarea id="descripcionInput" required maxlength="300"></textarea>
 
     <label for="precioInput">Precio de venta: *</label>
     <input type="number" id="precioInput" step="0.01" min="0" required />
 
     <label for="stockInput">Stock base:</label>
-    <input type="number" id="stockInput" min="0" value="0" />
+    <input type="number" id="stockInput" min="0" />
 
     <label for="categoriaInput">Categoría principal: *</label>
     <select id="categoriaInput" required>
@@ -81,23 +86,41 @@
       <option value="">Selecciona una subcategoría</option>
     </select>
 
+    <label for="tallaTipoInput">Tipo de talla: *</label>
+    <select id="tallaTipoInput" required>
+      <option value="">Selecciona tipo</option>
+      <option value="adulto">Adulto</option>
+      <option value="joven">Joven</option>
+      <option value="niño">Niño</option>
+      <option value="niña">Niña</option>
+      <option value="bebé">Bebé</option>
+    </select>
+
     <label for="tallasInput">Tallas disponibles:</label>
     <input type="text" id="tallasInput" placeholder="Ej: S, M, L, XL" />
 
     <label for="colorInput">Color principal:</label>
-    <input type="text" id="colorInput" placeholder="Ej: Negro, Beige, Denim" />
+    <input type="text" id="colorInput" placeholder="Ej: Negro, Beige" />
 
+    <!-- Estado del producto -->
     <div class="mt-2">
       <input type="checkbox" id="destacadoInput" />
-      <label for="destacadoInput">✅ Producto destacado en inicio</label>
+      <label for="destacadoInput">⭐ Producto destacado en inicio</label>
     </div>
 
+    <div class="mt-2">
+      <input type="checkbox" id="activoInput" />
+      <label for="activoInput">🟢 Producto activo (visible)</label>
+    </div>
+
+    <!-- Variantes -->
     <fieldset class="mt-2">
       <legend>Variantes (colores, tallas y stock específicos)</legend>
       <div id="variantesExistentes" aria-live="polite"></div>
       <button type="button" id="btnAgregarVariante" class="btn-secundario mt-1">➕ Añadir Variante</button>
     </fieldset>
 
+    <!-- Acciones -->
     <div class="form-actions mt-3">
       <button type="submit" class="btn">💾 Guardar Cambios</button>
       <button type="button" id="btnCancelar" class="btn-secundario">🔙 Cancelar</button>
@@ -128,9 +151,8 @@
       }
     });
 
-    const adminMensaje = document.getElementById('adminMensaje');
-    adminMensaje?.addEventListener('click', () => {
-      adminMensaje.style.display = 'none';
+    document.getElementById('adminMensaje')?.addEventListener('click', e => {
+      e.currentTarget.style.display = 'none';
     });
   });
 </script>

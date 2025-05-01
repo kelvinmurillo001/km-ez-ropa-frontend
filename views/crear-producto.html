@@ -15,110 +15,124 @@
   <link rel="stylesheet" href="/css/crear-producto.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- JS -->
+  <!-- JS Principal -->
   <script type="module" src="/js/crear-producto.js" defer></script>
 </head>
 <body>
 
-  <main class="formulario-container fade-in" role="main" aria-label="Formulario para crear nuevo producto">
-    <h1 class="text-center">➕ Crear Nuevo Producto</h1>
+<main class="formulario-container fade-in" role="main" aria-label="Formulario para crear nuevo producto">
+  <h1 class="text-center">➕ Crear Nuevo Producto</h1>
 
-    <form id="formProducto" class="form-producto" enctype="multipart/form-data" novalidate>
+  <form id="formProducto" class="form-producto" enctype="multipart/form-data" novalidate>
 
-      <!-- 📷 Imagen principal -->
-      <label for="imagenPrincipalInput">📷 Imagen Principal *</label>
-      <input type="file" id="imagenPrincipalInput" accept="image/jpeg,image/png,image/svg+xml" required aria-describedby="imagenHelp" />
-      <small id="imagenHelp" class="help-text">Máx. 2MB. Formatos: JPG, PNG, SVG.</small>
-      <div id="previewPrincipal" class="preview-imagen" aria-live="polite"></div>
+    <!-- 📷 Imagen principal -->
+    <label for="imagenPrincipalInput">📷 Imagen Principal *</label>
+    <input type="file" id="imagenPrincipalInput" accept="image/jpeg,image/png,image/webp,image/svg+xml" required aria-describedby="imagenHelp" />
+    <small id="imagenHelp" class="help-text">Máx. 2MB. Formatos: JPG, PNG, WEBP, SVG.</small>
+    <div id="previewPrincipal" class="preview-imagen" aria-live="polite"></div>
 
-      <!-- 📝 Nombre -->
-      <label for="nombreInput">📝 Nombre del Producto *</label>
-      <input type="text" id="nombreInput" placeholder="Ej: Hoodie urbana" required maxlength="100" />
+    <!-- 📝 Nombre -->
+    <label for="nombreInput">📝 Nombre del Producto *</label>
+    <input type="text" id="nombreInput" placeholder="Ej: Hoodie urbana" required maxlength="100" />
 
-      <!-- 📄 Descripción -->
-      <label for="descripcionInput">📄 Descripción *</label>
-      <textarea id="descripcionInput" placeholder="Detalles sobre el corte, tela o diseño..." required maxlength="300"></textarea>
+    <!-- 📄 Descripción -->
+    <label for="descripcionInput">📄 Descripción *</label>
+    <textarea id="descripcionInput" placeholder="Detalles sobre el corte, tela o diseño..." required maxlength="300"></textarea>
 
-      <!-- 💲 Precio -->
-      <label for="precioInput">💲 Precio *</label>
-      <input type="number" id="precioInput" step="0.01" min="0" required placeholder="Ej: 39.90" />
+    <!-- 💲 Precio -->
+    <label for="precioInput">💲 Precio *</label>
+    <input type="number" id="precioInput" step="0.01" min="0" required placeholder="Ej: 39.90" />
 
-      <!-- 📦 Stock -->
-      <label for="stockInput">📦 Stock Base *</label>
-      <input type="number" id="stockInput" min="0" required placeholder="Ej: 10" />
+    <!-- 📦 Stock -->
+    <label for="stockInput">📦 Stock Base *</label>
+    <input type="number" id="stockInput" min="0" required placeholder="Ej: 10" />
 
-      <!-- 📂 Categoría -->
-      <label for="categoriaInput">📂 Categoría *</label>
-      <select id="categoriaInput" required>
-        <option value="">Selecciona una categoría</option>
-      </select>
+    <!-- 📂 Categoría -->
+    <label for="categoriaInput">📂 Categoría *</label>
+    <select id="categoriaInput" required>
+      <option value="">Selecciona una categoría</option>
+    </select>
 
-      <!-- 📁 Subcategoría -->
-      <label for="subcategoriaInput">📁 Subcategoría</label>
-      <select id="subcategoriaInput" disabled>
-        <option value="">Selecciona una subcategoría</option>
-      </select>
+    <!-- 📁 Subcategoría -->
+    <label for="subcategoriaInput">📁 Subcategoría</label>
+    <select id="subcategoriaInput" disabled>
+      <option value="">Selecciona una subcategoría</option>
+    </select>
 
-      <!-- 📐 Tipo de Talla -->
-      <label for="tallaTipoInput">📐 Tipo de Talla *</label>
-      <select id="tallaTipoInput" required>
-        <option value="">Selecciona tipo</option>
-        <option value="adulto">Adulto</option>
-        <option value="joven">Joven</option>
-        <option value="niño">Niño</option>
-        <option value="niña">Niña</option>
-        <option value="bebé">Bebé</option>
-      </select>
+    <!-- 📐 Tipo de Talla -->
+    <label for="tallaTipoInput">📐 Tipo de Talla *</label>
+    <select id="tallaTipoInput" required>
+      <option value="">Selecciona tipo</option>
+      <option value="adulto">Adulto</option>
+      <option value="joven">Joven</option>
+      <option value="niño">Niño</option>
+      <option value="niña">Niña</option>
+      <option value="bebé">Bebé</option>
+    </select>
 
-      <!-- 📏 Tallas disponibles -->
-      <label for="tallasInput">📏 Tallas Disponibles</label>
-      <input type="text" id="tallasInput" placeholder="Ej: S, M, L, XL" />
+    <!-- 📏 Tallas disponibles -->
+    <label for="tallasInput">📏 Tallas Disponibles</label>
+    <input type="text" id="tallasInput" placeholder="Ej: S, M, L, XL" />
 
-      <!-- 🎨 Color -->
-      <label for="colorInput">🎨 Color Principal</label>
-      <input type="text" id="colorInput" placeholder="Ej: negro, azul marino" />
+    <!-- 🎨 Color -->
+    <label for="colorInput">🎨 Color Principal</label>
+    <input type="text" id="colorInput" placeholder="Ej: negro, azul marino" />
 
-      <!-- 🌟 Producto destacado -->
-      <div class="mt-2">
-        <input type="checkbox" id="destacadoInput" />
-        <label for="destacadoInput">🌟 Producto destacado</label>
-      </div>
+    <!-- 🌟 Producto destacado -->
+    <div class="mt-2">
+      <input type="checkbox" id="destacadoInput" />
+      <label for="destacadoInput">🌟 Producto destacado</label>
+    </div>
 
-      <!-- 🎨 Variantes -->
-      <fieldset class="mt-3">
-        <legend>🎨 Variantes (colores alternativos con imagen y stock):</legend>
-        <div id="variantesContainer" aria-live="polite"></div>
-        <button type="button" class="btn-secundario mt-1" id="btnAgregarVariante">➕ Añadir Variante</button>
-      </fieldset>
+    <!-- 🎨 Variantes -->
+    <fieldset class="mt-3">
+      <legend>🎨 Variantes (colores alternativos con imagen y stock):</legend>
+      <div id="variantesContainer" aria-live="polite"></div>
+      <button type="button" class="btn-secundario mt-1" id="btnAgregarVariante">➕ Añadir Variante</button>
+    </fieldset>
 
-      <!-- 🧾 Acciones -->
-      <div class="form-actions mt-3">
-        <button type="submit" class="btn">💾 Guardar Producto</button>
-        <button type="button" id="btnCancelar" class="btn-secundario">🔙 Cancelar</button>
-        <a href="/productos.html" class="btn-secundario" style="margin-left: 10px;">⬅️ Volver a Productos</a>
-      </div>
+    <!-- 🧾 Acciones -->
+    <div class="form-actions mt-3">
+      <button type="submit" class="btn">💾 Guardar Producto</button>
+      <button type="button" id="btnCancelar" class="btn-secundario">🔙 Cancelar</button>
+      <a href="/productos.html" class="btn-secundario" style="margin-left: 10px;">⬅️ Volver a Productos</a>
+    </div>
 
-      <!-- 📣 Mensaje -->
-      <p id="msgEstado" class="form-msg text-center mt-2" role="status" aria-live="polite"></p>
-    </form>
-  </main>
+    <!-- 📣 Mensaje -->
+    <p id="msgEstado" class="form-msg text-center mt-2" role="status" aria-live="polite"></p>
+  </form>
+</main>
 
-  <!-- 🧠 Feedback -->
-  <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="assertive"></div>
+<!-- 🧠 Feedback -->
+<div id="adminMensaje" class="admin-message oculto" role="status" aria-live="assertive"></div>
 
-  <!-- 🌙 Modo oscuro -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      if (localStorage.getItem("modoOscuro") === "true") {
-        document.body.classList.add("modo-oscuro");
+<!-- 🌙 Modo oscuro -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if (localStorage.getItem("modoOscuro") === "true") {
+      document.body.classList.add("modo-oscuro");
+    }
+
+    document.getElementById("btnCancelar")?.addEventListener("click", () => history.back());
+
+    // Vista previa imagen principal
+    document.getElementById("imagenPrincipalInput")?.addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (file && file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          document.getElementById("previewPrincipal").innerHTML = `<img src="${reader.result}" alt="Vista previa" class="imagen-preview-principal" />`;
+        };
+        reader.readAsDataURL(file);
       }
-      document.getElementById("btnCancelar")?.addEventListener("click", () => history.back());
     });
-  </script>
+  });
+</script>
 
-  <noscript>
-    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para poder crear un producto correctamente.</p>
-  </noscript>
+<!-- 🚫 JS requerido -->
+<noscript>
+  <p style="text-align: center; color: red;">⚠️ Activa JavaScript para poder crear un producto correctamente.</p>
+</noscript>
 
 </body>
 </html>

@@ -6,7 +6,7 @@ import { API_BASE } from "./config.js";
 // 🔐 Verificación de sesión
 const token = verificarSesion();
 const API_PRODUCTS = `${API_BASE}/api/products`;
-const API_CATEGORIAS = `${API_BASE}/api/categories`; // ✅ Ruta correcta
+const API_CATEGORIAS = `${API_BASE}/api/categories`;
 
 // 🌐 Elementos del DOM
 const productosLista = document.getElementById("productosLista");
@@ -33,8 +33,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   filtroDestacados?.addEventListener("change", renderizarProductos);
   btnExportar?.addEventListener("click", exportarExcel);
 
-  await cargarCategorias(); // ✅ Carga dinámica de backend
-  cargarProductos();
+  await cargarCategorias();
+  await cargarProductos();
 
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
@@ -48,6 +48,7 @@ async function cargarCategorias() {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();
+
     if (!res.ok || !data.ok || !Array.isArray(data.data)) {
       throw new Error(data.message || "Error al cargar categorías");
     }
@@ -89,6 +90,8 @@ async function cargarProductos() {
     productosTodos = Array.isArray(data.productos) ? data.productos : [];
     totalPaginas = data.totalPaginas || 1;
 
+    console.log("📦 Productos recibidos:", productosTodos);
+
     if (!productosTodos.length) {
       productosLista.innerHTML = "<p class='text-center'>📭 No se encontraron productos.</p>";
       contadorProductos.textContent = "";
@@ -107,16 +110,20 @@ async function cargarProductos() {
 function renderizarProductos() {
   let filtrados = [...productosTodos];
 
+  // 🧮 Filtrar por stock (solo si stockTotal = 0)
   if (filtroStock?.value === "sinStock") {
     filtrados = filtrados.filter(p => {
-      const total = typeof p.stockTotal === "number" ? p.stockTotal : 0;
+      const total = typeof p.stockTotal === "number" ? p.stockTotal : p.stock || 0;
       return total === 0;
     });
   }
 
+  // ⭐ Filtrar destacados
   if (filtroDestacados?.checked) {
     filtrados = filtrados.filter(p => p.featured);
   }
+
+  console.log("🔍 Productos mostrados:", filtrados);
 
   contadorProductos.textContent = `Mostrando ${filtrados.length} producto(s) en página ${paginaActual} de ${totalPaginas}`;
 
@@ -169,7 +176,7 @@ function productoFilaHTML(p) {
   const nombre = sanitize(p.name || "Sin nombre");
   const precio = isNaN(p.price) ? "0.00" : parseFloat(p.price).toFixed(2);
   const categoria = sanitize(p.category || "-");
-  const stock = typeof p.stockTotal === "number" ? p.stockTotal : 0;
+  const stock = typeof p.stockTotal === "number" ? p.stockTotal : (p.stock ?? 0);
   const claseStock = stock === 0 ? "sin-stock" : "";
 
   return `
@@ -215,7 +222,7 @@ async function exportarExcel() {
     ID: p._id,
     Nombre: p.name,
     Precio: p.price,
-    Stock: typeof p.stockTotal === "number" ? p.stockTotal : 0,
+    Stock: typeof p.stockTotal === "number" ? p.stockTotal : (p.stock ?? 0),
     Categoría: p.category,
     Destacado: p.featured ? "Sí" : "No"
   }));
