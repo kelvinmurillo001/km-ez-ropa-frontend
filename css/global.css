@@ -43,6 +43,15 @@ body {
 }
 
 /* === 🔠 TIPOGRAFÍA === */
+h1 {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+}
+h2 {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+}
+h3 {
+  font-size: clamp(1.1rem, 2vw, 1.6rem);
+}
 h1, h2, h3 {
   color: var(--color-primario);
   margin-bottom: 0.5rem;
@@ -91,6 +100,7 @@ button,
   cursor: pointer;
   transition: all 0.25s ease;
   font-weight: bold;
+  font-size: clamp(0.9rem, 2vw, 1rem);
 }
 
 button:hover,
@@ -104,7 +114,40 @@ button:focus-visible {
   outline-offset: 3px;
 }
 
-/* === 💡 UTILIDADES === */
+/* === HERO ESPECIAL PARA VISIBILIDAD === */
+.hero-container {
+  padding: 2rem 1rem;
+  text-align: center;
+  background: linear-gradient(to right, #d4af37, #ffcc70);
+  color: #121212;
+}
+.hero-container h2 {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+.hero-container p {
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  margin-top: 1rem;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero-btn {
+  margin-top: 1.5rem;
+  background-color: var(--color-acento);
+  color: #fff;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+.hero-btn:hover {
+  background-color: #68c3e6;
+}
+
+/* === UTILIDADES === */
 .text-center { text-align: center; }
 
 .mt-1 { margin-top: 0.5rem; }
@@ -118,7 +161,7 @@ button:focus-visible {
 .p-1 { padding: 0.5rem; }
 .p-2 { padding: 1rem; }
 
-/* === 💬 PROMO BANNER === */
+/* === PROMO BANNER === */
 .promo-banner {
   background-color: #ffe082;
   padding: 0.75rem;
@@ -130,39 +173,31 @@ button:focus-visible {
   display: none;
 }
 
-/* === 🛒 BOTONES FLOTANTES NUEVOS === */
+/* === BOTONES FLOTANTES === */
 .floating-buttons {
   position: fixed;
-  bottom: 20px;
-  left: 20px;
+  bottom: 24px;
+  left: 24px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  z-index: 1000;
+  z-index: 999;
 }
-
 .floating-buttons a {
+  width: 58px;
+  height: 58px;
+  background-color: #ff6d00;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #ff6d00;
-  border-radius: 50%;
-  width: 55px;
-  height: 55px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   transition: background-color 0.3s ease;
   position: relative;
 }
-
-.floating-buttons a img {
-  width: 28px;
-  height: 28px;
-}
-
 .floating-buttons a:hover {
   background-color: #ffa733;
 }
-
 .cart-icon span {
   position: absolute;
   top: -8px;
@@ -175,38 +210,11 @@ button:focus-visible {
   padding: 2px 6px;
 }
 
-/* === 🧱 TARJETAS === */
-.card {
-  background: #fff;
-  padding: 1rem;
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  box-shadow: var(--shadow-soft);
-  text-align: center;
-  transition: all 0.3s ease;
-}
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-hover);
-}
-.card img {
-  max-width: 100%;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-.card button {
-  background-color: var(--color-secundario);
-}
-.card button:hover {
-  background-color: #1e88e5;
-}
-
-/* === 🌚 MODO OSCURO === */
+/* === MODO OSCURO === */
 body.modo-oscuro {
   background-color: #121212;
   color: #eee;
 }
-
 body.modo-oscuro .header,
 body.modo-oscuro .footer,
 body.modo-oscuro .promo-banner,
@@ -216,11 +224,9 @@ body.modo-oscuro .filtros-container {
   color: #eee;
   border-color: #444;
 }
-
 body.modo-oscuro a {
   color: #4ba3c3;
 }
-
 body.modo-oscuro input,
 body.modo-oscuro select,
 body.modo-oscuro textarea {
@@ -228,7 +234,6 @@ body.modo-oscuro textarea {
   color: #fff;
   border-color: #444;
 }
-
 body.modo-oscuro button,
 body.modo-oscuro .btn {
   background-color: var(--color-secundario);
@@ -237,11 +242,10 @@ body.modo-oscuro .btn:hover {
   background-color: #1e88e5;
 }
 
-/* === ✨ ANIMACIONES === */
+/* === ANIMACIONES === */
 .fade-in {
   animation: fadeIn 0.6s ease-in-out;
 }
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -253,7 +257,22 @@ body.modo-oscuro .btn:hover {
   }
 }
 
-/* === 🧑‍🦯 ACCESIBILIDAD === */
+/* === ACCESIBILIDAD === */
 img[alt=""] {
   display: none;
+}
+
+/* === RESPONSIVE EXTRAS === */
+@media (max-width: 390px) {
+  .hero-container h2 {
+    font-size: 1.4rem;
+  }
+  .hero-container p {
+    font-size: 0.95rem;
+  }
+  .floating-buttons {
+    bottom: 16px;
+    left: 16px;
+    gap: 0.75rem;
+  }
 }

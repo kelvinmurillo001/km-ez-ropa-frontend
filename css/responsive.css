@@ -36,6 +36,18 @@
   .catalogo-container {
     padding: 1.5rem 1rem;
   }
+
+  h1 {
+    font-size: clamp(1.6rem, 4vw, 2rem);
+  }
+
+  h2 {
+    font-size: clamp(1.3rem, 3.6vw, 1.75rem);
+  }
+
+  h3 {
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+  }
 }
 
 /* 📲 Teléfonos (≤ 768px) */
@@ -61,6 +73,7 @@
   select,
   textarea {
     width: 100% !important;
+    font-size: 1rem;
   }
 
   .admin-container {
@@ -115,6 +128,18 @@
     margin: auto;
     border-radius: 12px;
     overflow: hidden;
+  }
+
+  h1 {
+    font-size: clamp(1.4rem, 6vw, 1.75rem);
+  }
+
+  h2 {
+    font-size: clamp(1.2rem, 5.5vw, 1.5rem);
+  }
+
+  h3 {
+    font-size: clamp(1rem, 5vw, 1.3rem);
   }
 }
 
