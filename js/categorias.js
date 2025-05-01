@@ -21,7 +21,7 @@ let categoriasData = [];
 // 🚀 Inicialización
 document.addEventListener("DOMContentLoaded", () => {
   aplicarModoOscuro();
-  cargarCategoriasDesdeAPI(); // 👈 ahora desde la API
+  cargarCategoriasDesdeAPI();
   configurarFiltros();
   cargarPromocion();
   cargarProductos();
@@ -51,7 +51,7 @@ function configurarFiltros() {
   busquedaInput?.addEventListener("input", debounce(cargarProductos, 500));
 }
 
-/* 📁 Cargar categorías reales desde el backend */
+/* 📁 Cargar categorías desde el backend */
 async function cargarCategoriasDesdeAPI() {
   try {
     const res = await fetch(API_CATEGORIES);
@@ -83,6 +83,9 @@ function llenarSubcategorias() {
     cat.subcategories.forEach(sub => {
       subcategoriaSelect.innerHTML += `<option value="${sanitize(sub)}">${sanitize(sub)}</option>`;
     });
+    subcategoriaSelect.disabled = false;
+  } else {
+    subcategoriaSelect.disabled = true;
   }
 }
 
