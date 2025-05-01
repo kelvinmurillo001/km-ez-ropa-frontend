@@ -22,141 +22,91 @@
   <link rel="stylesheet" href="/css/promo-display.css">
   <link rel="stylesheet" href="/css/categorias.css">
 
-  <!-- ✅ Scripts defer -->
+  <!-- ✅ Scripts -->
+  <script type="module" src="/js/config.js"></script>
   <script type="module" src="/js/categorias.js" defer></script>
   <script src="/js/promo-display.js" defer></script>
 </head>
 <body>
 
-  <!-- 🔝 Encabezado -->
-  <header class="main-header" role="banner">
-    <div class="logo">
-      <a href="/" aria-label="Ir al inicio">
-        <img src="/assets/logo.jpg" alt="Logo de KM & EZ ROPA" loading="lazy">
-      </a>
-      <div class="brand">
-        <h1>KM & EZ ROPA</h1>
-        <p>Explora tu estilo</p>
-      </div>
-    </div>
-
-    <nav class="nav-links" role="navigation" aria-label="Navegación principal">
-      <a href="/index.html">🏠 Inicio</a>
-      <a href="/carrito.html">🛒 Carrito</a>
-      <button id="modoOscuroBtn" aria-label="Alternar modo oscuro" aria-live="polite">🌙</button>
-    </nav>
-  </header>
-
-  <!-- 🔥 Promociones -->
-  <div id="promo-display-container" data-page="categorias" aria-label="Promociones activas"></div>
-
-  <!-- 🔍 Filtros -->
-  <section class="filtros-section" aria-label="Filtrado de productos">
-    <div class="filtro">
-      <label for="categoriaSelect">Categoría:</label>
-      <select id="categoriaSelect" name="categoria" aria-label="Filtrar por categoría">
-        <option value="">📂 Todas</option>
-        <!-- Opciones agregadas dinámicamente -->
-      </select>
-    </div>
-    <div class="filtro">
-      <label for="subcategoriaSelect">Subcategoría:</label>
-      <select id="subcategoriaSelect" name="subcategoria" aria-label="Filtrar por subcategoría">
-        <option value="">📁 Todas</option>
-        <!-- Opciones agregadas dinámicamente -->
-      </select>
-    </div>
-    <div class="filtro">
-      <label for="precioSelect">Ordenar por:</label>
-      <select id="precioSelect" name="precio" aria-label="Ordenar por precio">
-        <option value="">🔀 Todos</option>
-        <option value="low">⬇️ Menor a mayor</option>
-        <option value="high">⬆️ Mayor a menor</option>
-      </select>
-    </div>
-    <div class="filtro">
-      <label for="busquedaInput" class="sr-only">Buscar producto:</label>
-      <input type="search" id="busquedaInput" placeholder="🔎 Buscar producto..." aria-label="Buscar producto por nombre" autocomplete="on" />
-    </div>
-  </section>
-
-  <!-- 🧾 Catálogo -->
-  <main class="catalogo-section" role="main" aria-label="Catálogo de productos">
-    <h2 class="section-title">🧢 Productos Disponibles</h2>
-    <div id="catalogo" class="product-grid" role="list" aria-live="polite">
-      <!-- Productos renderizados dinámicamente -->
-    </div>
-  </main>
-
-  <!-- 💬 Botones flotantes -->
-  <div class="floating-buttons">
-    <a href="/carrito.html" class="cart-icon" aria-label="Ir al carrito">
-      <img src="/assets/cart-icon.svg" alt="Icono de carrito" loading="lazy">
-      <span id="cartCount" role="status" aria-live="polite">0</span>
+<header class="main-header" role="banner">
+  <div class="logo">
+    <a href="/" aria-label="Ir al inicio">
+      <img src="/assets/logo.jpg" alt="Logo de KM & EZ ROPA" loading="lazy">
     </a>
-    <a href="https://wa.me/593990270864" class="whatsapp-icon" target="_blank" rel="noopener noreferrer" aria-label="Chatear por WhatsApp">
-      <img src="/assets/whatsapp.svg" alt="WhatsApp" loading="lazy">
-    </a>
+    <div class="brand">
+      <h1>KM & EZ ROPA</h1>
+      <p>Explora tu estilo</p>
+    </div>
   </div>
+  <nav class="nav-links" role="navigation" aria-label="Navegación principal">
+    <a href="/index.html">🏠 Inicio</a>
+    <a href="/carrito.html">🛒 Carrito</a>
+    <button id="modoOscuroBtn" aria-label="Alternar modo oscuro">🌙</button>
+  </nav>
+</header>
 
-  <!-- 📣 Errores / mensajes admin -->
-  <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
+<!-- 🔥 Promociones -->
+<div id="promo-display-container" data-page="categorias" aria-label="Promociones activas"></div>
 
-  <!-- 🔚 Footer -->
-  <footer class="site-footer" role="contentinfo">
-    <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
-  </footer>
+<!-- 🔍 Filtros -->
+<section class="filtros-section" aria-label="Filtrado de productos">
+  <div class="filtro">
+    <label for="categoriaSelect">Categoría:</label>
+    <select id="categoriaSelect" aria-label="Filtrar por categoría">
+      <option value="">📂 Todas</option>
+    </select>
+  </div>
+  <div class="filtro">
+    <label for="subcategoriaSelect">Subcategoría:</label>
+    <select id="subcategoriaSelect" aria-label="Filtrar por subcategoría" disabled>
+      <option value="">📁 Todas</option>
+    </select>
+  </div>
+  <div class="filtro">
+    <label for="precioSelect">Ordenar por:</label>
+    <select id="precioSelect" aria-label="Ordenar por precio">
+      <option value="">🔀 Todos</option>
+      <option value="low">⬇️ Menor a mayor</option>
+      <option value="high">⬆️ Mayor a menor</option>
+    </select>
+  </div>
+  <div class="filtro">
+    <label for="busquedaInput" class="sr-only">Buscar producto:</label>
+    <input type="search" id="busquedaInput" placeholder="🔎 Buscar producto..." autocomplete="on" />
+  </div>
+</section>
 
-  <!-- ✅ Script corregido para cargar categorías -->
-  <script type="module">
-    const categoriaSelect = document.getElementById("categoriaSelect");
-    const subcategoriaSelect = document.getElementById("subcategoriaSelect");
+<!-- 🧾 Catálogo -->
+<main class="catalogo-section" role="main" aria-label="Catálogo de productos">
+  <h2 class="section-title">🧢 Productos Disponibles</h2>
+  <div id="catalogo" class="product-grid" role="list" aria-live="polite">
+    <!-- Productos renderizados dinámicamente -->
+  </div>
+</main>
 
-    async function cargarCategorias() {
-      try {
-        const res = await fetch("/api/categories"); // ✅ CORREGIDO
-        const response = await res.json();
-        if (!res.ok || !response.ok || !Array.isArray(response.data)) throw new Error("Error al cargar categorías");
+<!-- 💬 Botones flotantes -->
+<div class="floating-buttons">
+  <a href="/carrito.html" class="cart-icon" aria-label="Ir al carrito">
+    <img src="/assets/cart-icon.svg" alt="Icono de carrito" loading="lazy">
+    <span id="cartCount" role="status">0</span>
+  </a>
+  <a href="https://wa.me/593990270864" class="whatsapp-icon" target="_blank" rel="noopener">
+    <img src="/assets/whatsapp.svg" alt="WhatsApp" loading="lazy">
+  </a>
+</div>
 
-        const categoriasMap = new Map();
-        response.data.forEach(cat => {
-          const catSlug = cat.name.toLowerCase();
-          categoriasMap.set(catSlug, cat);
+<!-- 📣 Errores / mensajes admin -->
+<div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
 
-          const option = document.createElement("option");
-          option.value = catSlug;
-          option.textContent = `📁 ${cat.name}`;
-          categoriaSelect.appendChild(option);
-        });
+<!-- 🔚 Footer -->
+<footer class="site-footer" role="contentinfo">
+  <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
+</footer>
 
-        categoriaSelect.addEventListener("change", () => {
-          const seleccionada = categoriaSelect.value;
-          subcategoriaSelect.innerHTML = `<option value="">📁 Todas</option>`;
-          if (categoriasMap.has(seleccionada)) {
-            const subcats = categoriasMap.get(seleccionada).subcategories || [];
-            subcats.forEach(sub => {
-              const opt = document.createElement("option");
-              opt.value = sub.toLowerCase();
-              opt.textContent = sub;
-              subcategoriaSelect.appendChild(opt);
-            });
-            subcategoriaSelect.disabled = false;
-          } else {
-            subcategoriaSelect.disabled = true;
-          }
-        });
-      } catch (err) {
-        console.error("❌ Error cargando categorías:", err);
-      }
-    }
-
-    cargarCategorias();
-  </script>
-
-  <!-- ⚠️ Sin JavaScript -->
-  <noscript>
-    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para visualizar correctamente esta página.</p>
-  </noscript>
+<noscript>
+  <p style="text-align: center; color: red;">⚠️ Activa JavaScript para visualizar correctamente esta página.</p>
+</noscript>
 
 </body>
 </html>
