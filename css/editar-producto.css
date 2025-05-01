@@ -3,6 +3,8 @@ body {
   background-color: #121212;
   color: #f5f5f5;
   font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 /* === 🧾 TÍTULO === */
@@ -30,6 +32,7 @@ form.form-producto {
   gap: 1.2rem;
 }
 
+/* === ETIQUETAS === */
 form label {
   font-weight: bold;
   margin-top: 0.5rem;
@@ -51,15 +54,15 @@ form textarea {
   border-radius: 6px;
   width: 100%;
   font-size: 1rem;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 form input:focus,
 form textarea:focus,
 form select:focus {
   border-color: #ff6d00;
+  box-shadow: 0 0 4px rgba(255, 109, 0, 0.4);
   outline: none;
-  box-shadow: 0 0 4px rgba(255, 109, 0, 0.3);
 }
 
 form textarea {
@@ -73,6 +76,7 @@ form textarea {
   align-items: center;
   gap: 1rem;
   margin-top: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .preview-mini {
@@ -99,6 +103,12 @@ form textarea {
 
 .variante-box input {
   margin-bottom: 0.5rem;
+  width: 100%;
+  padding: 0.5rem;
+  background-color: #222;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: #f5f5f5;
 }
 
 /* === 🎯 ACCIONES === */
@@ -119,6 +129,7 @@ form textarea {
   cursor: pointer;
   transition: all 0.3s ease;
   border: none;
+  text-align: center;
 }
 
 .btn {

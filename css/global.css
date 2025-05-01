@@ -30,7 +30,7 @@ body {
   --color-border: #333;
 
   --shadow-soft: 0 2px 6px rgba(0, 0, 0, 0.2);
-  --shadow-hover: 0 4px 12px rgba(255, 255, 255, 0.1);
+  --shadow-hover: 0 4px 12px rgba(255, 255, 255, 0.08);
 
   --font-main: 'Segoe UI', sans-serif;
 }
@@ -46,6 +46,7 @@ body {
 h1, h2, h3 {
   color: var(--color-primario);
   margin-bottom: 0.5rem;
+  font-weight: 600;
 }
 
 a {
@@ -63,7 +64,7 @@ select,
 textarea {
   font-family: inherit;
   font-size: 1rem;
-  padding: 10px;
+  padding: 0.75rem;
   border-radius: 6px;
   border: 1px solid var(--color-border);
   background-color: #fff;
@@ -84,16 +85,18 @@ button,
   font-family: inherit;
   background: var(--color-primario);
   color: white;
-  padding: 10px 16px;
+  padding: 0.7rem 1.2rem;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
+  font-weight: bold;
 }
 
 button:hover,
 .btn:hover {
-  background: #1a252f;
+  background: #f4d35e;
+  color: #121212;
 }
 
 button:focus-visible {
@@ -121,6 +124,7 @@ button:focus-visible {
   padding: 0.75rem;
   text-align: center;
   font-weight: bold;
+  color: #333;
 }
 .promo-banner.oculto {
   display: none;
@@ -174,7 +178,7 @@ button:focus-visible {
 /* === 🧱 TARJETAS === */
 .card {
   background: #fff;
-  padding: 16px;
+  padding: 1rem;
   border: 1px solid var(--color-border);
   border-radius: 10px;
   box-shadow: var(--shadow-soft);
@@ -194,7 +198,7 @@ button:focus-visible {
   background-color: var(--color-secundario);
 }
 .card button:hover {
-  background-color: #216a94;
+  background-color: #1e88e5;
 }
 
 /* === 🌚 MODO OSCURO === */
@@ -208,13 +212,13 @@ body.modo-oscuro .footer,
 body.modo-oscuro .promo-banner,
 body.modo-oscuro .card,
 body.modo-oscuro .filtros-container {
-  background-color: rgba(30, 30, 30, 0.85);
+  background-color: rgba(30, 30, 30, 0.9);
   color: #eee;
   border-color: #444;
 }
 
 body.modo-oscuro a {
-  color: #64b5f6;
+  color: #4ba3c3;
 }
 
 body.modo-oscuro input,

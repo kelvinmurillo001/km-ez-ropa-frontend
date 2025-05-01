@@ -14,6 +14,8 @@ body {
   background-color: var(--bg-main);
   color: var(--text-main);
   font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 /* === TITULO === */
@@ -27,7 +29,7 @@ h1 {
 .formulario-container {
   max-width: 850px;
   margin: auto;
-  padding: 2rem;
+  padding: 2rem 1rem;
 }
 
 /* === FORMULARIO === */
@@ -51,9 +53,9 @@ form label {
 form label::after {
   content: " *";
   color: red;
-  font-weight: normal;
 }
 
+/* === CAMPOS === */
 form input[type="text"],
 form input[type="number"],
 form input[type="file"],
@@ -82,7 +84,7 @@ form select:focus {
   box-shadow: 0 0 5px rgba(255, 109, 0, 0.5);
 }
 
-/* === IMÁGENES === */
+/* === PREVISUALIZACIÓN === */
 .preview-imagen,
 .preview-imagenes {
   display: flex;

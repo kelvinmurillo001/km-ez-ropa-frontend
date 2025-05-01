@@ -1,4 +1,4 @@
-/* 🔝 Header */
+/* === 🔝 HEADER === */
 .header {
   text-align: center;
   padding: 24px;
@@ -17,6 +17,7 @@ body.modo-oscuro .header {
   align-items: center;
   gap: 12px;
 }
+
 .logo-img {
   width: 52px;
   height: 52px;
@@ -34,11 +35,11 @@ body.modo-oscuro .subtitulo {
   color: #bbb;
 }
 
-/* 🎯 Filtros */
+/* === 🎯 FILTROS === */
 .filtros-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 1rem;
   justify-content: center;
   padding: 24px;
   background: #f4f4f4;
@@ -55,10 +56,10 @@ body.modo-oscuro .filtros-container {
   border: 1px solid #bbb;
   font-size: 15px;
   width: 260px;
-  transition: border 0.3s;
+  transition: border 0.3s ease;
 }
 .busqueda-input:focus {
-  border-color: #1976d2;
+  border-color: #d4af37;
   outline: none;
 }
 body.modo-oscuro .busqueda-input {
@@ -67,13 +68,13 @@ body.modo-oscuro .busqueda-input {
   border-color: #444;
 }
 
-/* 🎁 Promo Banner */
+/* === 🎁 PROMO BANNER === */
 .promo-banner {
-  background-color: #fff3e0;
+  background-color: #fff8e1;
   padding: 12px;
   color: #5d4037;
   text-align: center;
-  border-left: 5px solid #ff9800;
+  border-left: 5px solid #d4af37;
   border-radius: 8px;
   font-weight: bold;
   font-size: 15px;
@@ -82,52 +83,36 @@ body.modo-oscuro .busqueda-input {
 body.modo-oscuro .promo-banner {
   background-color: #3c2f2f;
   color: #ffe0b2;
-  border-color: #ff9800;
+  border-color: #d4af37;
 }
 
-/* 📦 Footer */
-.footer {
-  text-align: center;
-  margin-top: 50px;
-  padding: 20px;
-  font-size: 14px;
-  background-color: #e0e0e0;
-  border-top: 1px solid #ccc;
-}
-body.modo-oscuro .footer {
-  background-color: #1a1a1a;
-  color: #ccc;
-  border-top-color: #333;
-}
-
-/* 🛍️ Catálogo - Responsive y compacto */
+/* === 🛍️ CATÁLOGO === */
 #catalogo {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.8rem;
   padding: 2rem;
-  align-items: stretch;
 }
 
-/* 🧩 Tarjeta de producto */
+/* === 🧩 TARJETA DE PRODUCTO === */
 .card {
   background: #ffffff;
   border-radius: 12px;
   padding: 1rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   text-align: center;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 .card img {
   width: 100%;
-  height: 200px;
+  height: 220px;
   object-fit: cover;
   border-radius: 10px;
   cursor: zoom-in;
@@ -135,25 +120,26 @@ body.modo-oscuro .footer {
 .card h3 {
   margin: 0.8rem 0 0.3rem;
   font-size: 18px;
+  color: #333;
 }
 .card p {
   margin: 0.2rem 0;
   font-size: 15px;
-  color: #555;
+  color: #666;
 }
 .card button {
   margin-top: 0.6rem;
-  padding: 8px 16px;
-  background-color: darkorange;
-  color: white;
+  padding: 10px 16px;
+  background-color: #d4af37;
+  color: #121212;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: bold;
   transition: background-color 0.3s ease;
 }
 .card button:hover {
-  background-color: #cc7000;
+  background-color: #f4d35e;
 }
 .card button:disabled {
   background-color: #aaa;
@@ -163,8 +149,14 @@ body.modo-oscuro .card {
   background-color: #2a2a2a;
   color: #eee;
 }
+body.modo-oscuro .card h3 {
+  color: #f4f4f4;
+}
+body.modo-oscuro .card p {
+  color: #ccc;
+}
 
-/* 🏷️ Badge */
+/* === 🏷️ BADGE === */
 .destacado-badge {
   background-color: gold;
   color: #222;
@@ -176,7 +168,7 @@ body.modo-oscuro .card {
   font-weight: bold;
 }
 
-/* 🖼️ Modal de imagen */
+/* === 🖼️ MODAL IMG === */
 .modal-img {
   position: fixed;
   inset: 0;
@@ -201,16 +193,7 @@ body.modo-oscuro .card {
   cursor: pointer;
 }
 
-/* ✨ Fade-in para catálogo */
-.fade-in {
-  animation: fadeIn 0.5s ease-in-out;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ✅ Galería de miniaturas */
+/* === ✅ MINI GALERÍA === */
 .galeria-imagenes {
   display: flex;
   flex-wrap: wrap;
@@ -227,4 +210,28 @@ body.modo-oscuro .card {
 }
 .galeria-img:hover {
   transform: scale(1.1);
+}
+
+/* === 📦 FOOTER === */
+.footer {
+  text-align: center;
+  margin-top: 50px;
+  padding: 20px;
+  font-size: 14px;
+  background-color: #e0e0e0;
+  border-top: 1px solid #ccc;
+}
+body.modo-oscuro .footer {
+  background-color: #1a1a1a;
+  color: #ccc;
+  border-top-color: #333;
+}
+
+/* === ✨ ANIMACIÓN === */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

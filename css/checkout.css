@@ -1,4 +1,4 @@
-/* === 🎨 ESTILOS DEL CHECKOUT === */
+/* === 🎨 ESTILOS DEL CHECKOUT MODERNO === */
 
 .checkout-container {
   max-width: 1100px;
@@ -7,10 +7,12 @@
   animation: fadeIn 0.8s ease;
 }
 
+/* ✍️ Subtítulo informativo */
 .subtitulo-checkout {
   font-size: 1.1rem;
   color: #bbb;
   margin-bottom: 1rem;
+  text-align: center;
 }
 
 /* 🚥 Pasos visuales */
@@ -29,13 +31,13 @@
   border-radius: 30px;
   font-weight: bold;
   font-size: 0.95rem;
-  box-shadow: var(--shadow-soft);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s, color 0.3s;
 }
 
 .step.active {
-  background: #ff6d00;
-  color: #fff;
+  background: #d4af37;
+  color: #121212;
 }
 
 /* 📋 Formulario */
@@ -43,13 +45,13 @@
   background: #1f1f1f;
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: var(--shadow-soft);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.08);
   display: flex;
   flex-direction: column;
   gap: 2rem;
 }
 
-/* Secciones de formulario */
+/* 🧾 Agrupación */
 fieldset {
   border: 1px solid #333;
   border-radius: 8px;
@@ -58,12 +60,12 @@ fieldset {
 
 legend {
   font-weight: bold;
-  color: #ff6d00;
+  color: #d4af37;
   font-size: 1.2rem;
   padding: 0 0.5rem;
 }
 
-/* Inputs y textarea */
+/* 🖊️ Inputs y textarea */
 input, textarea, select {
   width: 100%;
   background: #121212;
@@ -78,17 +80,17 @@ input, textarea, select {
 }
 
 input:focus, textarea:focus, select:focus {
-  border-color: #ff6d00;
+  border-color: #d4af37;
   background-color: #1a1a1a;
   outline: none;
 }
 
-/* Botón ubicación */
+/* 📍 Botón ubicación */
 #btnUbicacion {
   margin-top: 1rem;
   background: transparent;
-  color: #ff6d00;
-  border: 2px solid #ff6d00;
+  color: #d4af37;
+  border: 2px solid #d4af37;
   padding: 0.8rem 1.2rem;
   border-radius: 6px;
   font-weight: bold;
@@ -97,11 +99,11 @@ input:focus, textarea:focus, select:focus {
 }
 
 #btnUbicacion:hover {
-  background: #ff6d00;
+  background: #d4af37;
   color: #121212;
 }
 
-/* Métodos de pago */
+/* 💳 Métodos de pago */
 .metodo-pago-selector {
   display: flex;
   flex-direction: column;
@@ -116,7 +118,7 @@ input:focus, textarea:focus, select:focus {
   display: flex;
   align-items: center;
   gap: 0.7rem;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease;
 }
 
 .pago-btn:hover {
@@ -124,10 +126,10 @@ input:focus, textarea:focus, select:focus {
 }
 
 .pago-btn input {
-  accent-color: #ff6d00;
+  accent-color: #d4af37;
 }
 
-/* Info método de pago */
+/* ℹ️ Info método */
 .metodo-pago-info {
   margin-top: 0.5rem;
   font-size: 0.95rem;
@@ -145,14 +147,16 @@ input:focus, textarea:focus, select:focus {
   color: #ccc;
 }
 
-/* 🛒 Total final */
+/* 💰 Total final */
 #totalFinal {
   font-size: 1.8rem;
   font-weight: bold;
-  color: #ff6d00;
+  color: #d4af37;
+  text-align: right;
+  margin-top: 1rem;
 }
 
-/* Botones acciones */
+/* 🧩 Acciones */
 .form-actions {
   display: flex;
   flex-direction: column;
@@ -163,26 +167,39 @@ input:focus, textarea:focus, select:focus {
   width: 100%;
   padding: 1rem;
   font-size: 1.1rem;
+  background-color: #d4af37;
+  color: #121212;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.form-actions .btn:hover {
+  background-color: #f4d35e;
 }
 
 .form-actions .btn-secundario {
   background: transparent;
-  border: 2px solid #ff6d00;
-  color: #ff6d00;
+  border: 2px solid #d4af37;
+  color: #d4af37;
 }
 
 .form-actions .btn-secundario:hover {
-  background: #ff6d00;
+  background: #d4af37;
   color: #121212;
 }
 
-/* Mensajes de estado */
+/* 📝 Mensajes */
 .form-msg {
   font-size: 1rem;
   margin-top: 1rem;
+  text-align: center;
+  color: #ccc;
 }
 
-/* Responsive */
+/* 📱 Responsive */
 @media (max-width: 768px) {
   .checkout-steps {
     flex-direction: column;

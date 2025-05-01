@@ -15,15 +15,17 @@ body {
   width: 90%;
   background-color: #1a1a1a;
   padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(255, 109, 0, 0.3);
+  border-radius: 14px;
+  box-shadow: 0 0 24px rgba(212, 175, 55, 0.25);
   animation: fadeIn 0.4s ease-in-out;
 }
 
 .login-container h1 {
   text-align: center;
-  color: #ff6d00;
+  color: #d4af37;
   margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  letter-spacing: 0.5px;
 }
 
 /* Formulario */
@@ -36,46 +38,53 @@ body {
 .formulario input {
   background-color: #292929;
   color: #fff;
-  border: none;
-  padding: 0.8rem;
-  border-radius: 6px;
+  border: 1px solid #444;
+  padding: 0.85rem;
+  border-radius: 8px;
   font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .formulario input:focus {
-  outline: 2px solid #ff6d00;
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 0 5px rgba(212, 175, 55, 0.4);
 }
 
+/* Botones */
 .btn,
 .btn-secundario {
-  padding: 0.8rem 1.2rem;
+  padding: 0.85rem 1.3rem;
   font-size: 1rem;
-  border-radius: 6px;
+  border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
+  letter-spacing: 0.3px;
 }
 
 .btn {
-  background-color: #ff6d00;
+  background-color: #d4af37;
   color: #121212;
   border: none;
 }
 
 .btn:hover {
-  background-color: #ffa733;
+  background-color: #f4d35e;
+  transform: translateY(-1px);
 }
 
 .btn-secundario {
   background-color: transparent;
-  color: #ff6d00;
-  border: 2px solid #ff6d00;
+  color: #d4af37;
+  border: 2px solid #d4af37;
   margin-top: 0.5rem;
 }
 
 .btn-secundario:hover {
-  background-color: #ff6d00;
+  background-color: #d4af37;
   color: #121212;
+  transform: translateY(-1px);
 }
 
 /* Error mensaje */
@@ -83,40 +92,50 @@ body {
   background-color: #4a1212;
   color: #ffc1c1;
   padding: 0.8rem;
-  border-radius: 6px;
+  border-radius: 8px;
   text-align: center;
   display: none;
   font-weight: bold;
+  border: 1px solid #cc0000;
 }
 
 /* Modal Recuperación */
 .modal-recuperar {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.75);
+  background: rgba(0, 0, 0, 0.75);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 999;
+  animation: fadeIn 0.3s ease;
 }
 
 .modal-contenido {
   background-color: #1f1f1f;
   padding: 2rem;
-  border-radius: 10px;
+  border-radius: 12px;
   width: 90%;
   max-width: 400px;
   text-align: center;
+  box-shadow: 0 0 14px rgba(0, 0, 0, 0.3);
 }
 
 .modal-contenido input {
   width: 100%;
   padding: 0.8rem;
   margin-top: 1rem;
-  border-radius: 6px;
+  border-radius: 8px;
   border: none;
   background-color: #292929;
   color: white;
+  font-size: 1rem;
+}
+
+.modal-contenido input:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
+  border: 1px solid #d4af37;
 }
 
 .modal-botones {
@@ -130,11 +149,18 @@ body {
   display: none !important;
 }
 
+/* Animación */
 .fade-in {
   animation: fadeIn 0.5s ease-in;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

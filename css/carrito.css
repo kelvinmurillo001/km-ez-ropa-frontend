@@ -1,4 +1,4 @@
-/* === 🌑 BASE === */
+/* === 🛒 ESTILO BASE === */
 body {
   background-color: #121212;
   color: #e0e0e0;
@@ -33,7 +33,7 @@ body:not(.modo-oscuro) .btn-eliminar:hover {
   color: #fff;
 }
 
-/* === 🛒 TÍTULO === */
+/* === 🧾 TÍTULO === */
 h1 {
   color: #ff6d00;
   text-align: center;
@@ -43,12 +43,12 @@ h1 {
 
 /* === 📦 CONTENEDOR PRINCIPAL === */
 .carrito-container {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: auto;
-  padding: 2rem;
+  padding: 2rem 1rem;
 }
 
-/* === 🧾 LISTA DE PRODUCTOS === */
+/* === 📋 LISTA DE PRODUCTOS === */
 .carrito-lista {
   display: flex;
   flex-direction: column;
@@ -61,23 +61,24 @@ h1 {
   background-color: #1a1a1a;
   border: 1px solid #333;
   padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(255, 109, 0, 0.08);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(255, 109, 0, 0.08);
   flex-wrap: wrap;
   animation: fadeIn 0.4s ease-in;
 }
 
+/* === 🖼️ IMAGEN PRODUCTO === */
 .carrito-img {
   width: 100px;
   height: 100px;
   object-fit: cover;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 2px solid #ff6d00;
 }
 
 /* === 📄 DETALLES === */
 .carrito-detalles {
-  flex-grow: 1;
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
@@ -85,7 +86,7 @@ h1 {
 
 .carrito-detalles h4 {
   margin: 0;
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   color: #ffa733;
   font-weight: bold;
 }
@@ -93,7 +94,7 @@ h1 {
 .carrito-detalles p {
   margin: 0.3rem 0;
   font-size: 0.95rem;
-  color: #ccc;
+  color: #bbb;
 }
 
 /* === 🔢 CANTIDAD === */
@@ -101,81 +102,81 @@ h1 {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 0.4rem;
+  margin-top: 0.5rem;
 }
 
 .carrito-cantidad input {
-  width: 60px;
-  padding: 0.4rem;
+  width: 64px;
+  padding: 0.5rem;
   background-color: #222;
   color: #fff;
   border: 1px solid #444;
-  border-radius: 4px;
+  border-radius: 6px;
   text-align: center;
   font-size: 1rem;
+  transition: border 0.2s ease;
 }
 
 .carrito-cantidad input:focus {
-  outline: none;
   border-color: #ff6d00;
-  box-shadow: 0 0 5px rgba(255, 109, 0, 0.4);
+  box-shadow: 0 0 4px rgba(255, 109, 0, 0.4);
+  outline: none;
 }
 
-/* === 🗑️ ELIMINAR === */
+/* === 🗑️ ELIMINAR PRODUCTO === */
 .btn-eliminar {
   background-color: transparent;
   border: 2px solid #ff3d00;
   color: #ff3d00;
-  padding: 0.4rem 1rem;
+  padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
   font-size: 0.95rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
   align-self: flex-start;
-  transition: all 0.3s ease;
 }
 
 .btn-eliminar:hover {
   background-color: #ff3d00;
-  color: #121212;
+  color: #fff;
 }
 
-/* === 📊 RESUMEN FINAL === */
+/* === 📊 RESUMEN === */
 .carrito-resumen {
   margin-top: 2.5rem;
   padding: 1.5rem;
   background-color: #1a1a1a;
   border: 1px solid #333;
-  border-radius: 8px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(255, 109, 0, 0.15);
   text-align: center;
-  box-shadow: 0 0 15px rgba(255, 109, 0, 0.1);
   animation: fadeIn 0.6s ease-out;
 }
 
 .carrito-resumen h2 {
   font-size: 1.6rem;
-  margin-bottom: 1rem;
   color: #00e676;
-  letter-spacing: 1px;
+  margin-bottom: 1rem;
 }
 
-/* === 🔘 BOTONES DE ACCIÓN === */
+/* === 🔘 BOTONES ACCIÓN === */
 .botones-carrito {
   display: flex;
-  gap: 1rem;
-  justify-content: center;
   flex-wrap: wrap;
-  margin-top: 1.5rem;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
 .btn, .btn-secundario {
-  padding: 0.8rem 1.6rem;
+  padding: 0.9rem 1.8rem;
   font-size: 1rem;
   font-weight: bold;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s ease;
   min-width: 200px;
+  transition: background-color 0.3s ease;
 }
 
 .btn {
@@ -183,27 +184,29 @@ h1 {
   border: none;
   color: #121212;
 }
+
 .btn:hover {
   background-color: #ffa733;
 }
 
 .btn-secundario {
   background-color: transparent;
-  color: #ff6d00;
   border: 2px solid #ff6d00;
+  color: #ff6d00;
 }
+
 .btn-secundario:hover {
   background-color: #ff6d00;
   color: #121212;
 }
 
-/* === 🎥 ANIMACIÓN === */
+/* === ✨ ANIMACIONES === */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* === 📱 RESPONSIVO === */
+/* === 📱 RESPONSIVE === */
 @media (max-width: 700px) {
   .carrito-item {
     flex-direction: column;
@@ -222,7 +225,7 @@ h1 {
 
   .botones-carrito {
     flex-direction: column;
-    align-items: center;
+    width: 100%;
   }
 
   .btn, .btn-secundario {

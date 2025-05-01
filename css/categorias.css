@@ -23,7 +23,7 @@ img {
 .main-header {
   background-color: var(--panel-dark);
   border-bottom: 1px solid var(--border-color);
-  padding: 1rem 2rem;
+  padding: 1.2rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -46,13 +46,13 @@ img {
 
 .brand h1 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   color: var(--accent);
 }
 
 .brand p {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
 }
 
@@ -68,7 +68,7 @@ img {
   background: transparent;
   border: 2px solid var(--accent);
   color: var(--accent);
-  padding: 0.4rem 1rem;
+  padding: 0.5rem 1rem;
   border-radius: var(--radius);
   font-weight: 600;
   cursor: pointer;
@@ -78,7 +78,7 @@ img {
 .nav-links a:hover,
 .nav-links button:hover {
   background-color: var(--accent);
-  color: #fff;
+  color: white;
 }
 
 /* === PROMO BANNER === */
@@ -89,6 +89,7 @@ img {
   text-align: center;
   font-weight: bold;
   font-size: 1rem;
+  letter-spacing: 0.5px;
 }
 
 /* === FILTROS === */
@@ -100,13 +101,14 @@ img {
   padding: 2rem;
   justify-content: center;
   border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .filtro {
   display: flex;
   flex-direction: column;
-  min-width: 200px;
-  max-width: 300px;
+  min-width: 220px;
+  max-width: 320px;
 }
 
 .filtro label {
@@ -118,13 +120,14 @@ img {
 
 .filtro select,
 .filtro input[type="search"] {
-  padding: 0.6rem;
+  padding: 0.6rem 1rem;
   border-radius: var(--radius);
   border: 1px solid var(--border-color);
   background-color: #fff;
   color: #333;
   font-size: 1rem;
   transition: var(--transition);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
 body.modo-oscuro .filtro select,
@@ -136,7 +139,7 @@ body.modo-oscuro .filtro input[type="search"] {
 
 /* === CATÁLOGO === */
 .catalogo-section {
-  padding: 2.5rem 1rem;
+  padding: 3rem 1rem;
   max-width: 1300px;
   margin: auto;
 }
@@ -144,14 +147,14 @@ body.modo-oscuro .filtro input[type="search"] {
 .section-title {
   text-align: center;
   color: var(--accent);
-  font-size: 2rem;
-  margin-bottom: 2rem;
+  font-size: 2.1rem;
+  margin-bottom: 2.5rem;
 }
 
 .product-grid {
   display: grid;
   gap: 2rem;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 
 .product-card {
@@ -168,7 +171,7 @@ body.modo-oscuro .filtro input[type="search"] {
 
 .product-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 0 20px rgba(0, 71, 171, 0.2);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.2);
 }
 
 .product-card img {
@@ -178,7 +181,7 @@ body.modo-oscuro .filtro input[type="search"] {
 }
 
 .product-info {
-  padding: 1rem;
+  padding: 1.2rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -199,18 +202,19 @@ body.modo-oscuro .filtro input[type="search"] {
 
 .btn-card {
   margin-top: auto;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.2rem;
   background-color: var(--accent);
   color: #fff;
   border: none;
   border-radius: var(--radius);
   cursor: pointer;
   font-weight: bold;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .btn-card:hover {
   background-color: var(--accent-light);
+  transform: translateY(-2px);
 }
 
 /* === BOTONES FLOTANTES === */
@@ -234,6 +238,7 @@ body.modo-oscuro .filtro input[type="search"] {
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
 }
 
 .cart-icon img,
@@ -246,7 +251,7 @@ body.modo-oscuro .filtro input[type="search"] {
   position: absolute;
   top: -6px;
   right: -6px;
-  background-color: red;
+  background-color: crimson;
   color: white;
   font-size: 0.75rem;
   padding: 2px 6px;
@@ -256,10 +261,12 @@ body.modo-oscuro .filtro input[type="search"] {
 /* === FOOTER === */
 .site-footer {
   text-align: center;
-  padding: 2rem;
+  padding: 2.5rem 1rem;
   font-size: 0.9rem;
   background-color: var(--panel-dark);
   color: var(--text-muted);
+  border-top: 1px solid var(--border-color);
+  margin-top: 3rem;
 }
 
 /* === RESPONSIVE === */
