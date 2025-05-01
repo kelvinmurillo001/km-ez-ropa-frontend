@@ -107,24 +107,25 @@
     <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
   </footer>
 
-  <!-- 📦 Script para cargar categorías y subcategorías dinámicamente -->
+  <!-- ✅ Script corregido para cargar categorías -->
   <script type="module">
     const categoriaSelect = document.getElementById("categoriaSelect");
     const subcategoriaSelect = document.getElementById("subcategoriaSelect");
 
     async function cargarCategorias() {
       try {
-        const res = await fetch("/api/categorias");
-        const data = await res.json();
-        const categoriasMap = new Map();
+        const res = await fetch("/api/categories"); // ✅ CORREGIDO
+        const response = await res.json();
+        if (!res.ok || !response.ok || !Array.isArray(response.data)) throw new Error("Error al cargar categorías");
 
-        data.forEach(cat => {
-          const catSlug = cat.slug || cat.nombre.toLowerCase();
+        const categoriasMap = new Map();
+        response.data.forEach(cat => {
+          const catSlug = cat.name.toLowerCase();
           categoriasMap.set(catSlug, cat);
 
           const option = document.createElement("option");
           option.value = catSlug;
-          option.textContent = `📁 ${cat.nombre}`;
+          option.textContent = `📁 ${cat.name}`;
           categoriaSelect.appendChild(option);
         });
 
@@ -132,13 +133,16 @@
           const seleccionada = categoriaSelect.value;
           subcategoriaSelect.innerHTML = `<option value="">📁 Todas</option>`;
           if (categoriasMap.has(seleccionada)) {
-            const subcats = categoriasMap.get(seleccionada).subcategorias || [];
+            const subcats = categoriasMap.get(seleccionada).subcategories || [];
             subcats.forEach(sub => {
               const opt = document.createElement("option");
               opt.value = sub.toLowerCase();
               opt.textContent = sub;
               subcategoriaSelect.appendChild(opt);
             });
+            subcategoriaSelect.disabled = false;
+          } else {
+            subcategoriaSelect.disabled = true;
           }
         });
       } catch (err) {

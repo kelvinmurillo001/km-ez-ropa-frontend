@@ -38,7 +38,9 @@ function validarCampo(valor, mensaje) {
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIAS);
-    const { data } = await res.json();
+    const result = await res.json();
+    const data = result.data || result;
+
     if (!res.ok || !Array.isArray(data)) throw new Error();
 
     categorias = data;
@@ -87,11 +89,10 @@ async function cargarProducto() {
     form.tallasInput.value = producto.sizes?.join(", ") || "";
     form.destacadoInput.checked = !!producto.featured;
 
-    // Actualizar subcategorías
     document.getElementById("categoriaInput").dispatchEvent(new Event("change"));
     form.subcategoriaInput.value = producto.subcategory || "";
 
-    if (Array.isArray(producto.images) && producto.images.length > 0) {
+    if (producto.images?.length > 0) {
       document.getElementById("imagenPrincipalActual").innerHTML = `
         <img src="${producto.images[0].url}" alt="Imagen actual" class="imagen-preview-principal" />
       `;
@@ -127,7 +128,8 @@ function renderVarianteExistente(v, i) {
 }
 
 function renderVarianteNueva() {
-  if (document.querySelectorAll(".variante-box").length >= 4) {
+  const actual = document.querySelectorAll(".variante-box").length;
+  if (actual >= 4) {
     mostrarMensaje("⚠️ Máximo 4 variantes permitidas", "warning");
     return;
   }
@@ -222,7 +224,6 @@ form.addEventListener("submit", async (e) => {
       return { imageUrl, cloudinaryId: finalCloudinaryId, color, talla, stock };
     }));
 
-    // Validación de duplicados talla+color
     const claves = new Set();
     for (const v of variantes) {
       const clave = `${v.talla.toLowerCase()}-${v.color.toLowerCase()}`;
@@ -258,6 +259,7 @@ form.addEventListener("submit", async (e) => {
     if (!res.ok) throw new Error(result.message || "Error al actualizar producto");
 
     mostrarMensaje("✅ Producto actualizado correctamente", "success");
+    msgEstado.scrollIntoView({ behavior: "smooth" });
 
   } catch (err) {
     console.error("❌", err);
