@@ -30,15 +30,27 @@
   <!-- ➕ Crear nuevo producto -->
   <div class="text-center mt-2">
     <button id="btnNuevoProducto" class="btn" aria-label="Crear nuevo producto">➕ Nuevo Producto</button>
+    <button id="btnExportar" class="btn-secundario" aria-label="Exportar inventario a Excel">📤 Exportar</button>
   </div>
 
   <!-- 🔍 Filtros de búsqueda -->
   <div class="filtros text-center mt-2" role="search" aria-label="Filtrar productos">
     <input type="text" id="buscarProducto" placeholder="🔎 Buscar producto por nombre..." aria-label="Buscar por nombre" />
+
     <select id="filtroCategoria" aria-label="Filtrar por categoría">
       <option value="">📂 Todas las categorías</option>
-      <!-- ✅ Opciones cargadas dinámicamente -->
+      <!-- Opciones dinámicas desde productos.js -->
     </select>
+
+    <select id="filtroStock" aria-label="Filtrar por stock">
+      <option value="">📦 Todos</option>
+      <option value="sinStock">🚫 Sin stock</option>
+    </select>
+
+    <label style="margin-left: 1rem;">
+      <input type="checkbox" id="filtroDestacados" />
+      ⭐ Solo destacados
+    </label>
   </div>
 
   <!-- 📦 Contador de productos -->
@@ -75,26 +87,6 @@
   import "/js/promo-display.js";
 
   document.getElementById("btnVolverPanel")?.addEventListener("click", goBack);
-
-  // ✅ Cargar categorías dinámicamente
-  const filtroCategoria = document.getElementById("filtroCategoria");
-  async function cargarCategorias() {
-    try {
-      const res = await fetch("/api/categorias");
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        data.forEach(cat => {
-          const option = document.createElement("option");
-          option.value = cat.slug || cat.nombre.toLowerCase();
-          option.textContent = `📁 ${cat.nombre}`;
-          filtroCategoria.appendChild(option);
-        });
-      }
-    } catch (err) {
-      console.error("❌ Error cargando categorías:", err);
-    }
-  }
-  cargarCategorias();
 </script>
 
 <!-- 🚫 Fallback para navegadores sin JS -->

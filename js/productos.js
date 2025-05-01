@@ -6,7 +6,7 @@ import { API_BASE } from "./config.js";
 // 🔐 Verificación de sesión
 const token = verificarSesion();
 const API_PRODUCTS = `${API_BASE}/api/products`;
-const API_CATEGORIAS = `${API_BASE}/api/categories`; // ✅ corregido
+const API_CATEGORIAS = `${API_BASE}/api/categories`; // ✅ Ruta correcta
 
 // 🌐 Elementos del DOM
 const productosLista = document.getElementById("productosLista");
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   filtroDestacados?.addEventListener("change", renderizarProductos);
   btnExportar?.addEventListener("click", exportarExcel);
 
-  await cargarCategorias(); // ✅ dinámico desde backend
+  await cargarCategorias(); // ✅ Carga dinámica de backend
   cargarProductos();
 
   if (localStorage.getItem("modoOscuro") === "true") {
