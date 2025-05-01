@@ -18,15 +18,16 @@ const API_CATEGORIAS = `${API_BASE}/api/categories`;
 const form = document.getElementById("formEditarProducto");
 const msgEstado = document.getElementById("msgEstado");
 const variantesDiv = document.getElementById("variantesExistentes");
+const subcategoriaInput = document.getElementById("subcategoriaInput");
+
+let categorias = [];
 
 document.addEventListener("DOMContentLoaded", () => {
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 
-  cargarCategorias();
-  cargarProducto();
-
+  cargarCategorias().then(cargarProducto);
   document.getElementById("btnAgregarVariante")?.addEventListener("click", renderVarianteNueva);
 });
 
@@ -40,13 +41,29 @@ async function cargarCategorias() {
     const { data } = await res.json();
     if (!res.ok || !Array.isArray(data)) throw new Error();
 
-    const select = document.getElementById("categoriaInput");
-    select.innerHTML = '<option value="">Selecciona una categoría</option>';
-    data.forEach(cat => {
+    categorias = data;
+
+    const categoriaSelect = document.getElementById("categoriaInput");
+    categoriaSelect.innerHTML = '<option value="">Selecciona una categoría</option>';
+    categorias.forEach(cat => {
       const option = document.createElement("option");
       option.value = cat.name;
       option.textContent = cat.name;
-      select.appendChild(option);
+      categoriaSelect.appendChild(option);
+    });
+
+    categoriaSelect.addEventListener("change", () => {
+      const seleccionada = categoriaSelect.value;
+      const categoriaObj = categorias.find(c => c.name === seleccionada);
+
+      if (categoriaObj?.subcategories?.length) {
+        subcategoriaInput.innerHTML = `<option value="">Selecciona subcategoría</option>` +
+          categoriaObj.subcategories.map(sub => `<option value="${sub}">${sub}</option>`).join("");
+        subcategoriaInput.disabled = false;
+      } else {
+        subcategoriaInput.innerHTML = `<option value="">Sin subcategorías</option>`;
+        subcategoriaInput.disabled = true;
+      }
     });
   } catch (err) {
     console.error("❌ Error cargando categorías:", err);
@@ -66,10 +83,13 @@ async function cargarProducto() {
     form.precioInput.value = producto.price || "";
     form.stockInput.value = producto.stock ?? 0;
     form.categoriaInput.value = producto.category || "";
-    form.subcategoriaInput.value = producto.subcategory || "";
-    form.tallasInput.value = producto.sizes?.join(", ") || "";
     form.colorInput.value = producto.color || "";
+    form.tallasInput.value = producto.sizes?.join(", ") || "";
     form.destacadoInput.checked = !!producto.featured;
+
+    // Actualizar subcategorías
+    document.getElementById("categoriaInput").dispatchEvent(new Event("change"));
+    form.subcategoriaInput.value = producto.subcategory || "";
 
     if (Array.isArray(producto.images) && producto.images.length > 0) {
       document.getElementById("imagenPrincipalActual").innerHTML = `
@@ -165,7 +185,7 @@ form.addEventListener("submit", async (e) => {
     const precio = parseFloat(form.precioInput.value);
     const stockBase = parseInt(form.stockInput.value || "0");
     const categoria = form.categoriaInput.value;
-    const subcategoria = form.subcategoriaInput?.value?.trim() || null;
+    const subcategoria = form.subcategoriaInput?.value?.trim() || "";
     const destacado = form.destacadoInput?.checked || false;
     const color = form.colorInput.value.trim();
     const sizes = form.tallasInput.value.split(",").map(s => s.trim()).filter(Boolean);
@@ -175,7 +195,7 @@ form.addEventListener("submit", async (e) => {
     validarCampo(categoria, "⚠️ Selecciona una categoría");
     if (isNaN(precio)) throw new Error("⚠️ Precio inválido");
 
-    const nuevaImg = form.imagenPrincipalNueva?.files[0];
+    const nuevaImg = form.imagenPrincipalNueva?.files?.[0];
     const nuevaImagen = nuevaImg ? await subirImagen(nuevaImg) : null;
 
     const bloques = document.querySelectorAll(".variante-box");
@@ -202,6 +222,7 @@ form.addEventListener("submit", async (e) => {
       return { imageUrl, cloudinaryId: finalCloudinaryId, color, talla, stock };
     }));
 
+    // Validación de duplicados talla+color
     const claves = new Set();
     for (const v of variantes) {
       const clave = `${v.talla.toLowerCase()}-${v.color.toLowerCase()}`;

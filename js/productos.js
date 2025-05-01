@@ -1,12 +1,12 @@
 "use strict";
 
-// 📥 Importar utilidades
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
 // 🔐 Verificación de sesión
 const token = verificarSesion();
 const API_PRODUCTS = `${API_BASE}/api/products`;
+const API_CATEGORIAS = `${API_BASE}/api/categories`; // ✅ corregido
 
 // 🌐 Elementos del DOM
 const productosLista = document.getElementById("productosLista");
@@ -25,8 +25,7 @@ let paginaActual = 1;
 let totalPaginas = 1;
 const productosPorPagina = 10;
 
-// ▶️ Al cargar el DOM
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   btnNuevoProducto?.addEventListener("click", () => window.location.href = "/crear-producto.html");
   inputBuscar?.addEventListener("input", () => { paginaActual = 1; cargarProductos(); });
   filtroCategoria?.addEventListener("change", () => { paginaActual = 1; cargarProductos(); });
@@ -34,12 +33,36 @@ document.addEventListener("DOMContentLoaded", () => {
   filtroDestacados?.addEventListener("change", renderizarProductos);
   btnExportar?.addEventListener("click", exportarExcel);
 
+  await cargarCategorias(); // ✅ dinámico desde backend
   cargarProductos();
 
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 });
+
+/* 🔄 Cargar categorías desde backend */
+async function cargarCategorias() {
+  try {
+    const res = await fetch(API_CATEGORIAS, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok || !Array.isArray(data.data)) {
+      throw new Error(data.message || "Error al cargar categorías");
+    }
+
+    filtroCategoria.innerHTML = `<option value="">📂 Todas las categorías</option>`;
+    data.data.forEach(cat => {
+      const option = document.createElement("option");
+      option.value = cat.name;
+      option.textContent = `📁 ${sanitize(cat.name)}`;
+      filtroCategoria.appendChild(option);
+    });
+  } catch (err) {
+    console.warn("❌ No se pudieron cargar las categorías:", err.message);
+  }
+}
 
 /* 📡 Cargar productos desde la API */
 async function cargarProductos() {
@@ -123,7 +146,7 @@ function renderizarProductos() {
   renderPaginacion();
 }
 
-/* 🔢 Renderizar botones de paginación */
+/* 🔢 Paginación */
 function renderPaginacion() {
   paginacion.innerHTML = "";
   if (totalPaginas <= 1) return;
@@ -140,7 +163,7 @@ function renderPaginacion() {
   }
 }
 
-/* 🧾 HTML por cada fila de producto */
+/* 🧾 HTML Fila */
 function productoFilaHTML(p) {
   const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
   const nombre = sanitize(p.name || "Sin nombre");
@@ -184,7 +207,7 @@ async function eliminarProducto(id, nombre) {
   }
 }
 
-/* 📤 Exportar productos a Excel */
+/* 📤 Exportar a Excel */
 async function exportarExcel() {
   const { utils, writeFile } = await import("https://cdn.sheetjs.com/xlsx-0.20.0/package/xlsx.mjs");
 
@@ -203,14 +226,13 @@ async function exportarExcel() {
   writeFile(wb, `inventario_kmezropa_${Date.now()}.xlsx`);
 }
 
-/* 🔐 Sanitizar texto para evitar XSS */
+/* 🧼 Sanitizar */
 function sanitize(text = "") {
   const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
 }
 
-/* 🌐 Funciones Globales */
 window.goBack = goBack;
 window.editarProducto = id => window.location.href = `/editar-producto.html?id=${id}`;
 window.eliminarProducto = eliminarProducto;

@@ -32,11 +32,14 @@ formCrear?.addEventListener("submit", async (e) => {
   try {
     const res = await fetch(API, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
       body: JSON.stringify({ name: nombre })
     });
     const data = await res.json();
-    if (!res.ok || !data.ok) throw new Error(data.message || "❌ No se pudo crear la categoría");
+    if (!res.ok || data.ok === false) throw new Error(data.message || "❌ No se pudo crear la categoría");
 
     mostrarMensaje("✅ Categoría creada exitosamente", "success");
     categoriaInput.value = "";
@@ -60,11 +63,14 @@ formSub?.addEventListener("submit", async (e) => {
   try {
     const res = await fetch(`${API}/${categoriaId}/subcategories`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
       body: JSON.stringify({ subcategory: sub })
     });
     const data = await res.json();
-    if (!res.ok || !data.ok) throw new Error(data.message || "❌ Error al agregar subcategoría");
+    if (!res.ok || data.ok === false) throw new Error(data.message || "❌ Error al agregar subcategoría");
 
     mostrarMensaje("✅ Subcategoría agregada", "success");
     subcategoriaInput.value = "";
@@ -80,9 +86,13 @@ formSub?.addEventListener("submit", async (e) => {
 /* ───────────────────────────────────────────── */
 async function cargarCategorias() {
   try {
-    const res = await fetch(API, { headers: { Authorization: `Bearer ${token}` } });
+    const res = await fetch(API, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
     const data = await res.json();
-    if (!res.ok || !data.ok || !Array.isArray(data.data)) throw new Error(data.message || "❌ Error al obtener categorías");
+    if (!res.ok || data.ok === false || !Array.isArray(data.data)) {
+      throw new Error(data.message || "❌ Error al obtener categorías");
+    }
 
     renderCategorias(data.data);
     actualizarSelect(data.data);
@@ -96,7 +106,7 @@ async function cargarCategorias() {
 /* 📂 Actualizar Select de Categorías             */
 /* ───────────────────────────────────────────── */
 function actualizarSelect(categorias = []) {
-  selectCategoria.innerHTML = '<option value="">Seleccionar categoría</option>';
+  selectCategoria.innerHTML = '<option value="">📂 Seleccionar categoría</option>';
   categorias.forEach(cat => {
     selectCategoria.innerHTML += `<option value="${cat._id}">${sanitize(cat.name)}</option>`;
   });
@@ -143,7 +153,7 @@ window.eliminarCategoria = async (id) => {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();
-    if (!res.ok || !data.ok) throw new Error(data.message || "❌ No se pudo eliminar la categoría");
+    if (!res.ok || data.ok === false) throw new Error(data.message || "❌ No se pudo eliminar la categoría");
 
     mostrarMensaje("✅ Categoría eliminada", "success");
     await cargarCategorias();
@@ -164,7 +174,7 @@ window.eliminarSubcategoria = async (categoryId, subcategory) => {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();
-    if (!res.ok || !data.ok) throw new Error(data.message || "❌ No se pudo eliminar la subcategoría");
+    if (!res.ok || data.ok === false) throw new Error(data.message || "❌ No se pudo eliminar la subcategoría");
 
     mostrarMensaje("✅ Subcategoría eliminada", "success");
     await cargarCategorias();
@@ -182,5 +192,5 @@ function sanitize(text = "") {
   return temp.innerHTML.trim();
 }
 
-// 🔙 Exponer volver atrás globalmente
+// 🔙 Función global
 window.goBack = goBack;

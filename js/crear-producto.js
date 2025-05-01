@@ -88,13 +88,13 @@ async function cargarCategorias() {
       data.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join("");
 
     categoriaInput.addEventListener("change", () => {
+      subcategoriaInput.innerHTML = `<option value="">Selecciona una subcategoría</option>`;
       const seleccionada = categoriaInput.value;
       const cat = categoriasConSubcategorias.find(c => c.name === seleccionada);
 
       if (cat?.subcategories?.length) {
-        subcategoriaInput.innerHTML =
-          `<option value="">Selecciona subcategoría</option>` +
-          cat.subcategories.map(sub => `<option value="${sub}">${sub}</option>`).join("");
+        subcategoriaInput.innerHTML += cat.subcategories.map(sub =>
+          `<option value="${sub}">${sub}</option>`).join("");
         subcategoriaInput.disabled = false;
       } else {
         subcategoriaInput.innerHTML = `<option value="">Sin subcategorías</option>`;

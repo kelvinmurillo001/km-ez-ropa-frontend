@@ -9,7 +9,6 @@
   <meta name="description" content="Explora todas las categorías de ropa urbana disponibles en KM & EZ ROPA.">
   <meta name="robots" content="index, follow">
   <meta name="author" content="KM & EZ ROPA">
-
   <meta property="og:title" content="Categorías de Productos | KM & EZ ROPA" />
   <meta property="og:description" content="Explora estilos únicos de moda urbana por categoría, género y ocasión.">
   <meta property="og:image" content="/assets/og-image.jpg" />
@@ -57,12 +56,14 @@
       <label for="categoriaSelect">Categoría:</label>
       <select id="categoriaSelect" name="categoria" aria-label="Filtrar por categoría">
         <option value="">📂 Todas</option>
+        <!-- Opciones agregadas dinámicamente -->
       </select>
     </div>
     <div class="filtro">
       <label for="subcategoriaSelect">Subcategoría:</label>
       <select id="subcategoriaSelect" name="subcategoria" aria-label="Filtrar por subcategoría">
         <option value="">📁 Todas</option>
+        <!-- Opciones agregadas dinámicamente -->
       </select>
     </div>
     <div class="filtro">
@@ -105,6 +106,48 @@
   <footer class="site-footer" role="contentinfo">
     <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
   </footer>
+
+  <!-- 📦 Script para cargar categorías y subcategorías dinámicamente -->
+  <script type="module">
+    const categoriaSelect = document.getElementById("categoriaSelect");
+    const subcategoriaSelect = document.getElementById("subcategoriaSelect");
+
+    async function cargarCategorias() {
+      try {
+        const res = await fetch("/api/categorias");
+        const data = await res.json();
+        const categoriasMap = new Map();
+
+        data.forEach(cat => {
+          const catSlug = cat.slug || cat.nombre.toLowerCase();
+          categoriasMap.set(catSlug, cat);
+
+          const option = document.createElement("option");
+          option.value = catSlug;
+          option.textContent = `📁 ${cat.nombre}`;
+          categoriaSelect.appendChild(option);
+        });
+
+        categoriaSelect.addEventListener("change", () => {
+          const seleccionada = categoriaSelect.value;
+          subcategoriaSelect.innerHTML = `<option value="">📁 Todas</option>`;
+          if (categoriasMap.has(seleccionada)) {
+            const subcats = categoriasMap.get(seleccionada).subcategorias || [];
+            subcats.forEach(sub => {
+              const opt = document.createElement("option");
+              opt.value = sub.toLowerCase();
+              opt.textContent = sub;
+              subcategoriaSelect.appendChild(opt);
+            });
+          }
+        });
+      } catch (err) {
+        console.error("❌ Error cargando categorías:", err);
+      }
+    }
+
+    cargarCategorias();
+  </script>
 
   <!-- ⚠️ Sin JavaScript -->
   <noscript>
