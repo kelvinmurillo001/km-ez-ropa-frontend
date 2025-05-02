@@ -19,6 +19,7 @@ const form = document.getElementById("formEditarProducto");
 const msgEstado = document.getElementById("msgEstado");
 const variantesDiv = document.getElementById("variantesExistentes");
 const subcategoriaInput = document.getElementById("subcategoriaInput");
+
 let categorias = [];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -29,9 +30,40 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnAgregarVariante")?.addEventListener("click", renderVarianteNueva);
 });
 
+// -------------------- 📦 FUNCIONES AUXILIARES ------------------------
+
 function validarCampo(valor, mensaje) {
   if (!valor || valor.trim() === "") throw new Error(mensaje);
 }
+
+function limpiarTexto(texto) {
+  return (texto || "").trim();
+}
+
+async function subirImagen(file) {
+  if (!file || !file.type.startsWith("image/") || file.size > 2 * 1024 * 1024) {
+    throw new Error("⚠️ Imagen inválida o muy pesada");
+  }
+
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const res = await fetch(API_UPLOAD, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: formData
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || "Error subiendo imagen");
+
+  return {
+    url: data.url || data.secure_url,
+    cloudinaryId: data.public_id
+  };
+}
+
+// -------------------- 📚 CATEGORÍAS ------------------------
 
 async function cargarCategorias() {
   try {
@@ -42,7 +74,7 @@ async function cargarCategorias() {
     if (!res.ok || !Array.isArray(data)) throw new Error();
 
     categorias = data;
-    const categoriaSelect = document.getElementById("categoriaInput");
+    const categoriaSelect = form.categoriaInput;
     categoriaSelect.innerHTML = '<option value="">Selecciona una categoría</option>';
     categorias.forEach(cat => {
       const option = document.createElement("option");
@@ -69,6 +101,8 @@ async function cargarCategorias() {
   }
 }
 
+// -------------------- 🧠 CARGAR PRODUCTO ------------------------
+
 async function cargarProducto() {
   try {
     const res = await fetch(API_PRODUCTO);
@@ -87,7 +121,7 @@ async function cargarProducto() {
     form.activoInput.checked = !!producto.isActive;
     form.tallaTipoInput.value = producto.tallaTipo || "";
 
-    document.getElementById("categoriaInput").dispatchEvent(new Event("change"));
+    form.categoriaInput.dispatchEvent(new Event("change"));
     form.subcategoriaInput.value = producto.subcategory || "";
 
     if (producto.images?.length > 0) {
@@ -102,6 +136,8 @@ async function cargarProducto() {
     msgEstado.innerHTML = `❌ Error al cargar producto.<br><button onclick="goBack()">🔙 Volver</button>`;
   }
 }
+
+// -------------------- 🧩 VARIANTES ------------------------
 
 function renderVarianteExistente(v, i) {
   const div = document.createElement("div");
@@ -151,28 +187,7 @@ function renderVarianteNueva() {
   div.querySelector(".btn-quitar-variante").addEventListener("click", () => div.remove());
 }
 
-async function subirImagen(file) {
-  if (!file || !file.type.startsWith("image/") || file.size > 2 * 1024 * 1024) {
-    throw new Error("⚠️ Imagen inválida o muy pesada");
-  }
-
-  const formData = new FormData();
-  formData.append("image", file);
-
-  const res = await fetch(API_UPLOAD, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}` },
-    body: formData
-  });
-
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "Error subiendo imagen");
-
-  return {
-    url: data.url || data.secure_url,
-    cloudinaryId: data.public_id
-  };
-}
+// -------------------- 💾 ENVIAR FORMULARIO ------------------------
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -180,16 +195,16 @@ form.addEventListener("submit", async (e) => {
   form.classList.add("bloqueado");
 
   try {
-    const nombre = form.nombreInput.value.trim();
-    const descripcion = form.descripcionInput.value.trim();
+    const nombre = limpiarTexto(form.nombreInput.value);
+    const descripcion = limpiarTexto(form.descripcionInput.value);
     const precio = parseFloat(form.precioInput.value);
     const stockBase = parseInt(form.stockInput.value || "0");
-    const categoria = form.categoriaInput.value;
-    const subcategoria = form.subcategoriaInput?.value?.trim() || "";
+    const categoria = limpiarTexto(form.categoriaInput.value);
+    const subcategoria = limpiarTexto(form.subcategoriaInput?.value);
     const destacado = form.destacadoInput?.checked || false;
     const activo = form.activoInput?.checked || false;
-    const tallaTipo = form.tallaTipoInput.value;
-    const color = form.colorInput.value.trim();
+    const tallaTipo = limpiarTexto(form.tallaTipoInput.value);
+    const color = limpiarTexto(form.colorInput.value);
     const sizes = form.tallasInput.value.split(",").map(s => s.trim()).filter(Boolean);
 
     validarCampo(nombre, "⚠️ Nombre obligatorio");
@@ -204,8 +219,8 @@ form.addEventListener("submit", async (e) => {
     const bloques = document.querySelectorAll(".variante-box");
     const variantes = await Promise.all(Array.from(bloques).map(async (b) => {
       const file = b.querySelector(".variante-img")?.files[0];
-      const color = b.querySelector(".variante-color")?.value?.trim();
-      const talla = b.querySelector(".variante-talla")?.value?.trim();
+      const color = limpiarTexto(b.querySelector(".variante-color")?.value);
+      const talla = limpiarTexto(b.querySelector(".variante-talla")?.value);
       const stock = parseInt(b.querySelector(".variante-stock")?.value || "0");
       const cloudinaryId = b.querySelector(".variante-id")?.value;
 

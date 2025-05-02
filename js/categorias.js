@@ -1,13 +1,11 @@
 "use strict";
 
-// ✅ Base API
 import { API_BASE } from "./config.js";
 
 const API_PRODUCTS = `${API_BASE}/api/products`;
 const API_PROMOS = `${API_BASE}/api/promos`;
 const API_CATEGORIES = `${API_BASE}/api/categories`;
 
-// 📦 DOM Elements
 const catalogo = document.getElementById("catalogo");
 const categoriaSelect = document.getElementById("categoriaSelect");
 const subcategoriaSelect = document.getElementById("subcategoriaSelect");
@@ -18,14 +16,9 @@ const promoContainer = document.getElementById("promo-display-container");
 
 let categoriasData = [];
 
-// 🚀 Inicialización
 document.addEventListener("DOMContentLoaded", () => {
   aplicarModoOscuro();
-  cargarCategoriasDesdeAPI();
-  configurarFiltros();
-  cargarPromocion();
-  cargarProductos();
-  actualizarContadorCarrito();
+  init();
 });
 
 /* 🌙 Modo Oscuro */
@@ -37,6 +30,15 @@ function aplicarModoOscuro() {
     const dark = document.body.classList.toggle("modo-oscuro");
     localStorage.setItem("modoOscuro", dark);
   });
+}
+
+/* 🚀 Inicio general */
+async function init() {
+  await cargarCategoriasDesdeAPI();
+  configurarFiltros();
+  await cargarPromocion();
+  await cargarProductos();
+  actualizarContadorCarrito();
 }
 
 /* 🎯 Filtros */
@@ -68,20 +70,37 @@ async function cargarCategoriasDesdeAPI() {
 
 /* 📂 Llenar select de categorías */
 function llenarCategorias() {
-  categoriaSelect.innerHTML = '<option value="">📂 Todas</option>';
+  categoriaSelect.innerHTML = '';
+  const defaultOption = document.createElement("option");
+  defaultOption.value = "";
+  defaultOption.textContent = "📂 Todas";
+  categoriaSelect.appendChild(defaultOption);
+
   categoriasData.forEach(cat => {
-    categoriaSelect.innerHTML += `<option value="${sanitize(cat.name)}">${sanitize(cat.name)}</option>`;
+    const option = document.createElement("option");
+    option.value = cat.name;
+    option.textContent = sanitize(cat.name);
+    categoriaSelect.appendChild(option);
   });
 }
 
 /* 📁 Llenar subcategorías según categoría */
 function llenarSubcategorias() {
-  const seleccionada = categoriaSelect.value;
-  const cat = categoriasData.find(c => c.name === seleccionada);
-  subcategoriaSelect.innerHTML = '<option value="">📁 Todas</option>';
+  subcategoriaSelect.innerHTML = '';
+  const selected = categoriaSelect.value;
+  const cat = categoriasData.find(c => c.name === selected);
+
+  const defaultOption = document.createElement("option");
+  defaultOption.value = "";
+  defaultOption.textContent = "📁 Todas";
+  subcategoriaSelect.appendChild(defaultOption);
+
   if (cat?.subcategories?.length) {
     cat.subcategories.forEach(sub => {
-      subcategoriaSelect.innerHTML += `<option value="${sanitize(sub)}">${sanitize(sub)}</option>`;
+      const option = document.createElement("option");
+      option.value = sub;
+      option.textContent = sanitize(sub);
+      subcategoriaSelect.appendChild(option);
     });
     subcategoriaSelect.disabled = false;
   } else {
@@ -112,11 +131,11 @@ async function cargarProductos() {
 
     renderizarCatalogo(aplicarFiltros(productos));
   } catch (err) {
-    catalogo.innerHTML = `<p class="text-center" style="color:red;">${err.message}</p>`;
+    catalogo.innerHTML = `<p class="text-center" style="color:red;">${sanitize(err.message)}</p>`;
   }
 }
 
-/* 🧠 Aplicar filtros */
+/* 🧠 Aplicar filtros (solo si frontend necesita refinar) */
 function aplicarFiltros(productos) {
   const cat = categoriaSelect?.value?.toLowerCase() || "";
   const sub = subcategoriaSelect?.value?.toLowerCase() || "";
@@ -144,26 +163,27 @@ function renderizarCatalogo(productos) {
     return;
   }
 
-  productos.forEach(p => {
-    const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
-    const nombre = sanitize(p.name || "Producto sin nombre");
-    const precio = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
-    const id = p._id;
+  productos.forEach(p => catalogo.appendChild(crearTarjetaProducto(p)));
+}
 
-    const card = document.createElement("div");
-    card.className = "product-card fade-in";
-    card.setAttribute("role", "listitem");
-    card.setAttribute("aria-label", nombre);
-    card.innerHTML = `
-      <img src="${imagen}" alt="Imagen de ${nombre}" loading="lazy" onerror="this.src='/assets/logo.jpg'" />
-      <div class="product-info">
-        <h3>${nombre}</h3>
-        <p>$${precio}</p>
-        <button class="btn-card" onclick="verDetalle('${id}')">👁️ Ver</button>
-      </div>
-    `;
-    catalogo.appendChild(card);
-  });
+function crearTarjetaProducto(p) {
+  const card = document.createElement("div");
+  card.className = "product-card fade-in";
+  card.setAttribute("role", "listitem");
+
+  const nombre = sanitize(p.name || "Producto sin nombre");
+  const precio = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
+  const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
+
+  card.innerHTML = `
+    <img src="${imagen}" alt="Imagen de ${nombre}" loading="lazy" onerror="this.src='/assets/logo.jpg'" />
+    <div class="product-info">
+      <h3>${nombre}</h3>
+      <p>$${precio}</p>
+      <button class="btn-card" onclick="verDetalle('${p._id}')">👁️ Ver</button>
+    </div>
+  `;
+  return card;
 }
 
 /* 🔁 Ir a detalle */
@@ -186,17 +206,15 @@ async function cargarPromocion() {
     const res = await fetch(API_PROMOS);
     const promo = await res.json();
 
-    if (res.ok && promo?.data?.[0]?.active) {
-      const { message, mediaUrl, mediaType, color } = promo.data[0];
-
-      if (promoContainer && message) {
-        promoContainer.innerHTML = `
-          <div id="promoBanner" class="promo-banner" style="background-color:${color || "#ff6d00"}" role="region" aria-label="Promoción activa">
-            ${mediaType === "image" ? `<img src="${mediaUrl}" alt="Promoción activa" />` : ""}
-            <span>${sanitize(message)}</span>
-          </div>
-        `;
-      }
+    const item = promo?.data?.[0];
+    if (res.ok && item?.active && promoContainer) {
+      const { message, mediaUrl, mediaType, color } = item;
+      promoContainer.innerHTML = `
+        <div id="promoBanner" class="promo-banner" style="background-color:${color || "#ff6d00"}" role="region" aria-label="Promoción activa">
+          ${mediaType === "image" ? `<img src="${mediaUrl}" alt="Promoción activa" />` : ""}
+          <span>${sanitize(message)}</span>
+        </div>
+      `;
     }
   } catch {
     console.warn("⚠️ No se pudo cargar la promoción activa.");

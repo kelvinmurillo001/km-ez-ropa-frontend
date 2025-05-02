@@ -42,72 +42,67 @@ const tallasPorTipo = {
 
 // 🚀 Init
 document.addEventListener("DOMContentLoaded", async () => {
-  await cargarCategorias();
-  agregarVariante();
-
-  if (localStorage.getItem("modoOscuro") === "true") {
-    document.body.classList.add("modo-oscuro");
+  try {
+    await cargarCategorias();
+    agregarVariante();
+    if (localStorage.getItem("modoOscuro") === "true") {
+      document.body.classList.add("modo-oscuro");
+    }
+  } catch (err) {
+    mostrarMensaje("❌ Error durante la carga inicial", "error");
   }
 });
 
-// 🧠 Lógica de tallas automáticas
+// 🎯 Auto-tallas
 tallaTipoInput.addEventListener("change", () => {
   const tipo = tallaTipoInput.value.toLowerCase();
   tallasInput.value = tallasPorTipo[tipo]?.join(", ") || "";
 });
 
-// 🖼️ Preview de imagen principal
+// 🖼️ Preview
 imagenInput.addEventListener("change", () => {
   const file = imagenInput.files[0];
   if (!file) return;
 
   if (!file.type.startsWith("image/")) {
-    return mostrarMensaje("⚠️ Archivo no es una imagen", "error");
+    return mostrarMensaje("⚠️ El archivo no es una imagen válida", "error");
   }
 
   if (file.size > 2 * 1024 * 1024) {
-    return mostrarMensaje("⚠️ Imagen demasiado pesada (máx. 2MB)", "error");
+    return mostrarMensaje("⚠️ Tamaño máximo de imagen: 2MB", "error");
   }
 
   const url = URL.createObjectURL(file);
   previewPrincipal.innerHTML = `<img src="${url}" alt="Vista previa" style="max-width:200px; border-radius:8px;" />`;
 });
 
-// 🗂️ Cargar categorías y subcategorías
+// 📂 Categorías
 async function cargarCategorias() {
-  try {
-    const res = await fetch(API_CATEGORIES);
-    const { data } = await res.json();
+  const res = await fetch(API_CATEGORIES);
+  const { data } = await res.json();
+  if (!res.ok || !Array.isArray(data)) throw new Error("No se pudieron cargar");
 
-    if (!res.ok || !Array.isArray(data)) throw new Error();
+  categoriasConSubcategorias = data;
+  categoriaInput.innerHTML = `<option value="">Selecciona categoría</option>` +
+    data.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join("");
 
-    categoriasConSubcategorias = data;
+  categoriaInput.addEventListener("change", () => {
+    const seleccionada = categoriaInput.value;
+    const categoria = categoriasConSubcategorias.find(c => c.name === seleccionada);
+    if (!categoria) return;
 
-    categoriaInput.innerHTML =
-      `<option value="">Selecciona categoría</option>` +
-      data.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join("");
-
-    categoriaInput.addEventListener("change", () => {
-      subcategoriaInput.innerHTML = `<option value="">Selecciona una subcategoría</option>`;
-      const seleccionada = categoriaInput.value;
-      const cat = categoriasConSubcategorias.find(c => c.name === seleccionada);
-
-      if (cat?.subcategories?.length) {
-        subcategoriaInput.innerHTML += cat.subcategories.map(sub =>
-          `<option value="${sub}">${sub}</option>`).join("");
-        subcategoriaInput.disabled = false;
-      } else {
-        subcategoriaInput.innerHTML = `<option value="">Sin subcategorías</option>`;
-        subcategoriaInput.disabled = true;
-      }
-    });
-  } catch (err) {
-    console.error("❌ Error cargando categorías:", err);
-    mostrarMensaje("❌ No se pudieron cargar las categorías", "error");
-  }
+    if (categoria.subcategories.length > 0) {
+      subcategoriaInput.disabled = false;
+      subcategoriaInput.innerHTML = `<option value="">Selecciona una subcategoría</option>` +
+        categoria.subcategories.map(sub => `<option value="${sub}">${sub}</option>`).join("");
+    } else {
+      subcategoriaInput.innerHTML = `<option value="">Sin subcategorías</option>`;
+      subcategoriaInput.disabled = true;
+    }
+  });
 }
 
-// ➕ Agregar nueva variante
+// ➕ Variante
 btnAgregarVariante.addEventListener("click", agregarVariante);
 
 function agregarVariante() {
@@ -130,10 +125,10 @@ function agregarVariante() {
   variantes.push(index);
 }
 
-// ☁️ Subir imagen al servidor
+// ☁️ Subir imagen
 async function subirImagen(file) {
   if (!file || !file.type.startsWith("image/") || file.size > 2 * 1024 * 1024) {
-    throw new Error("⚠️ Imagen inválida o demasiado grande");
+    throw new Error("⚠️ Imagen inválida o muy grande");
   }
 
   const formData = new FormData();
@@ -172,23 +167,11 @@ form.addEventListener("submit", async (e) => {
     const destacado = document.getElementById("destacadoInput")?.checked || false;
     const filePrincipal = imagenInput.files[0];
 
-    // Validaciones básicas
-    if (!filePrincipal) {
-      mostrarMensaje("⚠️ Imagen principal requerida", "error");
-      imagenInput.focus();
-      return;
-    }
+    if (!filePrincipal) return mostrarMensaje("⚠️ Imagen principal requerida", "error");
 
-    if (!nombre || !descripcion || isNaN(precio) || !categoria || !tallaTipo) {
-      mostrarMensaje("⚠️ Completa todos los campos obligatorios", "error");
-      return;
-    }
-
-    // Subida principal
-    msgEstado.textContent = "⏳ Subiendo imagen principal...";
+    msgEstado.textContent = "📤 Subiendo imagen principal...";
     const imagenPrincipal = await subirImagen(filePrincipal);
 
-    // Variantes
     const variantesFinales = [];
     const claves = new Set();
 
@@ -198,12 +181,10 @@ form.addEventListener("submit", async (e) => {
       const stockInput = v.querySelector("input[type='number']");
       const fileInput = v.querySelector("input[type='file']");
 
-      if (!fileInput.files.length) continue;
+      if (!fileInput?.files.length) continue;
 
       const clave = `${colorInput.value.trim().toLowerCase()}-${tallaInput.value.trim().toLowerCase()}`;
-      if (claves.has(clave)) {
-        throw new Error("⚠️ Variantes duplicadas (color + talla)");
-      }
+      if (claves.has(clave)) throw new Error("⚠️ Variantes duplicadas (color + talla)");
       claves.add(clave);
 
       const subida = await subirImagen(fileInput.files[0]);
@@ -241,7 +222,7 @@ form.addEventListener("submit", async (e) => {
 
     if (usarStockDirecto) nuevoProducto.stock = stock;
 
-    msgEstado.textContent = "⏳ Guardando producto...";
+    msgEstado.textContent = "💾 Guardando producto...";
     const res = await fetch(API_PRODUCTS, {
       method: "POST",
       headers: {
