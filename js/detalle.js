@@ -64,6 +64,8 @@ function renderizarProducto(p) {
     </div>
   `;
 
+  const tieneVariantes = Array.isArray(p.variants) && p.variants.length > 0;
+
   detalle.innerHTML = `
     <div class="detalle-img">
       <img id="imgPrincipal" src="${imagen}" alt="${nombre}" loading="lazy"/>
@@ -82,28 +84,33 @@ function renderizarProducto(p) {
 
       ${detallesExtra}
 
-      <!-- Selectores -->
-      <div class="selectores" id="selectorVariantes">
-        <label for="colorSelect">🎨 Color:</label>
-        <select id="colorSelect"><option disabled selected>Selecciona un color</option></select>
+      ${tieneVariantes ? `
+        <div class="selectores" id="selectorVariantes">
+          <label for="colorSelect">🎨 Color:</label>
+          <select id="colorSelect"><option disabled selected>Selecciona un color</option></select>
 
-        <label for="tallaSelect">📏 Talla:</label>
-        <select id="tallaSelect" disabled><option disabled selected>Selecciona una talla</option></select>
+          <label for="tallaSelect">📏 Talla:</label>
+          <select id="tallaSelect" disabled><option disabled selected>Selecciona una talla</option></select>
 
-        <div id="stockInfo" role="status" aria-live="polite">📦 Stock: -</div>
+          <div id="stockInfo" role="status" aria-live="polite">📦 Stock: -</div>
 
+          <label for="cantidadInput">🔢 Cantidad:</label>
+          <input type="number" id="cantidadInput" min="1" value="1" disabled />
+        </div>
+      ` : `
+        <div class="mt-1 text-muted">📦 Stock disponible: ${p.stockTotal ?? 0}</div>
         <label for="cantidadInput">🔢 Cantidad:</label>
-        <input type="number" id="cantidadInput" min="1" value="1" disabled />
-      </div>
+        <input type="number" id="cantidadInput" min="1" max="${p.stockTotal ?? 0}" value="1" />
+      `}
 
       <button class="btn-agregar" id="btnAgregarCarrito">🛒 Agregar al carrito</button>
     </div>
   `;
 
-  configurarSelectores(p);
+  if (tieneVariantes) configurarSelectores(p);
 }
 
-/* Selectores */
+/* Selectores para variantes */
 function configurarSelectores(p) {
   const colorSelect = document.getElementById("colorSelect");
   const tallaSelect = document.getElementById("tallaSelect");
@@ -146,32 +153,54 @@ function configurarSelectores(p) {
 
 /* Agregar al carrito */
 function agregarAlCarrito() {
-  if (!productoGlobal || !varianteSeleccionada) {
-    mostrarToast("⚠️ Debes seleccionar un color y talla");
-    return;
-  }
-
   const cantidad = parseInt(document.getElementById("cantidadInput").value || "1");
-  if (cantidad < 1 || cantidad > varianteSeleccionada.stock) {
-    mostrarToast(`⚠️ Cantidad no permitida (stock: ${varianteSeleccionada.stock})`);
-    return;
-  }
+
+  if (!productoGlobal) return;
 
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
-  const clave = `${productoGlobal._id}_${varianteSeleccionada.talla}`.toLowerCase();
-  const idx = carrito.findIndex(p => `${p.id}_${p.talla}`.toLowerCase() === clave);
 
-  if (idx >= 0) {
-    carrito[idx].cantidad = Math.min(carrito[idx].cantidad + cantidad, varianteSeleccionada.stock);
+  if (productoGlobal.variants?.length > 0) {
+    if (!varianteSeleccionada) return mostrarToast("⚠️ Debes seleccionar un color y talla");
+
+    if (cantidad < 1 || cantidad > varianteSeleccionada.stock) {
+      return mostrarToast(`⚠️ Cantidad no permitida (stock: ${varianteSeleccionada.stock})`);
+    }
+
+    const clave = `${productoGlobal._id}_${varianteSeleccionada.talla}`.toLowerCase();
+    const idx = carrito.findIndex(p => `${p.id}_${p.talla}`.toLowerCase() === clave);
+
+    if (idx >= 0) {
+      carrito[idx].cantidad = Math.min(carrito[idx].cantidad + cantidad, varianteSeleccionada.stock);
+    } else {
+      carrito.push({
+        id: productoGlobal._id,
+        nombre: productoGlobal.name,
+        imagen: productoGlobal.images?.[0]?.url || "/assets/logo.jpg",
+        precio: productoGlobal.price,
+        talla: varianteSeleccionada.talla,
+        cantidad
+      });
+    }
   } else {
-    carrito.push({
-      id: productoGlobal._id,
-      nombre: productoGlobal.name,
-      imagen: productoGlobal.images?.[0]?.url || "/assets/logo.jpg",
-      precio: productoGlobal.price,
-      talla: varianteSeleccionada.talla,
-      cantidad
-    });
+    if (cantidad < 1 || cantidad > (productoGlobal.stockTotal ?? 0)) {
+      return mostrarToast(`⚠️ Cantidad no permitida (stock: ${productoGlobal.stockTotal})`);
+    }
+
+    const clave = `${productoGlobal._id}_única`;
+    const idx = carrito.findIndex(p => p.id === productoGlobal._id);
+
+    if (idx >= 0) {
+      carrito[idx].cantidad = Math.min(carrito[idx].cantidad + cantidad, productoGlobal.stockTotal);
+    } else {
+      carrito.push({
+        id: productoGlobal._id,
+        nombre: productoGlobal.name,
+        imagen: productoGlobal.images?.[0]?.url || "/assets/logo.jpg",
+        precio: productoGlobal.price,
+        talla: "única",
+        cantidad
+      });
+    }
   }
 
   localStorage.setItem("km_ez_cart", JSON.stringify(carrito));

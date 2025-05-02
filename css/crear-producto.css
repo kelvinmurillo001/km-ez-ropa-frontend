@@ -84,7 +84,7 @@ form select:focus {
   box-shadow: 0 0 5px rgba(255, 109, 0, 0.5);
 }
 
-/* === PREVISUALIZACIÓN PRINCIPAL === */
+/* === PREVISUALIZACIÓN === */
 .preview-imagen {
   display: flex;
   flex-wrap: wrap;
@@ -118,9 +118,7 @@ form select:focus {
   margin-bottom: 0.2rem;
 }
 
-.variante-item input[type="text"],
-.variante-item input[type="number"],
-.variante-item input[type="file"],
+.variante-item input,
 .variante-item select {
   background-color: #222;
   color: var(--text-main);
@@ -203,7 +201,7 @@ form select:focus {
   border: 1px solid red;
 }
 
-/* === MENSAJES ADMIN (💬 mostrarMensaje) === */
+/* === MENSAJES ADMIN === */
 #adminMensaje {
   position: fixed;
   bottom: 20px;

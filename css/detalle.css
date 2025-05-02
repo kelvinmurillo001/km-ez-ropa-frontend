@@ -146,11 +146,6 @@ img {
   gap: 1.2rem;
 }
 
-#selectorVariantes .form-group {
-  display: flex;
-  flex-direction: column;
-}
-
 #selectorVariantes label {
   font-weight: bold;
   margin-bottom: 0.3rem;
@@ -173,6 +168,12 @@ img {
 #selectorVariantes input:focus {
   border-color: #d4af37;
   box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.4);
+}
+
+#selectorVariantes select:disabled,
+#selectorVariantes input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* 📦 Stock Info */
@@ -255,9 +256,8 @@ img {
   }
 
   .btn-agregar,
-  .selectores select,
-  .selectores input,
-  #selectorVariantes select {
+  #selectorVariantes select,
+  #selectorVariantes input {
     width: 100%;
   }
 

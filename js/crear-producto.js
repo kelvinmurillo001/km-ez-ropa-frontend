@@ -26,7 +26,6 @@ const btnAgregarVariante = document.getElementById("btnAgregarVariante");
 const categoriaInput = document.getElementById("categoriaInput");
 const subcategoriaInput = document.getElementById("subcategoriaInput");
 const tallaTipoInput = document.getElementById("tallaTipoInput");
-const tallasInput = document.getElementById("tallasInput");
 const msgEstado = document.getElementById("msgEstado");
 
 let variantes = [];
@@ -51,29 +50,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (err) {
     mostrarMensaje("❌ Error durante la carga inicial", "error");
   }
-});
-
-// 🎯 Auto-tallas
-tallaTipoInput.addEventListener("change", () => {
-  const tipo = tallaTipoInput.value.toLowerCase();
-  tallasInput.value = tallasPorTipo[tipo]?.join(", ") || "";
-});
-
-// 🖼️ Preview
-imagenInput.addEventListener("change", () => {
-  const file = imagenInput.files[0];
-  if (!file) return;
-
-  if (!file.type.startsWith("image/")) {
-    return mostrarMensaje("⚠️ El archivo no es una imagen válida", "error");
-  }
-
-  if (file.size > 2 * 1024 * 1024) {
-    return mostrarMensaje("⚠️ Tamaño máximo de imagen: 2MB", "error");
-  }
-
-  const url = URL.createObjectURL(file);
-  previewPrincipal.innerHTML = `<img src="${url}" alt="Vista previa" style="max-width: 200px; border-radius: 8px;" />`;
 });
 
 // 📂 Categorías
@@ -102,6 +78,23 @@ async function cargarCategorias() {
   });
 }
 
+// 🖼️ Preview
+imagenInput.addEventListener("change", () => {
+  const file = imagenInput.files[0];
+  if (!file) return;
+
+  if (!file.type.startsWith("image/")) {
+    return mostrarMensaje("⚠️ El archivo no es una imagen válida", "error");
+  }
+
+  if (file.size > 2 * 1024 * 1024) {
+    return mostrarMensaje("⚠️ Tamaño máximo de imagen: 2MB", "error");
+  }
+
+  const url = URL.createObjectURL(file);
+  previewPrincipal.innerHTML = `<img src="${url}" alt="Vista previa" style="max-width: 200px; border-radius: 8px;" />`;
+});
+
 // ➕ Añadir variante
 btnAgregarVariante.addEventListener("click", agregarVariante);
 
@@ -110,7 +103,7 @@ function agregarVariante() {
   const div = document.createElement("div");
   div.className = "variante-item";
   div.innerHTML = `
-    <label>Color:</label>
+    <label>🎨 Color:</label>
     <input type="text" name="colorVariante${index}" required />
 
     <label>Talla:</label>
@@ -166,8 +159,6 @@ form.addEventListener("submit", async (e) => {
     const categoria = categoriaInput.value;
     const subcategoria = subcategoriaInput?.value || "";
     const tallaTipo = tallaTipoInput.value;
-    const color = form.colorInput.value.trim();
-    const tallas = form.tallasInput.value.split(",").map(t => t.trim()).filter(Boolean);
     const destacado = document.getElementById("destacadoInput")?.checked || false;
     const filePrincipal = imagenInput.files[0];
 
@@ -204,9 +195,6 @@ form.addEventListener("submit", async (e) => {
       });
     }
 
-    const usarStockDirecto = variantesFinales.length === 0;
-    const stock = usarStockDirecto ? parseInt(form.stockInput.value || "0") : undefined;
-
     const nuevoProducto = {
       name: nombre,
       description: descripcion,
@@ -214,20 +202,16 @@ form.addEventListener("submit", async (e) => {
       category: categoria,
       subcategory: subcategoria,
       tallaTipo,
-      color,
-      sizes: tallas,
       featured: destacado,
       variants: variantesFinales,
       images: [{
         url: imagenPrincipal.url,
         cloudinaryId: imagenPrincipal.cloudinaryId,
-        talla: tallas[0] || "única",
-        color
+        talla: "única",
+        color: "principal"
       }],
       createdBy: user?.name || "admin"
     };
-
-    if (usarStockDirecto) nuevoProducto.stock = stock;
 
     msgEstado.textContent = "💾 Guardando producto...";
     const res = await fetch(API_PRODUCTS, {
