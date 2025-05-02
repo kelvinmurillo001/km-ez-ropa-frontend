@@ -205,7 +205,7 @@ form.addEventListener("submit", async (e) => {
       description: descripcion,
       price: precio,
       category: categoria,
-      subcategory,
+      subcategory: subcategoria, // ✅ CORREGIDO
       tallaTipo,
       color,
       sizes: tallas,
