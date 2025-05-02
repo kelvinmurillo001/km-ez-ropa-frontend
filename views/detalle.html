@@ -7,8 +7,10 @@
 
   <!-- 🔍 SEO básico -->
   <meta name="description" content="Explora los detalles exclusivos de nuestras prendas urbanas. KM & EZ ROPA te viste con estilo y autenticidad.">
+  <meta name="keywords" content="ropa urbana, moda, KM & EZ, prendas, catálogo, ecommerce, tienda online, streetwear">
   <meta name="robots" content="index, follow">
   <meta name="author" content="KM & EZ ROPA">
+  <link rel="canonical" href="https://kmezropacatalogo.com/detalle.html" />
 
   <!-- 🌐 Open Graph -->
   <meta property="og:title" content="Detalle del Producto | KM & EZ ROPA" id="ogTitle">
@@ -29,9 +31,8 @@
   <script src="/js/promo-display.js" defer></script>
 </head>
 
-<body>
+<body lang="es">
 
-<!-- 🔝 Encabezado -->
 <header class="main-header" role="banner">
   <div class="logo">
     <a href="/" aria-label="Ir al inicio">
@@ -50,20 +51,18 @@
   </nav>
 </header>
 
-<!-- 🔥 Promociones dinámicas -->
+<!-- 🔥 Promociones -->
 <div id="promo-display-container" data-page="detalle" aria-label="Promociones activas"></div>
 
-<!-- 👕 Contenido Principal -->
 <main class="detalle-container" role="main" aria-label="Detalle del producto">
   
-  <!-- 📦 Detalle del producto -->
   <section id="detalleProducto" class="detalle-grid fade-in" aria-live="polite">
-    <!-- Cargado dinámicamente con JS -->
+    <!-- Renderizado dinámicamente -->
   </section>
 
   <!-- ❤️ Agregar a Favoritos -->
   <div class="text-center mt-2">
-    <button id="btnFavorito" class="btn-secundario" aria-label="Agregar producto a favoritos">
+    <button id="btnFavorito" class="btn-secundario" aria-label="Agregar producto a favoritos" aria-pressed="false">
       ❤️ Agregar a Favoritos
     </button>
   </div>
@@ -93,17 +92,15 @@
   </a>
 </div>
 
-<!-- 🔚 Pie de Página -->
 <footer class="site-footer" role="contentinfo">
   <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
 </footer>
 
-<!-- ⚠️ Fallback No-JS -->
 <noscript>
   <p style="text-align: center; color: red;">⚠️ Activa JavaScript para visualizar correctamente esta página.</p>
 </noscript>
 
-<!-- 🔗 Función Compartir en redes -->
+<!-- 🔗 Compartir -->
 <script>
 function compartirEnRed(red) {
   const url = window.location.href;
@@ -111,7 +108,7 @@ function compartirEnRed(red) {
   const enlace = red === "facebook"
     ? `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
     : `https://wa.me/?text=${encodeURIComponent(titulo + ' ' + url)}`;
-  window.open(enlace, "_blank");
+  window.open(enlace, "_blank", "noopener,noreferrer");
 }
 </script>
 

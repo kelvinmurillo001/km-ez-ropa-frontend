@@ -7,6 +7,7 @@
 
   <!-- 🔍 SEO & Open Graph -->
   <meta name="description" content="Explora todas las categorías de ropa urbana disponibles en KM & EZ ROPA.">
+  <meta name="keywords" content="categorías, ropa urbana, moda, streetwear, prendas por categoría, KM & EZ ROPA">
   <meta name="robots" content="index, follow">
   <meta name="author" content="KM & EZ ROPA">
   <meta property="og:title" content="Categorías de Productos | KM & EZ ROPA" />
@@ -15,6 +16,15 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://kmezropacatalogo.com/categorias.html" />
 
+  <!-- 🐦 Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Categorías | KM & EZ ROPA">
+  <meta name="twitter:description" content="Moda urbana organizada por categoría. Encuentra lo que buscas fácilmente.">
+  <meta name="twitter:image" content="/assets/og-image.jpg">
+
+  <!-- 🔗 Canonical -->
+  <link rel="canonical" href="https://kmezropacatalogo.com/categorias.html">
+
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css">
   <link rel="stylesheet" href="/css/fondo.css">
@@ -22,91 +32,96 @@
   <link rel="stylesheet" href="/css/promo-display.css">
   <link rel="stylesheet" href="/css/categorias.css">
 
+  <!-- 💡 Mejoras de rendimiento -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preload" href="/assets/logo.jpg" as="image" />
+
   <!-- ✅ Scripts -->
   <script type="module" src="/js/config.js"></script>
   <script type="module" src="/js/categorias.js" defer></script>
   <script src="/js/promo-display.js" defer></script>
 </head>
-<body>
 
-<header class="main-header" role="banner">
-  <div class="logo">
-    <a href="/" aria-label="Ir al inicio">
-      <img src="/assets/logo.jpg" alt="Logo de KM & EZ ROPA" loading="lazy">
-    </a>
-    <div class="brand">
-      <h1>KM & EZ ROPA</h1>
-      <p>Explora tu estilo</p>
+<body lang="es">
+  <!-- 🔝 Encabezado -->
+  <header class="main-header" role="banner">
+    <div class="logo">
+      <a href="/" aria-label="Ir al inicio">
+        <img src="/assets/logo.jpg" alt="Logo de KM & EZ ROPA" loading="lazy">
+      </a>
+      <div class="brand">
+        <h1>KM & EZ ROPA</h1>
+        <p>Explora tu estilo</p>
+      </div>
     </div>
+    <nav class="nav-links" role="navigation" aria-label="Navegación principal">
+      <a href="/index.html">🏠 Inicio</a>
+      <a href="/carrito.html">🛒 Carrito</a>
+      <button id="modoOscuroBtn" aria-label="Activar o desactivar modo oscuro">🌙</button>
+    </nav>
+  </header>
+
+  <!-- 🔥 Promociones dinámicas -->
+  <div id="promo-display-container" data-page="categorias" aria-label="Promociones activas"></div>
+
+  <!-- 🔍 Filtros -->
+  <section class="filtros-section" aria-label="Filtrado de productos">
+    <div class="filtro">
+      <label for="categoriaSelect">Categoría:</label>
+      <select id="categoriaSelect" aria-label="Selecciona una categoría">
+        <option value="">📂 Todas</option>
+      </select>
+    </div>
+    <div class="filtro">
+      <label for="subcategoriaSelect">Subcategoría:</label>
+      <select id="subcategoriaSelect" aria-label="Selecciona una subcategoría" disabled>
+        <option value="">📁 Todas</option>
+      </select>
+    </div>
+    <div class="filtro">
+      <label for="precioSelect">Ordenar por precio:</label>
+      <select id="precioSelect" aria-label="Ordenar por precio">
+        <option value="">🔀 Todos</option>
+        <option value="low">⬇️ Menor a mayor</option>
+        <option value="high">⬆️ Mayor a menor</option>
+      </select>
+    </div>
+    <div class="filtro">
+      <label for="busquedaInput" class="sr-only">Buscar producto:</label>
+      <input type="search" id="busquedaInput" placeholder="🔎 Buscar producto..." autocomplete="on" aria-label="Buscar productos por nombre" />
+    </div>
+  </section>
+
+  <!-- 🧾 Catálogo de productos -->
+  <main class="catalogo-section" role="main" aria-label="Catálogo de productos filtrados">
+    <h2 class="section-title">🧢 Productos Disponibles</h2>
+    <div id="catalogo" class="product-grid" role="list" aria-live="polite">
+      <!-- Render dinámico por JS -->
+    </div>
+  </main>
+
+  <!-- 💬 Botones flotantes -->
+  <div class="floating-buttons" aria-hidden="false">
+    <a href="/carrito.html" class="cart-icon" aria-label="Ir al carrito">
+      <img src="/assets/cart-icon.svg" alt="Icono de carrito" loading="lazy">
+      <span id="cartCount" role="status" aria-live="polite">0</span>
+    </a>
+    <a href="https://wa.me/593990270864" class="whatsapp-icon" target="_blank" rel="noopener noreferrer" aria-label="Chatear por WhatsApp">
+      <img src="/assets/whatsapp.svg" alt="WhatsApp" loading="lazy">
+    </a>
   </div>
-  <nav class="nav-links" role="navigation" aria-label="Navegación principal">
-    <a href="/index.html">🏠 Inicio</a>
-    <a href="/carrito.html">🛒 Carrito</a>
-    <button id="modoOscuroBtn" aria-label="Alternar modo oscuro">🌙</button>
-  </nav>
-</header>
 
-<!-- 🔥 Promociones -->
-<div id="promo-display-container" data-page="categorias" aria-label="Promociones activas"></div>
+  <!-- 📣 Mensajes de estado -->
+  <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
 
-<!-- 🔍 Filtros -->
-<section class="filtros-section" aria-label="Filtrado de productos">
-  <div class="filtro">
-    <label for="categoriaSelect">Categoría:</label>
-    <select id="categoriaSelect" aria-label="Filtrar por categoría">
-      <option value="">📂 Todas</option>
-    </select>
-  </div>
-  <div class="filtro">
-    <label for="subcategoriaSelect">Subcategoría:</label>
-    <select id="subcategoriaSelect" aria-label="Filtrar por subcategoría" disabled>
-      <option value="">📁 Todas</option>
-    </select>
-  </div>
-  <div class="filtro">
-    <label for="precioSelect">Ordenar por:</label>
-    <select id="precioSelect" aria-label="Ordenar por precio">
-      <option value="">🔀 Todos</option>
-      <option value="low">⬇️ Menor a mayor</option>
-      <option value="high">⬆️ Mayor a menor</option>
-    </select>
-  </div>
-  <div class="filtro">
-    <label for="busquedaInput" class="sr-only">Buscar producto:</label>
-    <input type="search" id="busquedaInput" placeholder="🔎 Buscar producto..." autocomplete="on" />
-  </div>
-</section>
+  <!-- 🔚 Pie de página -->
+  <footer class="site-footer" role="contentinfo">
+    <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
+  </footer>
 
-<!-- 🧾 Catálogo -->
-<main class="catalogo-section" role="main" aria-label="Catálogo de productos">
-  <h2 class="section-title">🧢 Productos Disponibles</h2>
-  <div id="catalogo" class="product-grid" role="list" aria-live="polite">
-    <!-- Productos renderizados dinámicamente -->
-  </div>
-</main>
-
-<!-- 💬 Botones flotantes -->
-<div class="floating-buttons">
-  <a href="/carrito.html" class="cart-icon" aria-label="Ir al carrito">
-    <img src="/assets/cart-icon.svg" alt="Icono de carrito" loading="lazy">
-    <span id="cartCount" role="status">0</span>
-  </a>
-  <a href="https://wa.me/593990270864" class="whatsapp-icon" target="_blank" rel="noopener">
-    <img src="/assets/whatsapp.svg" alt="WhatsApp" loading="lazy">
-  </a>
-</div>
-
-<!-- 📣 Errores / mensajes admin -->
-<div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
-
-<!-- 🔚 Footer -->
-<footer class="site-footer" role="contentinfo">
-  <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
-</footer>
-
-<noscript>
-  <p style="text-align: center; color: red;">⚠️ Activa JavaScript para visualizar correctamente esta página.</p>
-</noscript>
-
+  <!-- ⚠️ Sin JS -->
+  <noscript>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para visualizar correctamente esta página.</p>
+  </noscript>
 </body>
 </html>

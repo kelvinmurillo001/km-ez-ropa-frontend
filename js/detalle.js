@@ -1,10 +1,8 @@
 "use strict";
 
-// ✅ IMPORTAR utilidades
 import { registrarVisitaPublica } from "./utils.js";
 import { API_BASE } from "./config.js";
 
-// ▶️ Al cargar el DOM
 document.addEventListener("DOMContentLoaded", () => {
   registrarVisitaPublica();
 
@@ -41,7 +39,7 @@ async function cargarProducto(id) {
 
     renderizarProducto(producto);
     actualizarSEO(producto);
-
+    actualizarFavoritoUI(id);
   } catch (err) {
     console.error("❌ Error cargando producto:", err.message);
     mostrarError(err.message);
@@ -65,10 +63,10 @@ function renderizarProducto(p = {}) {
 
   if (Array.isArray(p.variants) && p.variants.length > 0) {
     const conStock = p.variants.filter(v => v.stock > 0);
-    tallasDisponibles = [...new Set(conStock.map(v => v.talla?.toUpperCase()))];
+    tallasDisponibles = [...new Set(conStock.map(v => v.talla?.toUpperCase()))].sort();
     stockTotal = conStock.reduce((acc, v) => acc + (v.stock || 0), 0);
   } else {
-    tallasDisponibles = p.sizes?.map(t => t.toUpperCase()) || ["Única"];
+    tallasDisponibles = p.sizes?.map(t => t.toUpperCase()) || ["ÚNICA"];
     stockTotal = typeof p.stock === "number" ? p.stock : 0;
   }
 
@@ -82,7 +80,7 @@ function renderizarProducto(p = {}) {
 
   detalle.innerHTML = `
     <div class="detalle-img">
-      <img id="imgPrincipal" src="${imagenPrincipal}" alt="${nombre}" loading="lazy" onerror="this.src='/assets/logo.jpg'" />
+      <img id="imgPrincipal" src="${imagenPrincipal}" alt="${nombre}" loading="lazy" onerror="this.src='/assets/logo.jpg'" aria-label="Imagen principal del producto" role="img" />
       <div class="galeria-mini">${galeriaHTML}</div>
     </div>
 
@@ -93,6 +91,8 @@ function renderizarProducto(p = {}) {
 
       <meta itemprop="sku" content="${id}" />
       <meta itemprop="brand" content="KM & EZ ROPA" />
+      <meta itemprop="availability" content="https://schema.org/InStock" />
+      <meta itemprop="priceCurrency" content="USD" />
 
       <div class="detalles-extra">
         <p><strong>Categoría:</strong> ${sanitize(p.category || "-")}</p>
@@ -117,12 +117,16 @@ function renderizarProducto(p = {}) {
 
 /* 🛒 Agregar al carrito */
 function agregarAlCarrito(id, nombre, imagen, precio) {
-  const talla = document.getElementById("tallaSelect")?.value || "Única";
+  const talla = document.getElementById("tallaSelect")?.value;
   const cantidad = parseInt(document.getElementById("cantidadInput")?.value || "1");
   const max = parseInt(document.getElementById("cantidadInput")?.max || "1");
 
+  if (!talla || talla.toLowerCase().includes("sin talla")) {
+    return mostrarToast("⚠️ Selecciona una talla válida.");
+  }
+
   if (cantidad > max) {
-    return alert(`⚠️ Solo puedes agregar hasta ${max} unidad(es).`);
+    return mostrarToast(`⚠️ Solo puedes agregar hasta ${max} unidad(es).`);
   }
 
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
@@ -145,16 +149,27 @@ function toggleFavorito(id) {
   const key = "km_ez_favs";
   const favs = JSON.parse(localStorage.getItem(key)) || [];
   const idx = favs.indexOf(id);
+  const btn = document.getElementById("btnFavorito");
 
   if (idx >= 0) {
     favs.splice(idx, 1);
     mostrarToast("🧺 Producto quitado de favoritos.");
+    if (btn) btn.setAttribute("aria-pressed", "false");
   } else {
     favs.push(id);
     mostrarToast("❤️ Producto guardado como favorito.");
+    if (btn) btn.setAttribute("aria-pressed", "true");
   }
 
   localStorage.setItem(key, JSON.stringify(favs));
+}
+
+function actualizarFavoritoUI(id) {
+  const favs = JSON.parse(localStorage.getItem("km_ez_favs")) || [];
+  const btn = document.getElementById("btnFavorito");
+  if (btn) {
+    btn.setAttribute("aria-pressed", favs.includes(id));
+  }
 }
 
 /* 🛒 Actualizar contador de carrito */
@@ -165,7 +180,7 @@ function actualizarCarritoWidget() {
   if (contador) contador.textContent = total;
 }
 
-/* 🔔 Mostrar notificaciones tipo toast */
+/* 🔔 Toast */
 function mostrarToast(mensaje) {
   const toast = document.createElement("div");
   toast.textContent = mensaje;
@@ -185,7 +200,7 @@ function mostrarToast(mensaje) {
   setTimeout(() => toast.remove(), 2500);
 }
 
-/* ❌ Mostrar error */
+/* ❌ Error visual */
 function mostrarError(msg = "❌ Error inesperado") {
   const detalle = document.getElementById("detalleProducto");
   if (detalle) {
@@ -198,7 +213,7 @@ function mostrarError(msg = "❌ Error inesperado") {
   }
 }
 
-/* 🌙 Activar modo oscuro */
+/* 🌙 Modo Oscuro */
 function activarModoOscuro() {
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
@@ -218,13 +233,13 @@ function sanitize(text = "") {
   return div.innerHTML;
 }
 
-/* 🔍 Actualizar SEO dinámicamente */
+/* 🔍 Actualizar metadatos SEO */
 function actualizarSEO(producto = {}) {
   const nombre = sanitize(producto.name || "Producto | KM & EZ ROPA");
   const descripcion = sanitize(producto.description || "Moda urbana exclusiva para ti.");
   const imagen = producto.image || producto.images?.[0]?.url || "/assets/og-image.jpg";
 
-  document.title = `${nombre} | KM & EZ ROPA`;
+  document.title = `${nombre} - Compra online | KM & EZ ROPA`;
 
   const descTag = document.querySelector('meta[name="description"]');
   if (descTag) descTag.setAttribute("content", descripcion);
@@ -238,6 +253,6 @@ function actualizarSEO(producto = {}) {
   if (ogImage) ogImage.setAttribute("content", imagen);
 }
 
-// 🌍 Exponer funciones globales
+// 🌍 Exponer globales
 window.agregarAlCarrito = agregarAlCarrito;
 window.toggleFavorito = toggleFavorito;

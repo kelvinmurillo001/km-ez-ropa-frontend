@@ -32,16 +32,21 @@ function aplicarModoOscuro() {
   });
 }
 
-/* 🚀 Inicio general */
+/* 🚀 Inicio */
 async function init() {
-  await cargarCategoriasDesdeAPI();
-  configurarFiltros();
-  await cargarPromocion();
-  await cargarProductos();
-  actualizarContadorCarrito();
+  try {
+    await cargarCategoriasDesdeAPI();
+    configurarFiltros();
+    await cargarPromocion();
+    await cargarProductos();
+    actualizarContadorCarrito();
+  } catch (err) {
+    console.error("❌ Error inicial:", err);
+    renderError("❌ Error al iniciar la página. Intenta más tarde.");
+  }
 }
 
-/* 🎯 Filtros */
+/* 🎯 Configurar filtros */
 function configurarFiltros() {
   categoriaSelect?.addEventListener("change", () => {
     llenarSubcategorias();
@@ -53,29 +58,21 @@ function configurarFiltros() {
   busquedaInput?.addEventListener("input", debounce(cargarProductos, 500));
 }
 
-/* 📁 Cargar categorías desde el backend */
+/* 📁 Obtener categorías desde backend */
 async function cargarCategoriasDesdeAPI() {
-  try {
-    const res = await fetch(API_CATEGORIES);
-    const data = await res.json();
-    if (!res.ok || !data.ok || !Array.isArray(data.data)) throw new Error(data.message || "Error al cargar categorías");
-
-    categoriasData = data.data;
-    llenarCategorias();
-    llenarSubcategorias();
-  } catch (err) {
-    console.error("❌ Error categorías:", err.message);
+  const res = await fetch(API_CATEGORIES);
+  const data = await res.json();
+  if (!res.ok || !data.ok || !Array.isArray(data.data)) {
+    throw new Error("Error al cargar categorías");
   }
+
+  categoriasData = data.data;
+  llenarCategorias();
+  llenarSubcategorias();
 }
 
-/* 📂 Llenar select de categorías */
 function llenarCategorias() {
-  categoriaSelect.innerHTML = '';
-  const defaultOption = document.createElement("option");
-  defaultOption.value = "";
-  defaultOption.textContent = "📂 Todas";
-  categoriaSelect.appendChild(defaultOption);
-
+  categoriaSelect.innerHTML = `<option value="">📂 Todas</option>`;
   categoriasData.forEach(cat => {
     const option = document.createElement("option");
     option.value = cat.name;
@@ -84,17 +81,10 @@ function llenarCategorias() {
   });
 }
 
-/* 📁 Llenar subcategorías según categoría */
 function llenarSubcategorias() {
-  subcategoriaSelect.innerHTML = '';
+  subcategoriaSelect.innerHTML = `<option value="">📁 Todas</option>`;
   const selected = categoriaSelect.value;
   const cat = categoriasData.find(c => c.name === selected);
-
-  const defaultOption = document.createElement("option");
-  defaultOption.value = "";
-  defaultOption.textContent = "📁 Todas";
-  subcategoriaSelect.appendChild(defaultOption);
-
   if (cat?.subcategories?.length) {
     cat.subcategories.forEach(sub => {
       const option = document.createElement("option");
@@ -108,10 +98,10 @@ function llenarSubcategorias() {
   }
 }
 
-/* 📦 Cargar productos desde API */
+/* 📦 Obtener productos desde backend */
 async function cargarProductos() {
   if (!catalogo) return;
-  catalogo.innerHTML = "<p class='text-center'>⏳ Cargando productos...</p>";
+  catalogo.innerHTML = `<p class='text-center'>⏳ Cargando productos...</p>`;
 
   try {
     const params = new URLSearchParams();
@@ -127,15 +117,16 @@ async function cargarProductos() {
     const data = await res.json();
 
     if (!res.ok) throw new Error(data.message || "❌ Error al obtener productos.");
-    const productos = Array.isArray(data.productos) ? data.productos : [];
 
+    const productos = Array.isArray(data.productos) ? data.productos : [];
     renderizarCatalogo(aplicarFiltros(productos));
   } catch (err) {
-    catalogo.innerHTML = `<p class="text-center" style="color:red;">${sanitize(err.message)}</p>`;
+    console.error("❌ Error al cargar productos:", err);
+    renderError(err.message || "❌ No se pudo cargar el catálogo.");
   }
 }
 
-/* 🧠 Aplicar filtros (solo si frontend necesita refinar) */
+/* 🧠 Aplicar filtros */
 function aplicarFiltros(productos) {
   const cat = categoriaSelect?.value?.toLowerCase() || "";
   const sub = subcategoriaSelect?.value?.toLowerCase() || "";
@@ -159,7 +150,7 @@ function renderizarCatalogo(productos) {
   catalogo.setAttribute("role", "list");
 
   if (!productos.length) {
-    catalogo.innerHTML = `<p class="text-center">📭 No hay productos que coincidan con los filtros seleccionados.</p>`;
+    renderError("📭 No hay productos que coincidan con los filtros seleccionados.");
     return;
   }
 
@@ -180,27 +171,30 @@ function crearTarjetaProducto(p) {
     <div class="product-info">
       <h3>${nombre}</h3>
       <p>$${precio}</p>
-      <button class="btn-card" onclick="verDetalle('${p._id}')">👁️ Ver</button>
+      <button class="btn-card" onclick="verDetalle('${p._id}')" aria-label="Ver detalle de ${nombre}">👁️ Ver</button>
     </div>
   `;
   return card;
 }
 
-/* 🔁 Ir a detalle */
+function renderError(msg = "⚠️ Error al mostrar contenido") {
+  catalogo.innerHTML = `<p class="text-center" style="color:red;">${sanitize(msg)}</p>`;
+}
+
+/* 🔁 Navegar a detalle */
 function verDetalle(id) {
-  if (!id) return;
-  window.location.href = `/detalle.html?id=${id}`;
+  if (id) window.location.href = `/detalle.html?id=${id}`;
 }
 window.verDetalle = verDetalle;
 
-/* 🛒 Contador carrito */
+/* 🛒 Actualizar contador carrito */
 function actualizarContadorCarrito() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
   const total = carrito.reduce((sum, item) => sum + (item.cantidad || item.quantity || 0), 0);
   if (contadorCarrito) contadorCarrito.textContent = total;
 }
 
-/* 🎁 Promociones */
+/* 🎁 Cargar promociones activas */
 async function cargarPromocion() {
   try {
     const res = await fetch(API_PROMOS);
@@ -221,7 +215,7 @@ async function cargarPromocion() {
   }
 }
 
-/* 🧼 Sanitizar */
+/* 🔐 Sanitizar texto */
 function sanitize(text = "") {
   const div = document.createElement("div");
   div.textContent = text;
@@ -229,7 +223,7 @@ function sanitize(text = "") {
 }
 
 /* ⏳ Debounce */
-function debounce(fn, delay) {
+function debounce(fn, delay = 300) {
   let timer;
   return (...args) => {
     clearTimeout(timer);
