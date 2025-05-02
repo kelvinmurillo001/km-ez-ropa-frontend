@@ -93,12 +93,24 @@ form select:focus {
   margin-top: 0.5rem;
 }
 
-.preview-mini {
-  width: 80px;
-  height: 80px;
+.preview-principal img {
+  max-width: 240px;
+  max-height: 240px;
+  border-radius: 8px;
+  object-fit: contain;
+  display: block;
+  border: 2px solid var(--accent);
+  margin-top: 1rem;
+}
+
+/* Variante image preview */
+.variante-box img {
+  max-width: 100px;
+  max-height: 100px;
   object-fit: cover;
   border-radius: 6px;
   border: 2px solid var(--accent);
+  margin-bottom: 0.5rem;
 }
 
 /* === VARIANTES === */
