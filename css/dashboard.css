@@ -1,15 +1,18 @@
-/* === 🎛️ DASHBOARD GENERAL === */
+/* === 🎛️ BASE GENERAL === */
 body {
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', sans-serif;
   background-color: #121212;
   color: #f5f5f5;
+  scroll-behavior: smooth;
 }
 
 h1, h2, h3 {
   color: #d4af37;
   font-weight: 600;
+  line-height: 1.3;
+  margin: 0 0 1rem;
 }
 
 .text-center {
@@ -37,8 +40,8 @@ h1, h2, h3 {
 /* === 🧾 TARJETAS DE KPI === */
 .card {
   background-color: #1e1e1e;
-  border: 1px solid #333;
-  border-radius: 10px;
+  border: 1px solid #2c2c2c;
+  border-radius: 12px;
   padding: 1.5rem;
   text-align: center;
   box-shadow: 0 6px 14px rgba(212, 175, 55, 0.1);
@@ -46,24 +49,24 @@ h1, h2, h3 {
 }
 
 .card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 24px rgba(212, 175, 55, 0.3);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 12px 26px rgba(212, 175, 55, 0.25);
 }
 
 .card h3 {
   margin-bottom: 0.5rem;
-  font-size: 1.1rem;
-  color: #bbb;
+  font-size: 1.15rem;
+  color: #ffa733;
 }
 
 .card p {
-  font-size: 2.1rem;
+  font-size: 2.2rem;
   font-weight: bold;
-  margin-top: 0.5rem;
-  color: #fff;
+  margin: 0.5rem 0 0;
+  color: #ffffff;
 }
 
-/* === 📂 SECCIÓN EXTRA / LISTADOS === */
+/* === 📂 SECCIONES ADICIONALES === */
 .analitica-extra {
   background-color: #1a1a1a;
   border: 1px solid #333;
@@ -82,9 +85,10 @@ h1, h2, h3 {
 .listado-categorias li {
   margin-bottom: 0.6rem;
   color: #ccc;
-  font-size: 0.95rem;
-  padding-left: 1rem;
+  font-size: 1rem;
+  padding-left: 1.5rem;
   position: relative;
+  line-height: 1.4;
 }
 
 .listado-categorias li::before {
@@ -92,17 +96,19 @@ h1, h2, h3 {
   position: absolute;
   left: 0;
   color: #d4af37;
+  font-size: 1.3rem;
+  line-height: 1;
 }
 
-/* === 🔘 BOTONES === */
+/* === 🔘 BOTONES ESTÁNDAR === */
 button.btn,
 button.btn-secundario {
-  padding: 0.75rem 1.5rem;
+  padding: 0.75rem 1.6rem;
   font-size: 1rem;
   font-weight: bold;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   margin: 0.5rem;
   border: none;
 }
@@ -139,6 +145,10 @@ button.btn-secundario:hover {
   }
 
   .dashboard-container {
+    padding: 1.2rem;
+  }
+
+  .analitica-extra {
     padding: 1.2rem;
   }
 }

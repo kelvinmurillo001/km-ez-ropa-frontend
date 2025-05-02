@@ -87,28 +87,60 @@ form textarea {
   border: 2px solid #ff6d00;
 }
 
-/* === 🔀 VARIANTES === */
+/* === 🔀 VARIANTES MEJORADAS === */
 .variante-box {
   border: 1px solid #444;
   border-radius: 8px;
-  padding: 1rem;
+  padding: 1.2rem;
   margin-top: 1rem;
   background-color: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.variante-box p {
+  margin: 0;
+  font-weight: bold;
+  color: #ff6d00;
 }
 
 .variante-box label {
   color: #ccc;
   font-size: 0.9rem;
+  margin-top: 0.3rem;
 }
 
-.variante-box input {
-  margin-bottom: 0.5rem;
+.variante-box input[type="text"],
+.variante-box input[type="number"],
+.variante-box input[type="file"] {
   width: 100%;
-  padding: 0.5rem;
   background-color: #222;
-  border: 1px solid #444;
-  border-radius: 6px;
   color: #f5f5f5;
+  border: 1px solid #444;
+  padding: 0.6rem;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.variante-box .preview-mini {
+  margin-top: 0.5rem;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 2px solid #ff6d00;
+}
+
+.variante-box hr {
+  margin-top: 1rem;
+  border: none;
+  border-top: 1px dashed #444;
+}
+
+.variante-box .btn-secundario {
+  align-self: flex-start;
+  margin-top: 0.5rem;
 }
 
 /* === 🎯 ACCIONES === */
@@ -173,5 +205,9 @@ form textarea {
 
   form.form-producto {
     padding: 1.2rem;
+  }
+
+  .variante-box {
+    padding: 1rem;
   }
 }

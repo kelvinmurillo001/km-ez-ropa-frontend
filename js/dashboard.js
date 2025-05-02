@@ -1,4 +1,4 @@
-"use strict"; 
+"use strict";
 
 // ✅ Importar dependencias necesarias
 import { verificarSesion, goBack } from "./admin-utils.js";
@@ -27,26 +27,32 @@ document.addEventListener("DOMContentLoaded", () => {
  */
 async function loadDashboard() {
   try {
-    const [ordenesRaw, productos, resumen] = await Promise.all([
+    const [ordenesRaw, productosRaw, resumenRaw] = await Promise.all([
       fetchData(API_ORDERS, true),
       fetchData(API_PRODUCTS),
       fetchData(API_RESUMEN, true)
     ]);
 
-    const pedidos = Array.isArray(ordenesRaw.data) ? ordenesRaw.data : [];
+    const pedidos = Array.isArray(ordenesRaw?.data) ? ordenesRaw.data : [];
+    const productos = Array.isArray(productosRaw) ? productosRaw : [];
+    const resumen = typeof resumenRaw === "object" && resumenRaw !== null ? resumenRaw : {};
 
-    if (!Array.isArray(pedidos) || !Array.isArray(productos) || typeof resumen !== "object") {
-      throw new Error("❌ Estructura de datos inválida");
-    }
+    if (!Array.isArray(pedidos)) throw new Error("🛑 Pedidos no es un arreglo");
+    if (!Array.isArray(productos)) throw new Error("🛑 Productos no es un arreglo");
 
     resumenPedidos = procesarPedidos(pedidos);
-    resumenVentas = resumen;
+    resumenVentas = {
+      ventasTotales: parseFloat(resumen?.ventasTotales || 0),
+      totalVisitas: resumen?.totalVisitas || 0,
+      totalProductos: productos.length,
+      productosDestacados: productos.filter(p => p.featured).length
+    };
 
     renderResumen(resumenPedidos, resumenVentas, productos);
     renderCategoriasTop(productos);
   } catch (err) {
-    console.error("❌ Error al cargar dashboard:", err);
-    alert("⚠️ No se pudieron cargar los datos del panel.");
+    console.error("❌ Error al cargar dashboard:", err.message || err);
+    alert("⚠️ No se pudieron cargar los datos del panel. Intenta más tarde.");
   }
 }
 
@@ -56,10 +62,12 @@ async function loadDashboard() {
 async function fetchData(url, usarToken = false) {
   const headers = usarToken ? { Authorization: `Bearer ${token}` } : {};
   const res = await fetch(url, { headers });
+
   if (!res.ok) {
     const error = await res.text();
     throw new Error(`❌ ${url} → ${error}`);
   }
+
   return await res.json();
 }
 
@@ -95,10 +103,10 @@ function procesarPedidos(pedidos = []) {
  * 📈 Renderizar resumen general
  */
 function renderResumen(pedidos, ventas, productos = []) {
-  setText("ventasTotales", `$${parseFloat(ventas.ventasTotales || 0).toFixed(2)}`);
-  setText("visitasTotales", ventas.totalVisitas ?? 0);
-  setText("totalProductos", productos.length);
-  setText("promosActivas", productos.filter(p => p.featured).length);
+  setText("ventasTotales", `$${ventas.ventasTotales.toFixed(2)}`);
+  setText("visitasTotales", ventas.totalVisitas);
+  setText("totalProductos", ventas.totalProductos);
+  setText("promosActivas", ventas.productosDestacados);
 
   setText("total", pedidos.total);
   setText("pendientes", pedidos.pendiente);
@@ -145,8 +153,8 @@ function exportarEstadisticas() {
   csv += "Resumen de Ventas\n";
   csv += `Ventas Totales,${resumenVentas.ventasTotales}\n`;
   csv += `Visitas Totales,${resumenVentas.totalVisitas}\n`;
-  csv += `Productos Totales,${resumenVentas.totalProductos || "-"}\n`;
-  csv += `Promociones Activas,${resumenVentas.productosDestacados || "-"}\n\n`;
+  csv += `Productos Totales,${resumenVentas.totalProductos}\n`;
+  csv += `Promociones Activas,${resumenVentas.productosDestacados}\n\n`;
 
   csv += "Resumen de Pedidos\n";
   Object.entries(resumenPedidos).forEach(([key, val]) => {

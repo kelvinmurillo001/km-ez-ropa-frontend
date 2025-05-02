@@ -32,26 +32,26 @@
   <section class="dashboard-grid" aria-label="Métricas globales">
     <article class="card" role="region" aria-labelledby="tituloVentas">
       <h3 id="tituloVentas">🛒 Ventas Totales</h3>
-      <p><span id="ventasTotales" aria-live="polite">$0.00</span></p>
+      <p><span id="ventasTotales" role="status" aria-live="polite">$0.00</span></p>
     </article>
     <article class="card" role="region" aria-labelledby="tituloVisitas">
       <h3 id="tituloVisitas">👥 Visitas</h3>
-      <p><span id="visitasTotales" aria-live="polite">0</span></p>
+      <p><span id="visitasTotales" role="status" aria-live="polite">0</span></p>
     </article>
     <article class="card" role="region" aria-labelledby="tituloProductos">
       <h3 id="tituloProductos">📦 Productos</h3>
-      <p><span id="totalProductos" aria-live="polite">0</span></p>
+      <p><span id="totalProductos" role="status" aria-live="polite">0</span></p>
     </article>
     <article class="card" role="region" aria-labelledby="tituloPromos">
       <h3 id="tituloPromos">🎯 Promos Activas</h3>
-      <p><span id="promosActivas" aria-live="polite">0</span></p>
+      <p><span id="promosActivas" role="status" aria-live="polite">0</span></p>
     </article>
   </section>
 
   <!-- 📋 Estado de Pedidos -->
   <section class="analitica-extra mt-3" aria-labelledby="tituloPedidos">
     <h2 id="tituloPedidos" class="text-center">🧾 Estado de Pedidos</h2>
-    <ul class="listado-categorias">
+    <ul class="listado-categorias" aria-live="polite">
       <li><strong>Total:</strong> <span id="total">-</span></li>
       <li><strong>Pendientes:</strong> <span id="pendientes">-</span></li>
       <li><strong>En Proceso:</strong> <span id="en_proceso">-</span></li>
@@ -65,7 +65,7 @@
   <section class="analitica-extra mt-3" aria-labelledby="tituloTopCategorias">
     <h2 id="tituloTopCategorias" class="text-center">📁 Top Categorías</h2>
     <ul id="topCategorias" class="listado-categorias" aria-live="polite">
-      <!-- Contenido dinámico insertado por JS -->
+      <!-- Se cargan dinámicamente desde JS -->
     </ul>
   </section>
 
@@ -84,15 +84,15 @@
   </div>
 </main>
 
-<!-- 🔔 Mensajes Flotantes -->
-<div id="adminMensaje" class="admin-message oculto" role="status" aria-live="polite"></div>
+<!-- 🔔 Mensaje Flotante Global -->
+<div id="adminMensaje" class="admin-message oculto" role="status" aria-live="assertive"></div>
 
-<!-- 🚫 Fallback si JS desactivado -->
+<!-- 🚫 JS Desactivado -->
 <noscript>
   <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
 </noscript>
 
-<!-- 🌙 Activar Modo Oscuro automático -->
+<!-- 🌙 Activar modo oscuro si corresponde -->
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     if (localStorage.getItem("modoOscuro") === "true") {

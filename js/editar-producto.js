@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnAgregarVariante")?.addEventListener("click", renderVarianteNueva);
 });
 
-// -------------------- 📦 FUNCIONES AUXILIARES ------------------------
+// -------------------- FUNCIONES AUXILIARES ------------------------
 
 function validarCampo(valor, mensaje) {
   if (!valor || valor.trim() === "") throw new Error(mensaje);
@@ -63,7 +63,7 @@ async function subirImagen(file) {
   };
 }
 
-// -------------------- 📚 CATEGORÍAS ------------------------
+// -------------------- CATEGORÍAS ------------------------
 
 async function cargarCategorias() {
   try {
@@ -76,6 +76,7 @@ async function cargarCategorias() {
     categorias = data;
     const categoriaSelect = form.categoriaInput;
     categoriaSelect.innerHTML = '<option value="">Selecciona una categoría</option>';
+
     categorias.forEach(cat => {
       const option = document.createElement("option");
       option.value = cat.name;
@@ -95,13 +96,14 @@ async function cargarCategorias() {
         subcategoriaInput.disabled = true;
       }
     });
+
   } catch (err) {
     console.error("❌ Error cargando categorías:", err);
     mostrarMensaje("❌ No se pudieron cargar las categorías", "error");
   }
 }
 
-// -------------------- 🧠 CARGAR PRODUCTO ------------------------
+// -------------------- PRODUCTO ------------------------
 
 async function cargarProducto() {
   try {
@@ -120,6 +122,7 @@ async function cargarProducto() {
     form.destacadoInput.checked = !!producto.featured;
     form.activoInput.checked = !!producto.isActive;
     form.tallaTipoInput.value = producto.tallaTipo || "";
+    form.borradorInput.checked = !producto.isActive;
 
     form.categoriaInput.dispatchEvent(new Event("change"));
     form.subcategoriaInput.value = producto.subcategory || "";
@@ -131,13 +134,14 @@ async function cargarProducto() {
     }
 
     producto.variants?.forEach(renderVarianteExistente);
+
   } catch (err) {
     console.error("❌ Error al cargar producto:", err);
     msgEstado.innerHTML = `❌ Error al cargar producto.<br><button onclick="goBack()">🔙 Volver</button>`;
   }
 }
 
-// -------------------- 🧩 VARIANTES ------------------------
+// -------------------- VARIANTES ------------------------
 
 function renderVarianteExistente(v, i) {
   const div = document.createElement("div");
@@ -153,6 +157,8 @@ function renderVarianteExistente(v, i) {
     <input type="text" class="variante-talla" value="${v.talla}" />
     <label>Stock:</label>
     <input type="number" class="variante-stock" min="0" value="${v.stock}" />
+    <label>Activo:</label>
+    <input type="checkbox" class="variante-activo" ${v.active !== false ? 'checked' : ''} />
     <input type="hidden" class="variante-id" value="${v.cloudinaryId}" />
     <button type="button" class="btn-secundario btn-quitar-variante">🗑️ Quitar</button>
     <hr />
@@ -180,6 +186,8 @@ function renderVarianteNueva() {
     <input type="text" class="variante-talla" required />
     <label>Stock:</label>
     <input type="number" class="variante-stock" min="0" required />
+    <label>Activo:</label>
+    <input type="checkbox" class="variante-activo" checked />
     <button type="button" class="btn-secundario btn-quitar-variante">🗑️ Quitar</button>
     <hr />
   `;
@@ -187,7 +195,7 @@ function renderVarianteNueva() {
   div.querySelector(".btn-quitar-variante").addEventListener("click", () => div.remove());
 }
 
-// -------------------- 💾 ENVIAR FORMULARIO ------------------------
+// -------------------- GUARDAR FORMULARIO ------------------------
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -202,7 +210,8 @@ form.addEventListener("submit", async (e) => {
     const categoria = limpiarTexto(form.categoriaInput.value);
     const subcategoria = limpiarTexto(form.subcategoriaInput?.value);
     const destacado = form.destacadoInput?.checked || false;
-    const activo = form.activoInput?.checked || false;
+    const borrador = form.borradorInput?.checked || false;
+    const activo = !borrador;
     const tallaTipo = limpiarTexto(form.tallaTipoInput.value);
     const color = limpiarTexto(form.colorInput.value);
     const sizes = form.tallasInput.value.split(",").map(s => s.trim()).filter(Boolean);
@@ -223,6 +232,7 @@ form.addEventListener("submit", async (e) => {
       const talla = limpiarTexto(b.querySelector(".variante-talla")?.value);
       const stock = parseInt(b.querySelector(".variante-stock")?.value || "0");
       const cloudinaryId = b.querySelector(".variante-id")?.value;
+      const active = b.querySelector(".variante-activo")?.checked ?? true;
 
       validarCampo(color, "⚠️ Color requerido");
       validarCampo(talla, "⚠️ Talla requerida");
@@ -237,7 +247,7 @@ form.addEventListener("submit", async (e) => {
         finalCloudinaryId = subida.cloudinaryId;
       }
 
-      return { imageUrl, cloudinaryId: finalCloudinaryId, color, talla, stock };
+      return { imageUrl, cloudinaryId: finalCloudinaryId, color, talla, stock, active };
     }));
 
     const claves = new Set();

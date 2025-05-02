@@ -9,11 +9,12 @@
   <meta name="description" content="Editar detalles completos de un producto, incluyendo imágenes, tallas, variantes y más." />
   <meta name="theme-color" content="#ff6d00" />
 
+  <!-- Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
-  <link rel="stylesheet" href="/css/crear-producto.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/adminMensaje.css" />
+  <link rel="stylesheet" href="/css/editar-producto.css" />
 
   <style>
     .mensaje-global {
@@ -45,6 +46,7 @@
 
 <body>
 
+<!-- Mensaje global -->
 <div id="adminMensaje" class="mensaje-global" role="alert" aria-live="assertive"></div>
 
 <main class="formulario-container fade-in" role="main" aria-label="Formulario de edición de producto">
@@ -73,7 +75,7 @@
     <label for="precioInput">Precio de venta: *</label>
     <input type="number" id="precioInput" step="0.01" min="0" required />
 
-    <label for="stockInput">Stock base:</label>
+    <label for="stockInput">Stock base (sin variantes):</label>
     <input type="number" id="stockInput" min="0" />
 
     <label for="categoriaInput">Categoría principal: *</label>
@@ -111,6 +113,11 @@
     <div class="mt-2">
       <input type="checkbox" id="activoInput" />
       <label for="activoInput">🟢 Producto activo (visible)</label>
+    </div>
+
+    <div class="mt-2">
+      <input type="checkbox" id="borradorInput" />
+      <label for="borradorInput">💾 Guardar como borrador (no visible)</label>
     </div>
 
     <!-- Variantes -->
