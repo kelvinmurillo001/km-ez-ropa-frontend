@@ -42,13 +42,14 @@ function renderResumenCarrito() {
   resumenPedido.innerHTML = carrito.map(item => {
     const nombre = sanitize(item.nombre);
     const talla = sanitize(item.talla || "Única");
+    const color = sanitize(item.color || "N/A");
     const cantidad = parseInt(item.cantidad) || 1;
     const precio = parseFloat(item.precio) || 0;
     const subtotal = precio * cantidad;
     total += subtotal;
 
     return `<div class="resumen-item">
-      <p>🧢 <strong>${nombre}</strong> | Talla: ${talla} | Cant: ${cantidad} | <strong>$${subtotal.toFixed(2)}</strong></p>
+      <p>🧢 <strong>${nombre}</strong> | Talla: ${talla} | Color: ${color} | Cant: ${cantidad} | <strong>$${subtotal.toFixed(2)}</strong></p>
     </div>`;
   }).join("");
 
@@ -108,13 +109,14 @@ form?.addEventListener("submit", async e => {
       if (!producto) throw new Error(`❌ Producto no encontrado: ${item.nombre}`);
 
       const talla = item.talla?.toLowerCase();
+      const color = item.color?.toLowerCase();
       const cantidad = parseInt(item.cantidad) || 1;
 
       if (producto.variants?.length > 0) {
         const variante = producto.variants.find(v =>
-          v.talla?.toLowerCase() === talla && v.stock >= cantidad
+          v.talla === talla && v.color === color && v.stock >= cantidad
         );
-        if (!variante) throw new Error(`❌ Variante no disponible: ${item.nombre} - ${item.talla}`);
+        if (!variante) throw new Error(`❌ Variante no disponible: ${item.nombre} - ${item.talla} - ${item.color}`);
       } else {
         const tallaValida = producto.sizes?.map(s => s.toLowerCase()).includes(talla);
         if (!tallaValida) throw new Error(`❌ Talla no válida para: ${item.nombre}`);
@@ -128,6 +130,7 @@ form?.addEventListener("submit", async e => {
         productId: item.id,
         name: sanitize(item.nombre),
         talla: sanitize(item.talla),
+        color: sanitize(item.color),
         cantidad,
         precio
       });
@@ -230,7 +233,7 @@ function abrirWhatsappConfirmacion(pedido) {
 📍 *Dirección:* ${pedido.direccion}
 
 🛍️ *Productos:*
-${pedido.items.map(i => `• ${i.cantidad} x ${i.name} - Talla: ${i.talla} - $${(i.precio * i.cantidad).toFixed(2)}`).join("\n")}
+${pedido.items.map(i => `• ${i.cantidad} x ${i.name} - Talla: ${i.talla} - Color: ${i.color} - $${(i.precio * i.cantidad).toFixed(2)}`).join("\n")}
 
 💳 *Pago:* ${pedido.metodoPago}
 💰 *Total:* $${pedido.total.toFixed(2)}
