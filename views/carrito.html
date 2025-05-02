@@ -22,29 +22,30 @@
   <script type="module" src="/js/carrito.js" defer></script>
   <script src="/js/promo-display.js" defer></script>
 </head>
+
 <body>
 
-  <!-- 🔥 PROMOCIÓN EN CARRITO -->
+  <!-- 🔥 PROMOCIÓN ACTIVA -->
   <div id="promo-display-container" data-page="carrito" role="complementary" aria-label="Promoción activa en carrito"></div>
 
   <!-- 🛍️ CONTENIDO PRINCIPAL -->
   <main class="carrito-container fade-in" role="main" aria-label="Sección del carrito de compras">
     <h1 class="text-center">🛒 Tu Carrito</h1>
 
-    <!-- 📦 Lista dinámica de productos -->
+    <!-- 📦 Lista de productos -->
     <section id="carritoItems" class="carrito-lista" aria-live="polite" aria-relevant="all">
-      <!-- Productos renderizados por JavaScript -->
+      <!-- Productos se renderizan dinámicamente -->
     </section>
 
-    <!-- 💳 Resumen del pedido -->
-    <section class="carrito-resumen mt-3" aria-label="Resumen del pedido y acciones de pago">
-      <h2>Total: <span id="carritoTotal" aria-live="polite" role="status">$0.00</span></h2>
+    <!-- 💳 Resumen y acciones -->
+    <section class="carrito-resumen mt-3" aria-label="Resumen del pedido">
+      <h2>Total: <span id="carritoTotal" role="status" aria-live="polite">$0.00</span></h2>
 
       <div class="botones-carrito">
         <button 
-          onclick="window.location.href='/index.html'" 
+          onclick="window.location.href='/categorias.html'" 
           class="btn-secundario" 
-          aria-label="Volver al catálogo de productos">
+          aria-label="Seguir explorando productos">
           ⬅️ Seguir Comprando
         </button>
 
@@ -58,17 +59,30 @@
         <button 
           id="btnIrCheckout" 
           class="btn" 
-          aria-label="Ir al formulario de compra">
+          aria-label="Continuar a finalizar compra">
           ✅ Finalizar Compra
         </button>
       </div>
     </section>
   </main>
 
-  <!-- ⚠️ Fallback sin JS -->
+  <!-- 🔚 Footer -->
+  <footer class="site-footer text-center mt-3" role="contentinfo">
+    <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- ⚠️ Fallback sin JavaScript -->
   <noscript>
-    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para usar el carrito correctamente.</p>
+    <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
 
+  <!-- 🌙 Activar modo oscuro si está guardado -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("modoOscuro") === "true") {
+        document.body.classList.add("modo-oscuro");
+      }
+    });
+  </script>
 </body>
 </html>

@@ -7,7 +7,6 @@
   animation: fadeIn 0.8s ease;
 }
 
-/* ✍️ Subtítulo informativo */
 .subtitulo-checkout {
   font-size: 1.1rem;
   color: #bbb;
@@ -66,20 +65,23 @@ legend {
 }
 
 /* 🖊️ Inputs y textarea */
-input, textarea, select {
+input,
+textarea,
+select {
   width: 100%;
   background: #121212;
   color: #f5f5f5;
   padding: 0.9rem 1rem;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
+  margin: 0.5rem 0 1.2rem;
   border: 1px solid #444;
   border-radius: 6px;
   font-size: 1rem;
   transition: border-color 0.3s, background-color 0.3s;
 }
 
-input:focus, textarea:focus, select:focus {
+input:focus,
+textarea:focus,
+select:focus {
   border-color: #d4af37;
   background-color: #1a1a1a;
   outline: none;
@@ -163,17 +165,21 @@ input:focus, textarea:focus, select:focus {
   gap: 1rem;
 }
 
-.form-actions .btn {
+.form-actions .btn,
+.form-actions .btn-secundario {
   width: 100%;
   padding: 1rem;
   font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.form-actions .btn {
   background-color: #d4af37;
   color: #121212;
   border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
 .form-actions .btn:hover {
@@ -205,10 +211,24 @@ input:focus, textarea:focus, select:focus {
     flex-direction: column;
     align-items: center;
   }
+
+  .form-checkout {
+    padding: 1.5rem 1rem;
+  }
+
+  #totalFinal {
+    font-size: 1.5rem;
+  }
 }
 
 /* 🌟 Animación de fadeIn */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

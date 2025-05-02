@@ -5,9 +5,11 @@ import { API_BASE } from "./config.js";
 const STORAGE_KEY = "km_ez_cart";
 const LAST_ORDER_KEY = "km_ez_last_order";
 const carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
 const API_ORDERS = `${API_BASE}/api/orders`;
 const API_PAYPAL_CREATE = `${API_BASE}/api/paypal/create-order`;
 
+// DOM Elements
 const resumenPedido = document.getElementById("resumenPedido");
 const totalFinal = document.getElementById("totalFinal");
 const form = document.getElementById("formCheckout");
@@ -17,8 +19,10 @@ const infoMetodoPago = document.getElementById("infoMetodoPago");
 
 let enviandoPedido = false;
 
+// -------------------- INICIO --------------------
+
 document.addEventListener("DOMContentLoaded", () => {
-  if (!Array.isArray(carrito) || carrito.length === 0) {
+  if (!carrito.length) {
     mostrarMensaje("⚠️ Tu carrito está vacío.", "warn");
     resumenPedido.innerHTML = "<p class='text-center text-warn'>Tu carrito está vacío.</p>";
     totalFinal.textContent = "$0.00";
@@ -30,12 +34,15 @@ document.addEventListener("DOMContentLoaded", () => {
   inicializarMetodoPago();
 });
 
+// -------------------- RENDER CARRITO --------------------
+
 function renderResumenCarrito() {
   let total = 0;
+
   resumenPedido.innerHTML = carrito.map(item => {
-    const nombre = sanitize(item.nombre || "Producto");
+    const nombre = sanitize(item.nombre);
     const talla = sanitize(item.talla || "Única");
-    const cantidad = parseInt(item.cantidad) || 0;
+    const cantidad = parseInt(item.cantidad) || 1;
     const precio = parseFloat(item.precio) || 0;
     const subtotal = precio * cantidad;
     total += subtotal;
@@ -47,6 +54,8 @@ function renderResumenCarrito() {
 
   totalFinal.textContent = `$${total.toFixed(2)}`;
 }
+
+// -------------------- MÉTODO DE PAGO --------------------
 
 function inicializarMetodoPago() {
   document.querySelectorAll("input[name='metodoPago']").forEach(radio => {
@@ -60,6 +69,8 @@ function inicializarMetodoPago() {
   });
 }
 
+// -------------------- SUBMIT PEDIDO --------------------
+
 form?.addEventListener("submit", async e => {
   e.preventDefault();
   if (enviandoPedido) return;
@@ -70,10 +81,10 @@ form?.addEventListener("submit", async e => {
   mostrarCargando(true);
 
   try {
-    const nombre = form.nombreInput.value.trim();
+    const nombre = sanitize(form.nombreInput.value);
     const email = form.emailInput.value.trim();
     const telefono = form.telefonoInput.value.trim();
-    const direccion = form.direccionInput.value.trim();
+    const direccion = sanitize(form.direccionInput.value);
     const metodoPago = document.querySelector("input[name='metodoPago']:checked")?.value;
 
     if (!nombre || !email || !telefono || !direccion || !metodoPago) {
@@ -83,8 +94,9 @@ form?.addEventListener("submit", async e => {
     if (!validarEmail(email)) throw new Error("❌ Email inválido.");
     if (!/^[0-9+\-\s]{7,20}$/.test(telefono)) throw new Error("❌ Teléfono inválido.");
     if (nombre.length < 3 || nombre.length > 50) throw new Error("❌ Nombre debe tener entre 3 y 50 caracteres.");
-    if (direccion.length < 5 || direccion.length > 120) throw new Error("❌ Dirección debe ser más específica.");
+    if (direccion.length < 5 || direccion.length > 120) throw new Error("❌ Dirección muy corta o demasiado larga.");
 
+    // Validar productos en carrito y stock
     let total = 0;
     const items = [];
 
@@ -98,35 +110,35 @@ form?.addEventListener("submit", async e => {
       const talla = item.talla?.toLowerCase();
       const cantidad = parseInt(item.cantidad) || 1;
 
-      if (Array.isArray(producto.variants) && producto.variants.length > 0) {
+      if (producto.variants?.length > 0) {
         const variante = producto.variants.find(v =>
           v.talla?.toLowerCase() === talla && v.stock >= cantidad
         );
-
         if (!variante) throw new Error(`❌ Variante no disponible: ${item.nombre} - ${item.talla}`);
       } else {
         const tallaValida = producto.sizes?.map(s => s.toLowerCase()).includes(talla);
         if (!tallaValida) throw new Error(`❌ Talla no válida para: ${item.nombre}`);
-        if ((producto.stock || 0) < cantidad) throw new Error(`❌ No hay suficiente stock para: ${item.nombre}`);
+        if ((producto.stock || 0) < cantidad) throw new Error(`❌ Stock insuficiente: ${item.nombre}`);
       }
 
       const precio = parseFloat(item.precio) || 0;
       total += precio * cantidad;
 
       items.push({
-        productId: item.id || null,
-        name: sanitize(item.nombre || ""),
-        talla: sanitize(item.talla || ""),
+        productId: item.id,
+        name: sanitize(item.nombre),
+        talla: sanitize(item.talla),
         cantidad,
         precio
       });
     }
 
+    // Crear pedido
     const pedido = {
-      nombreCliente: sanitize(nombre),
+      nombreCliente: nombre,
       email,
       telefono,
-      direccion: sanitize(direccion),
+      direccion,
       metodoPago,
       total,
       estado: metodoPago === "transferencia" ? "pendiente" : "pagado",
@@ -185,6 +197,8 @@ form?.addEventListener("submit", async e => {
   }
 });
 
+// -------------------- UBICACIÓN --------------------
+
 btnUbicacion?.addEventListener("click", () => {
   if (!navigator.geolocation) return mostrarMensaje("⚠️ Tu navegador no soporta ubicación.", "warn");
 
@@ -204,6 +218,8 @@ btnUbicacion?.addEventListener("click", () => {
     () => mostrarMensaje("❌ No se pudo acceder a ubicación.", "error")
   );
 });
+
+// -------------------- UTILIDADES --------------------
 
 function abrirWhatsappConfirmacion(pedido) {
   const mensaje = `
@@ -248,8 +264,7 @@ function mostrarCargando(show = true) {
 }
 
 function finalizarEnvio() {
-  const botonSubmit = form.querySelector("button[type='submit']");
-  botonSubmit.disabled = false;
+  form.querySelector("button[type='submit']").disabled = false;
   enviandoPedido = false;
   mostrarCargando(false);
 }

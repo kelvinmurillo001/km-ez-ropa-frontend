@@ -50,11 +50,16 @@ function guardarCarrito() {
 function limpiarItemsInvalidos() {
   carrito = carrito.filter(item =>
     item &&
+    typeof item.id === "string" &&
     typeof item.nombre === "string" &&
+    typeof item.talla === "string" &&
+    typeof item.imagen === "string" &&
     typeof item.precio === "number" &&
     typeof item.cantidad === "number" &&
     !isNaN(item.precio) &&
-    !isNaN(item.cantidad)
+    !isNaN(item.cantidad) &&
+    item.precio >= 0 &&
+    item.cantidad > 0
   );
   guardarCarrito();
 }
@@ -93,8 +98,8 @@ function renderizarCarrito() {
     const imagen = sanitizeURL(item.imagen || "/assets/logo.jpg");
     const nombre = sanitizeText(item.nombre || "Producto");
     const talla = sanitizeText(item.talla || "Única");
-    const precio = isNaN(item.precio) ? 0 : item.precio;
-    const cantidad = Math.max(1, Math.min(100, isNaN(item.cantidad) ? 1 : item.cantidad));
+    const precio = parseFloat(item.precio) || 0;
+    const cantidad = Math.max(1, Math.min(100, parseInt(item.cantidad) || 1));
     const subtotal = (precio * cantidad).toFixed(2);
 
     const div = document.createElement("div");

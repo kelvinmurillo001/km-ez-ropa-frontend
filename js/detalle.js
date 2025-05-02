@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
   actualizarCarritoWidget();
 
   document.getElementById("btnFavorito")?.addEventListener("click", () => toggleFavorito(id));
-  document.getElementById("btnAgregarCarrito")?.addEventListener("click", agregarAlCarrito);
 });
 
 /* Cargar producto */
@@ -107,6 +106,9 @@ function renderizarProducto(p) {
     </div>
   `;
 
+  // Enlazar el botón después de renderizar
+  document.getElementById("btnAgregarCarrito")?.addEventListener("click", agregarAlCarrito);
+
   if (tieneVariantes) configurarSelectores(p);
 }
 
@@ -117,6 +119,11 @@ function configurarSelectores(p) {
   const cantidadInput = document.getElementById("cantidadInput");
 
   const variantes = Array.isArray(p.variants) ? p.variants.filter(v => v.stock > 0) : [];
+
+  if (variantes.length === 0) {
+    mostrarToast("⚠️ No hay variantes disponibles para este producto.");
+    return;
+  }
 
   const coloresUnicos = [...new Set(variantes.map(v => v.color.toLowerCase()))];
 
@@ -186,7 +193,6 @@ function agregarAlCarrito() {
       return mostrarToast(`⚠️ Cantidad no permitida (stock: ${productoGlobal.stockTotal})`);
     }
 
-    const clave = `${productoGlobal._id}_única`;
     const idx = carrito.findIndex(p => p.id === productoGlobal._id);
 
     if (idx >= 0) {

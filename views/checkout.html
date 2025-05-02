@@ -2,10 +2,10 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>✅ Finalizar Compra | KM & EZ ROPA</title>
 
-  <!-- 🔐 Seguridad y Meta -->
+  <!-- 🔐 Meta -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Completa tu compra de forma segura y recibe tus productos de moda urbana. 🚀" />
   <meta name="theme-color" content="#ff6d00" />
@@ -28,15 +28,15 @@
 
 <body>
 
-  <!-- 🎉 Promociones activas -->
+  <!-- 🔥 Promociones activas -->
   <div id="promo-display-container" data-page="checkout" role="region" aria-label="Promociones activas"></div>
 
-  <!-- 🛒 Checkout principal -->
-  <main class="checkout-container fade-in" role="main" aria-label="Formulario de pago">
+  <!-- 🧾 Contenido principal -->
+  <main class="checkout-container fade-in" role="main" aria-label="Formulario de compra">
     <h1 class="text-center">🛒 Finalizar Compra</h1>
     <p class="text-center subtitulo-checkout">Completa tus datos y recibe tu pedido sin problemas. 🚚</p>
 
-    <!-- Progreso de pasos -->
+    <!-- Progreso visual (solo informativo) -->
     <div class="checkout-steps" aria-hidden="true">
       <div class="step active">1. Datos</div>
       <div class="step">2. Dirección</div>
@@ -44,10 +44,10 @@
       <div class="step">4. Confirmación</div>
     </div>
 
-    <!-- Formulario de checkout -->
+    <!-- 📋 Formulario de Checkout -->
     <form id="formCheckout" class="form-checkout" novalidate autocomplete="on">
-      
-      <!-- 👤 Datos del cliente -->
+
+      <!-- 👤 Información del cliente -->
       <fieldset>
         <legend>👤 Tus Datos</legend>
         <label for="nombreInput">Nombre completo: *</label>
@@ -60,7 +60,7 @@
         <input type="tel" id="telefonoInput" name="telefonoInput" required placeholder="+593..." autocomplete="tel" />
       </fieldset>
 
-      <!-- 🧾 Facturación opcional -->
+      <!-- 🧾 Datos fiscales opcionales -->
       <fieldset>
         <legend>🧾 Datos de Facturación <small>(opcional)</small></legend>
         <label for="facturaNombre">Razón social:</label>
@@ -73,16 +73,15 @@
         <input type="email" id="facturaCorreo" name="facturaCorreo" placeholder="facturas@empresa.com" />
       </fieldset>
 
-      <!-- 📍 Dirección de entrega -->
+      <!-- 🏠 Dirección de entrega -->
       <fieldset>
         <legend>📍 Dirección de Entrega</legend>
         <label for="direccionInput">Dirección completa: *</label>
         <textarea id="direccionInput" name="direccionInput" required placeholder="Ej: Av. Principal 123, Quito - Pichincha" autocomplete="street-address"></textarea>
-
         <button type="button" class="btn-secundario mt-1" id="btnUbicacion">📍 Detectar ubicación</button>
       </fieldset>
 
-      <!-- 💳 Método de pago -->
+      <!-- 💳 Pago -->
       <fieldset>
         <legend>💳 Método de Pago</legend>
         <div class="metodo-pago-selector">
@@ -98,13 +97,13 @@
         <div id="infoMetodoPago" class="metodo-pago-info mt-1" aria-live="polite"></div>
       </fieldset>
 
-      <!-- 🛒 Resumen pedido -->
+      <!-- 📦 Resumen del pedido -->
       <fieldset>
         <legend>🛒 Resumen de tu Pedido</legend>
         <div id="resumenPedido" aria-live="polite">
-          <!-- Productos se cargan aquí -->
+          <!-- Contenido dinámico -->
         </div>
-        <h3>Total: <span id="totalFinal">$0.00</span></h3>
+        <h3>Total: <span id="totalFinal" aria-live="assertive" role="status">$0.00</span></h3>
       </fieldset>
 
       <!-- 🚀 Acciones finales -->
@@ -113,15 +112,23 @@
         <button type="button" onclick="window.location.href='/carrito.html'" class="btn-secundario">🔙 Volver al Carrito</button>
       </div>
 
-      <!-- 🔔 Mensajes -->
+      <!-- 🔔 Estado -->
       <p id="msgEstado" class="form-msg text-center mt-2" role="alert" aria-live="assertive"></p>
     </form>
   </main>
 
   <!-- ❗ Sin JS -->
   <noscript>
-    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para procesar tu compra correctamente.</p>
+    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para poder finalizar tu compra.</p>
   </noscript>
 
+  <!-- 🌙 Modo oscuro -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("modoOscuro") === "true") {
+        document.body.classList.add("modo-oscuro");
+      }
+    });
+  </script>
 </body>
 </html>
