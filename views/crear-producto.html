@@ -55,6 +55,25 @@
       <option value="">Selecciona una subcategoría</option>
     </select>
 
+    <!-- 📐 Tipo de Talla global -->
+    <label for="tallaTipoInput">📐 Tipo de Talla *</label>
+    <select id="tallaTipoInput" required>
+      <option value="">Selecciona tipo</option>
+      <option value="adulto">Adulto</option>
+      <option value="joven">Joven</option>
+      <option value="niño">Niño</option>
+      <option value="niña">Niña</option>
+      <option value="bebé">Bebé</option>
+    </select>
+
+    <!-- 📏 Tallas disponibles -->
+    <label for="tallasInput">📏 Tallas Disponibles</label>
+    <input type="text" id="tallasInput" placeholder="Ej: S, M, L, XL" />
+
+    <!-- 🎨 Color principal -->
+    <label for="colorInput">🎨 Color Principal</label>
+    <input type="text" id="colorInput" placeholder="Ej: negro, azul marino" />
+
     <!-- 🌟 Producto destacado -->
     <div class="mt-2">
       <input type="checkbox" id="destacadoInput" />
@@ -63,10 +82,14 @@
 
     <!-- 🎨 Variantes -->
     <fieldset class="mt-3">
-      <legend>🎨 Variantes (color, tipo de talla, talla, imagen y stock):</legend>
+      <legend>🎨 Variantes (color, talla, imagen y stock):</legend>
       <div id="variantesContainer" aria-live="polite"></div>
       <button type="button" class="btn-secundario mt-1" id="btnAgregarVariante">➕ Añadir Variante</button>
     </fieldset>
+
+    <!-- 📦 Stock base solo si no hay variantes -->
+    <label for="stockInput">📦 Stock Base (si no hay variantes)</label>
+    <input type="number" id="stockInput" min="0" placeholder="Ej: 10" />
 
     <!-- 🧾 Acciones -->
     <div class="form-actions mt-3">
