@@ -2,14 +2,12 @@
 
 import { API_BASE } from "./config.js";
 
-// 🔐 Constantes
 const STORAGE_KEY = "km_ez_cart";
 const LAST_ORDER_KEY = "km_ez_last_order";
 const carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 const API_ORDERS = `${API_BASE}/api/orders`;
 const API_PAYPAL_CREATE = `${API_BASE}/api/paypal/create-order`;
 
-// 🎯 DOM Elements
 const resumenPedido = document.getElementById("resumenPedido");
 const totalFinal = document.getElementById("totalFinal");
 const form = document.getElementById("formCheckout");
@@ -71,64 +69,76 @@ form?.addEventListener("submit", async e => {
   botonSubmit.disabled = true;
   mostrarCargando(true);
 
-  const nombre = form.nombreInput.value.trim();
-  const email = form.emailInput.value.trim();
-  const telefono = form.telefonoInput.value.trim();
-  const direccion = form.direccionInput.value.trim();
-  const metodoPago = document.querySelector("input[name='metodoPago']:checked")?.value;
-
-  if (!nombre || !email || !telefono || !direccion || !metodoPago) {
-    mostrarMensaje("❌ Todos los campos son obligatorios.", "error");
-    finalizarEnvio();
-    return;
-  }
-  if (!validarEmail(email)) {
-    mostrarMensaje("❌ Email inválido.", "error");
-    finalizarEnvio();
-    return;
-  }
-  if (!/^[0-9+\-\s]{7,20}$/.test(telefono)) {
-    mostrarMensaje("❌ Teléfono inválido.", "error");
-    finalizarEnvio();
-    return;
-  }
-  if (nombre.length < 3 || nombre.length > 50) {
-    mostrarMensaje("❌ Nombre debe tener entre 3 y 50 caracteres.", "error");
-    finalizarEnvio();
-    return;
-  }
-  if (direccion.length < 5 || direccion.length > 120) {
-    mostrarMensaje("❌ Dirección debe ser más específica.", "error");
-    finalizarEnvio();
-    return;
-  }
-
-  const total = carrito.reduce((acc, item) => acc + (parseFloat(item.precio) || 0) * (parseInt(item.cantidad) || 0), 0);
-
-  const pedido = {
-    nombreCliente: sanitize(nombre),
-    email,
-    telefono,
-    direccion: sanitize(direccion),
-    metodoPago,
-    total,
-    estado: metodoPago === "transferencia" ? "pendiente" : "pagado",
-    nota: "",
-    items: carrito.map(item => ({
-      productId: item.id || null,
-      name: sanitize(item.nombre || ""),
-      talla: sanitize(item.talla || ""),
-      cantidad: parseInt(item.cantidad) || 1,
-      precio: parseFloat(item.precio) || 0
-    })),
-    factura: {
-      razonSocial: sanitize(form.facturaNombre?.value || ""),
-      ruc: sanitize(form.facturaRUC?.value || ""),
-      email: sanitize(form.facturaCorreo?.value || "")
-    }
-  };
-
   try {
+    const nombre = form.nombreInput.value.trim();
+    const email = form.emailInput.value.trim();
+    const telefono = form.telefonoInput.value.trim();
+    const direccion = form.direccionInput.value.trim();
+    const metodoPago = document.querySelector("input[name='metodoPago']:checked")?.value;
+
+    if (!nombre || !email || !telefono || !direccion || !metodoPago) {
+      throw new Error("❌ Todos los campos son obligatorios.");
+    }
+
+    if (!validarEmail(email)) throw new Error("❌ Email inválido.");
+    if (!/^[0-9+\-\s]{7,20}$/.test(telefono)) throw new Error("❌ Teléfono inválido.");
+    if (nombre.length < 3 || nombre.length > 50) throw new Error("❌ Nombre debe tener entre 3 y 50 caracteres.");
+    if (direccion.length < 5 || direccion.length > 120) throw new Error("❌ Dirección debe ser más específica.");
+
+    let total = 0;
+    const items = [];
+
+    for (const item of carrito) {
+      const resProd = await fetch(`${API_BASE}/api/products/${item.id}`);
+      const dataProd = await resProd.json();
+      const producto = dataProd?.producto;
+
+      if (!producto) throw new Error(`❌ Producto no encontrado: ${item.nombre}`);
+
+      const talla = item.talla?.toLowerCase();
+      const cantidad = parseInt(item.cantidad) || 1;
+
+      if (Array.isArray(producto.variants) && producto.variants.length > 0) {
+        const variante = producto.variants.find(v =>
+          v.talla?.toLowerCase() === talla && v.stock >= cantidad
+        );
+
+        if (!variante) throw new Error(`❌ Variante no disponible: ${item.nombre} - ${item.talla}`);
+      } else {
+        const tallaValida = producto.sizes?.map(s => s.toLowerCase()).includes(talla);
+        if (!tallaValida) throw new Error(`❌ Talla no válida para: ${item.nombre}`);
+        if ((producto.stock || 0) < cantidad) throw new Error(`❌ No hay suficiente stock para: ${item.nombre}`);
+      }
+
+      const precio = parseFloat(item.precio) || 0;
+      total += precio * cantidad;
+
+      items.push({
+        productId: item.id || null,
+        name: sanitize(item.nombre || ""),
+        talla: sanitize(item.talla || ""),
+        cantidad,
+        precio
+      });
+    }
+
+    const pedido = {
+      nombreCliente: sanitize(nombre),
+      email,
+      telefono,
+      direccion: sanitize(direccion),
+      metodoPago,
+      total,
+      estado: metodoPago === "transferencia" ? "pendiente" : "pagado",
+      nota: "",
+      items,
+      factura: {
+        razonSocial: sanitize(form.facturaNombre?.value || ""),
+        ruc: sanitize(form.facturaRUC?.value || ""),
+        email: sanitize(form.facturaCorreo?.value || "")
+      }
+    };
+
     const res = await fetch(API_ORDERS, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -136,12 +146,12 @@ form?.addEventListener("submit", async e => {
     });
 
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Error al registrar el pedido.");
+    if (!res.ok) throw new Error(data.message || "❌ Error al registrar el pedido.");
 
-    // 💾 Guardar seguimiento y último pedido
     if (data?.data?.codigoSeguimiento) {
       localStorage.setItem("codigoSeguimiento", data.data.codigoSeguimiento);
     }
+
     localStorage.setItem(LAST_ORDER_KEY, JSON.stringify(pedido));
 
     if (metodoPago === "transferencia") {
@@ -175,7 +185,6 @@ form?.addEventListener("submit", async e => {
   }
 });
 
-// 📍 Autocompletar dirección
 btnUbicacion?.addEventListener("click", () => {
   if (!navigator.geolocation) return mostrarMensaje("⚠️ Tu navegador no soporta ubicación.", "warn");
 
@@ -196,7 +205,6 @@ btnUbicacion?.addEventListener("click", () => {
   );
 });
 
-// ✅ Helper Functions
 function abrirWhatsappConfirmacion(pedido) {
   const mensaje = `
 📦 *NUEVO PEDIDO*
