@@ -43,10 +43,6 @@
     <label for="precioInput">💲 Precio *</label>
     <input type="number" id="precioInput" step="0.01" min="0" required placeholder="Ej: 39.90" />
 
-    <!-- 📦 Stock -->
-    <label for="stockInput">📦 Stock Base *</label>
-    <input type="number" id="stockInput" min="0" required placeholder="Ej: 10" />
-
     <!-- 📂 Categoría -->
     <label for="categoriaInput">📂 Categoría *</label>
     <select id="categoriaInput" required>
@@ -59,25 +55,6 @@
       <option value="">Selecciona una subcategoría</option>
     </select>
 
-    <!-- 📐 Tipo de Talla -->
-    <label for="tallaTipoInput">📐 Tipo de Talla *</label>
-    <select id="tallaTipoInput" required>
-      <option value="">Selecciona tipo</option>
-      <option value="adulto">Adulto</option>
-      <option value="joven">Joven</option>
-      <option value="niño">Niño</option>
-      <option value="niña">Niña</option>
-      <option value="bebé">Bebé</option>
-    </select>
-
-    <!-- 📏 Tallas disponibles -->
-    <label for="tallasInput">📏 Tallas Disponibles</label>
-    <input type="text" id="tallasInput" placeholder="Ej: S, M, L, XL" />
-
-    <!-- 🎨 Color -->
-    <label for="colorInput">🎨 Color Principal</label>
-    <input type="text" id="colorInput" placeholder="Ej: negro, azul marino" />
-
     <!-- 🌟 Producto destacado -->
     <div class="mt-2">
       <input type="checkbox" id="destacadoInput" />
@@ -86,7 +63,7 @@
 
     <!-- 🎨 Variantes -->
     <fieldset class="mt-3">
-      <legend>🎨 Variantes (colores alternativos con imagen y stock):</legend>
+      <legend>🎨 Variantes (color, tipo de talla, talla, imagen y stock):</legend>
       <div id="variantesContainer" aria-live="polite"></div>
       <button type="button" class="btn-secundario mt-1" id="btnAgregarVariante">➕ Añadir Variante</button>
     </fieldset>
@@ -121,7 +98,7 @@
       if (file && file.type.startsWith("image/")) {
         const reader = new FileReader();
         reader.onload = () => {
-          document.getElementById("previewPrincipal").innerHTML = `<img src="${reader.result}" alt="Vista previa" class="imagen-preview-principal" />`;
+          document.getElementById("previewPrincipal").innerHTML = `<img src="${reader.result}" alt="Vista previa" class="imagen-preview-principal" style="max-width: 250px; border-radius: 6px;" />`;
         };
         reader.readAsDataURL(file);
       }

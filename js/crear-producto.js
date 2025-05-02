@@ -25,20 +25,10 @@ const variantesContainer = document.getElementById("variantesContainer");
 const btnAgregarVariante = document.getElementById("btnAgregarVariante");
 const categoriaInput = document.getElementById("categoriaInput");
 const subcategoriaInput = document.getElementById("subcategoriaInput");
-const tallaTipoInput = document.getElementById("tallaTipoInput");
-const tallasInput = document.getElementById("tallasInput");
 const msgEstado = document.getElementById("msgEstado");
 
 let variantes = [];
 let categoriasConSubcategorias = [];
-
-const tallasPorTipo = {
-  adulto: ["S", "M", "L", "XL", "XXL"],
-  joven: ["S", "M", "L"],
-  niño: ["1", "2", "3", "4", "5", "6", "8", "10", "12"],
-  niña: ["1", "2", "3", "4", "5", "6", "8", "10", "12"],
-  bebé: ["0-3", "3-6", "6-9", "9-12", "12-18", "18-24"]
-};
 
 // 🚀 Init
 document.addEventListener("DOMContentLoaded", async () => {
@@ -53,13 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// 🎯 Auto-tallas
-tallaTipoInput.addEventListener("change", () => {
-  const tipo = tallaTipoInput.value.toLowerCase();
-  tallasInput.value = tallasPorTipo[tipo]?.join(", ") || "";
-});
-
-// 🖼️ Preview
+// 🖼️ Preview principal
 imagenInput.addEventListener("change", () => {
   const file = imagenInput.files[0];
   if (!file) return;
@@ -73,7 +57,7 @@ imagenInput.addEventListener("change", () => {
   }
 
   const url = URL.createObjectURL(file);
-  previewPrincipal.innerHTML = `<img src="${url}" alt="Vista previa" style="max-width:200px; border-radius:8px;" />`;
+  previewPrincipal.innerHTML = `<img src="${url}" alt="Vista previa" style="max-width: 200px; border-radius: 8px;" />`;
 });
 
 // 📂 Categorías
@@ -102,7 +86,7 @@ async function cargarCategorias() {
   });
 }
 
-// ➕ Variante
+// ➕ Añadir variante
 btnAgregarVariante.addEventListener("click", agregarVariante);
 
 function agregarVariante() {
@@ -110,14 +94,28 @@ function agregarVariante() {
   const div = document.createElement("div");
   div.className = "variante-item";
   div.innerHTML = `
-    <label>Color Variante:</label>
+    <label>Color:</label>
     <input type="text" name="colorVariante${index}" required />
+
+    <label>Tipo de Talla:</label>
+    <select name="tipoTallaVariante${index}" required>
+      <option value="">Selecciona tipo</option>
+      <option value="adulto">Adulto</option>
+      <option value="joven">Joven</option>
+      <option value="niño">Niño</option>
+      <option value="niña">Niña</option>
+      <option value="bebé">Bebé</option>
+    </select>
+
     <label>Talla:</label>
     <input type="text" name="tallaVariante${index}" required />
+
     <label>Imagen:</label>
     <input type="file" name="imagenVariante${index}" accept="image/*" required />
+
     <label>Stock:</label>
     <input type="number" name="stockVariante${index}" min="0" value="0" required />
+
     <button type="button" class="btn-secundario" onclick="this.parentElement.remove()">❌ Quitar</button>
     <hr />
   `;
@@ -161,9 +159,6 @@ form.addEventListener("submit", async (e) => {
     const precio = parseFloat(form.precioInput.value);
     const categoria = categoriaInput.value;
     const subcategoria = subcategoriaInput?.value || "";
-    const tallaTipo = tallaTipoInput.value;
-    const color = form.colorInput.value.trim();
-    const tallas = form.tallasInput.value.split(",").map(t => t.trim()).filter(Boolean);
     const destacado = document.getElementById("destacadoInput")?.checked || false;
     const filePrincipal = imagenInput.files[0];
 
@@ -176,51 +171,48 @@ form.addEventListener("submit", async (e) => {
     const claves = new Set();
 
     for (const v of variantesContainer.querySelectorAll(".variante-item")) {
-      const colorInput = v.querySelector("input[name^='color']");
-      const tallaInput = v.querySelector("input[name^='talla']");
-      const stockInput = v.querySelector("input[type='number']");
+      const color = v.querySelector("input[name^='color']")?.value.trim();
+      const tipoTalla = v.querySelector("select[name^='tipoTallaVariante']")?.value.trim();
+      const talla = v.querySelector("input[name^='talla']")?.value.trim();
+      const stock = parseInt(v.querySelector("input[type='number']")?.value) || 0;
       const fileInput = v.querySelector("input[type='file']");
 
-      if (!fileInput?.files.length) continue;
+      if (!fileInput?.files.length || !color || !tipoTalla || !talla) {
+        throw new Error("⚠️ Todos los campos de variantes son obligatorios.");
+      }
 
-      const clave = `${colorInput.value.trim().toLowerCase()}-${tallaInput.value.trim().toLowerCase()}`;
-      if (claves.has(clave)) throw new Error("⚠️ Variantes duplicadas (color + talla)");
+      const clave = `${tipoTalla.toLowerCase()}-${color.toLowerCase()}-${talla.toLowerCase()}`;
+      if (claves.has(clave)) throw new Error("⚠️ Variante duplicada (tipo + color + talla)");
       claves.add(clave);
 
       const subida = await subirImagen(fileInput.files[0]);
+
       variantesFinales.push({
         imageUrl: subida.url,
         cloudinaryId: subida.cloudinaryId,
-        color: colorInput.value.trim(),
-        talla: tallaInput.value.trim(),
-        stock: parseInt(stockInput.value) || 0
+        color,
+        talla,
+        tallaTipo: tipoTalla,
+        stock
       });
     }
-
-    const usarStockDirecto = variantesFinales.length === 0;
-    const stock = usarStockDirecto ? parseInt(form.stockInput.value || "0") : undefined;
 
     const nuevoProducto = {
       name: nombre,
       description: descripcion,
       price: precio,
       category: categoria,
-      subcategory: subcategoria, // ✅ CORREGIDO
-      tallaTipo,
-      color,
-      sizes: tallas,
+      subcategory: subcategoria,
       featured: destacado,
       variants: variantesFinales,
       images: [{
         url: imagenPrincipal.url,
         cloudinaryId: imagenPrincipal.cloudinaryId,
-        talla: tallas[0] || "única",
-        color
+        talla: "única",
+        color: "principal"
       }],
       createdBy: user?.name || "admin"
     };
-
-    if (usarStockDirecto) nuevoProducto.stock = stock;
 
     msgEstado.textContent = "💾 Guardando producto...";
     const res = await fetch(API_PRODUCTS, {

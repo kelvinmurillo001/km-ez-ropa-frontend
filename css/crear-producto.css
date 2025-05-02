@@ -84,61 +84,63 @@ form select:focus {
   box-shadow: 0 0 5px rgba(255, 109, 0, 0.5);
 }
 
-/* === PREVISUALIZACIÓN === */
-.preview-imagen,
-.preview-imagenes {
+/* === PREVISUALIZACIÓN PRINCIPAL === */
+.preview-imagen {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   margin-top: 0.5rem;
 }
 
-.preview-principal img {
+.preview-imagen img {
   max-width: 240px;
   max-height: 240px;
   border-radius: 8px;
   object-fit: contain;
-  display: block;
   border: 2px solid var(--accent);
-  margin-top: 1rem;
-}
-
-/* Variante image preview */
-.variante-box img {
-  max-width: 100px;
-  max-height: 100px;
-  object-fit: cover;
-  border-radius: 6px;
-  border: 2px solid var(--accent);
-  margin-bottom: 0.5rem;
 }
 
 /* === VARIANTES === */
-.variante-box {
+.variante-item {
   border: 1px solid var(--border);
-  border-radius: 8px;
+  background-color: var(--bg-box);
+  border-radius: 10px;
   padding: 1rem;
   margin-top: 1rem;
-  background-color: var(--bg-box);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.variante-box:not(:last-child) {
-  border-bottom: 1px dashed #333;
-  margin-bottom: 1rem;
-}
-
-.variante-box label {
-  color: var(--text-muted);
+.variante-item label {
   font-size: 0.9rem;
-  font-weight: 500;
-  display: block;
-  margin-bottom: 0.3rem;
+  color: var(--text-muted);
+  margin-bottom: 0.2rem;
 }
 
-.variante-box input[type="text"],
-.variante-box input[type="number"],
-.variante-box input[type="file"] {
-  margin-bottom: 0.5rem;
+.variante-item input[type="text"],
+.variante-item input[type="number"],
+.variante-item input[type="file"],
+.variante-item select {
+  background-color: #222;
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  padding: 0.6rem;
+  border-radius: 6px;
+  width: 100%;
+}
+
+.variante-item input[type="file"] {
+  padding: 0.4rem;
+}
+
+.variante-item img {
+  margin-top: 0.5rem;
+  max-width: 100px;
+  max-height: 100px;
+  border-radius: 6px;
+  border: 2px solid var(--accent);
+  object-fit: cover;
 }
 
 /* === ACCIONES === */
@@ -246,9 +248,14 @@ form select:focus {
     flex-direction: column;
   }
 
-  .preview-mini {
+  .preview-imagen img {
     width: 100%;
     height: auto;
+  }
+
+  .variante-item {
+    padding: 1rem;
+    gap: 0.7rem;
   }
 
   form.form-producto {
