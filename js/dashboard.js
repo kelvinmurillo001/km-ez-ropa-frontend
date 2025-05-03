@@ -34,7 +34,7 @@ async function loadDashboard() {
     ]);
 
     const pedidos = Array.isArray(ordenesRaw?.data) ? ordenesRaw.data : [];
-    const productos = Array.isArray(productosRaw) ? productosRaw : [];
+    const productos = Array.isArray(productosRaw?.productos) ? productosRaw.productos : [];
     const resumen = typeof resumenRaw === "object" && resumenRaw !== null ? resumenRaw : {};
 
     if (!Array.isArray(pedidos)) throw new Error("🛑 Pedidos no es un arreglo");
