@@ -8,7 +8,7 @@
 }
 
 .subtitulo-checkout {
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 2vw, 1.2rem);
   color: #bbb;
   margin-bottom: 1rem;
   text-align: center;
@@ -79,12 +79,13 @@ select {
   transition: border-color 0.3s, background-color 0.3s;
 }
 
-input:focus,
-textarea:focus,
-select:focus {
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
   border-color: #d4af37;
   background-color: #1a1a1a;
-  outline: none;
+  outline: 2px solid #d4af37;
+  outline-offset: 2px;
 }
 
 /* 📍 Botón ubicación */
@@ -151,7 +152,7 @@ select:focus {
 
 /* 💰 Total final */
 #totalFinal {
-  font-size: 1.8rem;
+  font-size: clamp(1.6rem, 3vw, 1.8rem);
   font-weight: bold;
   color: #d4af37;
   text-align: right;

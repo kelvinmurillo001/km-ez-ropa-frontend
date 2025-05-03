@@ -1,7 +1,7 @@
 /* === 🔝 HEADER === */
 .header {
   text-align: center;
-  padding: 24px;
+  padding: 1.5rem;
   background-color: rgba(255, 255, 255, 0.95);
   border-bottom: 1px solid #e0e0e0;
   backdrop-filter: blur(5px);
@@ -15,7 +15,7 @@ body.modo-oscuro .header {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .logo-img {
@@ -26,10 +26,10 @@ body.modo-oscuro .header {
 }
 
 .subtitulo {
-  font-size: 15px;
+  font-size: 0.95rem;
   color: #666;
-  margin-top: 6px;
   font-style: italic;
+  margin-top: 0.4rem;
 }
 body.modo-oscuro .subtitulo {
   color: #bbb;
@@ -41,7 +41,7 @@ body.modo-oscuro .subtitulo {
   flex-wrap: wrap;
   gap: 1rem;
   justify-content: center;
-  padding: 24px;
+  padding: 1.5rem;
   background: #f4f4f4;
   border-bottom: 1px solid #ccc;
 }
@@ -51,12 +51,12 @@ body.modo-oscuro .filtros-container {
 }
 
 .busqueda-input {
-  padding: 10px;
+  padding: 0.7rem 1rem;
   border-radius: 6px;
   border: 1px solid #bbb;
-  font-size: 15px;
+  font-size: 1rem;
   width: 260px;
-  transition: border 0.3s ease;
+  transition: border 0.3s ease, background-color 0.3s;
 }
 .busqueda-input:focus {
   border-color: #d4af37;
@@ -71,14 +71,14 @@ body.modo-oscuro .busqueda-input {
 /* === 🎁 PROMO BANNER === */
 .promo-banner {
   background-color: #fff8e1;
-  padding: 12px;
+  padding: 0.75rem;
   color: #5d4037;
   text-align: center;
   border-left: 5px solid #d4af37;
   border-radius: 8px;
   font-weight: bold;
-  font-size: 15px;
-  animation: fadeIn 0.6s ease-in;
+  font-size: 0.95rem;
+  animation: fadeIn 0.5s ease-in;
 }
 body.modo-oscuro .promo-banner {
   background-color: #3c2f2f;
@@ -94,17 +94,16 @@ body.modo-oscuro .promo-banner {
   padding: 2rem;
 }
 
-/* === 🧩 TARJETA DE PRODUCTO === */
+/* === 🧩 TARJETA PRODUCTO === */
 .card {
-  background: #ffffff;
+  background: #fff;
   border-radius: 12px;
   padding: 1rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .card:hover {
   transform: translateY(-6px);
@@ -119,17 +118,17 @@ body.modo-oscuro .promo-banner {
 }
 .card h3 {
   margin: 0.8rem 0 0.3rem;
-  font-size: 18px;
+  font-size: 1.1rem;
   color: #333;
 }
 .card p {
   margin: 0.2rem 0;
-  font-size: 15px;
+  font-size: 0.95rem;
   color: #666;
 }
 .card button {
   margin-top: 0.6rem;
-  padding: 10px 16px;
+  padding: 0.6rem 1rem;
   background-color: #d4af37;
   color: #121212;
   border: none;
@@ -156,16 +155,16 @@ body.modo-oscuro .card p {
   color: #ccc;
 }
 
-/* === 🏷️ BADGE === */
+/* === 🏷️ DESTACADO === */
 .destacado-badge {
   background-color: gold;
   color: #222;
-  font-size: 13px;
+  font-size: 0.85rem;
   padding: 3px 8px;
   border-radius: 4px;
-  display: inline-block;
-  margin-bottom: 6px;
   font-weight: bold;
+  display: inline-block;
+  margin-bottom: 0.5rem;
 }
 
 /* === 🖼️ MODAL IMG === */
@@ -215,9 +214,9 @@ body.modo-oscuro .card p {
 /* === 📦 FOOTER === */
 .footer {
   text-align: center;
-  margin-top: 50px;
-  padding: 20px;
-  font-size: 14px;
+  margin-top: 3rem;
+  padding: 1.5rem;
+  font-size: 0.9rem;
   background-color: #e0e0e0;
   border-top: 1px solid #ccc;
 }
@@ -234,4 +233,20 @@ body.modo-oscuro .footer {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* === 📱 RESPONSIVE === */
+@media (max-width: 480px) {
+  #catalogo {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    padding: 1.2rem;
+  }
+
+  .card img {
+    height: 180px;
+  }
+
+  .busqueda-input {
+    width: 100%;
+  }
 }

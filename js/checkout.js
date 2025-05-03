@@ -97,7 +97,6 @@ form?.addEventListener("submit", async e => {
     if (nombre.length < 3 || nombre.length > 50) throw new Error("❌ Nombre debe tener entre 3 y 50 caracteres.");
     if (direccion.length < 5 || direccion.length > 120) throw new Error("❌ Dirección muy corta o demasiado larga.");
 
-    // Validar productos en carrito y stock
     let total = 0;
     const items = [];
 
@@ -108,8 +107,8 @@ form?.addEventListener("submit", async e => {
 
       if (!producto) throw new Error(`❌ Producto no encontrado: ${item.nombre}`);
 
-      const talla = item.talla?.toLowerCase();
-      const color = item.color?.toLowerCase();
+      const talla = (item.talla || "").toLowerCase();
+      const color = (item.color || "").toLowerCase();
       const cantidad = parseInt(item.cantidad) || 1;
 
       if (producto.variants?.length > 0) {
@@ -129,14 +128,13 @@ form?.addEventListener("submit", async e => {
       items.push({
         productId: item.id,
         name: sanitize(item.nombre),
-        talla: sanitize(item.talla),
-        color: sanitize(item.color),
+        talla: sanitize(item.talla || ""),
+        color: sanitize(item.color || ""),
         cantidad,
         precio
       });
     }
 
-    // Crear pedido
     const pedido = {
       nombreCliente: nombre,
       email,

@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnFavorito")?.addEventListener("click", () => toggleFavorito(id));
 });
 
-/* Cargar producto */
 async function cargarProducto(id) {
   try {
     const res = await fetch(`${API_BASE}/api/products/${id}`);
@@ -41,7 +40,6 @@ async function cargarProducto(id) {
   }
 }
 
-/* Renderizar */
 function renderizarProducto(p) {
   const detalle = document.getElementById("detalleProducto");
   if (!detalle) return;
@@ -106,19 +104,16 @@ function renderizarProducto(p) {
     </div>
   `;
 
-  // Enlazar el botón después de renderizar
   document.getElementById("btnAgregarCarrito")?.addEventListener("click", agregarAlCarrito);
-
   if (tieneVariantes) configurarSelectores(p);
 }
 
-/* Selectores para variantes */
 function configurarSelectores(p) {
   const colorSelect = document.getElementById("colorSelect");
   const tallaSelect = document.getElementById("tallaSelect");
   const cantidadInput = document.getElementById("cantidadInput");
 
-  const variantes = Array.isArray(p.variants) ? p.variants.filter(v => v.stock > 0) : [];
+  const variantes = (p.variants || []).filter(v => v.stock > 0 && v.activo);
 
   if (variantes.length === 0) {
     mostrarToast("⚠️ No hay variantes disponibles para este producto.");
@@ -131,9 +126,9 @@ function configurarSelectores(p) {
     coloresUnicos.map(c => `<option value="${c}">${capitalize(c)}</option>`).join("");
 
   colorSelect.onchange = () => {
-    const colorSeleccionado = colorSelect.value;
+    const color = colorSelect.value;
     const tallas = variantes
-      .filter(v => v.color.toLowerCase() === colorSeleccionado)
+      .filter(v => v.color.toLowerCase() === color)
       .map(v => v.talla.toUpperCase());
 
     tallaSelect.innerHTML = `<option disabled selected>Selecciona una talla</option>` +
@@ -158,23 +153,22 @@ function configurarSelectores(p) {
   };
 }
 
-/* Agregar al carrito */
 function agregarAlCarrito() {
   const cantidad = parseInt(document.getElementById("cantidadInput").value || "1");
-
   if (!productoGlobal) return;
 
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
 
   if (productoGlobal.variants?.length > 0) {
     if (!varianteSeleccionada) return mostrarToast("⚠️ Debes seleccionar un color y talla");
-
     if (cantidad < 1 || cantidad > varianteSeleccionada.stock) {
       return mostrarToast(`⚠️ Cantidad no permitida (stock: ${varianteSeleccionada.stock})`);
     }
 
-    const clave = `${productoGlobal._id}_${varianteSeleccionada.talla}`.toLowerCase();
-    const idx = carrito.findIndex(p => `${p.id}_${p.talla}`.toLowerCase() === clave);
+    const clave = `${productoGlobal._id}_${varianteSeleccionada.talla}_${varianteSeleccionada.color}`.toLowerCase();
+    const idx = carrito.findIndex(p =>
+      `${p.id}_${p.talla}_${p.color}`.toLowerCase() === clave
+    );
 
     if (idx >= 0) {
       carrito[idx].cantidad = Math.min(carrito[idx].cantidad + cantidad, varianteSeleccionada.stock);
@@ -185,6 +179,7 @@ function agregarAlCarrito() {
         imagen: productoGlobal.images?.[0]?.url || "/assets/logo.jpg",
         precio: productoGlobal.price,
         talla: varianteSeleccionada.talla,
+        color: varianteSeleccionada.color,
         cantidad
       });
     }
@@ -204,6 +199,7 @@ function agregarAlCarrito() {
         imagen: productoGlobal.images?.[0]?.url || "/assets/logo.jpg",
         precio: productoGlobal.price,
         talla: "única",
+        color: "",
         cantidad
       });
     }
@@ -214,7 +210,7 @@ function agregarAlCarrito() {
   mostrarToast("🛒 Producto agregado al carrito.");
 }
 
-/* Utilidades */
+// Utilidades varias
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }

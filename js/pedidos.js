@@ -59,7 +59,8 @@ async function cargarPedidos() {
  */
 function renderPedidos() {
   const pedidosFiltrados = aplicarFiltro(todosLosPedidos);
-  const totalPaginas = Math.ceil(pedidosFiltrados.length / pedidosPorPagina);
+  const totalPaginas = Math.max(1, Math.ceil(pedidosFiltrados.length / pedidosPorPagina));
+  paginaActual = Math.min(paginaActual, totalPaginas);
   const inicio = (paginaActual - 1) * pedidosPorPagina;
   const pagina = pedidosFiltrados.slice(inicio, inicio + pedidosPorPagina);
 
@@ -74,9 +75,11 @@ function renderPedidos() {
   pagina.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const filas = pagina.map(p => {
-    const productos = p.items?.map(i =>
-      `👕 <strong>${sanitize(i.name)}</strong> (${sanitize(i.talla) || "Única"}) x${i.cantidad}`
-    ).join("<br>") || "-";
+    const productos = Array.isArray(p.items)
+      ? p.items.map(i =>
+          `👕 <strong>${sanitize(i.name)}</strong> (${sanitize(i.talla)}) x${i.cantidad}`
+        ).join("<br>")
+      : "-";
 
     const total = typeof p.total === "number" ? `$${p.total.toFixed(2)}` : "$0.00";
     const fecha = new Date(p.createdAt).toLocaleString("es-EC", {
@@ -85,7 +88,7 @@ function renderPedidos() {
 
     const cliente = sanitize(p.nombreCliente || "Sin nombre");
     const nota = sanitize(p.nota || "-");
-    const linkWA = p.metodoPago === "transferencia" ? generarLinkWhatsapp(p) : "";
+    const linkWA = ["transferencia", "efectivo"].includes(p.metodoPago) ? generarLinkWhatsapp(p) : "";
 
     return `
       <tr>
@@ -129,10 +132,12 @@ function renderEstadisticas(pedidos) {
   const totalVentas = pedidos.reduce((acc, p) => acc + (p.total || 0), 0);
   const enviados = pedidos.filter(p => (p.estado || "").toLowerCase() === "enviado").length;
   const pendientes = pedidos.filter(p => (p.estado || "").toLowerCase() === "pendiente").length;
+  const pagados = pedidos.filter(p => (p.estado || "").toLowerCase() === "pagado").length;
 
   estadisticasVentas.innerHTML = `
     <p><strong>Total pedidos:</strong> ${total}</p>
     <p><strong>Ventas acumuladas:</strong> $${totalVentas.toFixed(2)}</p>
+    <p><strong>Pagados:</strong> ${pagados}</p>
     <p><strong>Enviados:</strong> ${enviados}</p>
     <p><strong>Pendientes:</strong> ${pendientes}</p>
   `;
@@ -164,7 +169,7 @@ function aplicarFiltro(pedidos = []) {
   const estado = filtroEstado?.value || "todos";
   return estado === "todos"
     ? pedidos
-    : pedidos.filter(p => (p.estado || "").toLowerCase() === estado);
+    : pedidos.filter(p => (p.estado || "").toLowerCase() === estado.toLowerCase());
 }
 
 /**
@@ -232,7 +237,8 @@ function formatearEstado(estado) {
     pendiente: "⏳ Pendiente",
     en_proceso: "⚙️ En Proceso",
     enviado: "📦 Enviado",
-    cancelado: "❌ Cancelado"
+    cancelado: "❌ Cancelado",
+    pagado: "💰 Pagado"
   }[est] || estado || "Desconocido";
 }
 
@@ -240,7 +246,7 @@ function formatearEstado(estado) {
  * 🔄 Generar opciones <select> de estado
  */
 function generarOpcionesEstado(actual) {
-  const estados = ["pendiente", "en_proceso", "enviado", "cancelado"];
+  const estados = ["pendiente", "en_proceso", "enviado", "pagado", "cancelado"];
   return estados.map(e =>
     `<option value="${e}" ${e === actual ? "selected" : ""}>${formatearEstado(e)}</option>`
   ).join("");
@@ -250,11 +256,15 @@ function generarOpcionesEstado(actual) {
  * 💬 Crear enlace a WhatsApp con mensaje de pedido
  */
 function generarLinkWhatsapp(p) {
-  const productos = p.items?.map(i =>
-    `• ${i.cantidad}x ${sanitize(i.name)} (${sanitize(i.talla)})`
-  ).join("\n") || "";
+  const productos = Array.isArray(p.items)
+    ? p.items.map(i =>
+        `• ${i.cantidad}x ${sanitize(i.name)} (${sanitize(i.talla || "Única")})`
+      ).join("\n")
+    : "";
 
-  const texto = encodeURIComponent(`Pedido de ${p.nombreCliente}\n\n${productos}\n\nTotal: $${p.total?.toFixed(2) || "0.00"}`);
+  const texto = encodeURIComponent(
+    `Pedido de ${p.nombreCliente}\n\n${productos}\n\nTotal: $${p.total?.toFixed(2) || "0.00"}`
+  );
 
   return `<a href="https://wa.me/593990270864?text=${texto}" target="_blank" class="btn btn-wsp mt-1">💬 WhatsApp</a>`;
 }

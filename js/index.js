@@ -1,4 +1,3 @@
-//js/index.js 
 "use strict";
 
 // 📥 Importar utilidades
@@ -26,13 +25,12 @@ async function mostrarProductosDestacados() {
 
   try {
     const res = await fetch(`${API_BASE}/api/products?featured=true`);
+    const data = await res.json();
 
     if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.message || "Error al cargar productos destacados.");
+      throw new Error(data.message || "Error al cargar productos destacados.");
     }
 
-    const data = await res.json();
     const productos = Array.isArray(data.productos) ? data.productos : [];
 
     if (!productos.length) {
@@ -51,7 +49,7 @@ async function mostrarProductosDestacados() {
       const card = document.createElement("div");
       card.className = "product-card fade-in";
       card.innerHTML = `
-        <img src="${imagen}" alt="${nombre}" loading="lazy" onerror="this.src='/assets/logo.jpg'" />
+        <img src="${imagen}" alt="Imagen de ${nombre}" loading="lazy" onerror="this.onerror=null;this.src='/assets/logo.jpg'" />
         <div class="product-info">
           <h3>${nombre}</h3>
           <p>${precio}</p>
@@ -74,8 +72,8 @@ function mostrarSaludo() {
   const hora = new Date().getHours();
   let saludo = "👋 ¡Bienvenido a KM & EZ ROPA!";
 
-  if (hora >= 5 && hora < 12) saludo = "🌞 ¡Buenos días, tu estilo comienza temprano!";
-  else if (hora >= 12 && hora < 18) saludo = "☀️ ¡Buenas tardes! Descubre lo más top para esta temporada.";
+  if (hora >= 5 && hora < 12) saludo = "🌞 ¡Buenos días! Tu estilo comienza temprano.";
+  else if (hora >= 12 && hora < 18) saludo = "☀️ ¡Buenas tardes! Descubre lo más top de la temporada.";
   else saludo = "🌙 ¡Buenas noches! Ideal para elegir tu look de mañana.";
 
   console.log(saludo);
@@ -94,9 +92,13 @@ function aplicarModoOscuro() {
     const isDark = document.body.classList.toggle("modo-oscuro");
     localStorage.setItem("modoOscuro", isDark);
     btn.textContent = isDark ? "☀️" : "🌙";
+    btn.setAttribute("aria-label", isDark ? "Modo claro" : "Modo oscuro");
   });
 
-  if (btn) btn.textContent = dark ? "☀️" : "🌙";
+  if (btn) {
+    btn.textContent = dark ? "☀️" : "🌙";
+    btn.setAttribute("aria-label", dark ? "Modo claro" : "Modo oscuro");
+  }
 }
 
 /* ───────────────────────────────────────────── */

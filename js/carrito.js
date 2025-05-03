@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
 /* -------------------------------------------------------------------------- */
 function sanitizeText(str) {
   const temp = document.createElement("div");
-  temp.textContent = str;
+  temp.textContent = str || "";
   return temp.innerHTML.trim();
 }
 
@@ -53,6 +53,7 @@ function limpiarItemsInvalidos() {
     typeof item.id === "string" &&
     typeof item.nombre === "string" &&
     typeof item.talla === "string" &&
+    typeof item.color === "string" &&
     typeof item.imagen === "string" &&
     typeof item.precio === "number" &&
     typeof item.cantidad === "number" &&
@@ -95,9 +96,10 @@ function renderizarCarrito() {
   carritoItems.innerHTML = "";
 
   carrito.forEach((item, index) => {
-    const imagen = sanitizeURL(item.imagen || "/assets/logo.jpg");
-    const nombre = sanitizeText(item.nombre || "Producto");
+    const imagen = sanitizeURL(item.imagen);
+    const nombre = sanitizeText(item.nombre);
     const talla = sanitizeText(item.talla || "Única");
+    const color = sanitizeText(item.color || "N/A");
     const precio = parseFloat(item.precio) || 0;
     const cantidad = Math.max(1, Math.min(100, parseInt(item.cantidad) || 1));
     const subtotal = (precio * cantidad).toFixed(2);
@@ -105,13 +107,14 @@ function renderizarCarrito() {
     const div = document.createElement("div");
     div.className = "carrito-item fade-in";
     div.setAttribute("role", "group");
-    div.setAttribute("aria-label", `Producto: ${nombre}, Talla: ${talla}, Cantidad: ${cantidad}`);
+    div.setAttribute("aria-label", `Producto: ${nombre}, Talla: ${talla}, Color: ${color}, Cantidad: ${cantidad}`);
 
     div.innerHTML = `
       <img src="${imagen}" alt="${nombre}" class="carrito-img" />
       <div class="carrito-detalles">
         <h4>${nombre}</h4>
         <p><strong>Talla:</strong> ${talla}</p>
+        <p><strong>Color:</strong> ${color}</p>
         <p><strong>Precio:</strong> $${precio.toFixed(2)}</p>
         <div class="carrito-cantidad">
           <label for="cantidad_${index}">Cantidad:</label>

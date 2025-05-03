@@ -6,7 +6,7 @@
   text-align: center;
   background-color: #1a1a1a;
   border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(255, 109, 0, 0.1);
+  box-shadow: 0 6px 20px rgba(255, 109, 0, 0.12);
   animation: fadeIn 0.8s ease-in-out;
   color: #f5f5f5;
 }
@@ -34,6 +34,7 @@
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
+  line-height: 1.6;
 }
 
 /* ✅ BOTONES */
@@ -52,17 +53,8 @@
   text-align: center;
   text-decoration: none;
   font-size: 1rem;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-/* Botón Volver */
-.btn-volver {
-  background-color: var(--color-secundario, #2c3e50);
-  color: #ffffff;
-}
-
-.btn-volver:hover {
-  background-color: #1e88e5;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  outline: none;
 }
 
 /* Botón Seguir Comprando */
@@ -71,8 +63,21 @@
   color: #121212;
 }
 
-.btn-seguir:hover {
+.btn-seguir:hover,
+.btn-seguir:focus-visible {
   background-color: #ffa733;
+  color: #000;
+}
+
+/* Botón Volver */
+.btn-volver {
+  background-color: var(--color-secundario, #2c3e50);
+  color: #ffffff;
+}
+
+.btn-volver:hover,
+.btn-volver:focus-visible {
+  background-color: #1e88e5;
 }
 
 /* === 🎞️ ANIMACIÓN === */
@@ -99,10 +104,6 @@
     font-size: 0.95rem;
   }
 
-  .botones-confirmacion {
-    gap: 0.8rem;
-  }
-
   .botones-confirmacion a {
     font-size: 1rem;
     padding: 0.75rem;
@@ -120,6 +121,10 @@
 
   .confirmacion-subtexto {
     font-size: 0.9rem;
+  }
+
+  .botones-confirmacion {
+    gap: 0.8rem;
   }
 
   .botones-confirmacion a {

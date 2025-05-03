@@ -1,48 +1,67 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>✅ Pedido Confirmado | KM & EZ ROPA</title>
 
-  <!-- Meta -->
+  <!-- 🔍 Meta -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="¡Gracias por tu compra en KM & EZ ROPA! Recibirás actualizaciones del estado de tu pedido." />
-  <meta name="theme-color" content="#ff6d00" />
+  <meta name="theme-color" content="#d4af37" />
 
-  <!-- CSS Global -->
-  <link rel="stylesheet" href="/css/global.css">
-  <link rel="stylesheet" href="/css/componentes.css">
-  <link rel="stylesheet" href="/css/checkout.css">
-  <link rel="stylesheet" href="/css/checkout-confirmacion.css">
+  <!-- 🎨 Estilos -->
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/componentes.css" />
+  <link rel="stylesheet" href="/css/checkout.css" />
+  <link rel="stylesheet" href="/css/checkout-confirmacion.css" />
+
+  <!-- 🧼 Mejora visual -->
+  <style>
+    .confirmacion-icono {
+      font-size: 4rem;
+      animation: popIn 0.5s ease forwards;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .botones-confirmacion a:focus {
+      outline: 2px dashed #d4af37;
+      outline-offset: 4px;
+    }
+  </style>
 </head>
 
 <body>
 
-  <main class="confirmacion-container fade-in" role="main" aria-label="Confirmación de Pedido">
-    <div class="confirmacion-icono">✅</div>
-    <h1 id="tituloConfirmacion" class="confirmacion-mensaje">¡Gracias por tu compra!</h1>
-    <p id="mensajeConfirmacion" class="confirmacion-subtexto">
-      Tu pedido fue recibido correctamente.<br>
-      Recibirás actualizaciones vía WhatsApp y correo electrónico. 📩
-    </p>
+<main class="confirmacion-container fade-in" role="main" aria-label="Confirmación de Pedido">
+  <div class="confirmacion-icono" aria-hidden="true">✅</div>
 
-    <div class="botones-confirmacion">
-      <a href="/seguimiento.html" class="btn-seguir">🚚 Seguir mi pedido</a>
-      <a href="/categorias.html" class="btn-volver">🛍️ Seguir comprando</a>
-    </div>
+  <h1 id="tituloConfirmacion" class="confirmacion-mensaje">
+    ¡Gracias por tu compra!
+  </h1>
 
-    <!-- 🛎️ Mensaje dinámico de estado -->
-    <p id="msgEstado" class="form-msg text-center mt-3" role="alert" aria-live="assertive"></p>
-  </main>
+  <p id="mensajeConfirmacion" class="confirmacion-subtexto">
+    Tu pedido fue recibido correctamente.<br />
+    Recibirás actualizaciones vía WhatsApp y correo electrónico. 📩
+  </p>
 
-  <!-- No JS fallback -->
-  <noscript>
-    <p style="text-align: center; color: red;">⚠️ Activa JavaScript para continuar navegando correctamente.</p>
-  </noscript>
+  <div class="botones-confirmacion" role="navigation" aria-label="Opciones después de la compra">
+    <a href="/seguimiento.html" class="btn-seguir" aria-label="Ir a la página de seguimiento de pedido">🚚 Seguir mi pedido</a>
+    <a href="/categorias.html" class="btn-volver" aria-label="Volver al catálogo de productos">🛍️ Seguir comprando</a>
+  </div>
 
-  <!-- Scripts -->
-  <script type="module" src="/js/checkout-confirmacion.js"></script>
+  <!-- 🛎️ Mensaje dinámico -->
+  <p id="msgEstado" class="form-msg text-center mt-3" role="alert" aria-live="assertive"></p>
+</main>
 
+<noscript>
+  <p style="text-align: center; color: red;">⚠️ Activa JavaScript para visualizar correctamente esta página.</p>
+</noscript>
+
+<script type="module" src="/js/checkout-confirmacion.js"></script>
 </body>
 </html>

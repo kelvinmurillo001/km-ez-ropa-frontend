@@ -5,12 +5,17 @@
   --color-acento-secundario: #ff9800;
   --color-panel: #1a1a1a;
   --color-borde: #444;
+
   --color-badge-blue: #2196f3;
   --color-badge-orange: #fb8c00;
   --color-badge-green: #43a047;
   --color-badge-red: #e53935;
+
+  --radius: 8px;
+  --transition: 0.3s ease;
 }
 
+/* === BASE === */
 body {
   background-color: var(--color-bg);
   color: var(--color-text);
@@ -19,69 +24,67 @@ body {
   padding: 0;
 }
 
-/* 🎯 TITULARES */
+/* === TITULARES === */
 h1, h3 {
   color: var(--color-acento);
   text-align: center;
-  margin-bottom: 1rem;
-  letter-spacing: 1px;
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.5px;
 }
 
-/* 📦 CONTENEDOR PRINCIPAL */
+/* === CONTENEDOR PRINCIPAL === */
 .promociones-container {
   max-width: 900px;
   margin: auto;
-  padding: 2rem;
+  padding: 2rem 1rem;
 }
 
-/* 🟠 PROMOCIÓN ACTUAL */
+/* === PROMOCIÓN ACTUAL === */
 .promo-actual {
   background-color: #1e1e1e;
   padding: 1.5rem;
   border: 2px dashed var(--color-acento-secundario);
-  border-radius: 10px;
+  border-radius: var(--radius);
   margin-bottom: 2rem;
   font-size: 1rem;
   text-align: center;
-  box-shadow: 0 0 12px rgba(212, 175, 55, 0.15);
-  transition: background-color 0.3s ease;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.1);
+  transition: background-color var(--transition);
 }
 
 .promo-actual img,
 .promo-actual video {
   margin-top: 1rem;
   max-width: 100%;
-  border-radius: 8px;
+  border-radius: var(--radius);
   box-shadow: 0 2px 12px rgba(212, 175, 55, 0.2);
 }
-
 .promo-actual video {
   max-height: 400px;
 }
 
-/* 🏷️ BADGES */
+/* === BADGES === */
 .badge {
   display: inline-block;
   padding: 0.3rem 0.8rem;
-  border-radius: 6px;
-  margin: 0 6px;
+  border-radius: var(--radius);
   font-weight: bold;
   font-size: 0.85rem;
   text-transform: uppercase;
+  margin: 0 6px 0.4rem 6px;
 }
+.badge.blue    { background-color: var(--color-badge-blue); color: #fff; }
+.badge.orange  { background-color: var(--color-badge-orange); color: #fff; }
+.badge.green   { background-color: var(--color-badge-green); color: #fff; }
+.badge.red     { background-color: var(--color-badge-red); color: #fff; }
 
-.badge.blue    { background-color: var(--color-badge-blue); color: white; }
-.badge.orange  { background-color: var(--color-badge-orange); color: white; }
-.badge.green   { background-color: var(--color-badge-green); color: white; }
-.badge.red     { background-color: var(--color-badge-red); color: white; }
-
-/* 📝 FORMULARIO PROMO */
+/* === FORMULARIO PROMOCIÓN === */
 .form-editar-promo {
   background-color: var(--color-panel);
   padding: 1.5rem;
-  border-radius: 10px;
+  border-radius: var(--radius);
   box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
-  transition: box-shadow 0.3s ease;
+  transition: box-shadow var(--transition);
 }
 
 .form-editar-promo form {
@@ -93,6 +96,7 @@ h1, h3 {
 .form-editar-promo label {
   font-size: 0.95rem;
   color: #ddd;
+  font-weight: 600;
 }
 
 .form-editar-promo input,
@@ -101,18 +105,18 @@ h1, h3 {
   background-color: #222;
   color: var(--color-text);
   border: 1px solid var(--color-borde);
-  padding: 0.65rem;
-  border-radius: 6px;
+  padding: 0.7rem;
+  border-radius: var(--radius);
   font-size: 1rem;
-  transition: border-color 0.3s ease, background-color 0.3s ease;
+  transition: border-color var(--transition), background-color var(--transition);
 }
 
 .form-editar-promo input:focus,
 .form-editar-promo select:focus,
 .form-editar-promo textarea:focus {
   border-color: var(--color-acento);
-  outline: none;
   background-color: #2a2a2a;
+  outline: none;
 }
 
 .form-editar-promo input[type="checkbox"] {
@@ -120,54 +124,56 @@ h1, h3 {
   margin-right: 8px;
 }
 
-/* ✅ MENSAJE DE FORMULARIO */
+/* === MENSAJE DEL FORMULARIO === */
 .form-msg {
   font-size: 0.95rem;
-  text-align: center;
   font-weight: bold;
-  margin-top: 0.5rem;
+  text-align: center;
+  margin-top: 0.8rem;
+  color: var(--color-acento);
 }
 
-/* 🔘 GRUPO DE CHECKBOXES */
+/* === CHECKBOXES AGRUPADOS === */
 .checkbox-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 1.2rem;
-  margin-bottom: 0.5rem;
+  gap: 0.6rem 1.2rem;
+  margin-bottom: 1rem;
 }
 
 .checkbox-group label {
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  font-size: 0.9rem;
 }
 
-/* 🔘 BOTONES */
+/* === BOTONES === */
 button.btn {
   background-color: var(--color-acento);
   color: #121212;
   padding: 0.6rem 1.2rem;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius);
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.25s ease;
+  transition: background-color var(--transition);
 }
 
 button.btn:hover {
-  background-color: #f4d35e;
+  background-color: var(--color-acento-secundario);
 }
 
 button.btn-secundario {
-  background-color: transparent;
+  background: transparent;
   border: 2px solid var(--color-acento);
   color: var(--color-acento);
   padding: 0.5rem 1.1rem;
-  border-radius: 6px;
-  cursor: pointer;
+  border-radius: var(--radius);
   font-weight: bold;
-  transition: all 0.3s ease;
+  cursor: pointer;
+  transition: var(--transition);
 }
 
 button.btn-secundario:hover {
@@ -175,12 +181,12 @@ button.btn-secundario:hover {
   color: var(--color-bg);
 }
 
-/* 🔍 FILTROS DE BÚSQUEDA */
+/* === FILTROS PROMOS === */
 .filtros-promos {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  margin: 1rem 0;
+  margin: 1.5rem 0;
   justify-content: center;
 }
 
@@ -188,14 +194,15 @@ button.btn-secundario:hover {
 .filtros-promos select {
   background-color: #222;
   color: white;
-  border: 1px solid #444;
-  padding: 0.6rem;
-  border-radius: 6px;
+  border: 1px solid var(--color-borde);
+  padding: 0.65rem;
+  border-radius: var(--radius);
   font-size: 1rem;
   min-width: 220px;
+  transition: var(--transition);
 }
 
-/* 📱 RESPONSIVE */
+/* === RESPONSIVE === */
 @media (max-width: 600px) {
   .form-editar-promo form {
     gap: 0.8rem;
@@ -207,5 +214,10 @@ button.btn-secundario:hover {
 
   .promo-actual video {
     max-height: 250px;
+  }
+
+  .filtros-promos {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

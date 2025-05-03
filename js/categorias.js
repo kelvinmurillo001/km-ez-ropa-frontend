@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   init();
 });
 
-/* 🌙 Modo Oscuro */
+/* 🌙 Modo Oscuro persistente */
 function aplicarModoOscuro() {
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
@@ -32,7 +32,7 @@ function aplicarModoOscuro() {
   });
 }
 
-/* 🚀 Inicio */
+/* 🚀 Inicialización */
 async function init() {
   try {
     await cargarCategoriasDesdeAPI();
@@ -46,22 +46,25 @@ async function init() {
   }
 }
 
-/* 🎯 Configurar filtros */
+/* 🎯 Eventos de filtros */
 function configurarFiltros() {
   categoriaSelect?.addEventListener("change", () => {
     llenarSubcategorias();
     cargarProductos();
   });
+
   [subcategoriaSelect, precioSelect].forEach(el =>
     el?.addEventListener("change", cargarProductos)
   );
+
   busquedaInput?.addEventListener("input", debounce(cargarProductos, 500));
 }
 
-/* 📁 Obtener categorías desde backend */
+/* 📁 Cargar categorías */
 async function cargarCategoriasDesdeAPI() {
   const res = await fetch(API_CATEGORIES);
   const data = await res.json();
+
   if (!res.ok || !data.ok || !Array.isArray(data.data)) {
     throw new Error("Error al cargar categorías");
   }
@@ -84,9 +87,10 @@ function llenarCategorias() {
 function llenarSubcategorias() {
   subcategoriaSelect.innerHTML = `<option value="">📁 Todas</option>`;
   const selected = categoriaSelect.value;
-  const cat = categoriasData.find(c => c.name === selected);
-  if (cat?.subcategories?.length) {
-    cat.subcategories.forEach(sub => {
+  const categoria = categoriasData.find(c => c.name === selected);
+
+  if (categoria?.subcategories?.length) {
+    categoria.subcategories.forEach(sub => {
       const option = document.createElement("option");
       option.value = sub;
       option.textContent = sanitize(sub);
@@ -98,7 +102,7 @@ function llenarSubcategorias() {
   }
 }
 
-/* 📦 Obtener productos desde backend */
+/* 📦 Cargar productos */
 async function cargarProductos() {
   if (!catalogo) return;
   catalogo.innerHTML = `<p class='text-center'>⏳ Cargando productos...</p>`;
@@ -126,7 +130,7 @@ async function cargarProductos() {
   }
 }
 
-/* 🧠 Aplicar filtros */
+/* 🧠 Filtrado + ordenamiento */
 function aplicarFiltros(productos) {
   const cat = categoriaSelect?.value?.toLowerCase() || "";
   const sub = subcategoriaSelect?.value?.toLowerCase() || "";
@@ -144,7 +148,7 @@ function aplicarFiltros(productos) {
     });
 }
 
-/* 🎨 Renderizar catálogo */
+/* 🧾 Render catálogo */
 function renderizarCatalogo(productos) {
   catalogo.innerHTML = "";
   catalogo.setAttribute("role", "list");
@@ -158,13 +162,13 @@ function renderizarCatalogo(productos) {
 }
 
 function crearTarjetaProducto(p) {
-  const card = document.createElement("div");
-  card.className = "product-card fade-in";
-  card.setAttribute("role", "listitem");
-
   const nombre = sanitize(p.name || "Producto sin nombre");
   const precio = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
   const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
+
+  const card = document.createElement("div");
+  card.className = "product-card fade-in";
+  card.setAttribute("role", "listitem");
 
   card.innerHTML = `
     <img src="${imagen}" alt="Imagen de ${nombre}" loading="lazy" onerror="this.src='/assets/logo.jpg'" />
@@ -177,30 +181,31 @@ function crearTarjetaProducto(p) {
   return card;
 }
 
+/* ⚠️ Mensaje de error */
 function renderError(msg = "⚠️ Error al mostrar contenido") {
   catalogo.innerHTML = `<p class="text-center" style="color:red;">${sanitize(msg)}</p>`;
 }
 
-/* 🔁 Navegar a detalle */
+/* 🔍 Navegación al detalle */
 function verDetalle(id) {
   if (id) window.location.href = `/detalle.html?id=${id}`;
 }
 window.verDetalle = verDetalle;
 
-/* 🛒 Actualizar contador carrito */
+/* 🛒 Carrito UI */
 function actualizarContadorCarrito() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
-  const total = carrito.reduce((sum, item) => sum + (item.cantidad || item.quantity || 0), 0);
+  const total = carrito.reduce((sum, i) => sum + (i.cantidad || i.quantity || 0), 0);
   if (contadorCarrito) contadorCarrito.textContent = total;
 }
 
-/* 🎁 Cargar promociones activas */
+/* 🎁 Promoción activa */
 async function cargarPromocion() {
   try {
     const res = await fetch(API_PROMOS);
-    const promo = await res.json();
+    const data = await res.json();
+    const item = data?.data?.[0];
 
-    const item = promo?.data?.[0];
     if (res.ok && item?.active && promoContainer) {
       const { message, mediaUrl, mediaType, color } = item;
       promoContainer.innerHTML = `
@@ -215,14 +220,14 @@ async function cargarPromocion() {
   }
 }
 
-/* 🔐 Sanitizar texto */
+/* 🔐 XSS prevention */
 function sanitize(text = "") {
   const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML.trim();
 }
 
-/* ⏳ Debounce */
+/* ⏳ Debounce helper */
 function debounce(fn, delay = 300) {
   let timer;
   return (...args) => {
