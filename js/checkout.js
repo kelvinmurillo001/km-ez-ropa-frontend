@@ -178,7 +178,7 @@ form?.addEventListener("submit", async e => {
       }
 
       localStorage.removeItem(STORAGE_KEY);
-      window.location.href = `https://www.sandbox.paypal.com/checkoutnow?token=${dataPaypal.data.id}`;
+      window.location.href = `/checkout-confirmacion.html?token=${dataPaypal.data.id}`;
     }
 
   } catch (err) {
