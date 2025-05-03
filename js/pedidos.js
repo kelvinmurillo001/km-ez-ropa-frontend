@@ -23,10 +23,12 @@ const pedidosPorPagina = 10;
 
 document.addEventListener("DOMContentLoaded", () => {
   cargarPedidos();
+
   filtroEstado?.addEventListener("change", () => {
     paginaActual = 1;
     renderPedidos();
   });
+
   btnExportar?.addEventListener("click", exportarPDF);
 
   if (localStorage.getItem("modoOscuro") === "true") {
@@ -55,7 +57,7 @@ async function cargarPedidos() {
 }
 
 /**
- * 🧮 Renderizar pedidos según estado y página
+ * 🧮 Renderizar pedidos filtrados y paginados
  */
 function renderPedidos() {
   const pedidosFiltrados = aplicarFiltro(todosLosPedidos);
@@ -74,39 +76,6 @@ function renderPedidos() {
 
   pagina.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-  const filas = pagina.map(p => {
-    const productos = Array.isArray(p.items)
-      ? p.items.map(i =>
-          `👕 <strong>${sanitize(i.name)}</strong> (${sanitize(i.talla)}) x${i.cantidad}`
-        ).join("<br>")
-      : "-";
-
-    const total = typeof p.total === "number" ? `$${p.total.toFixed(2)}` : "$0.00";
-    const fecha = new Date(p.createdAt).toLocaleString("es-EC", {
-      day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"
-    });
-
-    const cliente = sanitize(p.nombreCliente || "Sin nombre");
-    const nota = sanitize(p.nota || "-");
-    const linkWA = ["transferencia", "efectivo"].includes(p.metodoPago) ? generarLinkWhatsapp(p) : "";
-
-    return `
-      <tr>
-        <td>${cliente}</td>
-        <td>${nota}</td>
-        <td>${fecha}</td>
-        <td>${productos}</td>
-        <td>${total}</td>
-        <td>${formatearEstado(p.estado)}</td>
-        <td>
-          <select onchange="cambiarEstado('${p._id}', this)" class="select-estado">
-            ${generarOpcionesEstado(p.estado)}
-          </select>
-          ${linkWA}
-        </td>
-      </tr>`;
-  }).join("");
-
   listaPedidos.innerHTML = `
     <table class="tabla-admin fade-in">
       <thead>
@@ -120,12 +89,48 @@ function renderPedidos() {
           <th>Acciones</th>
         </tr>
       </thead>
-      <tbody>${filas}</tbody>
+      <tbody>
+        ${pagina.map(renderFilaPedido).join("")}
+      </tbody>
     </table>`;
 }
 
 /**
- * 📊 Renderizar estadísticas básicas
+ * 🧾 Renderiza una fila del pedido
+ */
+function renderFilaPedido(p) {
+  const productos = Array.isArray(p.items)
+    ? p.items.map(i => `👕 <strong>${sanitize(i.name)}</strong> (${sanitize(i.talla)}) x${i.cantidad}`).join("<br>")
+    : "-";
+
+  const total = typeof p.total === "number" ? `$${p.total.toFixed(2)}` : "$0.00";
+  const fecha = new Date(p.createdAt).toLocaleString("es-EC", {
+    day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"
+  });
+
+  const cliente = sanitize(p.nombreCliente || "Sin nombre");
+  const nota = sanitize(p.nota || "-");
+  const linkWA = ["transferencia", "efectivo"].includes(p.metodoPago) ? generarLinkWhatsapp(p) : "";
+
+  return `
+    <tr>
+      <td>${cliente}</td>
+      <td>${nota}</td>
+      <td>${fecha}</td>
+      <td>${productos}</td>
+      <td>${total}</td>
+      <td>${formatearEstado(p.estado)}</td>
+      <td>
+        <select onchange="cambiarEstado('${p._id}', this)" class="select-estado">
+          ${generarOpcionesEstado(p.estado)}
+        </select>
+        ${linkWA}
+      </td>
+    </tr>`;
+}
+
+/**
+ * 📊 Estadísticas del resumen de pedidos
  */
 function renderEstadisticas(pedidos) {
   const total = pedidos.length;
@@ -144,7 +149,7 @@ function renderEstadisticas(pedidos) {
 }
 
 /**
- * 🔢 Crear controles de paginación
+ * 🔢 Paginación dinámica
  */
 function renderPaginacion(totalPaginas) {
   paginacion.innerHTML = "";
@@ -163,7 +168,7 @@ function renderPaginacion(totalPaginas) {
 }
 
 /**
- * 🔍 Aplicar filtro por estado
+ * 🔍 Filtra por estado seleccionado
  */
 function aplicarFiltro(pedidos = []) {
   const estado = filtroEstado?.value || "todos";
@@ -173,13 +178,14 @@ function aplicarFiltro(pedidos = []) {
 }
 
 /**
- * ✏️ Cambiar estado del pedido
+ * 🔄 Cambiar estado de pedido
  */
 window.cambiarEstado = async (id, selectElem) => {
   const nuevoEstado = selectElem.value;
   if (!nuevoEstado) return;
 
   selectElem.disabled = true;
+
   try {
     const res = await fetch(`${API_ORDERS}/${id}`, {
       method: "PUT",
@@ -204,7 +210,7 @@ window.cambiarEstado = async (id, selectElem) => {
 };
 
 /**
- * 📄 Exportar pedidos a PDF
+ * 🧾 Exportar pedidos a PDF
  */
 async function exportarPDF() {
   const { jsPDF } = window.jspdf;
@@ -229,7 +235,7 @@ async function exportarPDF() {
 }
 
 /**
- * 🏷️ Formatear estado visual
+ * 📍 Formato de estado visual
  */
 function formatearEstado(estado) {
   const est = (estado || "").toLowerCase();
@@ -239,11 +245,11 @@ function formatearEstado(estado) {
     enviado: "📦 Enviado",
     cancelado: "❌ Cancelado",
     pagado: "💰 Pagado"
-  }[est] || estado || "Desconocido";
+  }[est] || "Desconocido";
 }
 
 /**
- * 🔄 Generar opciones <select> de estado
+ * 📝 Opciones del <select> de estado
  */
 function generarOpcionesEstado(actual) {
   const estados = ["pendiente", "en_proceso", "enviado", "pagado", "cancelado"];
@@ -253,13 +259,11 @@ function generarOpcionesEstado(actual) {
 }
 
 /**
- * 💬 Crear enlace a WhatsApp con mensaje de pedido
+ * 💬 Generar link de WhatsApp con resumen del pedido
  */
 function generarLinkWhatsapp(p) {
   const productos = Array.isArray(p.items)
-    ? p.items.map(i =>
-        `• ${i.cantidad}x ${sanitize(i.name)} (${sanitize(i.talla || "Única")})`
-      ).join("\n")
+    ? p.items.map(i => `• ${i.cantidad}x ${sanitize(i.name)} (${sanitize(i.talla || "Única")})`).join("\n")
     : "";
 
   const texto = encodeURIComponent(
@@ -270,7 +274,7 @@ function generarLinkWhatsapp(p) {
 }
 
 /**
- * 🔐 Sanitiza texto para evitar XSS
+ * 🔐 Sanitiza valores para evitar XSS
  */
 function sanitize(text) {
   const temp = document.createElement("div");
