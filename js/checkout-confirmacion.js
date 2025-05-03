@@ -1,9 +1,7 @@
 "use strict";
 
-// ✅ Configuración base
 import { API_BASE } from "./config.js";
 
-// ▶️ Al cargar la página
 document.addEventListener("DOMContentLoaded", async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const token = urlParams.get("token");
@@ -24,8 +22,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const data = await res.json();
 
-    if (res.ok && data?.status?.toUpperCase() === "COMPLETED") {
-      console.log("✅ Pago capturado exitosamente:", data);
+    if (res.ok && data?.data?.status?.toUpperCase() === "COMPLETED") {
+      console.log("✅ Pago capturado exitosamente:", data.data);
       mostrarMensaje("✅ Pago confirmado. ¡Gracias por tu compra!", "success");
       limpiarCarrito();
     } else {
@@ -38,9 +36,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-/**
- * ✅ Mostrar mensaje visual
- */
 function mostrarMensaje(texto, tipo = "info") {
   const msgEstado = document.getElementById("msgEstado");
   if (!msgEstado) return;
@@ -55,14 +50,10 @@ function mostrarMensaje(texto, tipo = "info") {
 
   msgEstado.classList.add("fade-in");
 
-  // Opcional: mantener el mensaje más tiempo si es error
   const delay = tipo === "error" ? 6000 : 3000;
   setTimeout(() => msgEstado.classList.remove("fade-in"), delay);
 }
 
-/**
- * ✅ Limpiar localStorage de pedido
- */
 function limpiarCarrito() {
   localStorage.removeItem("km_ez_cart");
   localStorage.removeItem("km_ez_last_order");

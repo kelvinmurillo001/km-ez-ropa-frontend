@@ -9,7 +9,6 @@ const carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 const API_ORDERS = `${API_BASE}/api/orders`;
 const API_PAYPAL_CREATE = `${API_BASE}/api/paypal/create-order`;
 
-// DOM Elements
 const resumenPedido = document.getElementById("resumenPedido");
 const totalFinal = document.getElementById("totalFinal");
 const form = document.getElementById("formCheckout");
@@ -18,8 +17,6 @@ const btnUbicacion = document.getElementById("btnUbicacion");
 const infoMetodoPago = document.getElementById("infoMetodoPago");
 
 let enviandoPedido = false;
-
-// -------------------- INICIO --------------------
 
 document.addEventListener("DOMContentLoaded", () => {
   if (!carrito.length) {
@@ -33,8 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderResumenCarrito();
   inicializarMetodoPago();
 });
-
-// -------------------- RENDER CARRITO --------------------
 
 function renderResumenCarrito() {
   let total = 0;
@@ -56,8 +51,6 @@ function renderResumenCarrito() {
   totalFinal.textContent = `$${total.toFixed(2)}`;
 }
 
-// -------------------- MÉTODO DE PAGO --------------------
-
 function inicializarMetodoPago() {
   document.querySelectorAll("input[name='metodoPago']").forEach(radio => {
     radio.addEventListener("change", e => {
@@ -69,8 +62,6 @@ function inicializarMetodoPago() {
     });
   });
 }
-
-// -------------------- SUBMIT PEDIDO --------------------
 
 form?.addEventListener("submit", async e => {
   e.preventDefault();
@@ -182,12 +173,12 @@ form?.addEventListener("submit", async e => {
       });
 
       const dataPaypal = await resPaypal.json();
-      if (!resPaypal.ok || !dataPaypal.id) {
+      if (!resPaypal.ok || !dataPaypal.data?.id) {
         throw new Error(dataPaypal.message || "❌ Error creando orden PayPal.");
       }
 
       localStorage.removeItem(STORAGE_KEY);
-      window.location.href = `https://www.sandbox.paypal.com/checkoutnow?token=${dataPaypal.id}`;
+      window.location.href = `https://www.sandbox.paypal.com/checkoutnow?token=${dataPaypal.data.id}`;
     }
 
   } catch (err) {
@@ -197,8 +188,6 @@ form?.addEventListener("submit", async e => {
     finalizarEnvio();
   }
 });
-
-// -------------------- UBICACIÓN --------------------
 
 btnUbicacion?.addEventListener("click", () => {
   if (!navigator.geolocation) return mostrarMensaje("⚠️ Tu navegador no soporta ubicación.", "warn");
@@ -219,8 +208,6 @@ btnUbicacion?.addEventListener("click", () => {
     () => mostrarMensaje("❌ No se pudo acceder a ubicación.", "error")
   );
 });
-
-// -------------------- UTILIDADES --------------------
 
 function abrirWhatsappConfirmacion(pedido) {
   const mensaje = `
