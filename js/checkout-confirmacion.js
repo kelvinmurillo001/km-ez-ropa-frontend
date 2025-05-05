@@ -24,11 +24,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (res.ok && data?.data?.status?.toUpperCase() === "COMPLETED") {
       console.log("✅ Pago capturado exitosamente:", data.data);
-      mostrarMensaje("✅ Pago confirmado. ¡Gracias por tu compra!", "success");
+      mostrarMensaje("✅ ¡Pago confirmado correctamente! 🎉 Gracias por tu compra.", "success");
       limpiarCarrito();
     } else {
+      const errorMsg = data?.message || "No pudimos confirmar tu pago. Contáctanos si el problema persiste.";
       console.error("❌ Error en respuesta de PayPal:", data);
-      mostrarMensaje("❌ No pudimos confirmar tu pago. Contáctanos.", "error");
+      mostrarMensaje(`❌ ${errorMsg}`, "error");
     }
   } catch (err) {
     console.error("❌ Error de red o inesperado:", err);
@@ -36,6 +37,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
+/**
+ * Muestra un mensaje al usuario con estilos visuales.
+ * @param {string} texto - Texto del mensaje
+ * @param {'success'|'error'|'info'|'warn'} tipo - Tipo del mensaje
+ */
 function mostrarMensaje(texto, tipo = "info") {
   const msgEstado = document.getElementById("msgEstado");
   if (!msgEstado) return;
@@ -45,8 +51,8 @@ function mostrarMensaje(texto, tipo = "info") {
     success: "limegreen",
     error: "tomato",
     warn: "orange",
-    info: "#666"
-  }[tipo] || "#666";
+    info: "#555"
+  }[tipo] || "#555";
 
   msgEstado.classList.add("fade-in");
 
@@ -54,6 +60,9 @@ function mostrarMensaje(texto, tipo = "info") {
   setTimeout(() => msgEstado.classList.remove("fade-in"), delay);
 }
 
+/**
+ * Limpia el carrito del localStorage tras una compra exitosa
+ */
 function limpiarCarrito() {
   localStorage.removeItem("km_ez_cart");
   localStorage.removeItem("km_ez_last_order");
