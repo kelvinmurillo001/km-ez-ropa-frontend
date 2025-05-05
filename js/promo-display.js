@@ -1,10 +1,19 @@
+// 📁 frontend/js/promo-display.js
 "use strict";
 
-import { API_BASE } from "./config.js"; // Usa config centralizada si tienes
+import { API_BASE } from "./config.js";
 
 const API_PROMOS = `${API_BASE || "https://km-ez-ropa-backend.onrender.com"}/api/promos`;
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
+  if (location.protocol !== "https:" && location.hostname !== "localhost") {
+    console.warn("⚠️ Se recomienda usar HTTPS para mayor seguridad.");
+  }
+
+  cargarPromociones();
+});
+
+async function cargarPromociones() {
   try {
     const res = await fetch(API_PROMOS);
     if (!res.ok) throw new Error("❌ Error al obtener promociones");
@@ -12,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const { data: promos = [] } = await res.json();
     if (!Array.isArray(promos) || !promos.length) return;
 
-    const clavePagina = detectarClavePagina(window.location.pathname);
+    const clavePagina = detectarClavePagina(location.pathname);
     const hoy = Date.now();
 
     const activas = promos.filter(p =>
@@ -31,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (err) {
     console.error("❌ Promociones no disponibles:", err.message || err);
   }
-});
+}
 
 function detectarClavePagina(path) {
   if (path.includes("checkout")) return "checkout";
@@ -101,7 +110,6 @@ function mostrarRotador(promos = [], posicion = "top") {
     setInterval(() => {
       index = (index + 1) % promos.length;
       contenedor.style.transform = `translateX(-${index * 100}%)`;
-
       [...contenedor.children].forEach((slide, i) =>
         slide.setAttribute("aria-hidden", i !== index)
       );
@@ -134,6 +142,6 @@ function insertarSegunPosicion(elemento, posicion) {
 
 function sanitize(text = "") {
   const div = document.createElement("div");
-  div.textContent = text;
+  div.appendChild(document.createTextNode(text));
   return div.innerHTML;
 }
