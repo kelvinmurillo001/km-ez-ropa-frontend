@@ -1,25 +1,26 @@
 "use strict";
 
-const API_PROMOS = "https://km-ez-ropa-backend.onrender.com/api/promos";
+import { API_BASE } from "./config.js"; // Usa config centralizada si tienes
 
-// 📦 Cargar promociones al iniciar
+const API_PROMOS = `${API_BASE || "https://km-ez-ropa-backend.onrender.com"}/api/promos`;
+
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const res = await fetch(API_PROMOS);
     if (!res.ok) throw new Error("❌ Error al obtener promociones");
 
     const { data: promos = [] } = await res.json();
-    if (!Array.isArray(promos) || promos.length === 0) return;
+    if (!Array.isArray(promos) || !promos.length) return;
 
     const clavePagina = detectarClavePagina(window.location.pathname);
-    const hoy = new Date();
+    const hoy = Date.now();
 
     const activas = promos.filter(p =>
       p.active &&
       Array.isArray(p.pages) &&
       p.pages.includes(clavePagina) &&
-      (!p.startDate || Date.parse(p.startDate) <= hoy) &&
-      (!p.endDate || Date.parse(p.endDate) >= hoy)
+      (!p.startDate || new Date(p.startDate).getTime() <= hoy) &&
+      (!p.endDate || new Date(p.endDate).getTime() >= hoy)
     );
 
     const agrupadas = agruparPorPosicion(activas);
@@ -28,13 +29,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
   } catch (err) {
-    console.error("❌ Error al cargar promociones activas:", err.message || err);
+    console.error("❌ Promociones no disponibles:", err.message || err);
   }
 });
 
-/* ───────────────────────────────────────────── */
-/* 🧠 Identificar Página Actual                   */
-/* ───────────────────────────────────────────── */
 function detectarClavePagina(path) {
   if (path.includes("checkout")) return "checkout";
   if (path.includes("carrito")) return "carrito";
@@ -45,9 +43,6 @@ function detectarClavePagina(path) {
   return "otros";
 }
 
-/* ───────────────────────────────────────────── */
-/* 🔢 Agrupar promociones por posición            */
-/* ───────────────────────────────────────────── */
 function agruparPorPosicion(lista = []) {
   return lista.reduce((acc, promo) => {
     const pos = promo.position || "top";
@@ -57,16 +52,13 @@ function agruparPorPosicion(lista = []) {
   }, {});
 }
 
-/* ───────────────────────────────────────────── */
-/* 🎯 Mostrar Carrusel de Promociones             */
-/* ───────────────────────────────────────────── */
 function mostrarRotador(promos = [], posicion = "top") {
   if (!promos.length) return;
 
   const wrapper = document.createElement("section");
   wrapper.className = `promo-display promo-${promos[0].theme || "blue"} promo-${posicion}`;
   wrapper.setAttribute("role", "region");
-  wrapper.setAttribute("aria-label", `Promociones en posición ${posicion}`);
+  wrapper.setAttribute("aria-label", `Promociones en ${posicion}`);
   wrapper.style.position = "relative";
   wrapper.style.overflow = "hidden";
 
@@ -83,7 +75,6 @@ function mostrarRotador(promos = [], posicion = "top") {
     slide.style.width = "100%";
 
     const mensaje = sanitize(promo.message || "");
-
     let contenido = `<p class="promo-msg">📣 ${mensaje}</p>`;
 
     if (promo.mediaType === "image" && promo.mediaUrl) {
@@ -105,7 +96,6 @@ function mostrarRotador(promos = [], posicion = "top") {
   wrapper.appendChild(contenedor);
   insertarSegunPosicion(wrapper, posicion);
 
-  // Rotador automático si hay más de una promoción
   if (promos.length > 1) {
     let index = 0;
     setInterval(() => {
@@ -119,18 +109,6 @@ function mostrarRotador(promos = [], posicion = "top") {
   }
 }
 
-/* ───────────────────────────────────────────── */
-/* 🧼 Sanear Texto para Seguridad                 */
-/* ───────────────────────────────────────────── */
-function sanitize(text = "") {
-  const div = document.createElement("div");
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-/* ───────────────────────────────────────────── */
-/* 🏗️ Insertar Banner Según Posición             */
-/* ───────────────────────────────────────────── */
 function insertarSegunPosicion(elemento, posicion) {
   const main = document.querySelector("main");
   const body = document.body;
@@ -152,4 +130,10 @@ function insertarSegunPosicion(elemento, posicion) {
     default:
       body.appendChild(elemento);
   }
+}
+
+function sanitize(text = "") {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
 }

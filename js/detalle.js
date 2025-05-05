@@ -100,7 +100,7 @@ function renderizarProducto(p) {
         <input type="number" id="cantidadInput" min="1" max="${p.stockTotal ?? 0}" value="1" />
       `}
 
-      <button class="btn-agregar" id="btnAgregarCarrito">🛒 Agregar al carrito</button>
+      <button class="btn-agregar" id="btnAgregarCarrito" ${tieneVariantes ? "disabled" : ""}>🛒 Agregar al carrito</button>
     </div>
   `;
 
@@ -112,11 +112,13 @@ function configurarSelectores(p) {
   const colorSelect = document.getElementById("colorSelect");
   const tallaSelect = document.getElementById("tallaSelect");
   const cantidadInput = document.getElementById("cantidadInput");
+  const btnAgregar = document.getElementById("btnAgregarCarrito");
 
   const variantes = (p.variants || []).filter(v => v.stock > 0 && v.activo);
 
   if (variantes.length === 0) {
     mostrarToast("⚠️ No hay variantes disponibles para este producto.");
+    btnAgregar.disabled = true;
     return;
   }
 
@@ -135,6 +137,7 @@ function configurarSelectores(p) {
       tallas.map(t => `<option value="${t}">${t}</option>`).join("");
     tallaSelect.disabled = false;
     cantidadInput.disabled = true;
+    btnAgregar.disabled = true;
     document.getElementById("stockInfo").textContent = "📦 Stock: -";
   };
 
@@ -149,13 +152,18 @@ function configurarSelectores(p) {
       cantidadInput.max = variante.stock;
       cantidadInput.value = 1;
       cantidadInput.disabled = false;
+      btnAgregar.disabled = false;
+    } else {
+      cantidadInput.disabled = true;
+      btnAgregar.disabled = true;
     }
   };
 }
 
 function agregarAlCarrito() {
   const cantidad = parseInt(document.getElementById("cantidadInput").value || "1");
-  if (!productoGlobal) return;
+  const btn = document.getElementById("btnAgregarCarrito");
+  if (!productoGlobal || btn.disabled) return;
 
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
 
@@ -210,7 +218,7 @@ function agregarAlCarrito() {
   mostrarToast("🛒 Producto agregado al carrito.");
 }
 
-// Utilidades varias
+// Utils
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }

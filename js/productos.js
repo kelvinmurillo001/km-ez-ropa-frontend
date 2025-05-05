@@ -3,12 +3,10 @@
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
-// 🔐 Verificación de sesión
 const token = verificarSesion();
 const API_PRODUCTS = `${API_BASE}/api/products`;
 const API_CATEGORIAS = `${API_BASE}/api/categories`;
 
-// 🌐 Elementos del DOM
 const productosLista = document.getElementById("productosLista");
 const btnNuevoProducto = document.getElementById("btnNuevoProducto");
 const inputBuscar = document.getElementById("buscarProducto");
@@ -19,7 +17,6 @@ const filtroStock = document.getElementById("filtroStock");
 const filtroDestacados = document.getElementById("filtroDestacados");
 const paginacion = document.getElementById("paginacion");
 
-// 🔢 Variables de paginación
 let productosTodos = [];
 let paginaActual = 1;
 let totalPaginas = 1;
@@ -29,8 +26,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   btnNuevoProducto?.addEventListener("click", () => window.location.href = "/crear-producto.html");
   inputBuscar?.addEventListener("input", () => { paginaActual = 1; cargarProductos(); });
   filtroCategoria?.addEventListener("change", () => { paginaActual = 1; cargarProductos(); });
-  filtroStock?.addEventListener("change", renderizarProductos);
-  filtroDestacados?.addEventListener("change", renderizarProductos);
+  filtroStock?.addEventListener("change", () => renderizarProductos());
+  filtroDestacados?.addEventListener("change", () => renderizarProductos());
   btnExportar?.addEventListener("click", exportarExcel);
 
   await cargarCategorias();
@@ -41,7 +38,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-/* 🔄 Cargar categorías desde backend */
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIAS, {
@@ -49,9 +45,7 @@ async function cargarCategorias() {
     });
     const data = await res.json();
 
-    if (!res.ok || !data.ok || !Array.isArray(data.data)) {
-      throw new Error(data.message || "Error al cargar categorías");
-    }
+    if (!res.ok || !data.ok || !Array.isArray(data.data)) throw new Error(data.message || "Error al cargar categorías");
 
     filtroCategoria.innerHTML = `<option value="">📂 Todas las categorías</option>`;
     data.data.forEach(cat => {
@@ -65,10 +59,10 @@ async function cargarCategorias() {
   }
 }
 
-/* 📡 Cargar productos desde la API */
 async function cargarProductos() {
   productosLista.innerHTML = `<p class="text-center">⏳ Cargando productos...</p>`;
   contadorProductos.textContent = "";
+  paginacion.innerHTML = "";
 
   try {
     const nombre = inputBuscar?.value?.trim() || "";
@@ -90,45 +84,37 @@ async function cargarProductos() {
     productosTodos = Array.isArray(data.productos) ? data.productos : [];
     totalPaginas = data.totalPaginas || 1;
 
-    console.log("📦 Productos recibidos:", productosTodos);
-
     if (!productosTodos.length) {
       productosLista.innerHTML = "<p class='text-center'>📭 No se encontraron productos.</p>";
       contadorProductos.textContent = "";
-      paginacion.innerHTML = "";
       return;
     }
 
     renderizarProductos();
   } catch (err) {
-    console.error("❌", err);
     productosLista.innerHTML = `<p class='text-center' style='color:red;'>❌ ${err.message}</p>`;
+    console.error("❌", err);
   }
 }
 
-/* 🧮 Renderizar productos filtrados */
 function renderizarProductos() {
   let filtrados = [...productosTodos];
 
-  // 🧮 Filtrar por stock (solo si stockTotal = 0)
   if (filtroStock?.value === "sinStock") {
     filtrados = filtrados.filter(p => {
-      const total = typeof p.stockTotal === "number" ? p.stockTotal : p.stock || 0;
+      const total = typeof p.stockTotal === "number" ? p.stockTotal : (p.stock ?? 0);
       return total === 0;
     });
   }
 
-  // ⭐ Filtrar destacados
   if (filtroDestacados?.checked) {
     filtrados = filtrados.filter(p => p.featured);
   }
 
-  console.log("🔍 Productos mostrados:", filtrados);
-
   contadorProductos.textContent = `Mostrando ${filtrados.length} producto(s) en página ${paginaActual} de ${totalPaginas}`;
 
   if (!filtrados.length) {
-    productosLista.innerHTML = "<p class='text-center'>📭 Sin resultados.</p>";
+    productosLista.innerHTML = "<p class='text-center'>📭 Sin resultados para los filtros aplicados.</p>";
     paginacion.innerHTML = "";
     return;
   }
@@ -153,7 +139,6 @@ function renderizarProductos() {
   renderPaginacion();
 }
 
-/* 🔢 Paginación */
 function renderPaginacion() {
   paginacion.innerHTML = "";
   if (totalPaginas <= 1) return;
@@ -170,7 +155,6 @@ function renderPaginacion() {
   }
 }
 
-/* 🧾 HTML Fila */
 function productoFilaHTML(p) {
   const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
   const nombre = sanitize(p.name || "Sin nombre");
@@ -193,7 +177,6 @@ function productoFilaHTML(p) {
     </tr>`;
 }
 
-/* 🗑️ Eliminar producto */
 async function eliminarProducto(id, nombre) {
   if (!confirm(`¿Eliminar "${nombre}"?`)) return;
 
@@ -214,7 +197,6 @@ async function eliminarProducto(id, nombre) {
   }
 }
 
-/* 📤 Exportar a Excel */
 async function exportarExcel() {
   const { utils, writeFile } = await import("https://cdn.sheetjs.com/xlsx-0.20.0/package/xlsx.mjs");
 
@@ -233,7 +215,6 @@ async function exportarExcel() {
   writeFile(wb, `inventario_kmezropa_${Date.now()}.xlsx`);
 }
 
-/* 🧼 Sanitizar */
 function sanitize(text = "") {
   const div = document.createElement("div");
   div.textContent = text;
