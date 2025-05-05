@@ -33,36 +33,41 @@ async function cargarDetallePedido() {
 }
 
 function renderizarDetalle(p) {
-  const fecha = new Date(p.createdAt).toLocaleDateString();
+  const fecha = new Date(p.createdAt).toLocaleDateString("es-ES", {
+    day: "numeric", month: "long", year: "numeric"
+  });
   const estado = estadoBonito(p.estado);
   const total = `$${p.total?.toFixed(2) || "0.00"}`;
-  const productos = p.items || [];
+  const productos = Array.isArray(p.items) ? p.items : [];
 
   const productosHTML = productos.map(item => {
     const imagen = item.imagen || "/assets/logo.jpg";
+    const subtotal = (item.precio * item.cantidad).toFixed(2);
     return `
-      <div class="producto-detalle">
-        <img src="${imagen}" alt="${item.nombre}" />
+      <div class="producto-detalle fade-in" role="listitem">
+        <img src="${imagen}" alt="${item.nombre}" loading="lazy" />
         <div>
-          <p><strong>${item.nombre}</strong></p>
-          <p>Talla: ${item.talla || "-"}</p>
-          <p>Color: ${item.color || "-"}</p>
+          <p><strong>${sanitize(item.nombre)}</strong></p>
+          <p>Talla: ${sanitize(item.talla || "-")}</p>
+          <p>Color: ${sanitize(item.color || "-")}</p>
           <p>Cantidad: ${item.cantidad}</p>
-          <p>Subtotal: $${(item.precio * item.cantidad).toFixed(2)}</p>
+          <p>Subtotal: $${subtotal}</p>
         </div>
       </div>`;
   }).join("");
 
   container.innerHTML = `
-    <div class="info-principal">
+    <section class="info-principal" aria-label="Información del pedido">
       <p><strong>Pedido ID:</strong> #${p._id.slice(-6).toUpperCase()}</p>
       <p><strong>Fecha:</strong> ${fecha}</p>
       <p><strong>Estado:</strong> <span class="estado-${p.estado}">${estado}</span></p>
       <p><strong>Total:</strong> ${total}</p>
-    </div>
+    </section>
 
-    <h3 class="text-center mt-2">🧾 Productos</h3>
-    <div class="productos-lista">${productosHTML}</div>
+    <h3 class="text-center mt-2">🧾 Productos incluidos</h3>
+    <div class="productos-lista" role="list" aria-label="Lista de productos">
+      ${productosHTML}
+    </div>
 
     <div class="mt-3 text-center">
       <a href="/cliente.html" class="btn-secundario">🔙 Volver a mis pedidos</a>
@@ -78,5 +83,15 @@ function estadoBonito(e = "") {
     entregado: "📬 Entregado",
     cancelado: "❌ Cancelado"
   };
-  return estados[e] || e;
+  return estados[e] || capitalize(e);
+}
+
+function sanitize(str = "") {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function capitalize(str = "") {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }

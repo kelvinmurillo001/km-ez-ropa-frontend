@@ -2,28 +2,32 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>📦 Detalle del Pedido | KM & EZ ROPA</title>
 
+  <!-- 🔍 SEO y Accesibilidad -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Consulta el detalle completo de tu pedido: productos, total, estado y fecha." />
   <meta name="theme-color" content="#ff6d00" />
+  <meta name="author" content="KM & EZ ROPA" />
 
-  <!-- Estilos -->
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/detalle-pedido.css" />
 
-  <!-- Script -->
+  <!-- 📜 Scripts JS -->
   <script type="module" src="/js/detalle-pedido.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js" defer></script>
 </head>
 
 <body>
 <header class="main-header" role="banner">
   <div class="logo">
     <a href="/" aria-label="Volver al inicio">
-      <img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" />
+      <img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" loading="lazy" />
     </a>
     <div class="brand">
       <h1>KM & EZ ROPA</h1>
@@ -31,7 +35,7 @@
     </div>
   </div>
 
-  <nav class="nav-links">
+  <nav class="nav-links" aria-label="Navegación principal">
     <a href="/cliente.html">🔙 Mis Pedidos</a>
     <a href="/index.html">🏠 Inicio</a>
   </nav>
@@ -44,8 +48,10 @@
   </section>
 </main>
 
+<!-- 🧠 Mensajes de estado -->
 <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
 
+<!-- ⚠️ Fallback JS -->
 <noscript>
   <p style="text-align: center; color:red;">⚠️ Activa JavaScript para ver correctamente esta página.</p>
 </noscript>
