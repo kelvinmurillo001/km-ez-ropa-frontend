@@ -137,6 +137,23 @@ h1 {
   color: #aaa;
 }
 
+/* 🔴 Etiqueta de advertencia visual */
+.stock-alert {
+  color: tomato;
+  font-weight: bold;
+  font-size: 0.9rem;
+  background-color: rgba(255, 99, 71, 0.15);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* 🟡 Estado visual para bajo stock (si decides usarlo) */
+.bajo-stock {
+  background-color: #2a1a1a;
+  color: #ffcc00;
+}
+
 /* 🖼️ Imagen en tabla */
 .producto-img {
   width: 50px;
@@ -199,12 +216,6 @@ h1 {
 .destacado {
   background-color: rgba(212, 175, 55, 0.08);
   border-left: 5px solid #d4af37;
-}
-
-/* ⚠️ Stock bajo (opcional) */
-.bajo-stock {
-  background-color: #2a1a1a;
-  color: #ffcc00;
 }
 
 /* === 📱 RESPONSIVE PARA MÓVILES === */

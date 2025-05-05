@@ -3,33 +3,33 @@
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
-// 🔐 Autenticación
+// 🔐 Validar sesión admin
 const token = verificarSesion();
 
-// 🔗 Endpoints
+// 🔗 API endpoints
 const API_PRODUCTS = `${API_BASE}/api/products`;
 const API_CATEGORIAS = `${API_BASE}/api/categories`;
 
-// 🌐 Elementos DOM
+// 🌐 DOM elements
 const productosLista = document.getElementById("productosLista");
 const btnNuevoProducto = document.getElementById("btnNuevoProducto");
 const inputBuscar = document.getElementById("buscarProducto");
 const filtroCategoria = document.getElementById("filtroCategoria");
-const contadorProductos = document.getElementById("contadorProductos");
-const btnExportar = document.getElementById("btnExportar");
 const filtroStock = document.getElementById("filtroStock");
 const filtroDestacados = document.getElementById("filtroDestacados");
+const contadorProductos = document.getElementById("contadorProductos");
+const btnExportar = document.getElementById("btnExportar");
 const paginacion = document.getElementById("paginacion");
 
-// 🔢 Estado
+// 📊 Estado global
 let productosTodos = [];
 let paginaActual = 1;
 let totalPaginas = 1;
 const productosPorPagina = 10;
 
-// ▶️ Inicio
+// ▶️ Inicialización
 document.addEventListener("DOMContentLoaded", async () => {
-  btnNuevoProducto?.addEventListener("click", () => window.location.href = "/crear-producto.html");
+  btnNuevoProducto?.addEventListener("click", () => location.href = "/crear-producto.html");
   inputBuscar?.addEventListener("input", () => { paginaActual = 1; cargarProductos(); });
   filtroCategoria?.addEventListener("change", () => { paginaActual = 1; cargarProductos(); });
   filtroStock?.addEventListener("change", renderizarProductos);
@@ -44,14 +44,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// 🔄 Cargar categorías
+// 🗂️ Cargar categorías para filtro
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIAS, {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();
-    if (!res.ok || !data.ok || !Array.isArray(data.data)) throw new Error(data.message || "Error al cargar categorías");
+
+    if (!res.ok || !data.ok || !Array.isArray(data.data)) throw new Error(data.message);
 
     filtroCategoria.innerHTML = `<option value="">📂 Todas las categorías</option>`;
     data.data.forEach(cat => {
@@ -61,23 +62,20 @@ async function cargarCategorias() {
       filtroCategoria.appendChild(option);
     });
   } catch (err) {
-    console.warn("❌ Categorías:", err.message);
+    console.warn("❌ Error cargando categorías:", err.message);
   }
 }
 
-// 📦 Cargar productos con filtros y paginación
+// 📦 Obtener productos desde la API
 async function cargarProductos() {
   productosLista.innerHTML = `<p class="text-center">⏳ Cargando productos...</p>`;
   contadorProductos.textContent = "";
   paginacion.innerHTML = "";
 
   try {
-    const nombre = inputBuscar?.value?.trim() || "";
-    const categoria = filtroCategoria?.value || "";
-
     const params = new URLSearchParams();
-    if (nombre) params.append("nombre", nombre);
-    if (categoria) params.append("categoria", categoria);
+    if (inputBuscar?.value) params.append("nombre", inputBuscar.value.trim());
+    if (filtroCategoria?.value) params.append("categoria", filtroCategoria.value);
     params.append("pagina", paginaActual);
     params.append("limite", productosPorPagina);
 
@@ -86,25 +84,23 @@ async function cargarProductos() {
     });
 
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Error al obtener productos");
+    if (!res.ok) throw new Error(data.message);
 
     productosTodos = Array.isArray(data.productos) ? data.productos : [];
     totalPaginas = data.totalPaginas || 1;
 
     if (!productosTodos.length) {
       productosLista.innerHTML = "<p class='text-center'>📭 No se encontraron productos.</p>";
-      contadorProductos.textContent = "";
       return;
     }
 
     renderizarProductos();
   } catch (err) {
-    productosLista.innerHTML = `<p class='text-center' style='color:red;'>❌ ${err.message}</p>`;
-    console.error("❌", err);
+    productosLista.innerHTML = `<p class="text-center" style="color:red;">❌ ${err.message}</p>`;
   }
 }
 
-// 🧮 Renderizar productos
+// 🧾 Mostrar tabla de productos
 function renderizarProductos() {
   let filtrados = [...productosTodos];
 
@@ -144,7 +140,7 @@ function renderizarProductos() {
   renderPaginacion();
 }
 
-// 🔢 Paginación
+// 🔁 Paginación
 function renderPaginacion() {
   paginacion.innerHTML = "";
   if (totalPaginas <= 1) return;
@@ -161,7 +157,7 @@ function renderPaginacion() {
   }
 }
 
-// 🧾 Fila de producto
+// 🧱 Generar fila HTML
 function productoFilaHTML(p) {
   const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
   const nombre = sanitize(p.name || "Sin nombre");
@@ -169,13 +165,14 @@ function productoFilaHTML(p) {
   const categoria = sanitize(p.category || "-");
   const stock = typeof p.stockTotal === "number" ? p.stockTotal : (p.stock ?? 0);
   const claseStock = stock === 0 ? "sin-stock" : "";
+  const stockVisual = stock === 0 ? `<span class="stock-alert">Sin stock</span>` : stock;
 
   return `
     <tr class="${claseStock}">
       <td><img src="${imagen}" alt="${nombre}" class="producto-img" /></td>
-      <td>${nombre}</td>
+      <td>${nombre} ${stock === 0 ? '⚠️' : ''}</td>
       <td>$${precio}</td>
-      <td>${stock}</td>
+      <td>${stockVisual}</td>
       <td>${categoria}</td>
       <td>
         <button class="btn-tabla editar" onclick="editarProducto('${p._id}')">✏️</button>
@@ -184,7 +181,7 @@ function productoFilaHTML(p) {
     </tr>`;
 }
 
-// 🗑️ Eliminar producto
+// ❌ Eliminar producto
 async function eliminarProducto(id, nombre) {
   if (!confirm(`¿Eliminar "${nombre}"?`)) return;
 
@@ -195,12 +192,11 @@ async function eliminarProducto(id, nombre) {
     });
 
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Error al eliminar");
+    if (!res.ok) throw new Error(data.message);
 
     mostrarMensaje(`✅ "${nombre}" eliminado`, "success");
     await cargarProductos();
   } catch (err) {
-    console.error("❌", err);
     mostrarMensaje("❌ No se pudo eliminar", "error");
   }
 }
@@ -224,7 +220,7 @@ async function exportarExcel() {
   writeFile(wb, `inventario_kmezropa_${Date.now()}.xlsx`);
 }
 
-// 🔒 Sanitizar texto para seguridad
+// 🧼 Sanitizar
 function sanitize(text = "") {
   const div = document.createElement("div");
   div.textContent = text;
