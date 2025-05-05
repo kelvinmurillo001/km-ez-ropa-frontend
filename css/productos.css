@@ -261,3 +261,12 @@ body.modo-oscuro .filtros select {
   color: #f5f5f5;
   border-color: #444;
 }
+.stock-alert {
+  color: tomato;
+  font-weight: bold;
+  font-size: 0.9rem;
+  background-color: rgba(255, 99, 71, 0.15);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  display: inline-block;
+}
