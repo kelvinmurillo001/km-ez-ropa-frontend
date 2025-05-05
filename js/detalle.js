@@ -8,8 +8,8 @@ let varianteSeleccionada = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   registrarVisitaPublica();
-  const id = new URLSearchParams(window.location.search).get("id");
 
+  const id = new URLSearchParams(window.location.search).get("id");
   if (!id || id === "undefined") {
     mostrarError("❌ Producto no encontrado o inválido.");
     return;
@@ -27,8 +27,7 @@ async function cargarProducto(id) {
     const res = await fetch(`${API_BASE}/api/products/${id}`);
     if (!res.ok) throw new Error("⚠️ Producto no encontrado");
 
-    const data = await res.json();
-    const producto = data.producto;
+    const { producto } = await res.json();
     if (!producto?._id) throw new Error("❌ Producto inválido");
 
     productoGlobal = producto;
@@ -41,17 +40,17 @@ async function cargarProducto(id) {
 }
 
 function renderizarProducto(p) {
-  const detalle = document.getElementById("detalleProducto");
-  if (!detalle) return;
+  const contenedor = document.getElementById("detalleProducto");
+  if (!contenedor) return;
 
-  const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
+  const imagen = p.images?.[0]?.url || "/assets/logo.jpg";
   const nombre = sanitize(p.name);
   const descripcion = sanitize(p.description);
-  const precio = parseFloat(p.price).toFixed(2);
+  const precio = parseFloat(p.price || 0).toFixed(2);
 
-  const imagenes = (p.images || []).map(img =>
-    `<img src="${img.url}" class="mini-img" alt="${nombre}" onclick="document.getElementById('imgPrincipal').src='${img.url}'"/>`
-  ).join("");
+  const galeria = (p.images || []).map(img => `
+    <img src="${img.url}" class="mini-img" alt="${nombre}" onclick="document.getElementById('imgPrincipal').src='${img.url}'"/>
+  `).join("");
 
   const detallesExtra = `
     <div class="detalles-extra">
@@ -63,10 +62,10 @@ function renderizarProducto(p) {
 
   const tieneVariantes = Array.isArray(p.variants) && p.variants.length > 0;
 
-  detalle.innerHTML = `
+  contenedor.innerHTML = `
     <div class="detalle-img">
-      <img id="imgPrincipal" src="${imagen}" alt="${nombre}" loading="lazy"/>
-      <div class="galeria-mini">${imagenes}</div>
+      <img id="imgPrincipal" src="${imagen}" alt="${nombre}" loading="lazy" />
+      <div class="galeria-mini">${galeria}</div>
     </div>
 
     <div class="detalle-info" itemscope itemtype="https://schema.org/Product">
@@ -84,10 +83,10 @@ function renderizarProducto(p) {
       ${tieneVariantes ? `
         <div class="selectores" id="selectorVariantes">
           <label for="colorSelect">🎨 Color:</label>
-          <select id="colorSelect"><option disabled selected>Selecciona un color</option></select>
+          <select id="colorSelect" aria-label="Selecciona color"></select>
 
           <label for="tallaSelect">📏 Talla:</label>
-          <select id="tallaSelect" disabled><option disabled selected>Selecciona una talla</option></select>
+          <select id="tallaSelect" aria-label="Selecciona talla" disabled></select>
 
           <div id="stockInfo" role="status" aria-live="polite">📦 Stock: -</div>
 
@@ -109,23 +108,21 @@ function renderizarProducto(p) {
 }
 
 function configurarSelectores(p) {
+  const variantes = (p.variants || []).filter(v => v.stock > 0 && v.activo);
   const colorSelect = document.getElementById("colorSelect");
   const tallaSelect = document.getElementById("tallaSelect");
   const cantidadInput = document.getElementById("cantidadInput");
+  const stockInfo = document.getElementById("stockInfo");
   const btnAgregar = document.getElementById("btnAgregarCarrito");
 
-  const variantes = (p.variants || []).filter(v => v.stock > 0 && v.activo);
-
   if (variantes.length === 0) {
-    mostrarToast("⚠️ No hay variantes disponibles para este producto.");
-    btnAgregar.disabled = true;
+    mostrarToast("⚠️ No hay variantes disponibles.");
     return;
   }
 
-  const coloresUnicos = [...new Set(variantes.map(v => v.color.toLowerCase()))];
-
+  const colores = [...new Set(variantes.map(v => v.color.toLowerCase()))];
   colorSelect.innerHTML = `<option disabled selected>Selecciona un color</option>` +
-    coloresUnicos.map(c => `<option value="${c}">${capitalize(c)}</option>`).join("");
+    colores.map(c => `<option value="${c}">${capitalize(c)}</option>`).join("");
 
   colorSelect.onchange = () => {
     const color = colorSelect.value;
@@ -135,53 +132,52 @@ function configurarSelectores(p) {
 
     tallaSelect.innerHTML = `<option disabled selected>Selecciona una talla</option>` +
       tallas.map(t => `<option value="${t}">${t}</option>`).join("");
+
     tallaSelect.disabled = false;
     cantidadInput.disabled = true;
     btnAgregar.disabled = true;
-    document.getElementById("stockInfo").textContent = "📦 Stock: -";
+    stockInfo.textContent = "📦 Stock: -";
   };
 
   tallaSelect.onchange = () => {
     const color = colorSelect.value;
     const talla = tallaSelect.value;
-    const variante = variantes.find(v => v.color.toLowerCase() === color && v.talla.toUpperCase() === talla);
+    const variante = variantes.find(v =>
+      v.color.toLowerCase() === color && v.talla.toUpperCase() === talla
+    );
 
     if (variante) {
       varianteSeleccionada = variante;
-      document.getElementById("stockInfo").textContent = `📦 Stock: ${variante.stock}`;
+      stockInfo.textContent = `📦 Stock: ${variante.stock}`;
       cantidadInput.max = variante.stock;
       cantidadInput.value = 1;
       cantidadInput.disabled = false;
       btnAgregar.disabled = false;
-    } else {
-      cantidadInput.disabled = true;
-      btnAgregar.disabled = true;
     }
   };
 }
 
 function agregarAlCarrito() {
   const cantidad = parseInt(document.getElementById("cantidadInput").value || "1");
-  const btn = document.getElementById("btnAgregarCarrito");
-  if (!productoGlobal || btn.disabled) return;
-
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
 
+  const agregarItem = (nuevoItem, clave) => {
+    const idx = carrito.findIndex(p => `${p.id}_${p.talla}_${p.color}`.toLowerCase() === clave);
+    if (idx >= 0) {
+      carrito[idx].cantidad = Math.min(carrito[idx].cantidad + cantidad, nuevoItem.max);
+    } else {
+      carrito.push(nuevoItem.data);
+    }
+  };
+
   if (productoGlobal.variants?.length > 0) {
-    if (!varianteSeleccionada) return mostrarToast("⚠️ Debes seleccionar un color y talla");
+    if (!varianteSeleccionada) return mostrarToast("⚠️ Selecciona una variante");
     if (cantidad < 1 || cantidad > varianteSeleccionada.stock) {
-      return mostrarToast(`⚠️ Cantidad no permitida (stock: ${varianteSeleccionada.stock})`);
+      return mostrarToast(`⚠️ Stock insuficiente (${varianteSeleccionada.stock})`);
     }
 
-    const clave = `${productoGlobal._id}_${varianteSeleccionada.talla}_${varianteSeleccionada.color}`.toLowerCase();
-    const idx = carrito.findIndex(p =>
-      `${p.id}_${p.talla}_${p.color}`.toLowerCase() === clave
-    );
-
-    if (idx >= 0) {
-      carrito[idx].cantidad = Math.min(carrito[idx].cantidad + cantidad, varianteSeleccionada.stock);
-    } else {
-      carrito.push({
+    agregarItem({
+      data: {
         id: productoGlobal._id,
         nombre: productoGlobal.name,
         imagen: productoGlobal.images?.[0]?.url || "/assets/logo.jpg",
@@ -189,19 +185,16 @@ function agregarAlCarrito() {
         talla: varianteSeleccionada.talla,
         color: varianteSeleccionada.color,
         cantidad
-      });
-    }
+      },
+      max: varianteSeleccionada.stock
+    }, `${productoGlobal._id}_${varianteSeleccionada.talla}_${varianteSeleccionada.color}`.toLowerCase());
+
   } else {
-    if (cantidad < 1 || cantidad > (productoGlobal.stockTotal ?? 0)) {
-      return mostrarToast(`⚠️ Cantidad no permitida (stock: ${productoGlobal.stockTotal})`);
-    }
+    const stock = productoGlobal.stockTotal ?? 0;
+    if (cantidad < 1 || cantidad > stock) return mostrarToast(`⚠️ Stock insuficiente (${stock})`);
 
-    const idx = carrito.findIndex(p => p.id === productoGlobal._id);
-
-    if (idx >= 0) {
-      carrito[idx].cantidad = Math.min(carrito[idx].cantidad + cantidad, productoGlobal.stockTotal);
-    } else {
-      carrito.push({
+    agregarItem({
+      data: {
         id: productoGlobal._id,
         nombre: productoGlobal.name,
         imagen: productoGlobal.images?.[0]?.url || "/assets/logo.jpg",
@@ -209,8 +202,9 @@ function agregarAlCarrito() {
         talla: "única",
         color: "",
         cantidad
-      });
-    }
+      },
+      max: stock
+    }, `${productoGlobal._id}_única_`.toLowerCase());
   }
 
   localStorage.setItem("km_ez_cart", JSON.stringify(carrito));
@@ -219,57 +213,58 @@ function agregarAlCarrito() {
 }
 
 // Utils
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
 function sanitize(text = "") {
   const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
 }
-function mostrarToast(msg) {
-  const toast = document.createElement("div");
-  toast.textContent = msg;
-  Object.assign(toast.style, {
-    position: "fixed", bottom: "30px", right: "30px",
-    background: "#ff6d00", color: "#fff", padding: "1rem",
-    borderRadius: "8px", fontWeight: "bold",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.3)", zIndex: "9999"
-  });
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 2500);
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 function mostrarError(msg) {
-  const detalle = document.getElementById("detalleProducto");
-  detalle.innerHTML = `<div class="text-center" style="color:red;"><h3>${msg}</h3><a href="/categorias.html" class="btn-secundario">🔙 Volver</a></div>`;
+  const contenedor = document.getElementById("detalleProducto");
+  contenedor.innerHTML = `<div class="text-center" style="color:red;"><h3>${msg}</h3><a href="/categorias.html" class="btn-secundario">🔙 Volver</a></div>`;
+}
+function mostrarToast(msg) {
+  const div = document.createElement("div");
+  div.textContent = msg;
+  Object.assign(div.style, {
+    position: "fixed", bottom: "30px", right: "30px",
+    background: "#ff6d00", color: "#fff", padding: "1rem",
+    borderRadius: "8px", fontWeight: "bold", zIndex: "9999",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.2)"
+  });
+  document.body.appendChild(div);
+  setTimeout(() => div.remove(), 2500);
 }
 function actualizarCarritoWidget() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
-  const total = carrito.reduce((sum, i) => sum + (i.cantidad || 0), 0);
+  const total = carrito.reduce((sum, item) => sum + item.cantidad, 0);
   document.getElementById("cartCount").textContent = total;
 }
 function activarModoOscuro() {
+  const btn = document.getElementById("modoOscuroBtn");
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
-  document.getElementById("modoOscuroBtn")?.addEventListener("click", () => {
-    const dark = document.body.classList.toggle("modo-oscuro");
-    localStorage.setItem("modoOscuro", dark);
+  btn?.addEventListener("click", () => {
+    const activo = document.body.classList.toggle("modo-oscuro");
+    localStorage.setItem("modoOscuro", activo);
   });
 }
 function toggleFavorito(id) {
   const key = "km_ez_favs";
   const favs = JSON.parse(localStorage.getItem(key)) || [];
-  const idx = favs.indexOf(id);
   const btn = document.getElementById("btnFavorito");
-  if (idx >= 0) {
-    favs.splice(idx, 1);
+
+  if (favs.includes(id)) {
+    localStorage.setItem(key, JSON.stringify(favs.filter(f => f !== id)));
     btn.setAttribute("aria-pressed", "false");
   } else {
     favs.push(id);
+    localStorage.setItem(key, JSON.stringify(favs));
     btn.setAttribute("aria-pressed", "true");
   }
-  localStorage.setItem(key, JSON.stringify(favs));
 }
 function actualizarFavoritoUI(id) {
   const favs = JSON.parse(localStorage.getItem("km_ez_favs")) || [];
@@ -278,7 +273,8 @@ function actualizarFavoritoUI(id) {
 function actualizarSEO(p = {}) {
   const nombre = sanitize(p.name);
   const descripcion = sanitize(p.description);
-  const imagen = p.image || p.images?.[0]?.url || "/assets/og-image.jpg";
+  const imagen = p.images?.[0]?.url || "/assets/og-image.jpg";
+
   document.title = `${nombre} - Compra online | KM & EZ ROPA`;
   document.querySelector('meta[name="description"]')?.setAttribute("content", descripcion);
   document.getElementById("ogTitle")?.setAttribute("content", nombre);

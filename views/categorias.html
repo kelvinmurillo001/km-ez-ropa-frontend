@@ -11,7 +11,7 @@
   <meta name="robots" content="index, follow">
   <meta name="author" content="KM & EZ ROPA">
   <link rel="canonical" href="https://kmezropacatalogo.com/categorias.html" />
-  
+
   <meta property="og:title" content="Categorías de Productos | KM & EZ ROPA" />
   <meta property="og:description" content="Explora estilos únicos de moda urbana por categoría, género y ocasión." />
   <meta property="og:image" content="/assets/og-image.jpg" />
@@ -70,12 +70,14 @@
         <option value="">📂 Todas</option>
       </select>
     </div>
+
     <div class="filtro">
       <label for="subcategoriaSelect">Subcategoría:</label>
       <select id="subcategoriaSelect" aria-label="Selecciona una subcategoría" disabled>
         <option value="">📁 Todas</option>
       </select>
     </div>
+
     <div class="filtro">
       <label for="precioSelect">Ordenar por precio:</label>
       <select id="precioSelect" aria-label="Ordenar por precio">
@@ -84,6 +86,7 @@
         <option value="high">⬆️ Mayor a menor</option>
       </select>
     </div>
+
     <div class="filtro">
       <label for="busquedaInput" class="sr-only">Buscar producto:</label>
       <input type="search" id="busquedaInput" placeholder="🔎 Buscar producto..." autocomplete="on" aria-label="Buscar productos por nombre" />
@@ -94,7 +97,7 @@
   <main class="catalogo-section" role="main" aria-label="Catálogo de productos filtrados">
     <h2 class="section-title">🧢 Productos Disponibles</h2>
     <div id="catalogo" class="product-grid" role="list" aria-live="polite">
-      <!-- Render dinámico por JS -->
+      <!-- Render dinámico desde JS -->
     </div>
   </main>
 
@@ -109,7 +112,7 @@
     </a>
   </div>
 
-  <!-- 📣 Mensajes de estado -->
+  <!-- 📣 Mensajes flotantes -->
   <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
 
   <!-- 🔚 Pie de página -->
@@ -117,7 +120,7 @@
     <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
   </footer>
 
-  <!-- ⚠️ JS requerido -->
+  <!-- 🚫 JS requerido -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Activa JavaScript para visualizar correctamente esta página.</p>
   </noscript>

@@ -12,12 +12,12 @@ import { API_BASE } from "./config.js";
 const token = verificarSesion();
 const user = getUsuarioActivo();
 
-// 🌐 Endpoints
+// 🔗 Endpoints
 const API_PRODUCTS = `${API_BASE}/api/products`;
 const API_CATEGORIES = `${API_BASE}/api/categories`;
 const API_UPLOADS = `${API_BASE}/api/uploads`;
 
-// 📦 DOM Elements
+// 🌐 DOM Elements
 const form = document.getElementById("formProducto");
 const imagenInput = document.getElementById("imagenPrincipalInput");
 const previewPrincipal = document.getElementById("previewPrincipal");
@@ -31,6 +31,7 @@ const msgEstado = document.getElementById("msgEstado");
 let variantes = [];
 let categoriasConSubcategorias = [];
 
+// Tallas según tipo
 const tallasPorTipo = {
   adulto: ["S", "M", "L", "XL", "XXL"],
   joven: ["S", "M", "L"],
@@ -39,7 +40,7 @@ const tallasPorTipo = {
   bebé: ["0-3", "3-6", "6-9", "9-12", "12-18", "18-24"]
 };
 
-// 🚀 Init
+// ▶️ Init
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     await cargarCategorias();
@@ -52,47 +53,38 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// 📂 Categorías
+// 📁 Cargar categorías
 async function cargarCategorias() {
   const res = await fetch(API_CATEGORIES);
   const { data } = await res.json();
-  if (!res.ok || !Array.isArray(data)) throw new Error("No se pudieron cargar");
+  if (!res.ok || !Array.isArray(data)) throw new Error("Error al cargar categorías");
 
   categoriasConSubcategorias = data;
   categoriaInput.innerHTML = `<option value="">Selecciona categoría</option>` +
     data.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join("");
 
   categoriaInput.addEventListener("change", () => {
-    const seleccionada = categoriaInput.value;
-    const categoria = categoriasConSubcategorias.find(c => c.name === seleccionada);
+    const categoria = categoriasConSubcategorias.find(c => c.name === categoriaInput.value);
     if (!categoria) return;
 
-    if (categoria.subcategories.length > 0) {
-      subcategoriaInput.disabled = false;
-      subcategoriaInput.innerHTML = `<option value="">Selecciona una subcategoría</option>` +
-        categoria.subcategories.map(sub => `<option value="${sub}">${sub}</option>`).join("");
-    } else {
-      subcategoriaInput.innerHTML = `<option value="">Sin subcategorías</option>`;
-      subcategoriaInput.disabled = true;
-    }
+    subcategoriaInput.innerHTML = categoria.subcategories.length
+      ? `<option value="">Selecciona una subcategoría</option>` + categoria.subcategories.map(sub => `<option value="${sub}">${sub}</option>`).join("")
+      : `<option value="">Sin subcategorías</option>`;
+
+    subcategoriaInput.disabled = categoria.subcategories.length === 0;
   });
 }
 
-// 🖼️ Preview
+// 🖼️ Imagen principal - Preview
 imagenInput.addEventListener("change", () => {
   const file = imagenInput.files[0];
   if (!file) return;
 
-  if (!file.type.startsWith("image/")) {
-    return mostrarMensaje("⚠️ El archivo no es una imagen válida", "error");
-  }
-
-  if (file.size > 2 * 1024 * 1024) {
-    return mostrarMensaje("⚠️ Tamaño máximo de imagen: 2MB", "error");
-  }
+  if (!file.type.startsWith("image/")) return mostrarMensaje("⚠️ Archivo inválido", "error");
+  if (file.size > 2 * 1024 * 1024) return mostrarMensaje("⚠️ Imagen muy grande (máx. 2MB)", "error");
 
   const url = URL.createObjectURL(file);
-  previewPrincipal.innerHTML = `<img src="${url}" alt="Vista previa" style="max-width: 200px; border-radius: 8px;" />`;
+  previewPrincipal.innerHTML = `<img src="${url}" alt="Vista previa" style="max-width:200px; border-radius:8px;" />`;
 });
 
 // ➕ Añadir variante
@@ -122,10 +114,10 @@ function agregarVariante() {
   variantes.push(index);
 }
 
-// ☁️ Subir imagen
+// ☁️ Subir imagen a Cloudinary
 async function subirImagen(file) {
   if (!file || !file.type.startsWith("image/") || file.size > 2 * 1024 * 1024) {
-    throw new Error("⚠️ Imagen inválida o muy grande");
+    throw new Error("⚠️ Imagen inválida o demasiado grande");
   }
 
   const formData = new FormData();
@@ -146,7 +138,7 @@ async function subirImagen(file) {
   };
 }
 
-// 💾 Guardar producto
+// 💾 Crear producto
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   form.classList.add("bloqueado");
@@ -171,16 +163,16 @@ form.addEventListener("submit", async (e) => {
     const claves = new Set();
 
     for (const v of variantesContainer.querySelectorAll(".variante-item")) {
-      const colorInput = v.querySelector("input[name^='color']")?.value.trim();
-      const tallaInput = v.querySelector("input[name^='talla']")?.value.trim();
+      const color = v.querySelector("input[name^='color']")?.value.trim().toLowerCase();
+      const talla = v.querySelector("input[name^='talla']")?.value.trim().toUpperCase();
       const stock = parseInt(v.querySelector("input[type='number']")?.value) || 0;
       const fileInput = v.querySelector("input[type='file']");
 
-      if (!fileInput?.files.length || !colorInput || !tallaInput) {
+      if (!fileInput?.files.length || !color || !talla) {
         throw new Error("⚠️ Todos los campos de variantes son obligatorios.");
       }
 
-      const clave = `${colorInput.toLowerCase()}-${tallaInput.toLowerCase()}`;
+      const clave = `${color}-${talla}`;
       if (claves.has(clave)) throw new Error("⚠️ Variante duplicada (color + talla)");
       claves.add(clave);
 
@@ -189,8 +181,8 @@ form.addEventListener("submit", async (e) => {
       variantesFinales.push({
         imageUrl: subida.url,
         cloudinaryId: subida.cloudinaryId,
-        color: colorInput,
-        talla: tallaInput,
+        color,
+        talla,
         stock
       });
     }
@@ -200,7 +192,7 @@ form.addEventListener("submit", async (e) => {
       description: descripcion,
       price: precio,
       category: categoria,
-      subcategory: subcategoria,
+      subcategory,
       tallaTipo,
       featured: destacado,
       variants: variantesFinales,

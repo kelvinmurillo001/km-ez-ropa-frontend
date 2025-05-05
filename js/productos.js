@@ -3,10 +3,14 @@
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
+// 🔐 Autenticación
 const token = verificarSesion();
+
+// 🔗 Endpoints
 const API_PRODUCTS = `${API_BASE}/api/products`;
 const API_CATEGORIAS = `${API_BASE}/api/categories`;
 
+// 🌐 Elementos DOM
 const productosLista = document.getElementById("productosLista");
 const btnNuevoProducto = document.getElementById("btnNuevoProducto");
 const inputBuscar = document.getElementById("buscarProducto");
@@ -17,17 +21,19 @@ const filtroStock = document.getElementById("filtroStock");
 const filtroDestacados = document.getElementById("filtroDestacados");
 const paginacion = document.getElementById("paginacion");
 
+// 🔢 Estado
 let productosTodos = [];
 let paginaActual = 1;
 let totalPaginas = 1;
 const productosPorPagina = 10;
 
+// ▶️ Inicio
 document.addEventListener("DOMContentLoaded", async () => {
   btnNuevoProducto?.addEventListener("click", () => window.location.href = "/crear-producto.html");
   inputBuscar?.addEventListener("input", () => { paginaActual = 1; cargarProductos(); });
   filtroCategoria?.addEventListener("change", () => { paginaActual = 1; cargarProductos(); });
-  filtroStock?.addEventListener("change", () => renderizarProductos());
-  filtroDestacados?.addEventListener("change", () => renderizarProductos());
+  filtroStock?.addEventListener("change", renderizarProductos);
+  filtroDestacados?.addEventListener("change", renderizarProductos);
   btnExportar?.addEventListener("click", exportarExcel);
 
   await cargarCategorias();
@@ -38,13 +44,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
+// 🔄 Cargar categorías
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIAS, {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();
-
     if (!res.ok || !data.ok || !Array.isArray(data.data)) throw new Error(data.message || "Error al cargar categorías");
 
     filtroCategoria.innerHTML = `<option value="">📂 Todas las categorías</option>`;
@@ -55,10 +61,11 @@ async function cargarCategorias() {
       filtroCategoria.appendChild(option);
     });
   } catch (err) {
-    console.warn("❌ No se pudieron cargar las categorías:", err.message);
+    console.warn("❌ Categorías:", err.message);
   }
 }
 
+// 📦 Cargar productos con filtros y paginación
 async function cargarProductos() {
   productosLista.innerHTML = `<p class="text-center">⏳ Cargando productos...</p>`;
   contadorProductos.textContent = "";
@@ -97,14 +104,12 @@ async function cargarProductos() {
   }
 }
 
+// 🧮 Renderizar productos
 function renderizarProductos() {
   let filtrados = [...productosTodos];
 
   if (filtroStock?.value === "sinStock") {
-    filtrados = filtrados.filter(p => {
-      const total = typeof p.stockTotal === "number" ? p.stockTotal : (p.stock ?? 0);
-      return total === 0;
-    });
+    filtrados = filtrados.filter(p => (typeof p.stockTotal === "number" ? p.stockTotal : (p.stock ?? 0)) === 0);
   }
 
   if (filtroDestacados?.checked) {
@@ -139,6 +144,7 @@ function renderizarProductos() {
   renderPaginacion();
 }
 
+// 🔢 Paginación
 function renderPaginacion() {
   paginacion.innerHTML = "";
   if (totalPaginas <= 1) return;
@@ -155,6 +161,7 @@ function renderPaginacion() {
   }
 }
 
+// 🧾 Fila de producto
 function productoFilaHTML(p) {
   const imagen = p.image || p.images?.[0]?.url || "/assets/logo.jpg";
   const nombre = sanitize(p.name || "Sin nombre");
@@ -177,6 +184,7 @@ function productoFilaHTML(p) {
     </tr>`;
 }
 
+// 🗑️ Eliminar producto
 async function eliminarProducto(id, nombre) {
   if (!confirm(`¿Eliminar "${nombre}"?`)) return;
 
@@ -197,6 +205,7 @@ async function eliminarProducto(id, nombre) {
   }
 }
 
+// 📤 Exportar a Excel
 async function exportarExcel() {
   const { utils, writeFile } = await import("https://cdn.sheetjs.com/xlsx-0.20.0/package/xlsx.mjs");
 
@@ -215,12 +224,14 @@ async function exportarExcel() {
   writeFile(wb, `inventario_kmezropa_${Date.now()}.xlsx`);
 }
 
+// 🔒 Sanitizar texto para seguridad
 function sanitize(text = "") {
   const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
 }
 
+// 🌐 Funciones globales
 window.goBack = goBack;
 window.editarProducto = id => window.location.href = `/editar-producto.html?id=${id}`;
 window.eliminarProducto = eliminarProducto;

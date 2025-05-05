@@ -26,6 +26,7 @@ function aplicarModoOscuro() {
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
+
   document.getElementById("modoOscuroBtn")?.addEventListener("click", () => {
     const dark = document.body.classList.toggle("modo-oscuro");
     localStorage.setItem("modoOscuro", dark);
@@ -41,7 +42,7 @@ async function init() {
     await cargarProductos();
     actualizarContadorCarrito();
   } catch (err) {
-    console.error("❌ Error inicial:", err);
+    console.error("❌ Error al iniciar:", err);
     renderError("❌ Error al iniciar la página. Intenta más tarde.");
   }
 }
@@ -130,7 +131,7 @@ async function cargarProductos() {
   }
 }
 
-/* 🧠 Filtrado + ordenamiento */
+/* 🧠 Filtros locales */
 function aplicarFiltros(productos) {
   const cat = categoriaSelect?.value?.toLowerCase() || "";
   const sub = subcategoriaSelect?.value?.toLowerCase() || "";
@@ -148,7 +149,7 @@ function aplicarFiltros(productos) {
     });
 }
 
-/* 🧾 Render catálogo */
+/* 🎨 Render productos */
 function renderizarCatalogo(productos) {
   catalogo.innerHTML = "";
   catalogo.setAttribute("role", "list");
@@ -181,25 +182,25 @@ function crearTarjetaProducto(p) {
   return card;
 }
 
-/* ⚠️ Mensaje de error */
+/* ❌ Error visible */
 function renderError(msg = "⚠️ Error al mostrar contenido") {
   catalogo.innerHTML = `<p class="text-center" style="color:red;">${sanitize(msg)}</p>`;
 }
 
-/* 🔍 Navegación al detalle */
+/* 🔍 Ver detalle */
 function verDetalle(id) {
   if (id) window.location.href = `/detalle.html?id=${id}`;
 }
 window.verDetalle = verDetalle;
 
-/* 🛒 Carrito UI */
+/* 🛒 Contador carrito */
 function actualizarContadorCarrito() {
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
   const total = carrito.reduce((sum, i) => sum + (i.cantidad || i.quantity || 0), 0);
   if (contadorCarrito) contadorCarrito.textContent = total;
 }
 
-/* 🎁 Promoción activa */
+/* 🎁 Cargar promoción */
 async function cargarPromocion() {
   try {
     const res = await fetch(API_PROMOS);
@@ -220,14 +221,14 @@ async function cargarPromocion() {
   }
 }
 
-/* 🔐 XSS prevention */
+/* 🧼 Seguridad */
 function sanitize(text = "") {
   const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML.trim();
 }
 
-/* ⏳ Debounce helper */
+/* ⏳ Debounce */
 function debounce(fn, delay = 300) {
   let timer;
   return (...args) => {

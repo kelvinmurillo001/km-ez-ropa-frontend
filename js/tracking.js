@@ -68,7 +68,7 @@ function mostrarProgreso(estado = "") {
     enviado: ["paso-recibido", "paso-preparando", "paso-en-camino"],
     "en camino": ["paso-recibido", "paso-preparando", "paso-en-camino"],
     entregado: ["paso-recibido", "paso-preparando", "paso-en-camino", "paso-entregado"],
-    cancelado: [] // opcional: podrías mostrar un estado de cancelación si agregas diseño
+    cancelado: ["paso-recibido"] // puedes crear visualmente un paso-cancelado si quieres
   };
 
   const pasosActivos = estados[estado.toLowerCase()] || ["paso-recibido"];

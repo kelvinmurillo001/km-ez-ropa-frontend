@@ -5,21 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>➕ Crear Producto | KM & EZ ROPA</title>
 
-  <!-- SEO -->
+  <!-- 🔒 SEO & Seguridad -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Formulario profesional para agregar nuevos productos con tallas, colores, variantes e imágenes a la tienda KM & EZ ROPA." />
+  <meta name="theme-color" content="#ff6d00" />
 
-  <!-- Estilos -->
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/crear-producto.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- JS Principal -->
+  <!-- ✅ JS Principal -->
   <script type="module" src="/js/crear-producto.js" defer></script>
 </head>
-<body>
 
+<body>
 <main class="formulario-container fade-in" role="main" aria-label="Formulario para crear nuevo producto">
   <h1 class="text-center">➕ Crear Nuevo Producto</h1>
 
@@ -67,7 +68,7 @@
     </select>
 
     <!-- 🎨 Color principal -->
-    <label for="colorInput">🎨 Color Principal</label>
+    <label for="colorInput">🎨 Color Principal (opcional)</label>
     <input type="text" id="colorInput" placeholder="Ej: negro, azul marino" />
 
     <!-- 🌟 Producto destacado -->
@@ -83,7 +84,7 @@
       <button type="button" class="btn-secundario mt-1" id="btnAgregarVariante">➕ Añadir Variante</button>
     </fieldset>
 
-    <!-- 📦 Stock base (si no hay variantes) -->
+    <!-- 📦 Stock base -->
     <label for="stockInput">📦 Stock Base (si no hay variantes)</label>
     <input type="number" id="stockInput" min="0" placeholder="Ej: 10" />
 
@@ -99,10 +100,10 @@
   </form>
 </main>
 
-<!-- 🧠 Feedback -->
+<!-- 🔔 Mensajes -->
 <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="assertive"></div>
 
-<!-- 🌙 Modo oscuro -->
+<!-- 🌙 Activar modo oscuro -->
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     if (localStorage.getItem("modoOscuro") === "true") {
@@ -110,22 +111,9 @@
     }
 
     document.getElementById("btnCancelar")?.addEventListener("click", () => history.back());
-
-    // Vista previa imagen principal
-    document.getElementById("imagenPrincipalInput")?.addEventListener("change", e => {
-      const file = e.target.files[0];
-      if (file && file.type.startsWith("image/")) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          document.getElementById("previewPrincipal").innerHTML = `<img src="${reader.result}" alt="Vista previa" class="imagen-preview-principal" style="max-width: 250px; border-radius: 6px;" />`;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
   });
 </script>
 
-<!-- 🚫 JS requerido -->
 <noscript>
   <p style="text-align: center; color: red;">⚠️ Activa JavaScript para poder crear un producto correctamente.</p>
 </noscript>
