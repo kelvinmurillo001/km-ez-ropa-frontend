@@ -1,4 +1,4 @@
-/* === 🛒 ESTILO BASE === */
+/* === 🛒 BASE === */
 body {
   background-color: #121212;
   color: #e0e0e0;
@@ -61,17 +61,17 @@ h1 {
 
 .carrito-item {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   background-color: #1a1a1a;
   border: 1px solid #333;
   padding: 1rem;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(255, 109, 0, 0.08);
-  flex-wrap: wrap;
   animation: fadeIn 0.4s ease-in;
 }
 
-/* === 🖼️ IMAGEN PRODUCTO === */
+/* === 🖼️ IMAGEN === */
 .carrito-img {
   width: 100px;
   height: 100px;
@@ -80,7 +80,7 @@ h1 {
   border: 2px solid #ff6d00;
 }
 
-/* === 📄 DETALLES === */
+/* === 📝 DETALLES DEL PRODUCTO === */
 .carrito-detalles {
   flex: 1;
   display: flex;
@@ -101,7 +101,7 @@ h1 {
   color: #bbb;
 }
 
-/* === 🔢 CANTIDAD === */
+/* === 🔢 CAMPO DE CANTIDAD === */
 .carrito-cantidad {
   display: flex;
   align-items: center;
@@ -112,11 +112,11 @@ h1 {
 .carrito-cantidad input {
   width: 64px;
   padding: 0.5rem;
+  text-align: center;
   background-color: #222;
   color: #fff;
   border: 1px solid #444;
   border-radius: 6px;
-  text-align: center;
   font-size: 1rem;
   transition: border 0.2s ease;
 }
@@ -127,7 +127,7 @@ h1 {
   outline: none;
 }
 
-/* === 🗑️ ELIMINAR === */
+/* === 🗑️ BOTÓN ELIMINAR === */
 .btn-eliminar {
   background-color: transparent;
   border: 2px solid #ff3d00;
@@ -146,7 +146,7 @@ h1 {
   color: #fff;
 }
 
-/* === 📊 RESUMEN === */
+/* === 🧾 RESUMEN DEL CARRITO === */
 .carrito-resumen {
   margin-top: 2.5rem;
   padding: 1.5rem;
@@ -164,7 +164,7 @@ h1 {
   margin-bottom: 1rem;
 }
 
-/* === 🔘 BOTONES === */
+/* === 🎯 BOTONES === */
 .botones-carrito {
   display: flex;
   flex-wrap: wrap;
@@ -205,7 +205,7 @@ h1 {
   color: #121212;
 }
 
-/* === ✨ ANIMACIONES === */
+/* === ✨ EFECTOS === */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }

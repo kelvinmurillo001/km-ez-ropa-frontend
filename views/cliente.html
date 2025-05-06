@@ -5,21 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>📦 Mis Pedidos | KM & EZ ROPA</title>
 
+  <!-- 🔍 Meta -->
   <meta name="description" content="Revisa el historial de tus pedidos en KM & EZ ROPA, su estado y detalles de cada compra." />
   <meta name="robots" content="noindex, nofollow" />
   <meta name="theme-color" content="#ff6d00" />
 
-  <!-- Estilos -->
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/cliente.css" />
 
-  <!-- Script -->
+  <!-- 🚀 Script principal -->
   <script type="module" src="/js/cliente.js" defer></script>
 </head>
+
 <body>
 
+<!-- 🧭 Encabezado -->
 <header class="main-header" role="banner">
   <div class="logo">
     <a href="/" aria-label="Ir al inicio">
@@ -31,40 +34,45 @@
     </div>
   </div>
 
-  <nav class="nav-links">
-    <a href="/index.html">🏠 Inicio</a>
-    <a href="/carrito.html">🛒 Carrito</a>
-    <button id="modoOscuroBtn" aria-label="Cambiar modo oscuro">🌙</button>
-    <button id="cerrarSesionBtn" class="btn-secundario">🚪 Cerrar Sesión</button>
+  <nav class="nav-links" role="navigation" aria-label="Menú principal">
+    <a href="/index.html" aria-label="Ir al inicio">🏠 Inicio</a>
+    <a href="/carrito.html" aria-label="Ir al carrito">🛒 Carrito</a>
+    <button id="modoOscuroBtn" class="btn-secundario" aria-label="Cambiar a modo oscuro o claro">🌙</button>
+    <button id="cerrarSesionBtn" class="btn-secundario" aria-label="Cerrar sesión de usuario">🚪 Cerrar Sesión</button>
   </nav>
 </header>
 
-<main class="cliente-container fade-in" role="main" aria-label="Panel de cliente">
+<!-- 📋 Contenido Principal -->
+<main class="cliente-container fade-in" role="main" aria-label="Panel de usuario">
   <h2 id="saludoUsuario" class="text-center">👤 Bienvenido</h2>
 
-  <section class="mis-pedidos mt-3" aria-label="Listado de pedidos">
-    <h3 class="text-center">📦 Tus Pedidos</h3>
+  <section class="mis-pedidos mt-3" aria-labelledby="tituloPedidos">
+    <h3 id="tituloPedidos" class="text-center">📦 Tus Pedidos</h3>
     <div id="listaPedidos" class="lista-pedidos mt-2" aria-live="polite">
       <p class="text-center">⏳ Cargando pedidos...</p>
     </div>
   </section>
 </main>
 
-<!-- 📣 Mensajes -->
+<!-- 🔔 Mensajes dinámicos -->
 <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
 
-<!-- 🌙 Oscuro -->
+<!-- 🌙 Modo Oscuro persistente -->
 <script>
-  if (localStorage.getItem("modoOscuro") === "true") {
-    document.body.classList.add("modo-oscuro");
-  }
+  document.addEventListener("DOMContentLoaded", () => {
+    const btnModoOscuro = document.getElementById("modoOscuroBtn");
+    const esOscuro = localStorage.getItem("modoOscuro") === "true";
 
-  document.getElementById("modoOscuroBtn")?.addEventListener("click", () => {
-    const dark = document.body.classList.toggle("modo-oscuro");
-    localStorage.setItem("modoOscuro", dark);
+    if (esOscuro) document.body.classList.add("modo-oscuro");
+
+    btnModoOscuro?.addEventListener("click", () => {
+      const darkModeActivo = document.body.classList.toggle("modo-oscuro");
+      localStorage.setItem("modoOscuro", darkModeActivo);
+    });
   });
 </script>
 
+<!-- ⚠️ JS requerido -->
 <noscript>
   <p style="text-align: center; color:red;">⚠️ Activa JavaScript para ver tus pedidos correctamente.</p>
 </noscript>

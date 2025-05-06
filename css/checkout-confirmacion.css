@@ -32,8 +32,7 @@
   margin-bottom: 2rem;
   font-size: 1rem;
   max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
+  margin-inline: auto;
   line-height: 1.6;
 }
 
@@ -43,6 +42,7 @@
   flex-direction: column;
   gap: 1rem;
   margin-top: 2rem;
+  align-items: center;
 }
 
 .botones-confirmacion a {
@@ -55,9 +55,10 @@
   font-size: 1rem;
   transition: background-color 0.3s ease, color 0.3s ease;
   outline: none;
+  min-width: 250px;
 }
 
-/* Botón Seguir Comprando */
+/* 🎯 Botón seguir pedido */
 .btn-seguir {
   background-color: var(--color-primario, #ff6d00);
   color: #121212;
@@ -69,7 +70,7 @@
   color: #000;
 }
 
-/* Botón Volver */
+/* 🛍️ Botón volver al catálogo */
 .btn-volver {
   background-color: var(--color-secundario, #2c3e50);
   color: #ffffff;
@@ -78,12 +79,19 @@
 .btn-volver:hover,
 .btn-volver:focus-visible {
   background-color: #1e88e5;
+  color: #fff;
 }
 
 /* === 🎞️ ANIMACIÓN === */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* === 📱 RESPONSIVE === */
@@ -105,8 +113,8 @@
   }
 
   .botones-confirmacion a {
-    font-size: 1rem;
-    padding: 0.75rem;
+    font-size: 0.95rem;
+    padding: 0.75rem 1.2rem;
   }
 }
 
@@ -129,5 +137,6 @@
 
   .botones-confirmacion a {
     width: 100%;
+    min-width: unset;
   }
 }

@@ -9,7 +9,8 @@
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Panel de control con estadísticas de ventas, productos, visitas y pedidos recibidos." />
   <meta name="author" content="KM & EZ ROPA" />
-  <meta name="theme-color" content="#ff6d00" />
+  <meta name="theme-color" content="#d4af37" />
+  <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
 
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -24,8 +25,7 @@
 </head>
 
 <body>
-
-<main class="dashboard-container fade-in" role="main" aria-label="Panel de estadísticas KM & EZ ROPA">
+<main class="dashboard-container fade-in" role="main" aria-label="Panel de estadísticas de KM & EZ ROPA">
   <h1 class="text-center">📊 Panel de Analítica</h1>
 
   <!-- 🔢 Métricas Globales -->
@@ -43,7 +43,7 @@
       <p><span id="totalProductos" role="status" aria-live="polite">0</span></p>
     </article>
     <article class="card" role="region" aria-labelledby="tituloPromos">
-      <h3 id="tituloPromos">🎯 Promos Activas</h3>
+      <h3 id="tituloPromos">🎯 Promociones Activas</h3>
       <p><span id="promosActivas" role="status" aria-live="polite">0</span></p>
     </article>
   </section>
@@ -65,34 +65,34 @@
   <section class="analitica-extra mt-3" aria-labelledby="tituloTopCategorias">
     <h2 id="tituloTopCategorias" class="text-center">📁 Top Categorías</h2>
     <ul id="topCategorias" class="listado-categorias" aria-live="polite">
-      <!-- Se cargan dinámicamente desde JS -->
+      <!-- Categorías cargadas dinámicamente -->
     </ul>
   </section>
 
   <!-- 📤 Exportar CSV -->
   <div class="text-center mt-3">
-    <button id="btnExportar" class="btn-secundario" aria-label="Exportar estadísticas como CSV">
+    <button id="btnExportar" class="btn-secundario" aria-label="Exportar estadísticas como archivo CSV">
       📤 Exportar Estadísticas (CSV)
     </button>
   </div>
 
   <!-- 🔙 Volver -->
   <div class="text-center mt-2">
-    <button type="button" onclick="goBack()" class="btn" aria-label="Volver al panel administrativo">
+    <button type="button" onclick="goBack()" class="btn" aria-label="Volver al Panel de Administración">
       🔙 Volver al Panel
     </button>
   </div>
 </main>
 
-<!-- 🔔 Mensaje Flotante Global -->
+<!-- 🔔 Mensaje flotante -->
 <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="assertive"></div>
 
-<!-- 🚫 JS Desactivado -->
+<!-- 🚫 Fallback JS desactivado -->
 <noscript>
   <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
 </noscript>
 
-<!-- 🌙 Activar modo oscuro si corresponde -->
+<!-- 🌙 Activar modo oscuro si está guardado -->
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     if (localStorage.getItem("modoOscuro") === "true") {
@@ -100,6 +100,5 @@
     }
   });
 </script>
-
 </body>
 </html>

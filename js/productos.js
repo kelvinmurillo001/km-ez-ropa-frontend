@@ -96,7 +96,7 @@ async function cargarProductos() {
 
     renderizarProductos();
   } catch (err) {
-    productosLista.innerHTML = `<p class="text-center" style="color:red;">❌ ${err.message}</p>`;
+    productosLista.innerHTML = `<p class="text-center text-danger">❌ ${err.message}</p>`;
   }
 }
 

@@ -21,27 +21,29 @@
 
 <body>
 
-<main class="productos-container fade-in" role="main" aria-label="Gestión de productos">
+<main class="productos-container fade-in" role="main" aria-label="Gestión de productos del catálogo">
   <h1 class="text-center" tabindex="0">👕 Gestión de Productos</h1>
 
   <!-- 🔥 Promoción dinámica -->
   <div id="promo-display-container" data-page="productos" role="region" aria-label="Promoción activa en productos"></div>
 
-  <!-- ➕ Crear nuevo producto -->
-  <div class="text-center mt-2">
+  <!-- ➕ Crear y exportar -->
+  <div class="text-center mt-2" role="group" aria-label="Acciones rápidas">
     <button id="btnNuevoProducto" class="btn" aria-label="Crear nuevo producto">➕ Nuevo Producto</button>
     <button id="btnExportar" class="btn-secundario" aria-label="Exportar inventario a Excel">📤 Exportar</button>
   </div>
 
   <!-- 🔍 Filtros de búsqueda -->
-  <div class="filtros text-center mt-2" role="search" aria-label="Filtrar productos">
-    <input type="text" id="buscarProducto" placeholder="🔎 Buscar producto por nombre..." aria-label="Buscar por nombre" />
+  <section class="filtros text-center mt-2" role="search" aria-labelledby="filtrosTitulo">
+    <h2 id="filtrosTitulo" class="visually-hidden">Filtros de productos</h2>
+
+    <input type="text" id="buscarProducto" placeholder="🔎 Buscar producto por nombre..." aria-label="Buscar por nombre de producto" />
 
     <select id="filtroCategoria" aria-label="Filtrar por categoría">
       <option value="">📂 Todas las categorías</option>
     </select>
 
-    <select id="filtroStock" aria-label="Filtrar por stock">
+    <select id="filtroStock" aria-label="Filtrar por stock disponible">
       <option value="">📦 Todos</option>
       <option value="sinStock">🚫 Sin stock</option>
     </select>
@@ -50,20 +52,20 @@
       <input type="checkbox" id="filtroDestacados" />
       ⭐ Solo destacados
     </label>
-  </div>
+  </section>
 
-  <!-- 📦 Contador de productos -->
+  <!-- 📦 Contador -->
   <p id="contadorProductos" class="text-center mt-2" style="font-weight: bold; color: #ccc;" role="status" aria-live="polite"></p>
 
-  <!-- 📋 Listado dinámico -->
-  <section id="productosLista" class="productos-lista mt-3" aria-label="Listado de productos">
+  <!-- 📋 Listado -->
+  <section id="productosLista" class="productos-lista mt-3" role="region" aria-label="Listado de productos disponibles">
     <!-- Render dinámico con JavaScript -->
   </section>
 
   <!-- 🔢 Paginación -->
   <nav id="paginacion" class="paginacion text-center mt-3" role="navigation" aria-label="Paginación de productos"></nav>
 
-  <!-- 🔙 Regresar al panel -->
+  <!-- 🔙 Volver -->
   <div class="text-center mt-3">
     <button id="btnVolverPanel" class="btn-secundario" aria-label="Volver al panel principal">🔙 Volver al Panel</button>
   </div>

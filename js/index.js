@@ -24,7 +24,10 @@ async function mostrarProductosDestacados() {
   catalogo.innerHTML = `<p class="text-center">⏳ Cargando productos...</p>`;
 
   try {
-    const res = await fetch(`${API_BASE}/api/products?featured=true`);
+    const res = await fetch(`${API_BASE}/api/products?featured=true`, {
+      headers: { "Content-Type": "application/json" },
+      credentials: "include"
+    });
     const data = await res.json();
 
     if (!res.ok) {
@@ -53,15 +56,23 @@ async function mostrarProductosDestacados() {
         <div class="product-info">
           <h3>${nombre}</h3>
           <p>${precio}</p>
-          ${id ? `<button class="btn-card" onclick="verDetalle('${id}')">👁️ Ver</button>` : ""}
+          ${id ? `<button class="btn-card" data-id="${id}" aria-label="Ver detalles de ${nombre}">👁️ Ver</button>` : ""}
         </div>
       `;
       catalogo.appendChild(card);
     });
 
+    // Event Delegation para manejar clics en los botones
+    catalogo.addEventListener("click", e => {
+      if (e.target.matches(".btn-card")) {
+        const id = e.target.dataset.id;
+        verDetalle(id);
+      }
+    });
+
   } catch (error) {
     console.error("❌ Error cargando productos destacados:", error);
-    catalogo.innerHTML = `<p class="text-center" style="color:red;">⚠️ ${error.message}</p>`;
+    catalogo.innerHTML = `<p class="text-center" style="color:red;">⚠️ ${sanitize(error.message)}</p>`;
   }
 }
 
@@ -106,19 +117,23 @@ function aplicarModoOscuro() {
 /* ───────────────────────────────────────────── */
 function verDetalle(id) {
   if (!id || typeof id !== "string") return;
-  window.location.href = `/detalle.html?id=${id}`;
+  const sanitizedId = encodeURIComponent(id);
+  window.location.href = `/detalle.html?id=${sanitizedId}`;
 }
-window.verDetalle = verDetalle; // Globalizar
 
 /* ───────────────────────────────────────────── */
 /* 🛒 Widget del carrito                         */
 /* ───────────────────────────────────────────── */
 function actualizarCarritoWidget() {
-  const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
-  const total = carrito.reduce((sum, item) => sum + (item.quantity || item.cantidad || 0), 0);
+  try {
+    const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
+    const total = carrito.reduce((sum, item) => sum + (item.quantity || item.cantidad || 0), 0);
 
-  const contador = document.getElementById("cartCount");
-  if (contador) contador.textContent = total;
+    const contador = document.getElementById("cartCount");
+    if (contador) contador.textContent = total;
+  } catch (err) {
+    console.warn("⚠️ Error al actualizar el carrito:", err);
+  }
 }
 
 /* ───────────────────────────────────────────── */

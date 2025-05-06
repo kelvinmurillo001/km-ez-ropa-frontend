@@ -48,6 +48,7 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  scroll-margin-top: 6rem;
 }
 
 /* 🧾 Agrupación */
@@ -55,6 +56,7 @@ fieldset {
   border: 1px solid #333;
   border-radius: 8px;
   padding: 1.5rem;
+  position: relative;
 }
 
 legend {
@@ -62,6 +64,8 @@ legend {
   color: #d4af37;
   font-size: 1.2rem;
   padding: 0 0.5rem;
+  background-color: #1f1f1f;
+  border-radius: 4px;
 }
 
 /* 🖊️ Inputs y textarea */
@@ -86,6 +90,11 @@ select:focus-visible {
   background-color: #1a1a1a;
   outline: 2px solid #d4af37;
   outline-offset: 2px;
+}
+
+/* 🧩 Placeholder mejoras */
+::placeholder {
+  color: #888;
 }
 
 /* 📍 Botón ubicación */
@@ -137,12 +146,14 @@ select:focus-visible {
   margin-top: 0.5rem;
   font-size: 0.95rem;
   color: #aaa;
+  line-height: 1.4;
 }
 
 /* 🛒 Resumen del pedido */
 .resumen-item {
   padding: 0.6rem 0;
   border-bottom: 1px solid #333;
+  word-wrap: break-word;
 }
 
 .resumen-item p {
@@ -204,6 +215,7 @@ select:focus-visible {
   margin-top: 1rem;
   text-align: center;
   color: #ccc;
+  font-style: italic;
 }
 
 /* 📱 Responsive */

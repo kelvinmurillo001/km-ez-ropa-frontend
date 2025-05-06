@@ -21,13 +21,31 @@
   <!-- ✅ Scripts -->
   <script type="module" src="/js/carrito.js" defer></script>
   <script type="module" src="/js/promo-display.js" defer></script>
-
 </head>
 
 <body>
 
+  <!-- 🔝 Encabezado -->
+  <header class="main-header" role="banner">
+    <div class="logo">
+      <a href="/" aria-label="Ir al inicio">
+        <img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" loading="lazy" />
+      </a>
+      <div class="brand-text">
+        <h1>KM & EZ ROPA</h1>
+        <p>Moda, estilo y belleza para cada momento</p>
+      </div>
+    </div>
+
+    <nav class="nav-links" role="navigation" aria-label="Menú principal">
+      <a href="/categorias.html">🛍️ Catálogo</a>
+      <a href="/login.html">🔐 Admin</a>
+      <button id="modoOscuroBtn" aria-label="Activar o desactivar modo oscuro">🌙</button>
+    </nav>
+  </header>
+
   <!-- 🔥 PROMOCIÓN ACTIVA -->
-  <div id="promo-display-container" data-page="carrito" role="complementary" aria-label="Promoción activa en carrito"></div>
+  <section id="promo-display-container" data-page="carrito" role="complementary" aria-label="Promoción activa en carrito"></section>
 
   <!-- 🛍️ CONTENIDO PRINCIPAL -->
   <main class="carrito-container fade-in" role="main" aria-label="Sección del carrito de compras">
@@ -67,6 +85,17 @@
     </section>
   </main>
 
+  <!-- 🛒 Botones flotantes -->
+  <div class="floating-buttons" aria-hidden="false">
+    <a href="/carrito.html" class="cart-icon" aria-label="Ir al carrito">
+      <img src="/assets/cart-icon.svg" alt="Carrito de compras" loading="lazy" />
+      <span id="cartCount" role="status" aria-live="polite">0</span>
+    </a>
+    <a href="https://wa.me/593990270864" target="_blank" rel="noopener noreferrer" class="whatsapp-icon" aria-label="Chat por WhatsApp">
+      <img src="/assets/whatsapp.svg" alt="WhatsApp" loading="lazy" />
+    </a>
+  </div>
+
   <!-- 🔚 Footer -->
   <footer class="site-footer text-center mt-3" role="contentinfo">
     <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
@@ -80,8 +109,20 @@
   <!-- 🌙 Activar modo oscuro si está guardado -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      if (localStorage.getItem("modoOscuro") === "true") {
-        document.body.classList.add("modo-oscuro");
+      const dark = localStorage.getItem("modoOscuro") === "true";
+      if (dark) document.body.classList.add("modo-oscuro");
+
+      const btn = document.getElementById("modoOscuroBtn");
+      if (btn) {
+        btn.textContent = dark ? "☀️" : "🌙";
+        btn.setAttribute("aria-label", dark ? "Modo claro" : "Modo oscuro");
+
+        btn.addEventListener("click", () => {
+          const activo = document.body.classList.toggle("modo-oscuro");
+          localStorage.setItem("modoOscuro", activo);
+          btn.textContent = activo ? "☀️" : "🌙";
+          btn.setAttribute("aria-label", activo ? "Modo claro" : "Modo oscuro");
+        });
       }
     });
   </script>

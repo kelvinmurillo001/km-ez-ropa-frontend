@@ -4,19 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🧾 Mis Pedidos | KM & EZ ROPA</title>
+
+  <!-- 🛡️ Seguridad & SEO -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="Consulta el historial de tus pedidos realizados en KM & EZ ROPA." />
+  <meta name="theme-color" content="#d4af37" />
+  <meta name="author" content="KM & EZ ROPA" />
+
+  <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/seguimiento.css" />
 </head>
+
 <body>
-  <header>
-    <h1>🧾 Mis Pedidos</h1>
-    <button onclick="window.history.back()" class="btn-secundario">🔙 Volver</button>
+  <!-- 🧭 Encabezado -->
+  <header role="banner" class="header-pedidos">
+    <h1 class="titulo-pedidos" aria-label="Historial de Pedidos">🧾 Mis Pedidos</h1>
+    <button onclick="window.history.back()" class="btn-secundario" aria-label="Volver a la página anterior">🔙 Volver</button>
   </header>
 
-  <main>
-    <div id="misPedidosContainer" class="container-pedidos"></div>
+  <!-- 📦 Contenido principal -->
+  <main role="main" aria-label="Listado de pedidos">
+    <div id="misPedidosContainer" class="container-pedidos" aria-live="polite"></div>
   </main>
 
+  <!-- ❗ JS requerido -->
+  <noscript>
+    <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para mostrar tus pedidos.</p>
+  </noscript>
+
+  <!-- 🔗 Scripts -->
   <script type="module" src="/js/mis-pedidos.js"></script>
 </body>
 </html>

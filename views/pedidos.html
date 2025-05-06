@@ -17,24 +17,24 @@
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/pedidos.css" />
 
-  <!-- 🚀 JS Scripts -->
+  <!-- 🚀 Scripts -->
   <script type="module" src="/js/pedidos.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 </head>
 
 <body>
 
-<main class="pedidos-container fade-in" role="main" aria-label="Gestión de pedidos">
+<main class="pedidos-container fade-in" role="main" aria-label="Gestión de pedidos KM & EZ ROPA">
   <h1 class="text-center" tabindex="0">📦 Gestión de Pedidos</h1>
 
-  <!-- 📊 Estadísticas generales -->
-  <section class="estadisticas-ventas text-center mt-3 mb-2" id="estadisticasVentas" aria-live="polite">
-    <!-- Renderizado dinámico con JS -->
+  <!-- 📊 Resumen general -->
+  <section id="estadisticasVentas" class="estadisticas-ventas text-center mt-3 mb-2" aria-live="polite">
+    <!-- Datos dinámicos desde JS -->
   </section>
 
   <!-- 🔍 Filtros -->
   <div class="filtro-estado text-center mt-2 mb-2" role="search" aria-label="Filtrar pedidos por estado">
-    <label for="filtroEstado">Filtrar por estado:</label>
+    <label for="filtroEstado" class="visually-hidden">Filtrar por estado:</label>
     <select id="filtroEstado" aria-label="Seleccionar estado del pedido">
       <option value="todos">📦 Todos</option>
       <option value="pendiente">🕒 Pendiente</option>
@@ -43,24 +43,30 @@
       <option value="cancelado">❌ Cancelado</option>
     </select>
 
-    <button id="btnExportarPedidos" class="btn mt-1" aria-label="Exportar lista de pedidos a PDF">📄 Exportar PDF</button>
+    <button id="btnExportarPedidos" class="btn mt-1" aria-label="Exportar pedidos a PDF">
+      📄 Exportar PDF
+    </button>
   </div>
 
-  <!-- 📋 Lista de pedidos -->
+  <!-- 📋 Tabla dinámica de pedidos -->
   <section id="listaPedidos" class="tabla-pedidos mt-2" role="region" aria-label="Listado dinámico de pedidos">
-    <!-- Renderizado dinámicamente -->
+    <!-- Contenido generado dinámicamente -->
   </section>
 
-  <!-- 🔢 Paginación -->
-  <div id="paginacionPedidos" class="paginacion mt-3 text-center" aria-label="Navegación de páginas de pedidos"></div>
+  <!-- 🔢 Navegación de páginas -->
+  <nav id="paginacionPedidos" class="paginacion mt-3 text-center" aria-label="Paginación de pedidos">
+    <!-- Paginación dinámica -->
+  </nav>
 
-  <!-- 🔙 Regresar -->
+  <!-- 🔙 Regresar al panel -->
   <div class="text-center mt-4">
-    <button onclick="window.location.href='/panel.html'" class="btn-secundario" aria-label="Volver al panel administrativo">🔙 Volver al Panel</button>
+    <button onclick="window.location.href='/panel.html'" class="btn-secundario" aria-label="Volver al panel administrativo">
+      🔙 Volver al Panel
+    </button>
   </div>
 </main>
 
-<!-- 🚫 Fallback para navegadores sin JS -->
+<!-- ⚠️ JS Desactivado -->
 <noscript>
   <p style="text-align:center; color:red;">⚠️ Debes activar JavaScript para visualizar los pedidos correctamente.</p>
 </noscript>

@@ -95,17 +95,32 @@ h1 {
   outline: none;
 }
 
-/* === 🧭 BOTÓN VOLVER === */
+/* === 🧭 BOTÓN VOLVER / PDF === */
+.btn,
 .btn-secundario {
-  padding: 0.65rem 1.3rem;
+  padding: 0.75rem 1.4rem;
   font-size: 1rem;
-  border: 2px solid #d4af37;
-  background-color: transparent;
-  color: #d4af37;
+  font-weight: bold;
   border-radius: 8px;
   cursor: pointer;
-  font-weight: 600;
   transition: all 0.25s ease;
+  margin: 0.4rem;
+}
+
+.btn {
+  background-color: #d4af37;
+  color: #121212;
+  border: none;
+}
+
+.btn:hover {
+  background-color: #f4d35e;
+}
+
+.btn-secundario {
+  background-color: transparent;
+  border: 2px solid #d4af37;
+  color: #d4af37;
 }
 
 .btn-secundario:hover {
@@ -126,11 +141,33 @@ h1 {
   background-color: #292929;
 }
 
-.estado-pendiente    { background-color: #d4af3720; color: #d4af37; }
-.estado-procesando   { background-color: #2196f320; color: #2196f3; }
-.estado-enviado      { background-color: #00bcd420; color: #00bcd4; }
-.estado-entregado    { background-color: #4caf5020; color: #4caf50; }
-.estado-cancelado    { background-color: #f4433620; color: #f44336; }
+.estado-pendiente  { background-color: #d4af3720; color: #d4af37; }
+.estado-procesando { background-color: #2196f320; color: #2196f3; }
+.estado-enviado    { background-color: #00bcd420; color: #00bcd4; }
+.estado-entregado  { background-color: #4caf5020; color: #4caf50; }
+.estado-cancelado  { background-color: #f4433620; color: #f44336; }
+.estado-pagado     { background-color: #8bc34a20; color: #8bc34a; }
+
+/* === 🔢 Paginación === */
+.paginacion button {
+  margin: 0 0.3rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.paginacion .paginacion-activa {
+  background-color: #d4af37;
+  color: #121212;
+  font-weight: bold;
+}
+
+.paginacion .btn-secundario:hover {
+  background-color: #d4af37;
+  color: #121212;
+}
 
 /* === 📱 RESPONSIVE TABLE === */
 @media (max-width: 768px) {
@@ -173,6 +210,10 @@ h1 {
   .filtro-estado {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .paginacion {
+    flex-wrap: wrap;
   }
 }
 

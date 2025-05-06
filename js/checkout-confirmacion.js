@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    mostrarMensaje("⏳ Confirmando pago...", "info");
+    mostrarMensaje("⏳ Confirmando pago con PayPal...", "info");
 
     const res = await fetch(`${API_BASE}/api/paypal/capture-order`, {
       method: "POST",
@@ -27,10 +27,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       mostrarMensaje("✅ ¡Pago confirmado correctamente! 🎉 Gracias por tu compra.", "success");
       limpiarCarrito();
     } else {
-      const errorMsg = data?.message || "No pudimos confirmar tu pago. Contáctanos si el problema persiste.";
-      console.error("❌ Error en respuesta de PayPal:", data);
-      mostrarMensaje(`❌ ${errorMsg}`, "error");
+      const errorMsg = data?.message || "❌ No pudimos confirmar tu pago. Contáctanos si el problema persiste.";
+      console.warn("⚠️ Error de confirmación:", data);
+      mostrarMensaje(errorMsg, "error");
     }
+
   } catch (err) {
     console.error("❌ Error de red o inesperado:", err);
     mostrarMensaje("❌ Error interno al confirmar el pago. Intenta nuevamente o contáctanos.", "error");
@@ -38,9 +39,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 /**
- * Muestra un mensaje al usuario con estilos visuales.
+ * Muestra un mensaje visual al usuario
  * @param {string} texto - Texto del mensaje
- * @param {'success'|'error'|'info'|'warn'} tipo - Tipo del mensaje
+ * @param {'success'|'error'|'info'|'warn'} tipo - Tipo visual del mensaje
  */
 function mostrarMensaje(texto, tipo = "info") {
   const msgEstado = document.getElementById("msgEstado");
@@ -56,15 +57,15 @@ function mostrarMensaje(texto, tipo = "info") {
 
   msgEstado.classList.add("fade-in");
 
-  const delay = tipo === "error" ? 6000 : 3000;
-  setTimeout(() => msgEstado.classList.remove("fade-in"), delay);
+  const tiempoDesaparicion = tipo === "error" ? 7000 : 4000;
+  setTimeout(() => {
+    msgEstado.classList.remove("fade-in");
+  }, tiempoDesaparicion);
 }
 
 /**
- * Limpia el carrito del localStorage tras una compra exitosa
+ * Limpia el carrito y los datos del pedido en localStorage tras una compra exitosa
  */
 function limpiarCarrito() {
-  localStorage.removeItem("km_ez_cart");
-  localStorage.removeItem("km_ez_last_order");
-  localStorage.removeItem("codigoSeguimiento");
+  ["km_ez_cart", "km_ez_last_order", "codigoSeguimiento"].forEach(localStorage.removeItem.bind(localStorage));
 }

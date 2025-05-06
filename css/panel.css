@@ -111,6 +111,44 @@ body.modo-oscuro .menu-panel a:hover {
   color: #f4d35e;
 }
 
+/* 🧾 Tarjetas de productos */
+.producto-card {
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 1.2rem 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.producto-card:hover {
+  transform: scale(1.02);
+  background-color: #fdf6e3;
+}
+
+.producto-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.producto-card p {
+  margin: 0.3rem 0;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+body.modo-oscuro .producto-card {
+  background-color: #1b1b1b;
+  border-color: #333;
+  color: #eee;
+}
+
+body.modo-oscuro .producto-card p {
+  color: #ccc;
+}
+
 /* 🎞️ ANIMACIÓN */
 @keyframes fadeIn {
   from {
@@ -142,5 +180,13 @@ body.modo-oscuro .menu-panel a:hover {
   .menu-panel a {
     font-size: 16px;
     padding: 1.3rem;
+  }
+
+  .producto-card {
+    padding: 1rem;
+  }
+
+  .producto-card h3 {
+    font-size: 1.1rem;
   }
 }

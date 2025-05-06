@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>✅ Pedido Confirmado | KM & EZ ROPA</title>
 
@@ -32,11 +33,25 @@
       outline: 2px dashed #d4af37;
       outline-offset: 4px;
     }
+
+    .confirmacion-subtexto {
+      color: #ccc;
+      font-size: 1.05rem;
+      margin: 1rem 0 2rem;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .confirmacion-mensaje {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      color: #d4af37;
+      text-align: center;
+      margin-top: 1rem;
+    }
   </style>
 </head>
 
 <body>
-
 <main class="confirmacion-container fade-in" role="main" aria-label="Confirmación de Pedido">
   <div class="confirmacion-icono" aria-hidden="true">✅</div>
 
@@ -54,7 +69,7 @@
     <a href="/categorias.html" class="btn-volver" aria-label="Volver al catálogo de productos">🛍️ Seguir comprando</a>
   </div>
 
-  <!-- 🛎️ Mensaje dinámico -->
+  <!-- 🛎️ Estado dinámico -->
   <p id="msgEstado" class="form-msg text-center mt-3" role="alert" aria-live="assertive"></p>
 </main>
 

@@ -18,6 +18,12 @@ const infoMetodoPago = document.getElementById("infoMetodoPago");
 
 let enviandoPedido = false;
 
+// ✅ Seguridad adicional: fuerza uso de HTTPS
+if (location.protocol !== 'https:') {
+  alert("⚠️ Esta página requiere conexión segura (HTTPS). Redirigiendo...");
+  location.href = location.href.replace("http://", "https://");
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   if (!carrito.length) {
     mostrarMensaje("⚠️ Tu carrito está vacío.", "warn");
@@ -26,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
     form?.querySelector("button[type='submit']")?.setAttribute("disabled", "true");
     return;
   }
-
   renderResumenCarrito();
   inicializarMetodoPago();
 });
@@ -92,11 +97,11 @@ form?.addEventListener("submit", async e => {
     const items = [];
 
     for (const item of carrito) {
-      const resProd = await fetch(`${API_BASE}/api/products/${item.id}`);
+      const resProd = await fetch(`${API_BASE}/api/products/${encodeURIComponent(item.id)}`);
       const dataProd = await resProd.json();
       const producto = dataProd?.producto;
 
-      if (!producto) throw new Error(`❌ Producto no encontrado: ${item.nombre}`);
+      if (!producto) throw new Error(`❌ Producto no encontrado: ${sanitize(item.nombre)}`);
 
       const talla = (item.talla || "").toLowerCase();
       const color = (item.color || "").toLowerCase();
@@ -106,14 +111,15 @@ form?.addEventListener("submit", async e => {
         const variante = producto.variants.find(v =>
           v.talla === talla && v.color === color && v.stock >= cantidad
         );
-        if (!variante) throw new Error(`❌ Variante no disponible: ${item.nombre} - ${item.talla} - ${item.color}`);
+        if (!variante) throw new Error(`❌ Variante no disponible: ${sanitize(item.nombre)} - ${item.talla} - ${item.color}`);
       } else {
         const tallaValida = producto.sizes?.map(s => s.toLowerCase()).includes(talla);
-        if (!tallaValida) throw new Error(`❌ Talla no válida para: ${item.nombre}`);
-        if ((producto.stock || 0) < cantidad) throw new Error(`❌ Stock insuficiente: ${item.nombre}`);
+        if (!tallaValida) throw new Error(`❌ Talla no válida para: ${sanitize(item.nombre)}`);
+        if ((producto.stock || 0) < cantidad) throw new Error(`❌ Stock insuficiente: ${sanitize(item.nombre)}`);
       }
 
-      const precio = parseFloat(item.precio) || 0;
+      // El precio viene del backend, no del cliente
+      const precio = parseFloat(producto.price) || 0;
       total += precio * cantidad;
 
       items.push({
@@ -157,13 +163,13 @@ form?.addEventListener("submit", async e => {
     }
 
     localStorage.setItem(LAST_ORDER_KEY, JSON.stringify(pedido));
+    localStorage.removeItem(STORAGE_KEY);
 
     if (metodoPago === "transferencia") {
       mostrarMensaje("✅ Pedido registrado. Redirigiendo...", "success");
-      localStorage.removeItem(STORAGE_KEY);
       abrirWhatsappConfirmacion(pedido);
       setTimeout(() => window.location.href = "/checkout-confirmacion.html", 3000);
-    } else if (metodoPago === "paypal") {
+    } else {
       mostrarMensaje("✅ Redirigiendo a PayPal...", "success");
 
       const resPaypal = await fetch(API_PAYPAL_CREATE, {
@@ -177,10 +183,8 @@ form?.addEventListener("submit", async e => {
         throw new Error(dataPaypal.message || "❌ Error creando orden PayPal.");
       }
 
-      localStorage.removeItem(STORAGE_KEY);
       window.location.href = `/checkout-confirmacion.html?token=${dataPaypal.data.id}`;
     }
-
   } catch (err) {
     console.error("❌", err);
     mostrarMensaje(`❌ ${err.message}`, "error");
@@ -210,20 +214,7 @@ btnUbicacion?.addEventListener("click", () => {
 });
 
 function abrirWhatsappConfirmacion(pedido) {
-  const mensaje = `
-📦 *NUEVO PEDIDO*
-👤 *Cliente:* ${pedido.nombreCliente}
-📞 *Teléfono:* ${pedido.telefono}
-📧 *Email:* ${pedido.email}
-📍 *Dirección:* ${pedido.direccion}
-
-🛍️ *Productos:*
-${pedido.items.map(i => `• ${i.cantidad} x ${i.name} - Talla: ${i.talla} - Color: ${i.color} - $${(i.precio * i.cantidad).toFixed(2)}`).join("\n")}
-
-💳 *Pago:* ${pedido.metodoPago}
-💰 *Total:* $${pedido.total.toFixed(2)}
-`.trim();
-
+  const mensaje = `📦 *NUEVO PEDIDO*\n👤 *Cliente:* ${pedido.nombreCliente}\n📞 *Teléfono:* ${pedido.telefono}\n📧 *Email:* ${pedido.email}\n📍 *Dirección:* ${pedido.direccion}\n\n🛍️ *Productos:*\n${pedido.items.map(i => `• ${i.cantidad} x ${i.name} - Talla: ${i.talla} - Color: ${i.color} - $${(i.precio * i.cantidad).toFixed(2)}`).join("\n")}\n\n💳 *Pago:* ${pedido.metodoPago}\n💰 *Total:* $${pedido.total.toFixed(2)}`;
   const url = `https://wa.me/593990270864?text=${encodeURIComponent(mensaje)}`;
   window.open(url, "_blank");
 }

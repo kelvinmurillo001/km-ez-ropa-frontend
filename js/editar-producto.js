@@ -30,16 +30,17 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnAgregarVariante")?.addEventListener("click", renderVarianteNueva);
 });
 
-// -------------------- FUNCIONES AUXILIARES ------------------------
-
+// 🧹 Validar campos obligatorios
 function validarCampo(valor, mensaje) {
   if (!valor || valor.trim() === "") throw new Error(mensaje);
 }
 
+// 🔡 Limpiar texto de entrada
 function limpiarTexto(texto) {
   return (texto || "").trim();
 }
 
+// ⬆️ Subir imagen al servidor
 async function subirImagen(file) {
   if (!file || !file.type.startsWith("image/") || file.size > 2 * 1024 * 1024) {
     throw new Error("⚠️ Imagen inválida o muy pesada");
@@ -63,8 +64,7 @@ async function subirImagen(file) {
   };
 }
 
-// -------------------- CATEGORÍAS ------------------------
-
+// 📚 Cargar categorías y subcategorías
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIAS);
@@ -103,8 +103,7 @@ async function cargarCategorias() {
   }
 }
 
-// -------------------- PRODUCTO ------------------------
-
+// 🧾 Cargar información del producto
 async function cargarProducto() {
   try {
     const res = await fetch(API_PRODUCTO);
@@ -141,8 +140,7 @@ async function cargarProducto() {
   }
 }
 
-// -------------------- VARIANTES ------------------------
-
+// 🧩 Dibujar variante existente
 function renderVarianteExistente(v, i) {
   const div = document.createElement("div");
   div.className = "variante-box";
@@ -167,6 +165,7 @@ function renderVarianteExistente(v, i) {
   div.querySelector(".btn-quitar-variante").addEventListener("click", () => div.remove());
 }
 
+// ➕ Añadir nueva variante
 function renderVarianteNueva() {
   const actual = document.querySelectorAll(".variante-box").length;
   if (actual >= 4) {
@@ -195,8 +194,7 @@ function renderVarianteNueva() {
   div.querySelector(".btn-quitar-variante").addEventListener("click", () => div.remove());
 }
 
-// -------------------- GUARDAR FORMULARIO ------------------------
-
+// 💾 Guardar formulario
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   mostrarMensaje("⏳ Guardando cambios...", "info");

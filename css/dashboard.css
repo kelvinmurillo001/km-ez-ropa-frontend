@@ -27,6 +27,7 @@ h1, h2, h3 {
   max-width: 1200px;
   margin: auto;
   padding: 2rem 1rem;
+  animation: fadeIn 0.4s ease-in;
 }
 
 /* === 📊 GRID DE MÉTRICAS === */
@@ -119,9 +120,11 @@ button.btn {
   color: #121212;
 }
 
-button.btn:hover {
+button.btn:hover,
+button.btn:focus-visible {
   background-color: #f4d35e;
   transform: scale(1.02);
+  outline: none;
 }
 
 button.btn-secundario {
@@ -130,10 +133,45 @@ button.btn-secundario {
   border: 2px solid #d4af37;
 }
 
-button.btn-secundario:hover {
+button.btn-secundario:hover,
+button.btn-secundario:focus-visible {
   background-color: #d4af37;
   color: #121212;
   transform: scale(1.02);
+  outline: none;
+}
+
+/* === 🌙 MODO OSCURO (ya activo por defecto) === */
+body.modo-oscuro .card,
+body.modo-oscuro .analitica-extra {
+  background-color: #1b1b1b;
+  border-color: #333;
+}
+
+body.modo-oscuro .card h3 {
+  color: #f4d35e;
+}
+
+body.modo-oscuro button.btn-secundario {
+  border-color: #f4d35e;
+  color: #f4d35e;
+}
+
+body.modo-oscuro button.btn-secundario:hover {
+  background-color: #f4d35e;
+  color: #121212;
+}
+
+/* === 🎞️ ANIMACIONES === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* === 📱 RESPONSIVE === */

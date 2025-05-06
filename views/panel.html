@@ -8,8 +8,9 @@
   <!-- 🔐 Seguridad y SEO -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="author" content="KM & EZ ROPA" />
-  <meta name="description" content="Administra productos, pedidos, categorías, promociones y más desde este panel privado." />
+  <meta name="description" content="Administra productos, pedidos, categorías, promociones y estadísticas desde el panel privado de KM & EZ ROPA." />
   <meta name="theme-color" content="#ff6d00" />
+  <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
 
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -18,36 +19,35 @@
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/responsive.css" />
   <link rel="stylesheet" href="/css/adminMensaje.css" />
-
-  <!-- 🔥 Icono -->
-  <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
 </head>
-<body>
 
-  <!-- 🧭 Panel principal -->
+<body>
+  <!-- 🎛️ Contenedor principal del panel -->
   <main class="panel-container fade-in" role="main" aria-label="Área de administración">
 
-    <!-- 👤 Encabezado del panel -->
+    <!-- 👤 Encabezado -->
     <header class="header-panel" role="banner">
       <h1 class="text-center">🎛️ Panel de Administración</h1>
-      <button id="btnCerrarSesion" class="btn-secundario" aria-label="Cerrar sesión de administrador">🚪 Cerrar Sesión</button>
+      <button id="btnCerrarSesion" class="btn-secundario" aria-label="Cerrar sesión de administrador">
+        🚪 Cerrar Sesión
+      </button>
     </header>
 
-    <!-- 📋 Navegación del panel -->
-    <section class="menu-panel" role="navigation" aria-label="Secciones de administración">
-      <a href="/productos.html" class="btn-panel" aria-label="Gestión de productos">👕 Gestionar Productos</a>
+    <!-- 📋 Opciones del panel -->
+    <nav class="menu-panel" role="navigation" aria-label="Secciones administrativas">
+      <a href="/productos.html" class="btn-panel" aria-label="Gestionar productos">👕 Gestionar Productos</a>
       <a href="/pedidos.html" class="btn-panel" aria-label="Visualizar pedidos">🧾 Ver Pedidos</a>
-      <a href="/admin-categorias.html" class="btn-panel" aria-label="Categorías y subcategorías">🗂️ Categorías y Subcategorías</a>
-      <a href="/promociones.html" class="btn-panel" aria-label="Promociones activas">🎯 Promociones</a>
-      <a href="/dashboard.html" class="btn-panel" aria-label="Estadísticas del negocio">📊 Analítica</a>
-    </section>
+      <a href="/admin-categorias.html" class="btn-panel" aria-label="Administrar categorías y subcategorías">🗂️ Categorías</a>
+      <a href="/promociones.html" class="btn-panel" aria-label="Configurar promociones activas">🎯 Promociones</a>
+      <a href="/dashboard.html" class="btn-panel" aria-label="Ver estadísticas del negocio">📊 Analítica</a>
+    </nav>
   </main>
 
-  <!-- 🔔 Mensajes flotantes -->
+  <!-- 🔔 Mensajes del sistema -->
   <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="polite"></div>
 
-  <!-- 🌙 Modo Oscuro automático -->
-  <script defer>
+  <!-- 🌙 Activar modo oscuro si corresponde -->
+  <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
@@ -55,17 +55,18 @@
     });
   </script>
 
-  <!-- 🔐 Verificación de sesión y logout seguro -->
-  <script type="module" defer>
+  <!-- 🔐 Verificación de sesión y logout -->
+  <script type="module">
     import { cerrarSesion, verificarSesion } from "/js/admin-utils.js";
     verificarSesion();
     document.getElementById("btnCerrarSesion")?.addEventListener("click", cerrarSesion);
   </script>
 
-  <!-- ⚠️ Fallback para JS desactivado -->
+  <!-- ⚠️ Aviso sin JavaScript -->
   <noscript>
-    <p style="text-align: center; color: red;">⚠️ Este panel requiere JavaScript para funcionar correctamente.</p>
+    <p style="text-align: center; color: red;">
+      ⚠️ Este panel requiere que actives JavaScript para funcionar correctamente.
+    </p>
   </noscript>
-
 </body>
 </html>
