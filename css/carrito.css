@@ -29,7 +29,6 @@ body:not(.modo-oscuro) {
   color: var(--text-oscuro);
 }
 
-/* ☀️ MODO CLARO */
 body:not(.modo-oscuro) .carrito-item,
 body:not(.modo-oscuro) .carrito-resumen {
   background-color: #fff;
@@ -52,7 +51,7 @@ body:not(.modo-oscuro) .btn-eliminar:hover {
   color: #fff;
 }
 
-/* === 🧾 TÍTULO === */
+/* === 🧾 TÍTULO PRINCIPAL === */
 h1 {
   color: var(--naranja-principal);
   text-align: center;
@@ -60,14 +59,14 @@ h1 {
   font-size: 2rem;
 }
 
-/* === 📦 CONTENEDOR PRINCIPAL === */
+/* === 📦 CONTENEDOR GENERAL === */
 .carrito-container {
   max-width: 1100px;
   margin: auto;
   padding: 2rem 1rem;
 }
 
-/* === 📋 LISTA DE PRODUCTOS === */
+/* === 🧺 LISTA DE PRODUCTOS === */
 .carrito-lista {
   display: flex;
   flex-direction: column;
@@ -86,7 +85,7 @@ h1 {
   animation: fadeIn 0.4s ease-in;
 }
 
-/* === 🖼️ IMAGEN === */
+/* === 🖼️ IMAGEN PRODUCTO === */
 .carrito-img {
   width: 100px;
   height: 100px;
@@ -95,7 +94,7 @@ h1 {
   border: 2px solid var(--naranja-principal);
 }
 
-/* === 📝 DETALLES DEL PRODUCTO === */
+/* === 📄 DETALLES PRODUCTO === */
 .carrito-detalles {
   flex: 1;
   display: flex;
@@ -161,7 +160,7 @@ h1 {
   color: #fff;
 }
 
-/* === 💳 RESUMEN CARRITO === */
+/* === 💳 RESUMEN DEL CARRITO === */
 .carrito-resumen {
   margin-top: 2.5rem;
   padding: 1.5rem;
@@ -199,7 +198,7 @@ h1 {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* === 🧡 BOTÓN PRIMARIO === */
+/* === 🔘 BOTÓN PRINCIPAL === */
 .btn {
   background-color: var(--naranja-principal);
   border: none;
@@ -230,10 +229,10 @@ h1 {
   outline-offset: 4px;
 }
 
-/* === ✨ EFECTO ENTRADA === */
+/* === ✨ ANIMACIÓN === */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* === 📱 RESPONSIVE === */
