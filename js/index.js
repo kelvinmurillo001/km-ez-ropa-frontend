@@ -6,9 +6,9 @@ import { API_BASE } from "./config.js";
 
 // ▶️ Al cargar el DOM
 document.addEventListener("DOMContentLoaded", async () => {
-  registrarVisitaPublica(); // 📊 Registro de visita
-  mostrarSaludo(); // 👋 Saludo dinámico
-  aplicarModoOscuro(); // 🌙 Modo oscuro
+  registrarVisitaPublica();       // 📊 Registro de visita
+  mostrarSaludo();                // 👋 Saludo dinámico
+  aplicarModoOscuro();            // 🌙 Modo oscuro persistente
 
   await mostrarProductosDestacados();
   actualizarCarritoWidget();
@@ -62,7 +62,7 @@ async function mostrarProductosDestacados() {
       catalogo.appendChild(card);
     });
 
-    // Event Delegation para manejar clics en los botones
+    // 🎯 Event Delegation para los botones
     catalogo.addEventListener("click", e => {
       if (e.target.matches(".btn-card")) {
         const id = e.target.dataset.id;

@@ -131,7 +131,7 @@
   transition: transform 0.2s, background-color 0.2s ease;
 }
 
-.promo-actions button:focus {
+.promo-actions button:focus-visible {
   outline: 2px dashed var(--accent);
   outline-offset: 3px;
 }

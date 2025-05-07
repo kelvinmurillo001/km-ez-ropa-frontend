@@ -2,6 +2,9 @@
 
 import { API_BASE } from "./config.js";
 
+// 🛡️ Simple sanitizador básico
+const sanitize = (str) => str.replace(/[<>"'`;]/g, "").trim();
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formLogin");
   const btnSubmit = form?.querySelector("button[type='submit']");
@@ -19,8 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const username = inputUser.value.trim().toLowerCase();
-    const password = inputPass.value.trim();
+    const username = sanitize(inputUser.value.toLowerCase());
+    const password = sanitize(inputPass.value);
 
     if (!username || !password) {
       mostrarMensaje("⚠️ Ingresa tu usuario y contraseña.", "error");
@@ -34,6 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // Si usas cookies para refresh
         body: JSON.stringify({ username, password }),
       });
 
@@ -48,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      // ⚠️ IMPORTANTE: Usa cookies HttpOnly para token si puedes
       localStorage.setItem("admin_token", data.accessToken);
       localStorage.setItem(
         "admin_user",
@@ -55,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       mostrarMensaje("✅ Acceso concedido. Redirigiendo...", "success");
-
       setTimeout(() => {
         window.location.href = "/panel.html";
       }, 800);
@@ -68,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // ⌨️ Enter directo
   form.querySelectorAll("input").forEach((input) => {
     input.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
@@ -76,23 +81,21 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 🔐 Botón de Google seguro
+  // 🔐 Login con Google redirigido desde backend
   if (googleBtn) {
-    googleBtn.addEventListener("click", () => {
+    googleBtn.addEventListener("click", (e) => {
+      e.preventDefault();
       window.location.href = `${API_BASE}/auth/google`;
     });
   }
 });
 
 /**
- * ✅ Mostrar mensaje flotante
+ * ✅ Mostrar mensaje flotante accesible
  */
 function mostrarMensaje(texto, tipo = "info") {
   const box = document.getElementById("adminMensaje");
-  if (!box) {
-    alert(texto);
-    return;
-  }
+  if (!box) return alert(texto);
 
   box.textContent = texto;
   box.className = "";

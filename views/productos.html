@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>👕 Productos | Panel Admin | KM & EZ ROPA</title>
 
-  <!-- 📄 Meta SEO y Seguridad -->
+  <!-- 🔐 SEO y Seguridad -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="description" content="Administra los productos de tu tienda. Agrega, edita y elimina artículos fácilmente desde el panel de administración." />
   <meta name="author" content="KM & EZ ROPA" />
+  <meta name="description" content="Administra los productos de tu tienda. Agrega, edita y elimina artículos fácilmente desde el panel de administración." />
   <meta name="theme-color" content="#ff6d00" />
+  <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
 
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -17,33 +18,33 @@
   <link rel="stylesheet" href="/css/productos.css" />
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/promo-display.css" />
+  <link rel="stylesheet" href="/css/adminMensaje.css" />
 </head>
 
 <body>
-
-<main class="productos-container fade-in" role="main" aria-label="Gestión de productos del catálogo">
+<main class="productos-container fade-in" role="main" aria-label="Gestión de productos">
   <h1 class="text-center" tabindex="0">👕 Gestión de Productos</h1>
 
-  <!-- 🔥 Promoción dinámica -->
-  <div id="promo-display-container" data-page="productos" role="region" aria-label="Promoción activa en productos"></div>
+  <!-- 🎯 Promoción activa -->
+  <section id="promo-display-container" data-page="productos" role="region" aria-label="Promoción activa"></section>
 
-  <!-- ➕ Crear y exportar -->
-  <div class="text-center mt-2" role="group" aria-label="Acciones rápidas">
+  <!-- ➕ Acciones -->
+  <div class="text-center mt-2" role="group" aria-label="Acciones principales">
     <button id="btnNuevoProducto" class="btn" aria-label="Crear nuevo producto">➕ Nuevo Producto</button>
-    <button id="btnExportar" class="btn-secundario" aria-label="Exportar inventario a Excel">📤 Exportar</button>
+    <button id="btnExportar" class="btn-secundario" aria-label="Exportar productos a Excel">📤 Exportar</button>
   </div>
 
-  <!-- 🔍 Filtros de búsqueda -->
-  <section class="filtros text-center mt-2" role="search" aria-labelledby="filtrosTitulo">
-    <h2 id="filtrosTitulo" class="visually-hidden">Filtros de productos</h2>
+  <!-- 🔍 Filtros -->
+  <section class="filtros text-center mt-2" role="search" aria-labelledby="tituloFiltros">
+    <h2 id="tituloFiltros" class="visually-hidden">Filtrar productos</h2>
 
-    <input type="text" id="buscarProducto" placeholder="🔎 Buscar producto por nombre..." aria-label="Buscar por nombre de producto" />
+    <input id="buscarProducto" type="text" placeholder="🔎 Buscar producto por nombre..." aria-label="Buscar producto por nombre" />
 
     <select id="filtroCategoria" aria-label="Filtrar por categoría">
       <option value="">📂 Todas las categorías</option>
     </select>
 
-    <select id="filtroStock" aria-label="Filtrar por stock disponible">
+    <select id="filtroStock" aria-label="Filtrar por stock">
       <option value="">📦 Todos</option>
       <option value="sinStock">🚫 Sin stock</option>
     </select>
@@ -57,31 +58,29 @@
   <!-- 📦 Contador -->
   <p id="contadorProductos" class="text-center mt-2" style="font-weight: bold; color: #ccc;" role="status" aria-live="polite"></p>
 
-  <!-- 📋 Listado -->
-  <section id="productosLista" class="productos-lista mt-3" role="region" aria-label="Listado de productos disponibles">
-    <!-- Render dinámico con JavaScript -->
-  </section>
+  <!-- 🧾 Lista de productos -->
+  <section id="productosLista" class="productos-lista mt-3" role="region" aria-label="Listado de productos"></section>
 
-  <!-- 🔢 Paginación -->
-  <nav id="paginacion" class="paginacion text-center mt-3" role="navigation" aria-label="Paginación de productos"></nav>
+  <!-- 📄 Paginación -->
+  <nav id="paginacion" class="paginacion text-center mt-3" role="navigation" aria-label="Navegación de páginas"></nav>
 
-  <!-- 🔙 Volver -->
+  <!-- 🔙 Volver al panel -->
   <div class="text-center mt-3">
     <button id="btnVolverPanel" class="btn-secundario" aria-label="Volver al panel principal">🔙 Volver al Panel</button>
   </div>
 </main>
 
-<!-- 📣 Mensajes flotantes -->
+<!-- 📣 Mensaje flotante -->
 <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
 
-<!-- 🌙 Activar modo oscuro automático -->
+<!-- 🌙 Modo oscuro automático -->
 <script>
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 </script>
 
-<!-- ✅ Scripts principales -->
+<!-- ✅ Scripts -->
 <script type="module" defer>
   import { goBack } from "/js/admin-utils.js";
   import "/js/productos.js";
@@ -90,9 +89,9 @@
   document.getElementById("btnVolverPanel")?.addEventListener("click", goBack);
 </script>
 
+<!-- ⚠️ JS Desactivado -->
 <noscript>
   <p style="text-align: center; color: red;">⚠️ Activa JavaScript para gestionar productos correctamente.</p>
 </noscript>
-
 </body>
 </html>

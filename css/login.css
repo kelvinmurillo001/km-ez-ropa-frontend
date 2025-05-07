@@ -1,6 +1,23 @@
+/* === 🎨 VARIABLES ROOT === */
+:root {
+  --color-bg: #121212;
+  --color-fg: #f5f5f5;
+  --color-accent: #d4af37;
+  --color-accent-hover: #f4d35e;
+  --color-error: #cc0000;
+  --color-error-bg: #4a1212;
+  --color-error-text: #ffc1c1;
+  --color-input-bg: #292929;
+  --color-input-border: #444;
+  --color-modal-bg: #1f1f1f;
+  --color-google: #4285f4;
+  --color-google-hover: #3367d6;
+}
+
+/* === 🌙 BASE === */
 body {
-  background-color: #121212;
-  color: #f5f5f5;
+  background-color: var(--color-bg);
+  color: var(--color-fg);
   font-family: 'Segoe UI', sans-serif;
   display: flex;
   align-items: center;
@@ -10,6 +27,7 @@ body {
   padding: 0;
 }
 
+/* === 🧱 CONTENEDOR LOGIN === */
 .login-container {
   max-width: 400px;
   width: 90%;
@@ -22,13 +40,13 @@ body {
 
 .login-container h1 {
   text-align: center;
-  color: #d4af37;
+  color: var(--color-accent);
   margin-bottom: 1.5rem;
   font-size: 1.6rem;
   letter-spacing: 0.5px;
 }
 
-/* Formulario */
+/* === 📝 FORMULARIO === */
 .formulario {
   display: flex;
   flex-direction: column;
@@ -36,30 +54,28 @@ body {
 }
 
 .formulario input {
-  background-color: #292929;
+  background-color: var(--color-input-bg);
   color: #fff;
-  border: 1px solid #444;
+  border: 1px solid var(--color-input-border);
   padding: 0.85rem;
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.3s, box-shadow 0.3s;
   appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
 }
 
 .formulario input:focus {
   outline: none;
-  border-color: #d4af37;
+  border-color: var(--color-accent);
   box-shadow: 0 0 5px rgba(212, 175, 55, 0.4);
 }
 
 input[aria-invalid="true"] {
-  border-color: #cc0000 !important;
+  border-color: var(--color-error) !important;
   box-shadow: 0 0 4px rgba(255, 0, 0, 0.4);
 }
 
-/* Botones */
+/* === 🔘 BOTONES === */
 .btn,
 .btn-secundario {
   padding: 0.85rem 1.3rem;
@@ -72,36 +88,36 @@ input[aria-invalid="true"] {
 }
 
 .btn {
-  background-color: #d4af37;
-  color: #121212;
+  background-color: var(--color-accent);
+  color: var(--color-bg);
   border: none;
 }
 
 .btn:hover {
-  background-color: #f4d35e;
+  background-color: var(--color-accent-hover);
   transform: translateY(-1px);
 }
 
 .btn-secundario {
   background-color: transparent;
-  color: #d4af37;
-  border: 2px solid #d4af37;
+  color: var(--color-accent);
+  border: 2px solid var(--color-accent);
   margin-top: 0.5rem;
 }
 
 .btn-secundario:hover {
-  background-color: #d4af37;
-  color: #121212;
+  background-color: var(--color-accent);
+  color: var(--color-bg);
   transform: translateY(-1px);
 }
 
-/* Botón Google (mejora accesible y visual) */
+/* === 🔐 GOOGLE LOGIN === */
 .btn-google {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background-color: #4285f4;
+  background-color: var(--color-google);
   color: white;
   padding: 0.6em 1.2em;
   text-decoration: none;
@@ -112,7 +128,7 @@ input[aria-invalid="true"] {
 }
 
 .btn-google:hover {
-  background-color: #3367d6;
+  background-color: var(--color-google-hover);
 }
 
 .btn-google::before {
@@ -124,16 +140,16 @@ input[aria-invalid="true"] {
   display: inline-block;
 }
 
-/* Error mensaje */
+/* === ⚠️ MENSAJE DE ERROR === */
 #errorMensaje {
-  background-color: #4a1212;
-  color: #ffc1c1;
+  background-color: var(--color-error-bg);
+  color: var(--color-error-text);
   padding: 0.8rem;
   border-radius: 8px;
   text-align: center;
   display: none;
   font-weight: bold;
-  border: 1px solid #cc0000;
+  border: 1px solid var(--color-error);
 }
 
 #errorMensaje.shake {
@@ -148,7 +164,7 @@ input[aria-invalid="true"] {
   100% { transform: translateX(0); }
 }
 
-/* Modal Recuperación */
+/* === 🔐 MODAL RECUPERACIÓN === */
 .modal-recuperar {
   position: fixed;
   inset: 0;
@@ -161,7 +177,7 @@ input[aria-invalid="true"] {
 }
 
 .modal-contenido {
-  background-color: #1f1f1f;
+  background-color: var(--color-modal-bg);
   padding: 2rem;
   border-radius: 12px;
   width: 90%;
@@ -176,7 +192,7 @@ input[aria-invalid="true"] {
   margin-top: 1rem;
   border-radius: 8px;
   border: none;
-  background-color: #292929;
+  background-color: var(--color-input-bg);
   color: white;
   font-size: 1rem;
 }
@@ -184,7 +200,7 @@ input[aria-invalid="true"] {
 .modal-contenido input:focus {
   outline: none;
   box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
-  border: 1px solid #d4af37;
+  border: 1px solid var(--color-accent);
 }
 
 .modal-botones {
@@ -194,11 +210,12 @@ input[aria-invalid="true"] {
   gap: 1rem;
 }
 
+/* === UTILIDADES === */
 .oculto {
   display: none !important;
 }
 
-/* Animaciones */
+/* === ✨ ANIMACIONES === */
 .fade-in {
   animation: fadeIn 0.5s ease-in;
 }

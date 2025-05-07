@@ -11,6 +11,7 @@ const API_PEDIDOS = `${API_BASE}/api/orders/mis-pedidos`;
 const listaPedidos = document.getElementById("listaPedidos");
 const saludo = document.getElementById("saludoUsuario");
 const cerrarSesionBtn = document.getElementById("cerrarSesionBtn");
+const filtroEstado = document.getElementById("filtroEstado");
 
 // 🔐 Validar sesión
 const token = verificarSesion();
@@ -19,22 +20,28 @@ const usuario = getUsuarioActivo();
 // ▶️ Al cargar el documento
 document.addEventListener("DOMContentLoaded", () => {
   if (usuario && saludo) {
-    saludo.textContent = `👤 Hola, ${usuario.name}`;
+    saludo.textContent = `👤 Hola, ${sanitize(usuario.name)}`;
   }
 
   cargarPedidos();
 
   cerrarSesionBtn?.addEventListener("click", () => {
-    localStorage.removeItem("km_ez_token");
-    localStorage.removeItem("km_ez_user");
-    window.location.href = "/";
+    if (confirm("¿Cerrar sesión?")) {
+      localStorage.removeItem("km_ez_token");
+      localStorage.removeItem("km_ez_user");
+      window.location.href = "/";
+    }
   });
+
+  filtroEstado?.addEventListener("change", cargarPedidos);
 });
 
 /**
  * 🚚 Cargar pedidos del usuario autenticado
  */
 async function cargarPedidos() {
+  const estadoFiltrado = filtroEstado?.value?.trim().toLowerCase();
+
   try {
     const res = await fetch(API_PEDIDOS, {
       headers: {
@@ -48,12 +55,16 @@ async function cargarPedidos() {
       throw new Error(data.message || "No se pudieron cargar los pedidos.");
     }
 
-    if (data.pedidos.length === 0) {
-      listaPedidos.innerHTML = `<p class="text-center">📭 Aún no tienes pedidos registrados.</p>`;
+    const pedidos = estadoFiltrado
+      ? data.pedidos.filter(p => (p.estado || "").toLowerCase() === estadoFiltrado)
+      : data.pedidos;
+
+    if (pedidos.length === 0) {
+      listaPedidos.innerHTML = `<p class="text-center">📭 No hay pedidos con ese estado.</p>`;
       return;
     }
 
-    listaPedidos.innerHTML = data.pedidos.map(pedidoHTML).join("");
+    listaPedidos.innerHTML = pedidos.map(pedidoHTML).join("");
   } catch (err) {
     console.error("❌ Error al cargar pedidos:", err);
     listaPedidos.innerHTML = `<p class="text-center" style="color:red;">❌ ${err.message}</p>`;
@@ -76,7 +87,7 @@ function pedidoHTML(p) {
       <p><strong>Pedido:</strong> #${id}</p>
       <p><strong>Fecha:</strong> ${fecha}</p>
       <p><strong>Total:</strong> ${total}</p>
-      <p><strong>Estado:</strong> <span class="estado-${p.estado}">${estado}</span></p>
+      <p><strong>Estado:</strong> <span class="estado-${p.estado || 'otro'}">${estado}</span></p>
       <button class="btn-secundario" onclick="verDetalles('${p._id}')">👁️ Ver Detalles</button>
     </div>
   `;
@@ -91,11 +102,12 @@ function estadoBonito(e = "") {
   const estados = {
     pendiente: "⏳ Pendiente",
     procesando: "🛠️ Procesando",
+    preparando: "🛠️ Preparando",
     enviado: "🚚 Enviado",
     entregado: "📬 Entregado",
     cancelado: "❌ Cancelado"
   };
-  return estados[e] || e;
+  return estados[e.toLowerCase()] || "🔘 Otro";
 }
 
 /**
@@ -106,3 +118,12 @@ window.verDetalles = (id) => {
     window.location.href = `/detalle-pedido.html?id=${id}`;
   }
 };
+
+/**
+ * 🧼 Sanitizar texto contra inyecciones simples
+ */
+function sanitize(text = "") {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML.trim();
+}

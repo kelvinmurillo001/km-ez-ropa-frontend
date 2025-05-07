@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>📦 Mis Pedidos | KM & EZ ROPA</title>
 
-  <!-- 🔍 Meta -->
+  <!-- 🔐 Seguridad y SEO -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:;">
   <meta name="description" content="Revisa el historial de tus pedidos en KM & EZ ROPA, su estado y detalles de cada compra." />
   <meta name="robots" content="noindex, nofollow" />
   <meta name="theme-color" content="#ff6d00" />
@@ -46,6 +47,20 @@
 <main class="cliente-container fade-in" role="main" aria-label="Panel de usuario">
   <h2 id="saludoUsuario" class="text-center">👤 Bienvenido</h2>
 
+  <!-- 🔎 Filtro de estado -->
+  <div class="filtros-pedidos mt-2 text-center" role="region" aria-label="Filtrar por estado de pedido">
+    <label for="filtroEstado">Filtrar por estado:</label>
+    <select id="filtroEstado" name="estado">
+      <option value="">Todos</option>
+      <option value="pendiente">⏳ Pendiente</option>
+      <option value="preparando">🛠️ Preparando</option>
+      <option value="enviado">🚚 Enviado</option>
+      <option value="entregado">✅ Entregado</option>
+      <option value="cancelado">❌ Cancelado</option>
+    </select>
+  </div>
+
+  <!-- 📦 Pedidos -->
   <section class="mis-pedidos mt-3" aria-labelledby="tituloPedidos">
     <h3 id="tituloPedidos" class="text-center">📦 Tus Pedidos</h3>
     <div id="listaPedidos" class="lista-pedidos mt-2" aria-live="polite">
@@ -54,10 +69,10 @@
   </section>
 </main>
 
-<!-- 🔔 Mensajes dinámicos -->
+<!-- 🔔 Mensajes -->
 <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
 
-<!-- 🌙 Modo Oscuro persistente -->
+<!-- 🌙 Modo Oscuro -->
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const btnModoOscuro = document.getElementById("modoOscuroBtn");
@@ -72,7 +87,7 @@
   });
 </script>
 
-<!-- ⚠️ JS requerido -->
+<!-- ⚠️ JavaScript requerido -->
 <noscript>
   <p style="text-align: center; color:red;">⚠️ Activa JavaScript para ver tus pedidos correctamente.</p>
 </noscript>

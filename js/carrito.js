@@ -6,8 +6,10 @@ const carritoTotal = document.getElementById("carritoTotal");
 const btnIrCheckout = document.getElementById("btnIrCheckout");
 const btnVaciarCarrito = document.getElementById("btnVaciarCarrito");
 
-// 🔐 LocalStorage Key
+// 🔐 LocalStorage Keys
 const STORAGE_KEY = "km_ez_cart";
+const BACKUP_KEY = "km_ez_cart_backup";
+
 let carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
 // ▶️ Al cargar página
@@ -45,6 +47,7 @@ function sanitizeURL(url) {
 /* ─────────────────────────────────────────────────────────────── */
 function guardarCarrito() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(carrito));
+  sessionStorage.setItem(BACKUP_KEY, JSON.stringify(carrito)); // respaldo
 }
 
 function limpiarItemsInvalidos() {
@@ -148,8 +151,17 @@ function renderizarCarrito() {
 /* 🎧 LISTENERS PARA CANTIDAD Y ELIMINAR                           */
 /* ─────────────────────────────────────────────────────────────── */
 function agregarListeners() {
+  // ✅ Debounce para cambio de cantidad
+  const debounce = (func, delay) => {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => func.apply(this, args), delay);
+    };
+  };
+
   document.querySelectorAll(".carrito-cantidad input").forEach(input => {
-    input.addEventListener("change", e => {
+    input.addEventListener("input", debounce(e => {
       const i = parseInt(e.target.dataset.index);
       const nuevaCantidad = Math.max(1, Math.min(100, parseInt(e.target.value) || 1));
       if (!isNaN(i) && carrito[i]) {
@@ -157,7 +169,7 @@ function agregarListeners() {
         guardarCarrito();
         renderizarCarrito();
       }
-    });
+    }, 300));
   });
 
   document.querySelectorAll(".btn-eliminar").forEach(btn => {
@@ -166,9 +178,13 @@ function agregarListeners() {
       if (!isNaN(i) && carrito[i]) {
         const confirmar = confirm(`❌ ¿Eliminar "${carrito[i].nombre}" del carrito?`);
         if (confirmar) {
-          carrito.splice(i, 1);
-          guardarCarrito();
-          renderizarCarrito();
+          const itemEl = btn.closest(".carrito-item");
+          itemEl.classList.add("fade-out");
+          setTimeout(() => {
+            carrito.splice(i, 1);
+            guardarCarrito();
+            renderizarCarrito();
+          }, 300); // tiempo de animación
         }
       }
     });
@@ -187,6 +203,7 @@ function irACheckout() {
 function vaciarCarrito() {
   const confirmar = confirm("⚠️ ¿Seguro que quieres vaciar todo el carrito?");
   if (confirmar) {
+    sessionStorage.setItem(BACKUP_KEY, JSON.stringify(carrito)); // respaldo
     carrito = [];
     guardarCarrito();
     renderizarCarrito();

@@ -10,6 +10,7 @@
   <meta name="author" content="KM & EZ ROPA" />
   <meta name="description" content="Administra productos de tu tienda: crea, edita y elimina artículos fácilmente desde el panel de control." />
   <meta name="theme-color" content="#ff6d00" />
+  <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
 
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -25,10 +26,10 @@
 <body>
 
 <main class="panel-container fade-in" role="main" aria-label="Panel de productos">
-  
+
   <!-- 🧭 Encabezado -->
   <header class="header-panel">
-    <h1>🛍️ Gestión de Productos</h1>
+    <h1 tabindex="0">🛍️ Gestión de Productos</h1>
     <div class="botones-header">
       <a href="/crear-producto.html" class="btn" aria-label="Crear nuevo producto">➕ Crear Producto</a>
       <a href="/panel.html" class="btn-secundario" aria-label="Volver al panel principal">🔙 Volver</a>
@@ -37,7 +38,7 @@
 
   <!-- 🔎 Filtros de búsqueda -->
   <section class="filtros-productos mt-2 mb-2" aria-label="Filtrar productos">
-    <input type="text" id="buscarProducto" placeholder="🔍 Buscar por nombre..." aria-label="Buscar por nombre de producto" />
+    <input type="text" id="buscarProducto" placeholder="🔍 Buscar por nombre..." aria-label="Buscar por nombre de producto" autocomplete="off" />
 
     <select id="filtroCategoria" aria-label="Filtrar por categoría">
       <option value="">📂 Todas las categorías</option>
@@ -52,7 +53,7 @@
       <option value="sinStock">❌ Sin stock</option>
     </select>
 
-    <label class="check-destacados" aria-label="Filtrar productos destacados">
+    <label class="check-destacados" for="filtroDestacados">
       <input type="checkbox" id="filtroDestacados" />
       ⭐ Solo destacados
     </label>
@@ -63,7 +64,7 @@
   </section>
 
   <!-- 🧾 Mensaje administrativo -->
-  <div id="mensaje" class="admin-message oculto" role="status" aria-live="polite"></div>
+  <div id="mensaje" class="admin-message oculto" role="status" aria-live="assertive"></div>
 
   <!-- 📋 Listado de productos -->
   <section class="menu-panel" id="productosLista" aria-label="Listado de productos disponibles">
@@ -74,11 +75,11 @@
   <p id="contadorProductos" class="text-center mt-2" aria-live="polite"></p>
 
   <!-- 🔢 Paginación -->
-  <div id="paginacion" class="paginacion text-center mt-2" role="navigation" aria-label="Paginación de productos"></div>
+  <nav id="paginacion" class="paginacion text-center mt-2" role="navigation" aria-label="Paginación de productos"></nav>
 
 </main>
 
-<!-- 🚫 Fallback para navegadores sin JS -->
+<!-- ⚠️ Fallback para navegadores sin JS -->
 <noscript>
   <p style="color: red; text-align: center;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
 </noscript>

@@ -8,14 +8,17 @@ const pedidoId = new URLSearchParams(window.location.search).get("id");
 const container = document.getElementById("pedidoDetalle");
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (!pedidoId) {
-    container.innerHTML = "<p class='text-center' style='color:red;'>❌ Pedido no válido</p>";
+  if (!pedidoId || pedidoId.length < 8) {
+    mostrarError("❌ Pedido no válido.");
     return;
   }
 
   cargarDetallePedido();
 });
 
+/**
+ * 📦 Obtener y mostrar detalle del pedido
+ */
 async function cargarDetallePedido() {
   try {
     const res = await fetch(`${API_BASE}/api/orders/${pedidoId}`, {
@@ -28,24 +31,31 @@ async function cargarDetallePedido() {
     renderizarDetalle(data.pedido);
   } catch (err) {
     console.error("❌ Error al obtener pedido:", err);
-    container.innerHTML = `<p class="text-center" style="color:red;">❌ ${err.message}</p>`;
+    mostrarError(`❌ ${err.message}`);
   }
 }
 
+/**
+ * 🎨 Renderiza la vista del pedido
+ * @param {object} p - Pedido
+ */
 function renderizarDetalle(p) {
   const fecha = new Date(p.createdAt).toLocaleDateString("es-ES", {
     day: "numeric", month: "long", year: "numeric"
   });
+
   const estado = estadoBonito(p.estado);
   const total = `$${p.total?.toFixed(2) || "0.00"}`;
   const productos = Array.isArray(p.items) ? p.items : [];
 
   const productosHTML = productos.map(item => {
-    const imagen = item.imagen || "/assets/logo.jpg";
+    const imagen = sanitize(item.imagen || "/assets/logo.jpg");
     const subtotal = (item.precio * item.cantidad).toFixed(2);
+
     return `
-      <div class="producto-detalle fade-in" role="listitem">
-        <img src="${imagen}" alt="${item.nombre}" loading="lazy" />
+      <div class="producto-detalle fade-in" role="listitem" aria-label="Producto: ${sanitize(item.nombre)}">
+        <img src="${imagen}" alt="${sanitize(item.nombre)}" loading="lazy"
+             onerror="this.src='/assets/logo.jpg'; this.alt='Imagen no disponible';" />
         <div>
           <p><strong>${sanitize(item.nombre)}</strong></p>
           <p>Talla: ${sanitize(item.talla || "-")}</p>
@@ -57,7 +67,7 @@ function renderizarDetalle(p) {
   }).join("");
 
   container.innerHTML = `
-    <section class="info-principal" aria-label="Información del pedido">
+    <section class="info-principal" aria-label="Información general del pedido">
       <p><strong>Pedido ID:</strong> #${p._id.slice(-6).toUpperCase()}</p>
       <p><strong>Fecha:</strong> ${fecha}</p>
       <p><strong>Estado:</strong> <span class="estado-${p.estado}">${estado}</span></p>
@@ -65,33 +75,50 @@ function renderizarDetalle(p) {
     </section>
 
     <h3 class="text-center mt-2">🧾 Productos incluidos</h3>
-    <div class="productos-lista" role="list" aria-label="Lista de productos">
+    <div class="productos-lista" role="list" aria-label="Lista de productos del pedido">
       ${productosHTML}
     </div>
 
     <div class="mt-3 text-center">
-      <a href="/cliente.html" class="btn-secundario">🔙 Volver a mis pedidos</a>
+      <a href="/cliente.html" class="btn-secundario" aria-label="Volver a mis pedidos">🔙 Volver a mis pedidos</a>
     </div>
   `;
 }
 
-function estadoBonito(e = "") {
-  const estados = {
-    pendiente: "⏳ Pendiente",
-    procesando: "🛠️ Procesando",
-    enviado: "🚚 Enviado",
-    entregado: "📬 Entregado",
-    cancelado: "❌ Cancelado"
-  };
-  return estados[e] || capitalize(e);
-}
-
+/**
+ * 🧼 Sanitizar entrada para evitar XSS
+ */
 function sanitize(str = "") {
   const div = document.createElement("div");
   div.textContent = str;
   return div.innerHTML;
 }
 
+/**
+ * 📍 Formatea estado con ícono
+ */
+function estadoBonito(estado = "") {
+  const estados = {
+    pendiente: "⏳ Pendiente",
+    procesando: "🛠️ Procesando",
+    preparando: "🔧 Preparando",
+    enviado: "🚚 Enviado",
+    entregado: "📬 Entregado",
+    cancelado: "❌ Cancelado"
+  };
+  return estados[estado.toLowerCase()] || capitalize(estado);
+}
+
+/**
+ * 🔠 Capitalizar primera letra
+ */
 function capitalize(str = "") {
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+/**
+ * ⚠️ Mostrar mensaje de error en el DOM
+ */
+function mostrarError(mensaje) {
+  container.innerHTML = `<p class="text-center" style="color:red;">${mensaje}</p>`;
 }

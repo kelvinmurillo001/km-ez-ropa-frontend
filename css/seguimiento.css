@@ -1,18 +1,29 @@
-/* === SEGUIMIENTO PEDIDO === */
+/* === 🎯 SEGUIMIENTO DE PEDIDO === */
+:root {
+  --color-fondo: #1a1a1a;
+  --color-fondo-claro: #1e1e1e;
+  --color-principal: #d4af37;
+  --color-principal-hover: #f4d35e;
+  --color-texto: #f5f5f5;
+  --color-muted: #aaa;
+  --color-borde: #444;
+  --color-shadow: rgba(212, 175, 55, 0.1);
+  --color-acento: #ff6d00;
+}
 
-/* 🎯 Contenedor Principal */
+/* 🎯 CONTENEDOR PRINCIPAL */
 .seguimiento-container {
   max-width: 700px;
   margin: auto;
   padding: 2rem 1rem;
-  background-color: #1a1a1a;
+  background-color: var(--color-fondo);
   border-radius: 14px;
-  box-shadow: 0 0 24px rgba(212, 175, 55, 0.1);
-  color: #f5f5f5;
+  box-shadow: 0 0 24px var(--color-shadow);
+  color: var(--color-texto);
   animation: fadeIn 0.4s ease-in-out;
 }
 
-/* 🔎 Buscar Código */
+/* 🔎 BUSCADOR DE CÓDIGO */
 .buscar-codigo {
   display: flex;
   flex-direction: column;
@@ -24,7 +35,7 @@
 .buscar-codigo input {
   padding: 0.85rem 1rem;
   border-radius: 8px;
-  border: 1px solid #444;
+  border: 1px solid var(--color-borde);
   background-color: #222;
   color: #fff;
   width: 100%;
@@ -35,42 +46,42 @@
 
 .buscar-codigo input:focus {
   outline: none;
-  border-color: #d4af37;
+  border-color: var(--color-principal);
 }
 
 .buscar-codigo button {
   padding: 0.75rem 1.6rem;
-  background-color: #d4af37;
+  background-color: var(--color-principal);
   color: #121212;
   border: none;
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
   font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .buscar-codigo button:hover {
-  background-color: #f4d35e;
+  background-color: var(--color-principal-hover);
   transform: translateY(-1px);
 }
 
-/* 📈 Barra de Progreso */
+/* 📈 BARRA DE PROGRESO */
 .progreso {
   display: flex;
   justify-content: space-between;
   margin-top: 3rem;
-  background-color: #1a1a1a;
+  background-color: var(--color-fondo);
   padding: 1rem;
   border-radius: 12px;
-  box-shadow: 0 0 12px rgba(212, 175, 55, 0.1);
+  box-shadow: 0 0 12px var(--color-shadow);
 }
 
 .paso {
   flex: 1;
   text-align: center;
   padding: 1rem 0;
-  color: #aaa;
+  color: var(--color-muted);
   font-weight: 600;
   position: relative;
   font-size: 0.95rem;
@@ -88,22 +99,22 @@
   transition: background-color 0.3s ease;
 }
 
-.paso.active::before {
-  background-color: #d4af37;
-}
-
 .paso.active {
-  color: #d4af37;
+  color: var(--color-principal);
 }
 
-/* 📋 Resumen Pedido */
+.paso.active::before {
+  background-color: var(--color-principal);
+}
+
+/* 📋 RESUMEN DEL PEDIDO */
 .resumen {
   margin-top: 3rem;
-  background-color: #1e1e1e;
+  background-color: var(--color-fondo-claro);
   padding: 1.5rem;
   border-radius: 12px;
-  border-left: 4px solid #d4af37;
-  box-shadow: 0 0 12px rgba(212, 175, 55, 0.1);
+  border-left: 4px solid var(--color-principal);
+  box-shadow: 0 0 12px var(--color-shadow);
 }
 
 .resumen p {
@@ -112,7 +123,20 @@
   color: #e0e0e0;
 }
 
-/* 🎞️ Animación */
+/* 📦 TARJETA DE PEDIDO */
+.pedido-card {
+  background: #f9f9f9;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-left: 5px solid var(--color-acento);
+  border-radius: 5px;
+}
+
+.pedido-card h3 {
+  margin-top: 0;
+}
+
+/* 🎞️ ANIMACIÓN */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -124,7 +148,7 @@
   }
 }
 
-/* 📱 Responsive */
+/* 📱 RESPONSIVE */
 @media (max-width: 600px) {
   .progreso {
     flex-direction: column;
@@ -144,14 +168,4 @@
   .buscar-codigo input {
     max-width: 100%;
   }
-}
-.pedido-card {
-  background: #f9f9f9;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  border-left: 5px solid #ff6d00;
-  border-radius: 5px;
-}
-.pedido-card h3 {
-  margin-top: 0;
 }

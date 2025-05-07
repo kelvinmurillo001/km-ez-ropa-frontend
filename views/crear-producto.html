@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>➕ Crear Producto | KM & EZ ROPA</title>
 
-  <!-- 🔒 SEO & Seguridad -->
+  <!-- 🔐 SEO & Seguridad -->
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="description" content="Formulario profesional para agregar nuevos productos con tallas, colores, variantes e imágenes a la tienda KM & EZ ROPA." />
+  <meta name="description" content="Formulario seguro y accesible para agregar nuevos productos a KM & EZ ROPA." />
   <meta name="theme-color" content="#ff6d00" />
 
   <!-- 🎨 Estilos -->
@@ -24,7 +24,7 @@
 <main class="formulario-container fade-in" role="main" aria-label="Formulario para crear nuevo producto">
   <h1 class="text-center">➕ Crear Nuevo Producto</h1>
 
-  <form id="formProducto" class="form-producto" enctype="multipart/form-data" novalidate>
+  <form id="formProducto" class="form-producto" enctype="multipart/form-data" novalidate aria-describedby="msgEstado">
 
     <!-- 📷 Imagen principal -->
     <label for="imagenPrincipalInput">📷 Imagen Principal *</label>
@@ -34,7 +34,7 @@
 
     <!-- 📝 Nombre -->
     <label for="nombreInput">📝 Nombre del Producto *</label>
-    <input type="text" id="nombreInput" placeholder="Ej: Hoodie urbana" required maxlength="100" />
+    <input type="text" id="nombreInput" placeholder="Ej: Hoodie urbana" required maxlength="100" inputmode="text" />
 
     <!-- 📄 Descripción -->
     <label for="descripcionInput">📄 Descripción *</label>
@@ -42,19 +42,15 @@
 
     <!-- 💲 Precio -->
     <label for="precioInput">💲 Precio *</label>
-    <input type="number" id="precioInput" step="0.01" min="0" required placeholder="Ej: 39.90" />
+    <input type="number" id="precioInput" step="0.01" min="0" required placeholder="Ej: 39.90" inputmode="decimal" />
 
     <!-- 📂 Categoría -->
     <label for="categoriaInput">📂 Categoría *</label>
-    <select id="categoriaInput" required>
-      <option value="">Selecciona una categoría</option>
-    </select>
+    <select id="categoriaInput" required></select>
 
     <!-- 📁 Subcategoría -->
     <label for="subcategoriaInput">📁 Subcategoría</label>
-    <select id="subcategoriaInput" disabled>
-      <option value="">Selecciona una subcategoría</option>
-    </select>
+    <select id="subcategoriaInput" disabled></select>
 
     <!-- 📐 Tipo de Talla -->
     <label for="tallaTipoInput">📐 Tipo de Talla *</label>
@@ -66,10 +62,6 @@
       <option value="niña">Niña</option>
       <option value="bebé">Bebé</option>
     </select>
-
-    <!-- 🎨 Color principal -->
-    <label for="colorInput">🎨 Color Principal (opcional)</label>
-    <input type="text" id="colorInput" placeholder="Ej: negro, azul marino" />
 
     <!-- 🌟 Producto destacado -->
     <div class="mt-2">
@@ -86,10 +78,10 @@
 
     <!-- 📦 Stock base -->
     <label for="stockInput">📦 Stock Base (si no hay variantes)</label>
-    <input type="number" id="stockInput" min="0" placeholder="Ej: 10" />
+    <input type="number" id="stockInput" min="0" placeholder="Ej: 10" inputmode="numeric" />
 
     <!-- 🧾 Acciones -->
-    <div class="form-actions mt-3">
+    <div class="form-actions mt-3" role="group" aria-label="Acciones del formulario">
       <button type="submit" class="btn">💾 Guardar Producto</button>
       <button type="button" id="btnCancelar" class="btn-secundario">🔙 Cancelar</button>
       <a href="/productos.html" class="btn-secundario" style="margin-left: 10px;">⬅️ Volver a Productos</a>
@@ -110,7 +102,9 @@
       document.body.classList.add("modo-oscuro");
     }
 
-    document.getElementById("btnCancelar")?.addEventListener("click", () => history.back());
+    document.getElementById("btnCancelar")?.addEventListener("click", () => {
+      if (confirm("¿Cancelar creación y volver atrás?")) history.back();
+    });
   });
 </script>
 

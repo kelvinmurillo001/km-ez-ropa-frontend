@@ -6,14 +6,13 @@
  * @param {HTMLElement|string} contenido - Contenido HTML o texto plano.
  */
 
-// 🌟 Controla el último elemento enfocado antes de abrir el modal
 let ultimoFoco = null;
 
 /* ───────────────────────────────────────────── */
-/* ➡️ Abrir Modal                                 */
+/* ➡️ Abrir Modal                                */
 /* ───────────────────────────────────────────── */
 export function abrirModal(titulo, contenido) {
-  cerrarModal(); // ❌ Cierra cualquier modal anterior
+  cerrarModal(); // ❌ Cierra modales existentes
 
   ultimoFoco = document.activeElement;
 
@@ -26,55 +25,58 @@ export function abrirModal(titulo, contenido) {
   overlay.setAttribute("aria-labelledby", "modal-titulo");
   overlay.tabIndex = -1;
 
-  // 🎯 Modal principal
+  // 🧱 Modal principal
   const modal = document.createElement("div");
   modal.className = "modal";
   modal.tabIndex = -1;
 
-  // ❌ Botón de cerrar
-  const cerrar = document.createElement("button");
-  cerrar.className = "modal-cerrar";
-  cerrar.innerHTML = "✖";
-  cerrar.setAttribute("aria-label", "Cerrar modal");
-  cerrar.addEventListener("click", cerrarModal);
+  // ❌ Botón cerrar
+  const cerrarBtn = document.createElement("button");
+  cerrarBtn.className = "modal-cerrar";
+  cerrarBtn.innerHTML = "✖";
+  cerrarBtn.setAttribute("aria-label", "Cerrar modal");
+  cerrarBtn.addEventListener("click", cerrarModal);
+  cerrarBtn.addEventListener("keydown", e => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      cerrarModal();
+    }
+  });
 
   // 📝 Título
-  const h3 = document.createElement("h3");
-  h3.id = "modal-titulo";
-  h3.textContent = titulo;
+  const tituloNode = document.createElement("h3");
+  tituloNode.id = "modal-titulo";
+  tituloNode.textContent = titulo;
 
-  // 📄 Contenido dinámico
-  const contentNode = document.createElement("div");
-  contentNode.className = "modal-contenido";
+  // 📄 Contenido
+  const contenidoNode = document.createElement("div");
+  contenidoNode.className = "modal-contenido";
 
   if (typeof contenido === "string") {
-    contentNode.innerHTML = contenido;
-  } else {
-    contentNode.appendChild(contenido);
+    contenidoNode.innerHTML = contenido;
+  } else if (contenido instanceof HTMLElement) {
+    contenidoNode.appendChild(contenido);
   }
 
-  // 🧩 Ensamblar estructura
-  modal.appendChild(cerrar);
-  modal.appendChild(h3);
-  modal.appendChild(contentNode);
+  // 🧩 Ensamblar
+  modal.append(cerrarBtn, tituloNode, contenidoNode);
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
   document.body.classList.add("no-scroll");
 
-  // 🔁 Foco automático al modal
-  setTimeout(() => modal.focus(), 50);
+  // 🧠 Foco automático
+  setTimeout(() => modal.focus(), 60);
 
-  // ⌨️ Escape key
-  document.addEventListener("keydown", cerrarConEscape);
-
-  // 🖱️ Cerrar al clickear fuera del modal
-  overlay.addEventListener("click", (e) => {
+  // 🧽 Listeners
+  overlay.addEventListener("click", e => {
     if (e.target === overlay) cerrarModal();
   });
+
+  document.addEventListener("keydown", cerrarConEscape);
 }
 
 /* ───────────────────────────────────────────── */
-/* ❌ Cerrar Modal                                */
+/* ❌ Cerrar Modal                               */
 /* ───────────────────────────────────────────── */
 export function cerrarModal() {
   const overlay = document.getElementById("modal-overlay");
@@ -88,17 +90,21 @@ export function cerrarModal() {
     }, 200);
   }
 
-  // 🔁 Devolver el foco al último elemento
+  // 🔁 Foco de retorno
   if (ultimoFoco && typeof ultimoFoco.focus === "function") {
-    ultimoFoco.focus();
+    setTimeout(() => ultimoFoco.focus(), 100);
+    ultimoFoco = null;
   }
 
   document.removeEventListener("keydown", cerrarConEscape);
 }
 
 /* ───────────────────────────────────────────── */
-/* ⌨️ Cerrar Modal con Tecla Escape               */
+/* ⌨️ Cerrar con tecla Escape                    */
 /* ───────────────────────────────────────────── */
 function cerrarConEscape(e) {
-  if (e.key === "Escape") cerrarModal();
+  if (e.key === "Escape") {
+    e.preventDefault();
+    cerrarModal();
+  }
 }

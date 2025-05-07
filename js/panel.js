@@ -2,21 +2,18 @@
 "use strict";
 
 import { API_BASE } from "./config.js";
+import { mostrarMensaje, cerrarSesion, getUsuarioActivo, verificarSesion } from "./admin-utils.js";
 
-// ▶️ Al cargar el DOM
 document.addEventListener("DOMContentLoaded", async () => {
-  const token = localStorage.getItem("admin_token");
-  const user = JSON.parse(localStorage.getItem("admin_user") || "{}");
-
-  // 🔒 Verificar sesión y rol
-  if (!token || !user?.isAdmin) {
-    location.href = "/login.html";
-    return;
+  try {
+    await verificarSesion(); // 🔐 Verificación segura vía backend
+    const user = getUsuarioActivo();
+    mostrarBienvenida(user.name || user.username || "Administrador");
+    await cargarProductos();
+    configurarLogout();
+  } catch (err) {
+    console.error("❌ Error al verificar sesión:", err.message);
   }
-
-  mostrarBienvenida(user.name || user.username || "Administrador");
-  await cargarProductos();
-  configurarLogout();
 });
 
 /* ───────────────────────────────────────────── */
@@ -28,32 +25,29 @@ function mostrarBienvenida(nombre) {
 }
 
 /* ───────────────────────────────────────────── */
-/* 📦 Cargar y renderizar lista de productos     */
+/* 📦 Cargar productos protegidos por token      */
 /* ───────────────────────────────────────────── */
 async function cargarProductos() {
   const contenedor = document.getElementById("listaProductos");
   if (!contenedor) return;
 
   contenedor.innerHTML = `<p>⏳ Cargando productos...</p>`;
+  const token = localStorage.getItem("admin_token");
 
   try {
     const res = await fetch(`${API_BASE}/api/products?limite=50`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("admin_token")}`
-      }
+      headers: { Authorization: `Bearer ${token}` }
     });
 
     const data = await res.json();
-
-    if (!res.ok) throw new Error(data.message || "Error cargando productos.");
+    if (!res.ok) throw new Error(data.message || "Error cargando productos");
 
     if (!Array.isArray(data.productos) || data.productos.length === 0) {
       contenedor.innerHTML = `<p>📭 No hay productos registrados.</p>`;
       return;
     }
 
-    contenedor.innerHTML = ""; // Limpiar contenedor
-
+    contenedor.innerHTML = "";
     data.productos.forEach(prod => {
       const card = document.createElement("div");
       card.className = "producto-card";
@@ -67,6 +61,7 @@ async function cargarProductos() {
     });
   } catch (err) {
     console.error("❌ Error cargando productos:", err);
+    mostrarMensaje("❌ Error cargando productos. Verifica conexión.", "error");
     contenedor.innerHTML = `<p style="color:red;">❌ ${sanitize(err.message)}</p>`;
   }
 }
@@ -80,9 +75,7 @@ function configurarLogout() {
 
   btnLogout.addEventListener("click", () => {
     if (confirm("¿Estás seguro de cerrar sesión?")) {
-      localStorage.removeItem("admin_token");
-      localStorage.removeItem("admin_user");
-      location.href = "/login.html";
+      cerrarSesion();
     }
   });
 }

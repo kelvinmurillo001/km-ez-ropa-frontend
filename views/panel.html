@@ -22,9 +22,11 @@
 </head>
 
 <body>
-  <!-- 🎛️ Contenedor principal del panel -->
-  <main class="panel-container fade-in" role="main" aria-label="Área de administración">
+  <!-- ✅ Notificaciones del sistema -->
+  <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="assertive"></div>
 
+  <!-- 🎛️ Panel principal -->
+  <main class="panel-container fade-in" role="main" aria-label="Área de administración">
     <!-- 👤 Encabezado -->
     <header class="header-panel" role="banner">
       <h1 class="text-center">🎛️ Panel de Administración</h1>
@@ -33,20 +35,17 @@
       </button>
     </header>
 
-    <!-- 📋 Opciones del panel -->
-    <nav class="menu-panel" role="navigation" aria-label="Secciones administrativas">
-      <a href="/productos.html" class="btn-panel" aria-label="Gestionar productos">👕 Gestionar Productos</a>
-      <a href="/pedidos.html" class="btn-panel" aria-label="Visualizar pedidos">🧾 Ver Pedidos</a>
-      <a href="/admin-categorias.html" class="btn-panel" aria-label="Administrar categorías y subcategorías">🗂️ Categorías</a>
+    <!-- 📋 Menú de opciones -->
+    <nav class="menu-panel" role="navigation" aria-label="Secciones del panel">
+      <a href="/productos.html" class="btn-panel" aria-label="Gestionar productos">👕 Productos</a>
+      <a href="/pedidos.html" class="btn-panel" aria-label="Ver pedidos de clientes">🧾 Pedidos</a>
+      <a href="/admin-categorias.html" class="btn-panel" aria-label="Gestionar categorías">🗂️ Categorías</a>
       <a href="/promociones.html" class="btn-panel" aria-label="Configurar promociones activas">🎯 Promociones</a>
       <a href="/dashboard.html" class="btn-panel" aria-label="Ver estadísticas del negocio">📊 Analítica</a>
     </nav>
   </main>
 
-  <!-- 🔔 Mensajes del sistema -->
-  <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="polite"></div>
-
-  <!-- 🌙 Activar modo oscuro si corresponde -->
+  <!-- 🌙 Activación automática de modo oscuro -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("modoOscuro") === "true") {
@@ -55,17 +54,19 @@
     });
   </script>
 
-  <!-- 🔐 Verificación de sesión y logout -->
+  <!-- 🔐 Validación de sesión y cierre -->
   <script type="module">
-    import { cerrarSesion, verificarSesion } from "/js/admin-utils.js";
+    import { verificarSesion, cerrarSesion } from "/js/admin-utils.js";
     verificarSesion();
-    document.getElementById("btnCerrarSesion")?.addEventListener("click", cerrarSesion);
+    document.getElementById("btnCerrarSesion")?.addEventListener("click", () => {
+      if (confirm("¿Estás seguro de cerrar sesión?")) cerrarSesion();
+    });
   </script>
 
-  <!-- ⚠️ Aviso sin JavaScript -->
+  <!-- ⚠️ Sin JS fallback -->
   <noscript>
     <p style="text-align: center; color: red;">
-      ⚠️ Este panel requiere que actives JavaScript para funcionar correctamente.
+      ⚠️ Esta página requiere JavaScript activado para funcionar correctamente.
     </p>
   </noscript>
 </body>

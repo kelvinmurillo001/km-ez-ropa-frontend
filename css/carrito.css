@@ -1,7 +1,22 @@
+/* === 🎨 VARIABLES DE COLOR === */
+:root {
+  --naranja-principal: #ff6d00;
+  --naranja-secundario: #ffa733;
+  --naranja-terciario: #f4d35e;
+  --rojo-error: #ff3d00;
+  --verde-acento: #00e676;
+  --bg-oscuro: #121212;
+  --bg-claro: #f9f9f9;
+  --text-claro: #f5f5f5;
+  --text-oscuro: #222;
+  --borde-gris: #333;
+  --borde-claro: #ddd;
+}
+
 /* === 🛒 BASE === */
 body {
-  background-color: #121212;
-  color: #e0e0e0;
+  background-color: var(--bg-oscuro);
+  color: var(--text-claro);
   font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 0;
@@ -10,20 +25,20 @@ body {
 }
 
 body:not(.modo-oscuro) {
-  background-color: #f9f9f9;
-  color: #222;
+  background-color: var(--bg-claro);
+  color: var(--text-oscuro);
 }
 
-/* === ☀️ MODO CLARO === */
+/* ☀️ MODO CLARO */
 body:not(.modo-oscuro) .carrito-item,
 body:not(.modo-oscuro) .carrito-resumen {
   background-color: #fff;
-  border-color: #ddd;
+  border-color: var(--borde-claro);
 }
 
 body:not(.modo-oscuro) .carrito-cantidad input {
   background-color: #fff;
-  color: #222;
+  color: var(--text-oscuro);
   border-color: #ccc;
 }
 
@@ -39,13 +54,13 @@ body:not(.modo-oscuro) .btn-eliminar:hover {
 
 /* === 🧾 TÍTULO === */
 h1 {
-  color: #ff6d00;
+  color: var(--naranja-principal);
   text-align: center;
   margin-bottom: 1.5rem;
   font-size: 2rem;
 }
 
-/* === 📦 CONTENEDOR === */
+/* === 📦 CONTENEDOR PRINCIPAL === */
 .carrito-container {
   max-width: 1100px;
   margin: auto;
@@ -64,7 +79,7 @@ h1 {
   flex-wrap: wrap;
   gap: 1rem;
   background-color: #1a1a1a;
-  border: 1px solid #333;
+  border: 1px solid var(--borde-gris);
   padding: 1rem;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(255, 109, 0, 0.08);
@@ -77,7 +92,7 @@ h1 {
   height: 100px;
   object-fit: cover;
   border-radius: 8px;
-  border: 2px solid #ff6d00;
+  border: 2px solid var(--naranja-principal);
 }
 
 /* === 📝 DETALLES DEL PRODUCTO === */
@@ -91,7 +106,7 @@ h1 {
 .carrito-detalles h4 {
   margin: 0;
   font-size: 1.2rem;
-  color: #ffa733;
+  color: var(--naranja-secundario);
   font-weight: bold;
 }
 
@@ -101,7 +116,7 @@ h1 {
   color: #bbb;
 }
 
-/* === 🔢 CAMPO DE CANTIDAD === */
+/* === 🔢 CANTIDAD === */
 .carrito-cantidad {
   display: flex;
   align-items: center;
@@ -122,7 +137,7 @@ h1 {
 }
 
 .carrito-cantidad input:focus-visible {
-  border-color: #ff6d00;
+  border-color: var(--naranja-principal);
   box-shadow: 0 0 4px rgba(255, 109, 0, 0.4);
   outline: none;
 }
@@ -130,8 +145,8 @@ h1 {
 /* === 🗑️ BOTÓN ELIMINAR === */
 .btn-eliminar {
   background-color: transparent;
-  border: 2px solid #ff3d00;
-  color: #ff3d00;
+  border: 2px solid var(--rojo-error);
+  color: var(--rojo-error);
   padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
@@ -142,16 +157,16 @@ h1 {
 }
 
 .btn-eliminar:hover {
-  background-color: #ff3d00;
+  background-color: var(--rojo-error);
   color: #fff;
 }
 
-/* === 🧾 RESUMEN DEL CARRITO === */
+/* === 💳 RESUMEN CARRITO === */
 .carrito-resumen {
   margin-top: 2.5rem;
   padding: 1.5rem;
   background-color: #1a1a1a;
-  border: 1px solid #333;
+  border: 1px solid var(--borde-gris);
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(255, 109, 0, 0.15);
   text-align: center;
@@ -160,7 +175,7 @@ h1 {
 
 .carrito-resumen h2 {
   font-size: 1.6rem;
-  color: #00e676;
+  color: var(--verde-acento);
   margin-bottom: 1rem;
 }
 
@@ -184,28 +199,38 @@ h1 {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* === 🧡 BOTÓN PRIMARIO === */
 .btn {
-  background-color: #ff6d00;
+  background-color: var(--naranja-principal);
   border: none;
-  color: #121212;
+  color: var(--bg-oscuro);
 }
 
 .btn:hover {
-  background-color: #ffa733;
+  background-color: var(--naranja-secundario);
 }
 
+/* === ⚙️ BOTÓN SECUNDARIO === */
 .btn-secundario {
   background-color: transparent;
-  border: 2px solid #ff6d00;
-  color: #ff6d00;
+  border: 2px solid var(--naranja-principal);
+  color: var(--naranja-principal);
 }
 
 .btn-secundario:hover {
-  background-color: #ff6d00;
-  color: #121212;
+  background-color: var(--naranja-principal);
+  color: var(--bg-oscuro);
 }
 
-/* === ✨ EFECTOS === */
+/* === ♿ ACCESIBILIDAD === */
+.btn:focus-visible,
+.btn-secundario:focus-visible,
+.btn-eliminar:focus-visible {
+  outline: 2px dashed var(--naranja-principal);
+  outline-offset: 4px;
+}
+
+/* === ✨ EFECTO ENTRADA === */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }

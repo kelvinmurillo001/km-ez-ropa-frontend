@@ -35,7 +35,7 @@ async function cargarPedidos(token) {
     }
 
     if (!Array.isArray(data.pedidos) || data.pedidos.length === 0) {
-      contenedor.innerHTML = "<p class='info'>📭 No tienes pedidos aún.</p>";
+      contenedor.innerHTML = "<p class='info text-center'>📭 No tienes pedidos aún.</p>";
       return;
     }
 
@@ -58,19 +58,37 @@ function renderPedidoCard(p) {
   });
 
   const total = `$${Number(p.total || 0).toFixed(2)}`;
-  const estado = (p.estado || "pendiente").toUpperCase();
+  const estado = estadoBonito(p.estado || "pendiente");
+  const idCorto = p._id?.slice(-6)?.toUpperCase() || "XXXXXX";
+
   const seguimientoHTML = p.codigoSeguimiento
     ? `<a href="/seguimiento.html?codigo=${encodeURIComponent(p.codigoSeguimiento)}" class="btn" aria-label="Ver seguimiento del pedido">📦 Ver seguimiento</a>`
     : `<span class="text-muted">🔍 Seguimiento no disponible</span>`;
 
   return `
-    <div class="pedido-card" role="region" aria-label="Pedido ${p._id.slice(-6)}">
-      <h3>Pedido #${p._id.slice(-6)}</h3>
+    <div class="pedido-card" role="region" aria-label="Pedido ${idCorto}">
+      <h3>Pedido #${idCorto}</h3>
       <p><strong>📅 Fecha:</strong> ${fecha}</p>
       <p><strong>💰 Total:</strong> ${total}</p>
-      <p><strong>📌 Estado:</strong> ${estado}</p>
-      <div class="acciones">${seguimientoHTML}</div>
+      <p><strong>📌 Estado:</strong> <span class="estado-${p.estado}">${estado}</span></p>
+      <div class="acciones mt-1">${seguimientoHTML}</div>
     </div>`;
+}
+
+/**
+ * Traducir estado a un formato amigable con íconos
+ * @param {string} estado - Estado en crudo
+ * @returns {string}
+ */
+function estadoBonito(estado = "") {
+  const estados = {
+    pendiente: "⏳ Pendiente",
+    procesando: "🛠️ En proceso",
+    enviado: "🚚 Enviado",
+    entregado: "📬 Entregado",
+    cancelado: "❌ Cancelado"
+  };
+  return estados[estado.toLowerCase()] || estado;
 }
 
 /**

@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🧾 Mis Pedidos | KM & EZ ROPA</title>
 
   <!-- 🛡️ Seguridad & SEO -->
@@ -10,23 +10,38 @@
   <meta name="description" content="Consulta el historial de tus pedidos realizados en KM & EZ ROPA." />
   <meta name="theme-color" content="#d4af37" />
   <meta name="author" content="KM & EZ ROPA" />
+  <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
 
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="/css/seguimiento.css" />
+  <link rel="stylesheet" href="/css/componentes.css" />
+  <link rel="stylesheet" href="/css/adminMensaje.css" />
 </head>
 
 <body>
   <!-- 🧭 Encabezado -->
   <header role="banner" class="header-pedidos">
-    <h1 class="titulo-pedidos" aria-label="Historial de Pedidos">🧾 Mis Pedidos</h1>
+    <div class="logo-header">
+      <img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" loading="lazy" />
+      <div class="brand-text">
+        <h1>KM & EZ ROPA</h1>
+        <p>🧾 Historial de Pedidos</p>
+      </div>
+    </div>
     <button onclick="window.history.back()" class="btn-secundario" aria-label="Volver a la página anterior">🔙 Volver</button>
   </header>
 
   <!-- 📦 Contenido principal -->
-  <main role="main" aria-label="Listado de pedidos">
-    <div id="misPedidosContainer" class="container-pedidos" aria-live="polite"></div>
+  <main role="main" class="fade-in" aria-label="Listado de pedidos">
+    <h2 class="text-center mt-2">📋 Tus Pedidos Realizados</h2>
+    <div id="misPedidosContainer" class="container-pedidos mt-3" aria-live="polite">
+      <p class="text-center">⏳ Cargando pedidos...</p>
+    </div>
   </main>
+
+  <!-- 🛎️ Mensaje dinámico -->
+  <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
 
   <!-- ❗ JS requerido -->
   <noscript>

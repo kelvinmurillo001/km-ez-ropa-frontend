@@ -14,19 +14,19 @@ const API_UPLOAD = `${API_BASE}/api/uploads`;
 const formPromo = document.getElementById("formPromo");
 const msgPromo = document.getElementById("msgPromo");
 const estadoActual = document.getElementById("estadoActual");
+const contenedorListaPromos = document.getElementById("promo-container");
 
 let promocionId = null;
 
 // 🚀 Inicialización
 document.addEventListener("DOMContentLoaded", () => {
   cargarPromocion();
+  cargarTodasPromociones();
   formPromo?.addEventListener("submit", guardarPromocion);
   document.getElementById("promoTipo")?.addEventListener("change", mostrarCampoMultimedia);
 });
 
-/* ───────────────────────────────────────────── */
-/* 📺 Mostrar Campo de Multimedia                 */
-/* ───────────────────────────────────────────── */
+/* 🖼 Mostrar campos multimedia dinámicamente */
 function mostrarCampoMultimedia() {
   const tipo = document.getElementById("promoTipo").value;
   const container = document.getElementById("mediaUploadContainer");
@@ -45,9 +45,7 @@ function mostrarCampoMultimedia() {
   }
 }
 
-/* ───────────────────────────────────────────── */
-/* 📦 Cargar Promoción Actual                     */
-/* ───────────────────────────────────────────── */
+/* 📦 Cargar promoción actual */
 async function cargarPromocion() {
   try {
     const res = await fetch(API_PROMOS);
@@ -104,9 +102,7 @@ function generarPreviewMedia(promo) {
   return "";
 }
 
-/* ───────────────────────────────────────────── */
-/* ✏️ Rellenar Formulario                         */
-/* ───────────────────────────────────────────── */
+/* ✏️ Rellenar el formulario */
 function cargarFormularioDesdePromocion(promo) {
   formPromo.promoMensaje.value = promo.message ?? "";
   formPromo.promoActivo.checked = promo.active ?? false;
@@ -128,9 +124,7 @@ function cargarFormularioDesdePromocion(promo) {
   });
 }
 
-/* ───────────────────────────────────────────── */
-/* 💾 Guardar Promoción                           */
-/* ───────────────────────────────────────────── */
+/* 💾 Guardar promoción */
 async function guardarPromocion(e) {
   e.preventDefault();
   msgPromo.textContent = "";
@@ -162,6 +156,7 @@ async function guardarPromocion(e) {
     msgPromo.textContent = "✅ Promoción guardada correctamente.";
     msgPromo.style.color = "limegreen";
     await cargarPromocion();
+    await cargarTodasPromociones();
   } catch (err) {
     console.error("❌", err);
     mostrarError("❌ No se pudo guardar la promoción.");
@@ -170,11 +165,9 @@ async function guardarPromocion(e) {
   }
 }
 
-/* ───────────────────────────────────────────── */
-/* 🧱 Construir Payload                           */
-/* ───────────────────────────────────────────── */
+/* 🧱 Construir datos para enviar */
 async function construirPayload() {
-  const mensaje = formPromo.promoMensaje.value.trim();
+  const mensaje = sanitize(formPromo.promoMensaje.value.trim());
   const tipo = formPromo.promoTipo.value;
   const activo = formPromo.promoActivo.checked;
   const inicio = formPromo.promoInicio.value || null;
@@ -185,6 +178,7 @@ async function construirPayload() {
 
   if (!mensaje || mensaje.length < 3) return mostrarError("⚠️ El mensaje debe tener al menos 3 caracteres.");
   if (!tipo || pages.length === 0) return mostrarError("⚠️ Elige tipo de contenido y al menos una página.");
+  if (inicio && fin && new Date(inicio) > new Date(fin)) return mostrarError("⚠️ Fecha de inicio no puede ser posterior a la de fin.");
 
   const payload = {
     message: mensaje,
@@ -197,15 +191,18 @@ async function construirPayload() {
   };
 
   if (tipo === "video") {
-    const url = document.getElementById("promoVideo")?.value?.trim();
-    if (!url || !url.startsWith("http")) return mostrarError("⚠️ URL de video inválida.");
+    const url = sanitize(document.getElementById("promoVideo")?.value?.trim() || "");
+    if (!/^https?:\/\/.+/.test(url)) return mostrarError("⚠️ URL de video inválida.");
     payload.mediaType = "video";
     payload.mediaUrl = url;
   }
 
   if (tipo === "imagen") {
     const file = document.getElementById("promoImagen")?.files[0];
-    if (!file || !file.type.startsWith("image/")) return mostrarError("⚠️ Selecciona una imagen válida.");
+    if (!file) return mostrarError("⚠️ Selecciona una imagen válida.");
+    if (!file.type.startsWith("image/")) return mostrarError("⚠️ Formato de imagen no válido.");
+    if (file.size > 2 * 1024 * 1024) return mostrarError("⚠️ Imagen demasiado grande (máx. 2MB)");
+
     try {
       const formData = new FormData();
       formData.append("image", file);
@@ -230,14 +227,113 @@ async function construirPayload() {
   return payload;
 }
 
-/* ───────────────────────────────────────────── */
-/* ⚠️ Mostrar Error                              */
-/* ───────────────────────────────────────────── */
+/* 🔄 Cargar todas las promociones (admin) */
+async function cargarTodasPromociones() {
+  try {
+    const res = await fetch(`${API_PROMOS}/admin`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message);
+
+    if (!Array.isArray(data.data) || data.data.length === 0) {
+      contenedorListaPromos.innerHTML = "<p>📭 No hay promociones registradas.</p>";
+      return;
+    }
+
+    contenedorListaPromos.innerHTML = data.data.map(promoItemHTML).join("");
+  } catch (err) {
+    console.error("❌ Error al cargar promociones:", err);
+    contenedorListaPromos.innerHTML = "<p style='color:red;'>❌ No se pudieron cargar las promociones.</p>";
+  }
+}
+
+function promoItemHTML(promo) {
+  const estado = promo.active ? "✅ Activa" : "⛔ Inactiva";
+  const inicio = promo.startDate ? new Date(promo.startDate).toLocaleDateString() : "Sin inicio";
+  const fin = promo.endDate ? new Date(promo.endDate).toLocaleDateString() : "Sin fin";
+
+  return `
+    <div class="promo-item">
+      <p><strong>${sanitize(promo.message)}</strong></p>
+      <p>${estado} | ${promo.mediaType || "Texto"} | ${inicio} → ${fin}</p>
+      <div class="promo-acciones">
+        <button onclick="editarPromo('${promo._id}')">✏️ Editar</button>
+        <button onclick="alternarEstadoPromo('${promo._id}')">🔁 Estado</button>
+        <button onclick="eliminarPromo('${promo._id}')">🗑️ Eliminar</button>
+      </div>
+    </div>
+  `;
+}
+
+/* 🛠 Acciones */
+window.editarPromo = async (id) => {
+  try {
+    const res = await fetch(`${API_PROMOS}/admin`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    const promo = data.data.find(p => p._id === id);
+    if (!promo) return mostrarError("❌ Promoción no encontrada para edición");
+
+    cargarFormularioDesdePromocion(promo);
+    scrollTo({ top: 0, behavior: "smooth" });
+  } catch (err) {
+    mostrarError("❌ No se pudo cargar la promoción para editar");
+  }
+};
+
+window.alternarEstadoPromo = async (id) => {
+  try {
+    const res = await fetch(`${API_PROMOS}/${id}/estado`, {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message);
+
+    mostrarMensaje(data.message, "success");
+    await cargarTodasPromociones();
+    await cargarPromocion();
+  } catch (err) {
+    mostrarError("❌ No se pudo cambiar el estado");
+  }
+};
+
+window.eliminarPromo = async (id) => {
+  if (!confirm("¿Eliminar esta promoción?")) return;
+
+  try {
+    const res = await fetch(`${API_PROMOS}/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message);
+
+    mostrarMensaje("🗑️ Promoción eliminada", "success");
+    await cargarTodasPromociones();
+    await cargarPromocion();
+  } catch (err) {
+    mostrarError("❌ No se pudo eliminar la promoción");
+  }
+};
+
+/* ⚠️ Mostrar errores */
 function mostrarError(msg) {
   msgPromo.textContent = msg;
   msgPromo.style.color = "orangered";
   return null;
 }
 
-// 🔙 Función Global
+/* 🧼 Sanitizar entrada */
+function sanitize(text = "") {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML.trim();
+}
+
 window.goBack = goBack;

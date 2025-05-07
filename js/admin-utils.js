@@ -1,33 +1,53 @@
 "use strict";
 
+import { API_BASE } from "./config.js";
+
 /* -------------------------------------------------------------------------- */
-/* 🔐 Verificar sesión de administrador                                        */
+/* 🔐 Verificar sesión de administrador desde servidor                        */
 /* -------------------------------------------------------------------------- */
-export function verificarSesion() {
+export async function verificarSesion() {
   const token = localStorage.getItem("admin_token");
   const userRaw = localStorage.getItem("admin_user");
 
+  if (!token || !userRaw) {
+    return redirigirLogin("⚠️ No has iniciado sesión.");
+  }
+
   try {
     const user = JSON.parse(userRaw);
-    if (!token || typeof user !== "object" || !user?.isAdmin) throw new Error();
-    return token;
+    if (!user?.isAdmin) throw new Error("No es admin");
+
+    const res = await fetch(`${API_BASE}/api/stats`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error("Token inválido o expirado");
+    }
+
+    return true;
   } catch (err) {
-    console.warn("⚠️ Sesión inválida. Redirigiendo a login...");
-    localStorage.clear();
-    alert("⚠️ Acceso restringido. Inicia sesión como administrador.");
-    window.location.href = "/login.html";
-    throw new Error("🚫 Usuario no autenticado o sin permisos");
+    console.warn("⚠️ Sesión inválida:", err.message);
+    return redirigirLogin("⚠️ Sesión expirada o inválida. Inicia sesión nuevamente.");
   }
 }
 
+function redirigirLogin(mensaje) {
+  localStorage.clear();
+  alert(mensaje);
+  window.location.href = "/login.html";
+  return false;
+}
+
 /* -------------------------------------------------------------------------- */
-/* 💬 Mostrar mensaje global accesible                                         */
+/* 💬 Mostrar mensaje global accesible                                        */
 /* -------------------------------------------------------------------------- */
 export function mostrarMensaje(texto = "", tipo = "info") {
   const mensaje = document.getElementById("adminMensaje");
 
   if (!mensaje) {
-    console.warn("⚠️ No se encontró #adminMensaje. Usando alert como fallback...");
     alert(texto);
     return;
   }
@@ -35,30 +55,25 @@ export function mostrarMensaje(texto = "", tipo = "info") {
   mensaje.textContent = texto;
   mensaje.setAttribute("role", "alert");
   mensaje.setAttribute("aria-live", "assertive");
-  mensaje.className = `mensaje-global ${tipo} show`;
+  mensaje.className = `admin-message ${tipo}`;
+  mensaje.classList.remove("oculto");
 
-  // Limpiar timeout anterior si existe
   if (mensaje._timeout) clearTimeout(mensaje._timeout);
-
-  // Ocultar después de 4 segundos
   mensaje._timeout = setTimeout(() => {
-    mensaje.classList.remove("show");
+    mensaje.classList.add("oculto");
   }, 4000);
 }
 
 /* -------------------------------------------------------------------------- */
-/* 🔙 Redirigir al panel principal                                              */
+/* 🔙 Redirigir al panel principal                                            */
 /* -------------------------------------------------------------------------- */
 export function goBack(confirmar = false) {
-  if (confirmar) {
-    const salir = confirm("¿Seguro que quieres volver al panel principal?");
-    if (!salir) return;
-  }
+  if (confirmar && !confirm("¿Volver al panel principal?")) return;
   window.location.href = "/panel.html";
 }
 
 /* -------------------------------------------------------------------------- */
-/* 🚪 Cerrar sesión                                                            */
+/* 🚪 Cerrar sesión segura                                                    */
 /* -------------------------------------------------------------------------- */
 export function cerrarSesion() {
   localStorage.removeItem("admin_token");
@@ -67,7 +82,7 @@ export function cerrarSesion() {
 }
 
 /* -------------------------------------------------------------------------- */
-/* 👤 Obtener usuario activo                                                    */
+/* 👤 Obtener usuario activo                                                  */
 /* -------------------------------------------------------------------------- */
 export function getUsuarioActivo() {
   try {
@@ -78,7 +93,5 @@ export function getUsuarioActivo() {
   }
 }
 
-/* -------------------------------------------------------------------------- */
-/* 🌐 Exponer logout global para HTML                                           */
-/* -------------------------------------------------------------------------- */
+/* 🌐 Logout global por seguridad */
 window.cerrarSesion = cerrarSesion;

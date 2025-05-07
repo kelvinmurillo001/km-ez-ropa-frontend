@@ -1,30 +1,47 @@
-/* === 🎛️ PANEL ADMIN CSS MEJORADO === */
+/* === 🎨 VARIABLES ROOT === */
+:root {
+  --color-bg-light: #ffffff;
+  --color-bg-dark: #121212;
+  --color-fg-light: #1f1f1f;
+  --color-fg-dark: #f1f1f1;
+  --color-accent: #d4af37;
+  --color-accent-hover: #f4d35e;
+  --color-border-light: #e0e0e0;
+  --color-border-dark: #333;
+  --color-muted: #888;
+  --color-danger: #c62828;
+  --color-danger-hover: #b71c1c;
+  --shadow-light: rgba(0, 0, 0, 0.05);
+  --shadow-heavy: rgba(0, 0, 0, 0.3);
+  --shadow-gold: rgba(212, 175, 55, 0.2);
+}
 
+/* === 📦 CONTENEDOR PRINCIPAL === */
 .panel-container {
   max-width: 1000px;
   margin: 0 auto;
   padding: 2rem;
   font-family: 'Segoe UI', sans-serif;
-  background-color: #fff;
-  color: #1f1f1f;
+  background-color: var(--color-bg-light);
+  color: var(--color-fg-light);
   border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 16px var(--shadow-light);
   animation: fadeIn 0.4s ease-out;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body.modo-oscuro .panel-container {
-  background-color: #121212;
-  color: #f1f1f1;
+  background-color: var(--color-bg-dark);
+  color: var(--color-fg-dark);
 }
 
-/* 🧭 ENCABEZADO PANEL */
+/* === 🧭 ENCABEZADO === */
 .header-panel {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #d4af37;
-  color: #1f1f1f;
+  background-color: var(--color-accent);
+  color: var(--color-fg-light);
   padding: 1rem 1.5rem;
   border-radius: 10px;
   margin-bottom: 2rem;
@@ -34,7 +51,7 @@ body.modo-oscuro .panel-container {
 
 body.modo-oscuro .header-panel {
   background-color: #333;
-  color: #f5f5f5;
+  color: var(--color-fg-dark);
 }
 
 .header-panel h1 {
@@ -45,7 +62,7 @@ body.modo-oscuro .header-panel {
 }
 
 .header-panel button {
-  background-color: #c62828;
+  background-color: var(--color-danger);
   color: #fff;
   border: none;
   padding: 10px 18px;
@@ -58,11 +75,11 @@ body.modo-oscuro .header-panel {
 }
 
 .header-panel button:hover {
-  background-color: #b71c1c;
+  background-color: var(--color-danger-hover);
   transform: translateY(-1px);
 }
 
-/* 📚 MENÚ DE ACCIONES */
+/* === 📚 MENÚ PANEL === */
 .menu-panel {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -79,7 +96,7 @@ body.modo-oscuro .header-panel {
   font-size: 15.5px;
   color: #2c2c2c;
   text-decoration: none;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--color-border-light);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
   transition: all 0.25s ease;
 }
@@ -87,31 +104,31 @@ body.modo-oscuro .header-panel {
 .menu-panel a:hover,
 .menu-panel a:focus-visible {
   background-color: #f1f1f1;
-  color: #d4af37;
+  color: var(--color-accent);
   transform: translateY(-3px);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   outline: none;
 }
 
 .menu-panel a:focus {
-  outline: 2px dashed #d4af37;
+  outline: 2px dashed var(--color-accent);
   outline-offset: 4px;
 }
 
-/* 🌙 MODO OSCURO */
+/* 🌙 OSCURO MENU */
 body.modo-oscuro .menu-panel a {
   background-color: #1e1e1e;
   color: #ddd;
-  border: 1px solid #333;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--color-border-dark);
+  box-shadow: 0 2px 10px var(--shadow-heavy);
 }
 
 body.modo-oscuro .menu-panel a:hover {
   background-color: #2a2a2a;
-  color: #f4d35e;
+  color: var(--color-accent-hover);
 }
 
-/* 🧾 Tarjetas de productos */
+/* === 🧾 TARJETA DE PRODUCTO === */
 .producto-card {
   background: #fafafa;
   border: 1px solid #ddd;
@@ -141,7 +158,7 @@ body.modo-oscuro .menu-panel a:hover {
 
 body.modo-oscuro .producto-card {
   background-color: #1b1b1b;
-  border-color: #333;
+  border-color: var(--color-border-dark);
   color: #eee;
 }
 
@@ -149,7 +166,7 @@ body.modo-oscuro .producto-card p {
   color: #ccc;
 }
 
-/* 🎞️ ANIMACIÓN */
+/* === 🎞️ ANIMACIÓN === */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -161,7 +178,7 @@ body.modo-oscuro .producto-card p {
   }
 }
 
-/* 📱 RESPONSIVE */
+/* === 📱 RESPONSIVE === */
 @media (max-width: 640px) {
   .menu-panel {
     grid-template-columns: 1fr;

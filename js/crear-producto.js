@@ -31,20 +31,12 @@ const msgEstado = document.getElementById("msgEstado");
 let variantes = [];
 let categoriasConSubcategorias = [];
 
-// Tallas según tipo
-const tallasPorTipo = {
-  adulto: ["S", "M", "L", "XL", "XXL"],
-  joven: ["S", "M", "L"],
-  niño: ["1", "2", "3", "4", "5", "6", "8", "10", "12"],
-  niña: ["1", "2", "3", "4", "5", "6", "8", "10", "12"],
-  bebé: ["0-3", "3-6", "6-9", "9-12", "12-18", "18-24"]
-};
-
 // ▶️ Init
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     await cargarCategorias();
     agregarVariante();
+
     if (localStorage.getItem("modoOscuro") === "true") {
       document.body.classList.add("modo-oscuro");
     }
@@ -91,15 +83,19 @@ imagenInput.addEventListener("change", () => {
 btnAgregarVariante.addEventListener("click", agregarVariante);
 
 function agregarVariante() {
+  if (variantes.length >= 20) {
+    return mostrarMensaje("⚠️ Máximo 20 variantes permitidas.", "error");
+  }
+
   const index = variantes.length;
   const div = document.createElement("div");
   div.className = "variante-item";
   div.innerHTML = `
     <label>🎨 Color:</label>
-    <input type="text" name="colorVariante${index}" required />
+    <input type="text" name="colorVariante${index}" required maxlength="30" />
 
     <label>Talla:</label>
-    <input type="text" name="tallaVariante${index}" required />
+    <input type="text" name="tallaVariante${index}" required maxlength="10" />
 
     <label>Imagen:</label>
     <input type="file" name="imagenVariante${index}" accept="image/*" required />
@@ -154,7 +150,10 @@ form.addEventListener("submit", async (e) => {
     const destacado = document.getElementById("destacadoInput")?.checked || false;
     const filePrincipal = imagenInput.files[0];
 
-    if (!filePrincipal) return mostrarMensaje("⚠️ Imagen principal requerida", "error");
+    if (!nombre || nombre.length < 2) throw new Error("⚠️ Nombre requerido");
+    if (!descripcion || descripcion.length < 5) throw new Error("⚠️ Descripción requerida");
+    if (isNaN(precio) || precio <= 0) throw new Error("⚠️ Precio inválido");
+    if (!filePrincipal) throw new Error("⚠️ Imagen principal requerida");
 
     msgEstado.textContent = "📤 Subiendo imagen principal...";
     const imagenPrincipal = await subirImagen(filePrincipal);
@@ -229,6 +228,7 @@ form.addEventListener("submit", async (e) => {
   } catch (err) {
     console.error("❌", err);
     mostrarMensaje("❌ " + err.message, "error");
+    msgEstado.textContent = "❌ Error al guardar";
   } finally {
     form.classList.remove("bloqueado");
   }

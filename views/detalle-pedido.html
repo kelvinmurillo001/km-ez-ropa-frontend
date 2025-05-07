@@ -24,36 +24,40 @@
 </head>
 
 <body>
-<header class="main-header" role="banner">
-  <div class="logo">
-    <a href="/" aria-label="Volver al inicio">
-      <img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" loading="lazy" />
-    </a>
-    <div class="brand">
-      <h1>KM & EZ ROPA</h1>
-      <p>Seguimiento de Pedido</p>
+  <!-- 🧭 Encabezado -->
+  <header class="main-header" role="banner">
+    <div class="logo">
+      <a href="/" aria-label="Volver al inicio">
+        <img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" loading="lazy" />
+      </a>
+      <div class="brand">
+        <h1>KM & EZ ROPA</h1>
+        <p>Seguimiento de Pedido</p>
+      </div>
     </div>
-  </div>
 
-  <nav class="nav-links" aria-label="Navegación principal">
-    <a href="/cliente.html">🔙 Mis Pedidos</a>
-    <a href="/index.html">🏠 Inicio</a>
-  </nav>
-</header>
+    <nav class="nav-links" aria-label="Navegación principal">
+      <a href="/cliente.html" aria-label="Volver a Mis Pedidos">🔙 Mis Pedidos</a>
+      <a href="/index.html" aria-label="Volver al inicio">🏠 Inicio</a>
+    </nav>
+  </header>
 
-<main class="detalle-pedido-container fade-in" role="main" aria-label="Detalle del pedido">
-  <h2 class="text-center">📦 Detalle del Pedido</h2>
-  <section id="pedidoDetalle" class="pedido-detalle mt-3" aria-live="polite">
-    <p class="text-center">⏳ Cargando información del pedido...</p>
-  </section>
-</main>
+  <!-- 📋 Contenido principal -->
+  <main class="detalle-pedido-container fade-in" role="main" aria-label="Detalle completo del pedido">
+    <h2 class="text-center">📦 Detalle del Pedido</h2>
+    
+    <!-- 🧾 Información del Pedido -->
+    <section id="pedidoDetalle" class="pedido-detalle mt-3" aria-live="polite">
+      <p class="text-center">⏳ Cargando información del pedido...</p>
+    </section>
+  </main>
 
-<!-- 🧠 Mensajes de estado -->
-<div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
+  <!-- 🛎️ Mensajes dinámicos de error/estado -->
+  <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
 
-<!-- ⚠️ Fallback JS -->
-<noscript>
-  <p style="text-align: center; color:red;">⚠️ Activa JavaScript para ver correctamente esta página.</p>
-</noscript>
+  <!-- ⚠️ Fallback JS -->
+  <noscript>
+    <p style="text-align: center; color:red;">⚠️ Activa JavaScript para ver correctamente esta página.</p>
+  </noscript>
 </body>
 </html>

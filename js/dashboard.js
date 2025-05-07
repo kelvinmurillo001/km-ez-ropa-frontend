@@ -22,9 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnExportar")?.addEventListener("click", exportarEstadisticas);
 });
 
-/* ────────────────────────────────────────────────────── */
-/* 🚀 Cargar datos y renderizar panel                     */
-/* ────────────────────────────────────────────────────── */
+/* 🚀 Cargar datos y renderizar panel */
 async function loadDashboard() {
   try {
     const [ordenesRaw, productosRaw, resumenRaw] = await Promise.all([
@@ -56,9 +54,7 @@ async function loadDashboard() {
   }
 }
 
-/* ────────────────────────────────────────────────────── */
-/* 🌐 Fetch con token opcional                            */
-/* ────────────────────────────────────────────────────── */
+/* 🌐 Fetch con token opcional */
 async function fetchData(url, usarToken = false) {
   const headers = usarToken ? { Authorization: `Bearer ${token}` } : {};
   const res = await fetch(url, { headers });
@@ -71,9 +67,7 @@ async function fetchData(url, usarToken = false) {
   return await res.json();
 }
 
-/* ────────────────────────────────────────────────────── */
-/* 📊 Procesar pedidos por estado y día actual            */
-/* ────────────────────────────────────────────────────── */
+/* 📊 Procesar pedidos por estado y día actual */
 function procesarPedidos(pedidos = []) {
   const hoy = new Date().setHours(0, 0, 0, 0);
 
@@ -100,9 +94,7 @@ function procesarPedidos(pedidos = []) {
   });
 }
 
-/* ────────────────────────────────────────────────────── */
-/* 📈 Renderizar KPIs y datos resumen                    */
-/* ────────────────────────────────────────────────────── */
+/* 📈 Renderizar KPIs y datos resumen */
 function renderResumen(pedidos, ventas) {
   setText("ventasTotales", `$${ventas.ventasTotales.toFixed(2)}`);
   setText("visitasTotales", ventas.totalVisitas);
@@ -117,9 +109,7 @@ function renderResumen(pedidos, ventas) {
   setText("hoy", pedidos.hoy);
 }
 
-/* ────────────────────────────────────────────────────── */
-/* 🗂️ Renderizar categorías más frecuentes                */
-/* ────────────────────────────────────────────────────── */
+/* 🗂️ Renderizar categorías más frecuentes */
 function renderCategoriasTop(productos = []) {
   const conteo = {};
 
@@ -135,14 +125,12 @@ function renderCategoriasTop(productos = []) {
 
   categoriasOrdenadas.forEach(([cat, total]) => {
     const li = document.createElement("li");
-    li.textContent = `📁 ${cat}: ${total}`;
+    li.textContent = `📁 ${capitalize(cat)}: ${total}`;
     ul.appendChild(li);
   });
 }
 
-/* ────────────────────────────────────────────────────── */
-/* 📤 Exportar estadísticas a CSV                         */
-/* ────────────────────────────────────────────────────── */
+/* 📤 Exportar estadísticas a CSV */
 function exportarEstadisticas() {
   if (!resumenPedidos || !resumenVentas) {
     return alert("⚠️ Espera a que se cargue todo antes de exportar.");
@@ -175,12 +163,15 @@ function exportarEstadisticas() {
   a.click();
 }
 
-/* ────────────────────────────────────────────────────── */
-/* 📝 Utilidad para escribir en elementos HTML por ID     */
-/* ────────────────────────────────────────────────────── */
+/* 📝 Utilidad para escribir en elementos HTML por ID */
 function setText(id, value) {
   const el = document.getElementById(id);
   if (el) el.textContent = value;
+}
+
+/* 🔠 Capitalizar */
+function capitalize(str = "") {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 // 🌐 Funciones globales expuestas

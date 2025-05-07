@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnFavorito")?.addEventListener("click", () => toggleFavorito(id));
 });
 
+/* 📦 Cargar producto desde API */
 async function cargarProducto(id) {
   try {
     const res = await fetch(`${API_BASE}/api/products/${id}`);
@@ -39,6 +40,7 @@ async function cargarProducto(id) {
   }
 }
 
+/* 🖼 Renderizar contenido de producto */
 function renderizarProducto(p) {
   const contenedor = document.getElementById("detalleProducto");
   if (!contenedor) return;
@@ -107,6 +109,7 @@ function renderizarProducto(p) {
   if (tieneVariantes) configurarSelectores(p);
 }
 
+/* 🎨 Configurar selectores de variantes */
 function configurarSelectores(p) {
   const variantes = (p.variants || []).filter(v => v.stock > 0 && v.activo);
   const colorSelect = document.getElementById("colorSelect");
@@ -115,24 +118,15 @@ function configurarSelectores(p) {
   const stockInfo = document.getElementById("stockInfo");
   const btnAgregar = document.getElementById("btnAgregarCarrito");
 
-  if (variantes.length === 0) {
-    mostrarToast("⚠️ No hay variantes disponibles.");
-    return;
-  }
-
   const colores = [...new Set(variantes.map(v => v.color.toLowerCase()))];
   colorSelect.innerHTML = `<option disabled selected>Selecciona un color</option>` +
     colores.map(c => `<option value="${c}">${capitalize(c)}</option>`).join("");
 
   colorSelect.onchange = () => {
     const color = colorSelect.value;
-    const tallas = variantes
-      .filter(v => v.color.toLowerCase() === color)
-      .map(v => v.talla.toUpperCase());
-
+    const tallas = variantes.filter(v => v.color.toLowerCase() === color).map(v => v.talla.toUpperCase());
     tallaSelect.innerHTML = `<option disabled selected>Selecciona una talla</option>` +
       tallas.map(t => `<option value="${t}">${t}</option>`).join("");
-
     tallaSelect.disabled = false;
     cantidadInput.disabled = true;
     btnAgregar.disabled = true;
@@ -145,7 +139,6 @@ function configurarSelectores(p) {
     const variante = variantes.find(v =>
       v.color.toLowerCase() === color && v.talla.toUpperCase() === talla
     );
-
     if (variante) {
       varianteSeleccionada = variante;
       stockInfo.textContent = `📦 Stock: ${variante.stock}`;
@@ -157,6 +150,7 @@ function configurarSelectores(p) {
   };
 }
 
+/* 🛒 Agregar al carrito */
 function agregarAlCarrito() {
   const cantidad = parseInt(document.getElementById("cantidadInput").value || "1");
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
@@ -212,7 +206,7 @@ function agregarAlCarrito() {
   mostrarToast("🛒 Producto agregado al carrito.");
 }
 
-// Utils
+/* ✅ Utilidades */
 function sanitize(text = "") {
   const div = document.createElement("div");
   div.textContent = text;

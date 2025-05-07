@@ -1,66 +1,72 @@
 "use strict";
 
-// ✅ Configuración base
 import { API_BASE } from "./config.js";
 
-// 🔎 Elementos del DOM
+// 🧩 DOM Elements
 const codigoInput = document.getElementById("codigoSeguimiento");
 const btnBuscar = document.getElementById("btnBuscar");
 const barraProgreso = document.getElementById("barraProgreso");
 const resumenPedido = document.getElementById("resumenPedido");
 const mensajeEstado = document.getElementById("mensajeEstado");
 
-// 📡 URL API
 const API_TRACK = `${API_BASE}/api/orders/track`;
+let procesando = false;
 
-// ▶️ Evento inicial con parámetro GET ?codigo=
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const codigo = params.get("codigo");
-
   if (codigo) {
     codigoInput.value = codigo.trim().toUpperCase();
     buscarPedido(codigo.trim());
   }
 });
 
-// 🔍 Buscar pedido al hacer click
 btnBuscar?.addEventListener("click", () => {
   const codigo = codigoInput.value.trim().toUpperCase();
-  if (!codigo || codigo.length < 3) {
-    return mostrarMensaje("⚠️ Ingresa un código válido.", "warn");
+  if (!codigo || !/^[A-Z0-9\-]{3,30}$/.test(codigo)) {
+    return mostrarMensaje("⚠️ Código inválido. Usa letras, números o guiones.", "warn");
   }
+  if (procesando) return;
   buscarPedido(codigo);
 });
 
-// 📦 Buscar pedido desde backend
+/**
+ * 🔍 Busca el pedido por código
+ */
 async function buscarPedido(codigo) {
+  procesando = true;
   mostrarMensaje("⏳ Buscando pedido...", "info");
 
   try {
     const res = await fetch(`${API_TRACK}/${encodeURIComponent(codigo)}`);
     const data = await res.json();
 
-    if (!res.ok) throw new Error(data.message || "❌ Pedido no encontrado");
+    if (!res.ok || !data || !data.estadoActual) {
+      throw new Error(data?.message || "❌ Pedido no encontrado.");
+    }
 
     mostrarProgreso(data.estadoActual);
     mostrarResumen(data.resumen);
-    mostrarMensaje("✅ Pedido encontrado", "success");
+    mostrarMensaje("✅ Pedido encontrado y cargado.", "success");
 
   } catch (err) {
-    console.error("❌", err.message);
+    console.error("❌ Error al buscar pedido:", err);
     barraProgreso.hidden = true;
     resumenPedido.hidden = true;
-    mostrarMensaje(err.message || "❌ Error al buscar pedido", "error");
+    mostrarMensaje(err.message || "❌ Error inesperado al buscar.", "error");
+  } finally {
+    procesando = false;
   }
 }
 
-// 🚚 Visualizar progreso de pedido
+/**
+ * 📈 Activa los pasos de progreso del pedido
+ */
 function mostrarProgreso(estado = "") {
   barraProgreso.hidden = false;
   document.querySelectorAll(".paso").forEach(p => p.classList.remove("active"));
 
-  const estados = {
+  const pasos = {
     pendiente: ["paso-recibido"],
     recibido: ["paso-recibido"],
     preparando: ["paso-recibido", "paso-preparando"],
@@ -68,33 +74,46 @@ function mostrarProgreso(estado = "") {
     enviado: ["paso-recibido", "paso-preparando", "paso-en-camino"],
     "en camino": ["paso-recibido", "paso-preparando", "paso-en-camino"],
     entregado: ["paso-recibido", "paso-preparando", "paso-en-camino", "paso-entregado"],
-    cancelado: ["paso-recibido"] // puedes crear visualmente un paso-cancelado si quieres
+    cancelado: ["paso-recibido"]
   };
 
-  const pasosActivos = estados[estado.toLowerCase()] || ["paso-recibido"];
-  pasosActivos.forEach(activarPaso);
+  const activos = pasos[estado.toLowerCase()] || ["paso-recibido"];
+  activos.forEach(id => {
+    document.getElementById(id)?.classList.add("active");
+  });
 }
 
-// ⭐ Activar un paso visualmente
-function activarPaso(id) {
-  document.getElementById(id)?.classList.add("active");
-}
-
-// 🧾 Mostrar datos resumen del pedido
+/**
+ * 🧾 Muestra la información del resumen del pedido
+ */
 function mostrarResumen(resumen = {}) {
   resumenPedido.hidden = false;
-  document.getElementById("nombreCliente").textContent = resumen.nombre || "-";
-  document.getElementById("direccionCliente").textContent = resumen.direccion || "-";
-  document.getElementById("metodoPago").textContent = resumen.metodoPago || "-";
+  document.getElementById("nombreCliente").textContent = sanitize(resumen.nombre || "-");
+  document.getElementById("direccionCliente").textContent = sanitize(resumen.direccion || "-");
+  document.getElementById("metodoPago").textContent = sanitize(resumen.metodoPago || "-");
   document.getElementById("totalPedido").textContent = `$${parseFloat(resumen.total || 0).toFixed(2)}`;
 }
 
-// 💬 Mostrar mensajes de estado
+/**
+ * 🔔 Muestra un mensaje con estilo y color según tipo
+ */
 function mostrarMensaje(texto, tipo = "info") {
   mensajeEstado.textContent = texto;
-  mensajeEstado.style.color =
-    tipo === "success" ? "limegreen" :
-    tipo === "error" ? "tomato" :
-    tipo === "warn" ? "orange" :
-    "#666";
+  mensajeEstado.style.color = {
+    success: "limegreen",
+    error: "tomato",
+    warn: "orange",
+    info: "#666"
+  }[tipo] || "#666";
+  mensajeEstado.setAttribute("role", "alert");
+  mensajeEstado.setAttribute("aria-live", "assertive");
+}
+
+/**
+ * 🧼 Limpieza de texto para evitar XSS
+ */
+function sanitize(text = "") {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
 }

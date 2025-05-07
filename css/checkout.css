@@ -1,5 +1,19 @@
-/* === 🎨 ESTILOS DEL CHECKOUT MODERNO === */
+/* === 🎨 VARIABLES GLOBALES DE ESTILO === */
+:root {
+  --color-bg: #1f1f1f;
+  --color-bg-alt: #2a2a2a;
+  --color-principal: #d4af37;
+  --color-principal-hover: #f4d35e;
+  --color-secundario: #00e676;
+  --color-input: #121212;
+  --color-text: #f5f5f5;
+  --color-muted: #aaa;
+  --color-placeholder: #888;
+  --color-border: #333;
+  --color-shadow-gold: rgba(212, 175, 55, 0.08);
+}
 
+/* === 🧾 CONTENEDOR PRINCIPAL === */
 .checkout-container {
   max-width: 1100px;
   margin: auto;
@@ -7,14 +21,15 @@
   animation: fadeIn 0.8s ease;
 }
 
+/* === 📌 SUBTÍTULO === */
 .subtitulo-checkout {
   font-size: clamp(1rem, 2vw, 1.2rem);
-  color: #bbb;
+  color: var(--color-muted);
   margin-bottom: 1rem;
   text-align: center;
 }
 
-/* 🚥 Pasos visuales */
+/* === 🚥 PASOS DE CHECKOUT === */
 .checkout-steps {
   display: flex;
   justify-content: center;
@@ -35,25 +50,25 @@
 }
 
 .step.active {
-  background: #d4af37;
-  color: #121212;
+  background: var(--color-principal);
+  color: var(--color-input);
 }
 
-/* 📋 Formulario */
+/* === 📋 FORMULARIO DE CHECKOUT === */
 .form-checkout {
-  background: #1f1f1f;
+  background: var(--color-bg);
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 0 12px rgba(212, 175, 55, 0.08);
+  box-shadow: 0 0 12px var(--color-shadow-gold);
   display: flex;
   flex-direction: column;
   gap: 2rem;
   scroll-margin-top: 6rem;
 }
 
-/* 🧾 Agrupación */
+/* === 🧾 AGRUPACIONES === */
 fieldset {
-  border: 1px solid #333;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 1.5rem;
   position: relative;
@@ -61,20 +76,20 @@ fieldset {
 
 legend {
   font-weight: bold;
-  color: #d4af37;
+  color: var(--color-principal);
   font-size: 1.2rem;
   padding: 0 0.5rem;
-  background-color: #1f1f1f;
+  background-color: var(--color-bg);
   border-radius: 4px;
 }
 
-/* 🖊️ Inputs y textarea */
+/* === 🖊️ CAMPOS DE ENTRADA === */
 input,
 textarea,
 select {
   width: 100%;
-  background: #121212;
-  color: #f5f5f5;
+  background: var(--color-input);
+  color: var(--color-text);
   padding: 0.9rem 1rem;
   margin: 0.5rem 0 1.2rem;
   border: 1px solid #444;
@@ -86,23 +101,22 @@ select {
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  border-color: #d4af37;
+  border-color: var(--color-principal);
   background-color: #1a1a1a;
-  outline: 2px solid #d4af37;
+  outline: 2px solid var(--color-principal);
   outline-offset: 2px;
 }
 
-/* 🧩 Placeholder mejoras */
 ::placeholder {
-  color: #888;
+  color: var(--color-placeholder);
 }
 
-/* 📍 Botón ubicación */
+/* === 📍 BOTÓN GEOLOCALIZACIÓN === */
 #btnUbicacion {
   margin-top: 1rem;
   background: transparent;
-  color: #d4af37;
-  border: 2px solid #d4af37;
+  color: var(--color-principal);
+  border: 2px solid var(--color-principal);
   padding: 0.8rem 1.2rem;
   border-radius: 6px;
   font-weight: bold;
@@ -111,11 +125,11 @@ select:focus-visible {
 }
 
 #btnUbicacion:hover {
-  background: #d4af37;
-  color: #121212;
+  background: var(--color-principal);
+  color: var(--color-input);
 }
 
-/* 💳 Métodos de pago */
+/* === 💳 MÉTODOS DE PAGO === */
 .metodo-pago-selector {
   display: flex;
   flex-direction: column;
@@ -123,7 +137,7 @@ select:focus-visible {
 }
 
 .pago-btn {
-  background: #2a2a2a;
+  background: var(--color-bg-alt);
   padding: 0.8rem;
   border-radius: 8px;
   cursor: pointer;
@@ -138,39 +152,38 @@ select:focus-visible {
 }
 
 .pago-btn input {
-  accent-color: #d4af37;
+  accent-color: var(--color-principal);
 }
 
-/* ℹ️ Info método */
 .metodo-pago-info {
   margin-top: 0.5rem;
   font-size: 0.95rem;
-  color: #aaa;
+  color: var(--color-muted);
   line-height: 1.4;
 }
 
-/* 🛒 Resumen del pedido */
+/* === 🧾 RESUMEN DEL PEDIDO === */
 .resumen-item {
   padding: 0.6rem 0;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--color-border);
   word-wrap: break-word;
 }
 
 .resumen-item p {
   font-size: 1rem;
-  color: #ccc;
+  color: var(--color-muted);
 }
 
-/* 💰 Total final */
+/* === 💰 TOTAL FINAL === */
 #totalFinal {
   font-size: clamp(1.6rem, 3vw, 1.8rem);
   font-weight: bold;
-  color: #d4af37;
+  color: var(--color-principal);
   text-align: right;
   margin-top: 1rem;
 }
 
-/* 🧩 Acciones */
+/* === 🧩 ACCIONES === */
 .form-actions {
   display: flex;
   flex-direction: column;
@@ -189,36 +202,36 @@ select:focus-visible {
 }
 
 .form-actions .btn {
-  background-color: #d4af37;
-  color: #121212;
+  background-color: var(--color-principal);
+  color: var(--color-input);
   border: none;
 }
 
 .form-actions .btn:hover {
-  background-color: #f4d35e;
+  background-color: var(--color-principal-hover);
 }
 
 .form-actions .btn-secundario {
   background: transparent;
-  border: 2px solid #d4af37;
-  color: #d4af37;
+  border: 2px solid var(--color-principal);
+  color: var(--color-principal);
 }
 
 .form-actions .btn-secundario:hover {
-  background: #d4af37;
-  color: #121212;
+  background: var(--color-principal);
+  color: var(--color-input);
 }
 
-/* 📝 Mensajes */
+/* === 📝 MENSAJES === */
 .form-msg {
   font-size: 1rem;
   margin-top: 1rem;
   text-align: center;
-  color: #ccc;
+  color: var(--color-muted);
   font-style: italic;
 }
 
-/* 📱 Responsive */
+/* === 📱 RESPONSIVE === */
 @media (max-width: 768px) {
   .checkout-steps {
     flex-direction: column;
@@ -234,7 +247,7 @@ select:focus-visible {
   }
 }
 
-/* 🌟 Animación de fadeIn */
+/* === ✨ ANIMACIÓN === */
 @keyframes fadeIn {
   from {
     opacity: 0;

@@ -2,6 +2,7 @@
 
 import { API_BASE } from "./config.js";
 
+// 🔐 Constantes clave
 const STORAGE_KEY = "km_ez_cart";
 const LAST_ORDER_KEY = "km_ez_last_order";
 const carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
@@ -9,6 +10,7 @@ const carrito = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 const API_ORDERS = `${API_BASE}/api/orders`;
 const API_PAYPAL_CREATE = `${API_BASE}/api/paypal/create-order`;
 
+// 📌 Elementos DOM
 const resumenPedido = document.getElementById("resumenPedido");
 const totalFinal = document.getElementById("totalFinal");
 const form = document.getElementById("formCheckout");
@@ -18,12 +20,13 @@ const infoMetodoPago = document.getElementById("infoMetodoPago");
 
 let enviandoPedido = false;
 
-// ✅ Seguridad adicional: fuerza uso de HTTPS
+// ✅ Fuerza HTTPS
 if (location.protocol !== 'https:') {
-  alert("⚠️ Esta página requiere conexión segura (HTTPS). Redirigiendo...");
+  alert("⚠️ Conexión insegura. Redirigiendo a HTTPS...");
   location.href = location.href.replace("http://", "https://");
 }
 
+// ▶️ Al cargar DOM
 document.addEventListener("DOMContentLoaded", () => {
   if (!carrito.length) {
     mostrarMensaje("⚠️ Tu carrito está vacío.", "warn");
@@ -32,10 +35,12 @@ document.addEventListener("DOMContentLoaded", () => {
     form?.querySelector("button[type='submit']")?.setAttribute("disabled", "true");
     return;
   }
+
   renderResumenCarrito();
   inicializarMetodoPago();
 });
 
+// 📋 Render de carrito
 function renderResumenCarrito() {
   let total = 0;
 
@@ -56,42 +61,43 @@ function renderResumenCarrito() {
   totalFinal.textContent = `$${total.toFixed(2)}`;
 }
 
+// 💳 Render método de pago
 function inicializarMetodoPago() {
   document.querySelectorAll("input[name='metodoPago']").forEach(radio => {
     radio.addEventListener("change", e => {
       const val = e.target.value;
       infoMetodoPago.innerHTML = {
-        transferencia: `<p>🔐 Recibirás los datos bancarios por WhatsApp. El pedido se procesa al validar el pago.</p>`,
-        paypal: `<p>🅿️ Serás redirigido a PayPal para completar el pago.</p>`
+        transferencia: `<p>🔐 Recibirás los datos bancarios por WhatsApp. Confirmaremos el pago manualmente.</p>`,
+        paypal: `<p>🅿️ Serás redirigido a PayPal para completar tu pago de forma segura.</p>`
       }[val] || "";
     });
   });
 }
 
+// 🧾 Enviar pedido
 form?.addEventListener("submit", async e => {
   e.preventDefault();
   if (enviandoPedido) return;
-  enviandoPedido = true;
 
+  enviandoPedido = true;
   const botonSubmit = form.querySelector("button[type='submit']");
   botonSubmit.disabled = true;
   mostrarCargando(true);
 
   try {
-    const nombre = sanitize(form.nombreInput.value);
+    const nombre = sanitize(form.nombreInput.value.trim());
     const email = form.emailInput.value.trim();
     const telefono = form.telefonoInput.value.trim();
-    const direccion = sanitize(form.direccionInput.value);
+    const direccion = sanitize(form.direccionInput.value.trim());
     const metodoPago = document.querySelector("input[name='metodoPago']:checked")?.value;
 
-    if (!nombre || !email || !telefono || !direccion || !metodoPago) {
+    if (!nombre || !email || !telefono || !direccion || !metodoPago)
       throw new Error("❌ Todos los campos son obligatorios.");
-    }
 
     if (!validarEmail(email)) throw new Error("❌ Email inválido.");
     if (!/^[0-9+\-\s]{7,20}$/.test(telefono)) throw new Error("❌ Teléfono inválido.");
-    if (nombre.length < 3 || nombre.length > 50) throw new Error("❌ Nombre debe tener entre 3 y 50 caracteres.");
-    if (direccion.length < 5 || direccion.length > 120) throw new Error("❌ Dirección muy corta o demasiado larga.");
+    if (nombre.length < 3 || nombre.length > 50) throw new Error("❌ Nombre inválido.");
+    if (direccion.length < 5 || direccion.length > 120) throw new Error("❌ Dirección no válida.");
 
     let total = 0;
     const items = [];
@@ -113,20 +119,18 @@ form?.addEventListener("submit", async e => {
         );
         if (!variante) throw new Error(`❌ Variante no disponible: ${sanitize(item.nombre)} - ${item.talla} - ${item.color}`);
       } else {
-        const tallaValida = producto.sizes?.map(s => s.toLowerCase()).includes(talla);
-        if (!tallaValida) throw new Error(`❌ Talla no válida para: ${sanitize(item.nombre)}`);
-        if ((producto.stock || 0) < cantidad) throw new Error(`❌ Stock insuficiente: ${sanitize(item.nombre)}`);
+        const stock = producto.stock || 0;
+        if (stock < cantidad) throw new Error(`❌ Stock insuficiente: ${sanitize(item.nombre)}`);
       }
 
-      // El precio viene del backend, no del cliente
       const precio = parseFloat(producto.price) || 0;
       total += precio * cantidad;
 
       items.push({
         productId: item.id,
         name: sanitize(item.nombre),
-        talla: sanitize(item.talla || ""),
-        color: sanitize(item.color || ""),
+        talla: sanitize(item.talla),
+        color: sanitize(item.color),
         cantidad,
         precio
       });
@@ -140,7 +144,6 @@ form?.addEventListener("submit", async e => {
       metodoPago,
       total,
       estado: metodoPago === "transferencia" ? "pendiente" : "pagado",
-      nota: "",
       items,
       factura: {
         razonSocial: sanitize(form.facturaNombre?.value || ""),
@@ -158,20 +161,14 @@ form?.addEventListener("submit", async e => {
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || "❌ Error al registrar el pedido.");
 
-    if (data?.data?.codigoSeguimiento) {
-      localStorage.setItem("codigoSeguimiento", data.data.codigoSeguimiento);
-    }
-
     localStorage.setItem(LAST_ORDER_KEY, JSON.stringify(pedido));
     localStorage.removeItem(STORAGE_KEY);
 
     if (metodoPago === "transferencia") {
-      mostrarMensaje("✅ Pedido registrado. Redirigiendo...", "success");
+      mostrarMensaje("✅ Pedido recibido. Redirigiendo a WhatsApp...", "success");
       abrirWhatsappConfirmacion(pedido);
       setTimeout(() => window.location.href = "/checkout-confirmacion.html", 3000);
     } else {
-      mostrarMensaje("✅ Redirigiendo a PayPal...", "success");
-
       const resPaypal = await fetch(API_PAYPAL_CREATE, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -179,9 +176,8 @@ form?.addEventListener("submit", async e => {
       });
 
       const dataPaypal = await resPaypal.json();
-      if (!resPaypal.ok || !dataPaypal.data?.id) {
+      if (!resPaypal.ok || !dataPaypal.data?.id)
         throw new Error(dataPaypal.message || "❌ Error creando orden PayPal.");
-      }
 
       window.location.href = `/checkout-confirmacion.html?token=${dataPaypal.data.id}`;
     }
@@ -193,8 +189,10 @@ form?.addEventListener("submit", async e => {
   }
 });
 
+// 📍 Autocompletar ubicación
 btnUbicacion?.addEventListener("click", () => {
-  if (!navigator.geolocation) return mostrarMensaje("⚠️ Tu navegador no soporta ubicación.", "warn");
+  if (!navigator.geolocation)
+    return mostrarMensaje("⚠️ Tu navegador no permite ubicación.", "warn");
 
   mostrarMensaje("📍 Obteniendo ubicación...", "info");
 
@@ -213,12 +211,14 @@ btnUbicacion?.addEventListener("click", () => {
   );
 });
 
+// 📤 WhatsApp confirmación
 function abrirWhatsappConfirmacion(pedido) {
-  const mensaje = `📦 *NUEVO PEDIDO*\n👤 *Cliente:* ${pedido.nombreCliente}\n📞 *Teléfono:* ${pedido.telefono}\n📧 *Email:* ${pedido.email}\n📍 *Dirección:* ${pedido.direccion}\n\n🛍️ *Productos:*\n${pedido.items.map(i => `• ${i.cantidad} x ${i.name} - Talla: ${i.talla} - Color: ${i.color} - $${(i.precio * i.cantidad).toFixed(2)}`).join("\n")}\n\n💳 *Pago:* ${pedido.metodoPago}\n💰 *Total:* $${pedido.total.toFixed(2)}`;
+  const mensaje = `📦 *NUEVO PEDIDO*\n👤 *Cliente:* ${pedido.nombreCliente}\n📞 *Tel:* ${pedido.telefono}\n📧 *Email:* ${pedido.email}\n📍 *Dirección:* ${pedido.direccion}\n\n🛍️ *Productos:*\n${pedido.items.map(i => `• ${i.cantidad} x ${i.name} - Talla: ${i.talla} - Color: ${i.color} - $${(i.precio * i.cantidad).toFixed(2)}`).join("\n")}\n\n💳 *Pago:* ${pedido.metodoPago}\n💰 *Total:* $${pedido.total.toFixed(2)}`;
   const url = `https://wa.me/593990270864?text=${encodeURIComponent(mensaje)}`;
   window.open(url, "_blank");
 }
 
+// 🔎 Validadores
 function validarEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
 }
@@ -229,13 +229,14 @@ function sanitize(str = "") {
   return div.innerHTML.trim();
 }
 
+// 🔔 Mensajes
 function mostrarMensaje(texto, tipo = "info") {
   msgEstado.textContent = texto;
-  msgEstado.style.color =
-    tipo === "success" ? "limegreen" :
-    tipo === "error" ? "tomato" :
-    tipo === "warn" ? "orange" :
-    "#666";
+  msgEstado.style.color = {
+    success: "limegreen",
+    error: "tomato",
+    warn: "orange"
+  }[tipo] || "#666";
 }
 
 function mostrarCargando(show = true) {
