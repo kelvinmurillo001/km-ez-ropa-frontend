@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnSubmit = form?.querySelector("button[type='submit']");
   const inputUser = form?.username;
   const inputPass = form?.password;
+  const googleBtn = document.getElementById("googleLoginBtn");
 
   if (!form || !btnSubmit || !inputUser || !inputPass) return;
 
@@ -44,10 +45,9 @@ document.addEventListener("DOMContentLoaded", () => {
             ? "🔐 Usuario o contraseña incorrectos."
             : data.message || "❌ Error inesperado.";
         mostrarMensaje(msg, "error");
-        return; // 🛑 ¡Ahora aquí terminamos si falla!
+        return;
       }
 
-      // ✅ Guardar en localStorage
       localStorage.setItem("admin_token", data.accessToken);
       localStorage.setItem(
         "admin_user",
@@ -59,7 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => {
         window.location.href = "/panel.html";
       }, 800);
-
     } catch (err) {
       console.error("❌ Error:", err);
       mostrarMensaje("❌ No se pudo conectar al servidor.", "error");
@@ -69,7 +68,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Enter directo
   form.querySelectorAll("input").forEach((input) => {
     input.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
@@ -77,6 +75,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+
+  // 🔐 Botón de Google seguro
+  if (googleBtn) {
+    googleBtn.addEventListener("click", () => {
+      window.location.href = `${API_BASE}/auth/google`;
+    });
+  }
 });
 
 /**

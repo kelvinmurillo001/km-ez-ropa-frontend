@@ -18,6 +18,27 @@
   <link rel="stylesheet" href="/css/login.css" />
   <link rel="stylesheet" href="/css/adminMensaje.css" />
 
+  <style>
+    .btn-google {
+      display: inline-block;
+      background-color: #4285f4;
+      color: white;
+      padding: 0.6em 1.2em;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: bold;
+      transition: background-color 0.2s;
+      margin-top: 10px;
+    }
+
+    .btn-google:hover {
+      background-color: #3367d6;
+    }
+  </style>
+
+  <!-- ✅ Google Login -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
   <!-- ✅ Script de Login -->
   <script type="module" src="/js/login.js" defer></script>
 </head>
@@ -68,6 +89,13 @@
     <button type="submit" class="btn mt-2" aria-label="Ingresar al panel de control">
       🔓 Ingresar
     </button>
+
+    <!-- 🔐 Login con Google -->
+    <div class="text-center mt-3">
+      <div id="googleLoginBtn" class="btn-google" aria-label="Iniciar sesión con Google">
+        🔐 Iniciar sesión con Google
+      </div>
+    </div>
 
     <!-- Error accesible -->
     <div 

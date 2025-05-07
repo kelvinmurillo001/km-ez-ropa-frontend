@@ -43,12 +43,20 @@ body {
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.3s, box-shadow 0.3s;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 .formulario input:focus {
   outline: none;
   border-color: #d4af37;
   box-shadow: 0 0 5px rgba(212, 175, 55, 0.4);
+}
+
+input[aria-invalid="true"] {
+  border-color: #cc0000 !important;
+  box-shadow: 0 0 4px rgba(255, 0, 0, 0.4);
 }
 
 /* Botones */
@@ -87,6 +95,35 @@ body {
   transform: translateY(-1px);
 }
 
+/* Botón Google (mejora accesible y visual) */
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #4285f4;
+  color: white;
+  padding: 0.6em 1.2em;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background-color 0.2s;
+  margin-top: 10px;
+}
+
+.btn-google:hover {
+  background-color: #3367d6;
+}
+
+.btn-google::before {
+  content: "";
+  background: url("https://developers.google.com/identity/images/g-logo.png") no-repeat center center;
+  background-size: contain;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+}
+
 /* Error mensaje */
 #errorMensaje {
   background-color: #4a1212;
@@ -97,6 +134,18 @@ body {
   display: none;
   font-weight: bold;
   border: 1px solid #cc0000;
+}
+
+#errorMensaje.shake {
+  animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
 }
 
 /* Modal Recuperación */
@@ -149,7 +198,7 @@ body {
   display: none !important;
 }
 
-/* Animación */
+/* Animaciones */
 .fade-in {
   animation: fadeIn 0.5s ease-in;
 }
