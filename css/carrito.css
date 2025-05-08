@@ -264,6 +264,8 @@ h1 {
     width: 100%;
   }
 }
+
+/* === 🧼 CORRECCIÓN DE IMAGEN SOLITARIA EN BODY === */
 body > img {
   max-width: 100%;
   height: auto;
@@ -274,5 +276,5 @@ body > img {
 }
 
 body > img:only-child {
-  display: none; /* ← Filtro defensivo si aparece sin control */
+  display: none; /* Evita mostrar imágenes sueltas fuera del flujo */
 }
