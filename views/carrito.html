@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🛒 Carrito de Compras | KM & EZ ROPA</title>
 
   <!-- ✅ SEO y Seguridad -->
@@ -19,7 +19,6 @@
   <link rel="stylesheet" href="/css/fondo.css" />
 
   <style>
-    /* Animación para eliminación */
     .fade-out {
       opacity: 0;
       transition: opacity 0.3s ease;
@@ -31,11 +30,15 @@
   <script type="module" src="/js/promo-display.js" defer></script>
 </head>
 
-<!-- Solo modo oscuro, sin fondo de logo -->
 <body lang="es" class="con-fondo fade-in">
 
   <!-- 🔝 Encabezado -->
   <header class="main-header" role="banner">
+    <div class="logo">
+      <a href="/" aria-label="Ir al inicio">
+        <img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" loading="lazy" />
+      </a>
+      <div class="brand-text">
         <h1>KM & EZ ROPA</h1>
         <p>Moda, estilo y belleza para cada momento</p>
       </div>
@@ -55,36 +58,15 @@
   <main class="carrito-container fade-in" role="main" aria-label="Sección del carrito de compras">
     <h1 class="text-center">🛒 Tu Carrito</h1>
 
-    <!-- 📦 Lista de productos -->
-    <section id="carritoItems" class="carrito-lista" aria-live="polite" aria-relevant="all">
-      <!-- Productos se renderizan dinámicamente -->
-    </section>
+    <section id="carritoItems" class="carrito-lista" aria-live="polite" aria-relevant="all"></section>
 
-    <!-- 💳 Resumen y acciones -->
     <section class="carrito-resumen mt-3" aria-label="Resumen del pedido">
       <h2>Total: <span id="carritoTotal" role="status" aria-live="polite">$0.00</span></h2>
 
       <div class="botones-carrito">
-        <button 
-          onclick="window.location.href='/categorias.html'" 
-          class="btn-secundario" 
-          aria-label="Seguir explorando productos">
-          ⬅️ Seguir Comprando
-        </button>
-
-        <button 
-          id="btnVaciarCarrito" 
-          class="btn-secundario" 
-          aria-label="Vaciar todo el carrito">
-          🧹 Vaciar Carrito
-        </button>        
-
-        <button 
-          id="btnIrCheckout" 
-          class="btn" 
-          aria-label="Continuar a finalizar compra">
-          ✅ Finalizar Compra
-        </button>
+        <button onclick="window.location.href='/categorias.html'" class="btn-secundario" aria-label="Seguir explorando productos">⬅️ Seguir Comprando</button>
+        <button id="btnVaciarCarrito" class="btn-secundario" aria-label="Vaciar todo el carrito">🧹 Vaciar Carrito</button>
+        <button id="btnIrCheckout" class="btn" aria-label="Continuar a finalizar compra">✅ Finalizar Compra</button>
       </div>
     </section>
   </main>
@@ -110,7 +92,7 @@
     <p style="text-align: center; color: red;">⚠️ Esta página requiere JavaScript para funcionar correctamente.</p>
   </noscript>
 
-  <!-- 🌙 Activar modo oscuro si está guardado -->
+  <!-- 🌙 Activar modo oscuro -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const dark = localStorage.getItem("modoOscuro") === "true";
