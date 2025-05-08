@@ -25,7 +25,7 @@
   <script type="module" src="/js/checkout.js" defer></script>
 </head>
 
-<body>
+<body class="modo-oscuro">
   <!-- 🔥 Promociones -->
   <div id="promo-display-container" data-page="checkout" role="region" aria-label="Promociones activas"></div>
 
@@ -104,6 +104,7 @@
     </form>
   </main>
 
+  <!-- ⚠️ Sin JS -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Activa JavaScript para finalizar tu compra.</p>
   </noscript>
@@ -111,9 +112,8 @@
   <!-- 🌙 Activar modo oscuro -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      if (localStorage.getItem("modoOscuro") === "true") {
-        document.body.classList.add("modo-oscuro");
-      }
+      const oscuro = localStorage.getItem("modoOscuro") === "true";
+      if (oscuro) document.body.classList.add("modo-oscuro");
     });
   </script>
 </body>

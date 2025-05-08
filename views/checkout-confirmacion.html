@@ -16,22 +16,19 @@
   <link rel="stylesheet" href="/css/componentes.css" />
   <link rel="stylesheet" href="/css/checkout.css" />
   <link rel="stylesheet" href="/css/checkout-confirmacion.css" />
+  <link rel="stylesheet" href="/css/fondo.css" />
 
-  <!-- ✨ Visual Extra -->
+  <!-- ✨ Estilos Adicionales -->
   <style>
     .confirmacion-icono {
       font-size: 4rem;
       animation: popIn 0.5s ease forwards;
+      text-align: center;
     }
 
     @keyframes popIn {
       0% { transform: scale(0.5); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
-    }
-
-    .botones-confirmacion a:focus {
-      outline: 2px dashed #d4af37;
-      outline-offset: 4px;
     }
 
     .confirmacion-subtexto {
@@ -48,10 +45,15 @@
       text-align: center;
       margin-top: 1rem;
     }
+
+    .botones-confirmacion a:focus {
+      outline: 2px dashed #d4af37;
+      outline-offset: 4px;
+    }
   </style>
 </head>
 
-<body>
+<body class="modo-oscuro">
 <main class="confirmacion-container fade-in" role="main" aria-label="Confirmación de Pedido">
   <div class="confirmacion-icono" aria-hidden="true">✅</div>
 
@@ -77,5 +79,12 @@
 </noscript>
 
 <script type="module" src="/js/checkout-confirmacion.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const oscuro = localStorage.getItem("modoOscuro") === "true";
+    if (oscuro) document.body.classList.add("modo-oscuro");
+  });
+</script>
 </body>
 </html>

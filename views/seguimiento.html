@@ -23,9 +23,50 @@
   <link rel="stylesheet" href="/css/global.css">
   <link rel="stylesheet" href="/css/componentes.css">
   <link rel="stylesheet" href="/css/seguimiento.css">
+  <link rel="stylesheet" href="/css/fondo.css">
 
   <!-- ✅ Scripts -->
   <script type="module" src="/js/tracking.js" defer></script>
+
+  <style>
+    .progreso .paso {
+      border: 2px solid #d4af37;
+      padding: 1rem;
+      border-radius: 8px;
+      background-color: #1f1f1f;
+      color: #f5f5f5;
+      text-align: center;
+      flex: 1;
+      opacity: 0.3;
+      transition: all 0.3s ease;
+    }
+
+    .progreso .paso.activo {
+      background-color: #d4af37;
+      color: #121212;
+      opacity: 1;
+      font-weight: bold;
+      transform: scale(1.03);
+    }
+
+    .progreso {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    #resumenPedido p {
+      margin: 0.5rem 0;
+      line-height: 1.4;
+    }
+
+    .mensaje-estado {
+      color: #ffa733;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+  </style>
 </head>
 
 <body>
@@ -53,10 +94,10 @@
 
   <!-- 📈 Barra de progreso -->
   <section id="barraProgreso" class="progreso mt-4" hidden role="region" aria-label="Etapas del envío del pedido">
-    <div class="paso" id="paso-recibido" aria-hidden="true">📥 Recibido</div>
-    <div class="paso" id="paso-preparando" aria-hidden="true">🛠 Preparando</div>
-    <div class="paso" id="paso-en-camino" aria-hidden="true">🚚 En camino</div>
-    <div class="paso" id="paso-entregado" aria-hidden="true">✅ Entregado</div>
+    <div class="paso" id="paso-recibido">📥 Recibido</div>
+    <div class="paso" id="paso-preparando">🛠 Preparando</div>
+    <div class="paso" id="paso-en-camino">🚚 En camino</div>
+    <div class="paso" id="paso-entregado">✅ Entregado</div>
   </section>
 
   <!-- 🧾 Resumen del pedido -->
@@ -77,9 +118,12 @@
   <p style="text-align: center; color: red;">⚠️ Activa JavaScript para poder consultar tu pedido correctamente.</p>
 </noscript>
 
-<!-- 🧠 AutoFocus -->
+<!-- 🌓 Activación automática de modo oscuro -->
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    const dark = localStorage.getItem("modoOscuro") === "true";
+    if (dark) document.body.classList.add("modo-oscuro");
+
     const input = document.getElementById("codigoSeguimiento");
     input?.focus();
   });

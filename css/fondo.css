@@ -1,5 +1,5 @@
 /* ✅ Fondo con logo y branding mejorado */
-body {
+body.con-fondo {
   background-image: url("/assets/logo.jpg");
   background-repeat: no-repeat;
   background-size: cover;
@@ -18,7 +18,7 @@ body {
 }
 
 /* 🧱 Capa de opacidad suave */
-body::before {
+body.con-fondo::before {
   content: "";
   position: fixed;
   inset: 0;
@@ -28,7 +28,7 @@ body::before {
   pointer-events: none;
 }
 
-body.modo-oscuro::before {
+body.modo-oscuro.con-fondo::before {
   background: rgba(0, 0, 0, 0.65);
 }
 
@@ -50,17 +50,17 @@ body.modo-oscuro::before {
 
 /* 📱 Optimización para móviles */
 @media (max-width: 600px) {
-  body {
+  body.con-fondo {
     background-attachment: scroll;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
 
-  body::before {
+  body.con-fondo::before {
     background: rgba(255, 255, 255, 0.95);
   }
 
-  body.modo-oscuro::before {
+  body.modo-oscuro.con-fondo::before {
     background: rgba(0, 0, 0, 0.75);
   }
 }
