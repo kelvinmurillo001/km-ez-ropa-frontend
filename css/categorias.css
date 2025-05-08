@@ -77,9 +77,12 @@ img {
 }
 
 .nav-links a:hover,
-.nav-links button:hover {
+.nav-links button:hover,
+.nav-links a:focus-visible,
+.nav-links button:focus-visible {
   background-color: var(--accent);
   color: white;
+  outline: none;
 }
 
 /* === PROMO BANNER === */
@@ -202,6 +205,7 @@ body.modo-oscuro .filtro input[type="search"] {
   font-weight: bold;
 }
 
+/* === BOTÓN AGREGAR === */
 .btn-card {
   margin-top: auto;
   padding: 0.6rem 1.2rem;
@@ -214,9 +218,11 @@ body.modo-oscuro .filtro input[type="search"] {
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.btn-card:hover {
+.btn-card:hover,
+.btn-card:focus-visible {
   background-color: var(--accent-light);
   transform: translateY(-2px);
+  outline: none;
 }
 
 /* === BOTONES FLOTANTES === */

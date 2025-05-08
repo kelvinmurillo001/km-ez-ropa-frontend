@@ -1,18 +1,32 @@
-/* 📊 CONTENEDOR PRINCIPAL DEL DASHBOARD */
+/* === 🌐 VARIABLES SI NO SE IMPORTAN DE variables.css === */
+:root {
+  --color-azul: #1976d2;
+  --color-azul-claro: #90caf9;
+  --color-bg-claro: #fafafa;
+  --color-bg-card: #f7f7f7;
+  --color-bg-oscuro: #1e1e1e;
+  --color-bg-card-dark: #292929;
+  --color-text: #333;
+  --color-muted: #444;
+  --color-light: #f0f0f0;
+  --radius: 12px;
+}
+
+/* 📊 CONTENEDOR PRINCIPAL */
 .dashboard-container {
   max-width: 1100px;
   margin: 40px auto;
   padding: 2rem 1.5rem;
   font-family: 'Segoe UI', sans-serif;
   background-color: #ffffff;
-  color: #333;
-  border-radius: 12px;
+  color: var(--color-text);
+  border-radius: var(--radius);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
   animation: fadeIn 0.4s ease-in-out;
 }
 
 body.modo-oscuro .dashboard-container {
-  background-color: #1e1e1e;
+  background-color: var(--color-bg-oscuro);
   color: #eee;
 }
 
@@ -25,7 +39,7 @@ body.modo-oscuro .dashboard-container {
 }
 
 .metricas .card {
-  background-color: #f7f7f7;
+  background-color: var(--color-bg-card);
   border-radius: 10px;
   padding: 1.5rem;
   text-align: center;
@@ -41,7 +55,7 @@ body.modo-oscuro .dashboard-container {
 
 .metricas .card h3 {
   font-size: 1rem;
-  color: #1976d2;
+  color: var(--color-azul);
   margin-bottom: 0.6rem;
 }
 
@@ -53,10 +67,10 @@ body.modo-oscuro .dashboard-container {
 
 /* 🌙 MODO OSCURO TARJETAS */
 body.modo-oscuro .metricas .card {
-  background-color: #292929;
+  background-color: var(--color-bg-card-dark);
 }
 body.modo-oscuro .metricas .card h3 {
-  color: #90caf9;
+  color: var(--color-azul-claro);
 }
 body.modo-oscuro .metricas .card p {
   color: #fff;
@@ -64,7 +78,7 @@ body.modo-oscuro .metricas .card p {
 
 /* 📂 PANEL DE DATOS / CATEGORÍAS */
 .analitica-extra {
-  background-color: #fafafa;
+  background-color: var(--color-bg-claro);
   padding: 1.8rem;
   border-radius: 10px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.04);
@@ -76,7 +90,7 @@ body.modo-oscuro .metricas .card p {
   margin-bottom: 1rem;
   font-size: 1.3rem;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text);
 }
 
 .analitica-extra ul {
@@ -89,18 +103,18 @@ body.modo-oscuro .metricas .card p {
   padding: 0.75rem 1rem;
   border-bottom: 1px solid #ddd;
   font-size: 0.95rem;
-  color: #444;
+  color: var(--color-muted);
   transition: background-color 0.2s ease;
 }
 
 .analitica-extra li:hover,
 .analitica-extra li:focus-within {
-  background-color: #f0f0f0;
+  background-color: var(--color-light);
 }
 
 /* 🌙 MODO OSCURO EXTRA */
 body.modo-oscuro .analitica-extra {
-  background-color: #292929;
+  background-color: var(--color-bg-card-dark);
 }
 body.modo-oscuro .analitica-extra li {
   border-color: #444;

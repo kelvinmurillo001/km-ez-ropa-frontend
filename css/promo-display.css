@@ -1,35 +1,51 @@
-/* 📦 Estilo base para contenedor promocional */
+/* === 🎨 VARIABLES DE COLOR (OPCIONAL SI USAS VARIABLES GLOBALES) === */
+:root {
+  --color-light: #f5f5f5;
+  --color-dark: #121212;
+  --color-bg-dark: #1f1f1f;
+  --color-shadow-gold: rgba(212, 175, 55, 0.1);
+
+  --blue: #2196f3;
+  --orange: #fb8c00;
+  --green: #43a047;
+  --red: #e53935;
+  --purple: #7e57c2;
+  --gold-1: #d4af37;
+  --gold-2: #f4d35e;
+}
+
+/* === 📦 CONTENEDOR BASE === */
 .promo-display {
   padding: 1.5rem;
-  border-radius: 12px;
   margin: 2rem auto;
   max-width: 960px;
   text-align: center;
   font-weight: 600;
   font-size: 1rem;
   line-height: 1.6;
-  background-color: #1f1f1f;
-  color: #f5f5f5;
-  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.1);
-  overflow: hidden;
+  background-color: var(--color-bg-dark);
+  color: var(--color-light);
+  border-radius: 12px;
+  box-shadow: 0 6px 20px var(--color-shadow-gold);
   position: relative;
-  transition: all 0.3s ease-in-out;
   z-index: 20;
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
   animation: fadeIn 0.4s ease;
 }
 
 .promo-display p.promo-msg {
-  margin-bottom: 0.8rem;
   font-size: 1.15rem;
+  margin-bottom: 0.8rem;
   color: inherit;
 }
 
-/* 📸 Imagen y video */
+/* === 🎞️ MEDIA === */
 .promo-display img,
 .promo-display video {
   max-width: 100%;
-  border-radius: 10px;
   margin-top: 0.75rem;
+  border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease;
 }
@@ -39,61 +55,28 @@
   transform: scale(1.02);
 }
 
-/* 🎨 Temas de colores accesibles */
-.promo-blue {
-  background-color: #2196f3;
-  color: #fff;
-}
-
-.promo-orange {
-  background-color: #fb8c00;
-  color: #fff;
-}
-
-.promo-green {
-  background-color: #43a047;
-  color: #fff;
-}
-
-.promo-red {
-  background-color: #e53935;
-  color: #fff;
-}
-
-.promo-purple {
-  background-color: #7e57c2;
-  color: #fff;
-}
-
-.promo-dark {
-  background-color: #2a2a2a;
-  color: #f5f5f5;
-}
-
-/* 🌈 Efecto degradado dorado */
+/* === 🎨 TEMAS DE COLOR === */
+.promo-blue    { background-color: var(--blue); color: #fff; }
+.promo-orange  { background-color: var(--orange); color: #fff; }
+.promo-green   { background-color: var(--green); color: #fff; }
+.promo-red     { background-color: var(--red); color: #fff; }
+.promo-purple  { background-color: var(--purple); color: #fff; }
+.promo-dark    { background-color: #2a2a2a; color: var(--color-light); }
 .promo-gradient {
-  background: linear-gradient(135deg, #d4af37, #f4d35e);
-  color: #121212;
+  background: linear-gradient(135deg, var(--gold-1), var(--gold-2));
+  color: var(--color-dark);
 }
 
-/* 🧭 Posicionamiento dentro del layout */
-.promo-top {
-  margin-top: 0;
-}
+/* === 🧭 POSICIONAMIENTO === */
+.promo-top     { margin-top: 0; }
+.promo-middle  { margin-top: 2rem; }
+.promo-bottom  { margin-bottom: 2rem; }
 
-.promo-middle {
-  margin-top: 2rem;
-}
-
-.promo-bottom {
-  margin-bottom: 2rem;
-}
-
-/* 🎞️ Modo slider */
+/* === 🎞️ SLIDER MODE === */
 .promo-slider {
   display: flex;
-  transition: transform 0.5s ease-in-out;
   will-change: transform;
+  transition: transform 0.5s ease-in-out;
 }
 
 .promo-slide {
@@ -101,11 +84,11 @@
   flex-shrink: 0;
 }
 
-/* 📱 Responsive para móviles */
+/* === 📱 RESPONSIVE === */
 @media (max-width: 600px) {
   .promo-display {
-    font-size: 0.95rem;
     padding: 1rem;
+    font-size: 0.95rem;
   }
 
   .promo-display img,
@@ -119,14 +102,8 @@
   }
 }
 
-/* 🎞️ Animación entrada */
+/* === ✨ ANIMACIÓN DE ENTRADA === */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

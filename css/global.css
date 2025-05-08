@@ -10,29 +10,12 @@ html {
 }
 
 body {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: var(--font-main, 'Segoe UI', sans-serif);
   background-color: var(--color-bg);
   color: var(--color-text);
   line-height: 1.6;
   transition: background-color 0.3s ease, color 0.3s ease;
   position: relative;
-}
-
-/* === 🎨 VARIABLES === */
-:root {
-  --color-bg: #1a1a1e;
-  --color-text: #f5f5f5;
-  --color-primario: #d4af37;
-  --color-acento: #4ba3c3;
-  --color-secundario: #2c3e50;
-  --color-success: #2ecc71;
-  --color-error: #e74c3c;
-  --color-border: #333;
-
-  --shadow-soft: 0 2px 6px rgba(0, 0, 0, 0.2);
-  --shadow-hover: 0 4px 12px rgba(255, 255, 255, 0.08);
-
-  --font-main: 'Segoe UI', sans-serif;
 }
 
 /* === 📦 CONTENEDOR GENERAL === */
@@ -65,6 +48,10 @@ a {
 }
 a:hover {
   text-decoration: underline;
+}
+a:focus-visible {
+  outline: 2px dashed var(--color-acento);
+  outline-offset: 3px;
 }
 
 /* === ✍️ CAMPOS DE FORMULARIO === */
@@ -105,7 +92,7 @@ button,
 
 button:hover,
 .btn:hover {
-  background: #f4d35e;
+  background: var(--color-principal-hover);
   color: #121212;
 }
 
@@ -114,7 +101,7 @@ button:focus-visible {
   outline-offset: 3px;
 }
 
-/* === HERO ESPECIAL PARA VISIBILIDAD === */
+/* === HERO === */
 .hero-container {
   padding: 2rem 1rem;
   text-align: center;
@@ -124,7 +111,7 @@ button:focus-visible {
 .hero-container h2 {
   font-size: clamp(1.5rem, 4vw, 2.5rem);
   font-weight: 700;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 .hero-container p {
   font-size: clamp(1rem, 2.5vw, 1.3rem);
@@ -210,7 +197,7 @@ button:focus-visible {
   padding: 2px 6px;
 }
 
-/* === MODO OSCURO === */
+/* === 🌙 MODO OSCURO === */
 body.modo-oscuro {
   background-color: #121212;
   color: #eee;
@@ -242,7 +229,7 @@ body.modo-oscuro .btn:hover {
   background-color: #1e88e5;
 }
 
-/* === ANIMACIONES === */
+/* === ✨ ANIMACIONES === */
 .fade-in {
   animation: fadeIn 0.6s ease-in-out;
 }
@@ -257,12 +244,7 @@ body.modo-oscuro .btn:hover {
   }
 }
 
-/* === ACCESIBILIDAD === */
-img[alt=""] {
-  display: none;
-}
-
-/* === RESPONSIVE EXTRAS === */
+/* === 📱 RESPONSIVE EXTRAS === */
 @media (max-width: 390px) {
   .hero-container h2 {
     font-size: 1.4rem;

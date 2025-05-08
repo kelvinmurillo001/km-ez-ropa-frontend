@@ -59,7 +59,7 @@ body.modo-oscuro .filtros-container {
   transition: border 0.3s ease, background-color 0.3s;
 }
 .busqueda-input:focus {
-  border-color: #d4af37;
+  border-color: var(--accent, #d4af37);
   outline: none;
 }
 body.modo-oscuro .busqueda-input {
@@ -74,7 +74,7 @@ body.modo-oscuro .busqueda-input {
   padding: 0.75rem;
   color: #5d4037;
   text-align: center;
-  border-left: 5px solid #d4af37;
+  border-left: 5px solid var(--accent, #d4af37);
   border-radius: 8px;
   font-weight: bold;
   font-size: 0.95rem;
@@ -83,7 +83,7 @@ body.modo-oscuro .busqueda-input {
 body.modo-oscuro .promo-banner {
   background-color: #3c2f2f;
   color: #ffe0b2;
-  border-color: #d4af37;
+  border-color: var(--accent, #d4af37);
 }
 
 /* === 🛍️ CATÁLOGO === */
@@ -109,6 +109,7 @@ body.modo-oscuro .promo-banner {
   transform: translateY(-6px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
+
 .card img {
   width: 100%;
   height: 220px;
@@ -116,6 +117,7 @@ body.modo-oscuro .promo-banner {
   border-radius: 10px;
   cursor: zoom-in;
 }
+
 .card h3 {
   margin: 0.8rem 0 0.3rem;
   font-size: 1.1rem;
@@ -126,10 +128,11 @@ body.modo-oscuro .promo-banner {
   font-size: 0.95rem;
   color: #666;
 }
+
 .card button {
   margin-top: 0.6rem;
   padding: 0.6rem 1rem;
-  background-color: #d4af37;
+  background-color: var(--accent, #d4af37);
   color: #121212;
   border: none;
   border-radius: 6px;
@@ -138,12 +141,13 @@ body.modo-oscuro .promo-banner {
   transition: background-color 0.3s ease;
 }
 .card button:hover {
-  background-color: #f4d35e;
+  background-color: var(--accent-light, #f4d35e);
 }
 .card button:disabled {
   background-color: #aaa;
   cursor: not-allowed;
 }
+
 body.modo-oscuro .card {
   background-color: #2a2a2a;
   color: #eee;

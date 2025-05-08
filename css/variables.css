@@ -1,33 +1,88 @@
 :root {
-    /* 🎨 Colores base */
-    --color-bg: #1f1f1f;
-    --color-bg-light: #fafafa;
-    --color-principal: #d4af37;
-    --color-principal-hover: #f4d35e;
-    --color-secundario: #ff6d00;
-    --color-acento: #00e676;
-    --color-text: #f5f5f5;
-    --color-light: #ccc;
-    --color-muted: #aaa;
-    --color-danger: #e53935;
-    --color-placeholder: #888;
-  
-    /* 🎨 Inputs y bordes */
-    --color-input: #121212;
-    --color-border: #333;
-    --color-input-border: #444;
-  
-    /* 🧾 Botones */
-    --btn-border-radius: 8px;
-    --btn-padding: 0.85rem 1.3rem;
-  
-    /* 🖍️ Sombras */
-    --shadow-soft: 0 2px 6px rgba(0, 0, 0, 0.08);
-    --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
-    --shadow-strong: 0 6px 18px rgba(0, 0, 0, 0.25);
-  
-    /* 📐 Tipografía */
-    --font-family: 'Segoe UI', sans-serif;
-    --font-size-base: 1rem;
+  /* 🎨 Paleta Principal */
+  --color-bg: #1f1f1f;
+  --color-bg-light: #fafafa;
+  --color-bg-alt: #2a2a2a;
+  --color-fg: #f5f5f5;
+  --color-text: #f5f5f5;
+  --color-text-dark: #1f1f1f;
+  --color-muted: #aaa;
+  --color-placeholder: #888;
+  --color-light: #ccc;
+
+  /* 🎯 Colores de marca */
+  --color-principal: #d4af37;
+  --color-principal-hover: #f4d35e;
+  --color-secundario: #ff6d00;
+  --color-acento: #00e676;
+
+  /* 🧱 Interfaz / Contenedores */
+  --color-panel: #1a1a1a;
+  --color-border: #333;
+  --color-border-light: #e0e0e0;
+  --color-input: #121212;
+  --color-input-border: #444;
+
+  /* 🚨 Estados */
+  --color-error: #e53935;
+  --color-danger: #c62828;
+  --color-danger-hover: #b71c1c;
+  --color-success: #28a745;
+  --color-warning: #ff9800;
+
+  /* 🧾 Botones */
+  --btn-border-radius: 8px;
+  --btn-padding: 0.85rem 1.3rem;
+
+  /* ✨ Sombras */
+  --shadow-soft: 0 2px 6px rgba(0, 0, 0, 0.08);
+  --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-strong: 0 6px 18px rgba(0, 0, 0, 0.25);
+  --shadow-gold: rgba(212, 175, 55, 0.08);
+
+  /* 📐 Tipografía */
+  --font-family: 'Segoe UI', sans-serif;
+  --font-size-base: 1rem;
+
+  /* 🔐 Login */
+  --color-google: #4285f4;
+  --color-google-hover: #3367d6;
+  --color-error-bg: #4a1212;
+  --color-error-text: #ffc1c1;
+
+  /* 💳 Métodos de pago */
+  --color-paypal: #003087;
+  --color-transfer: #444;
+}
+
+/* === ✨ UTILIDADES === */
+.text-center { text-align: center; }
+.text-warn { color: var(--color-warning); }
+.text-error { color: var(--color-error); }
+.text-success { color: var(--color-success); }
+
+/* === 🌀 ANIMACIONES === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+/* === 🌐 RESPONSIVE === */
+@media (max-width: 768px) {
+  .responsive-column {
+    flex-direction: column;
+    width: 100%;
   }
-  
+  .btn,
+  .btn-secundario {
+    width: 100%;
+  }
+}

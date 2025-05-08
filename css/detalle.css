@@ -1,15 +1,30 @@
+:root {
+  --bg-main: #111;
+  --panel-dark: #1c1c1c;
+  --accent: #f4d35e;
+  --accent-strong: #ffb300;
+  --accent-light: #ffd966;
+  --text-light: #eee;
+  --text-muted: #ccc;
+  --text-soft: #aaa;
+  --bg-extra: #181818;
+  --highlight-border: #f4d35e;
+  --input-bg: #222;
+  --input-border: #555;
+}
+
 /* 🌑 BASE GENERAL */
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  background-color: #111;
-  color: #eee;
+  background-color: var(--bg-main);
+  color: var(--text-light);
   line-height: 1.6;
   transition: background-color 0.3s, color 0.3s;
 }
 
 a {
-  color: #f4d35e;
+  color: var(--accent);
   text-decoration: none;
   transition: color 0.3s ease;
 }
@@ -25,9 +40,9 @@ img {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #1c1c1c;
+  background-color: var(--panel-dark);
   padding: 1rem 2rem;
-  border-bottom: 2px solid #ffb300;
+  border-bottom: 2px solid var(--accent-strong);
   flex-wrap: wrap;
 }
 
@@ -41,7 +56,7 @@ img {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  border: 2px solid #ffb300;
+  border: 2px solid var(--accent-strong);
   object-fit: cover;
 }
 
@@ -54,7 +69,7 @@ img {
 .brand p {
   margin: 0;
   font-size: 0.9rem;
-  color: #ccc;
+  color: var(--text-muted);
 }
 
 .nav-links {
@@ -67,8 +82,8 @@ img {
 .nav-links a,
 .nav-links button {
   background-color: transparent;
-  border: 2px solid #ffb300;
-  color: #ffb300;
+  border: 2px solid var(--accent-strong);
+  color: var(--accent-strong);
   padding: 0.5rem 1rem;
   border-radius: 6px;
   font-weight: bold;
@@ -79,7 +94,7 @@ img {
 
 .nav-links a:hover,
 .nav-links button:hover {
-  background-color: #ffb300;
+  background-color: var(--accent-strong);
   color: #121212;
 }
 
@@ -121,13 +136,13 @@ img {
 /* 📋 Información del Producto */
 .detalle-info h2 {
   font-size: clamp(1.8rem, 4vw, 2.2rem);
-  color: #f4d35e;
+  color: var(--accent);
   margin-bottom: 0.5rem;
 }
 
 .detalle-info p {
   margin: 0.5rem 0;
-  color: #ccc;
+  color: var(--text-muted);
   font-size: 1rem;
 }
 
@@ -158,16 +173,17 @@ img {
   padding: 0.75rem;
   font-size: 1rem;
   border-radius: 6px;
-  background-color: #222;
-  border: 1px solid #555;
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
   color: #fff;
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-#selectorVariantes select:focus,
-#selectorVariantes input:focus {
-  border-color: #ffb300;
+#selectorVariantes select:focus-visible,
+#selectorVariantes input:focus-visible {
+  border-color: var(--accent-strong);
   box-shadow: 0 0 0 2px rgba(255, 179, 0, 0.4);
+  outline: none;
 }
 
 #selectorVariantes select:disabled,
@@ -185,8 +201,8 @@ img {
 
 /* ℹ️ Extra detalles */
 .detalles-extra {
-  background-color: #181818;
-  border-left: 5px solid #f4d35e;
+  background-color: var(--bg-extra);
+  border-left: 5px solid var(--highlight-border);
   padding: 1rem;
   border-radius: 10px;
   margin-top: 1.5rem;
@@ -202,7 +218,7 @@ img {
 .btn-agregar {
   width: 100%;
   padding: 1rem 2rem;
-  background-color: #f4d35e;
+  background-color: var(--accent);
   color: #000;
   font-size: 1.1rem;
   font-weight: bold;
@@ -214,7 +230,7 @@ img {
 }
 
 .btn-agregar:hover {
-  background-color: #ffd966;
+  background-color: var(--accent-light);
   transform: translateY(-2px);
 }
 
@@ -238,7 +254,7 @@ img {
 }
 
 .mini-img:hover {
-  border-color: #f4d35e;
+  border-color: var(--accent);
   transform: scale(1.12);
 }
 

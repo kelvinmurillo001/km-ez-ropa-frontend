@@ -143,7 +143,8 @@ form textarea {
   margin-top: 2rem;
 }
 
-.btn, .btn-secundario {
+.btn,
+.btn-secundario {
   padding: 0.8rem 1.5rem;
   font-weight: bold;
   font-size: 1rem;
@@ -159,6 +160,7 @@ form textarea {
   color: #121212;
   border: none;
 }
+
 .btn:hover {
   background-color: var(--accent-light);
 }
@@ -168,6 +170,7 @@ form textarea {
   border: 2px solid var(--accent);
   color: var(--accent);
 }
+
 .btn-secundario:hover {
   background-color: var(--accent);
   color: #121212;
@@ -185,6 +188,7 @@ form textarea {
   background-color: var(--bg-panel);
   border: 1px solid var(--border);
 }
+
 .form-msg.error {
   color: red;
   background-color: #2a0000;

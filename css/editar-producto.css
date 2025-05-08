@@ -1,8 +1,8 @@
 /* === 🌑 BASE === */
 body {
-  background-color: #121212;
-  color: #f5f5f5;
-  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--color-bg, #121212);
+  color: var(--color-text, #f5f5f5);
+  font-family: var(--font-family, 'Segoe UI', sans-serif);
   margin: 0;
   padding: 0;
 }
@@ -10,7 +10,7 @@ body {
 /* === 🧾 TÍTULO === */
 h1 {
   text-align: center;
-  color: #ff6d00;
+  color: var(--color-secundario, #ff6d00);
   margin-bottom: 1.5rem;
 }
 
@@ -48,7 +48,7 @@ form input[type="file"],
 form select,
 form textarea {
   background-color: #222;
-  color: #f5f5f5;
+  color: var(--color-text, #f5f5f5);
   border: 1px solid #444;
   padding: 0.7rem;
   border-radius: 6px;
@@ -57,10 +57,10 @@ form textarea {
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-form input:focus,
-form textarea:focus,
-form select:focus {
-  border-color: #ff6d00;
+form input:focus-visible,
+form textarea:focus-visible,
+form select:focus-visible {
+  border-color: var(--color-secundario, #ff6d00);
   box-shadow: 0 0 4px rgba(255, 109, 0, 0.4);
   outline: none;
 }
@@ -84,7 +84,8 @@ form textarea {
   height: 80px;
   object-fit: cover;
   border-radius: 6px;
-  border: 2px solid #ff6d00;
+  border: 2px solid var(--color-secundario, #ff6d00);
+  max-width: 100%;
 }
 
 /* === 🔀 VARIANTES MEJORADAS === */
@@ -102,7 +103,7 @@ form textarea {
 .variante-box p {
   margin: 0;
   font-weight: bold;
-  color: #ff6d00;
+  color: var(--color-secundario, #ff6d00);
 }
 
 .variante-box label {
@@ -116,7 +117,7 @@ form textarea {
 .variante-box input[type="file"] {
   width: 100%;
   background-color: #222;
-  color: #f5f5f5;
+  color: var(--color-text, #f5f5f5);
   border: 1px solid #444;
   padding: 0.6rem;
   border-radius: 6px;
@@ -129,7 +130,7 @@ form textarea {
   height: 100px;
   object-fit: cover;
   border-radius: 6px;
-  border: 2px solid #ff6d00;
+  border: 2px solid var(--color-secundario, #ff6d00);
 }
 
 .variante-box hr {
@@ -165,7 +166,7 @@ form textarea {
 }
 
 .btn {
-  background-color: #ff6d00;
+  background-color: var(--color-secundario, #ff6d00);
   color: #121212;
 }
 
@@ -175,12 +176,12 @@ form textarea {
 
 .btn-secundario {
   background-color: transparent;
-  color: #ff6d00;
-  border: 2px solid #ff6d00;
+  color: var(--color-secundario, #ff6d00);
+  border: 2px solid var(--color-secundario, #ff6d00);
 }
 
 .btn-secundario:hover {
-  background-color: #ff6d00;
+  background-color: var(--color-secundario, #ff6d00);
   color: #121212;
 }
 

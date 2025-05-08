@@ -12,6 +12,8 @@
   --color-modal-bg: #1f1f1f;
   --color-google: #4285f4;
   --color-google-hover: #3367d6;
+  --color-shadow: rgba(212, 175, 55, 0.25);
+  --color-white: #fff;
 }
 
 /* === 🌙 BASE === */
@@ -34,7 +36,7 @@ body {
   background-color: #1a1a1a;
   padding: 2rem;
   border-radius: 14px;
-  box-shadow: 0 0 24px rgba(212, 175, 55, 0.25);
+  box-shadow: 0 0 24px var(--color-shadow);
   animation: fadeIn 0.4s ease-in-out;
 }
 
@@ -55,7 +57,7 @@ body {
 
 .formulario input {
   background-color: var(--color-input-bg);
-  color: #fff;
+  color: var(--color-white);
   border: 1px solid var(--color-input-border);
   padding: 0.85rem;
   border-radius: 8px;
@@ -85,6 +87,8 @@ input[aria-invalid="true"] {
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
   letter-spacing: 0.3px;
+  display: block;
+  width: 100%;
 }
 
 .btn {

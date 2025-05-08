@@ -10,19 +10,11 @@ h1 {
   text-align: center;
 }
 
-.text-center {
-  text-align: center;
-}
+.text-center { text-align: center; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 2rem; }
 
-.mt-2 {
-  margin-top: 1rem;
-}
-
-.mt-3 {
-  margin-top: 2rem;
-}
-
-/* === 🧱 CONTENEDOR GENERAL === */
+/* === 🧱 CONTENEDOR === */
 .productos-container {
   max-width: 1200px;
   margin: auto;
@@ -56,12 +48,9 @@ h1 {
 }
 
 /* === 📋 LISTADO DE PRODUCTOS === */
-.productos-lista {
-  margin-top: 2rem;
-  overflow-x: auto;
-}
-
+.productos-lista,
 .tabla-scroll {
+  margin-top: 2rem;
   overflow-x: auto;
 }
 
@@ -104,7 +93,7 @@ h1 {
   background-color: #262626;
 }
 
-/* === 🏷️ BADGES DE ESTADO DE PRODUCTO === */
+/* === 🏷️ BADGES DE ESTADO === */
 .badge-producto {
   display: inline-flex;
   align-items: center;
@@ -116,28 +105,14 @@ h1 {
   text-transform: uppercase;
 }
 
-.badge-sin-stock {
-  background-color: #f4433622;
-  color: #f44336;
-}
+.badge-sin-stock   { background-color: #f4433622; color: #f44336; }
+.badge-bajo-stock  { background-color: #ff980022; color: #ff9800; }
+.badge-destacado   { background-color: #d4af3722; color: #d4af37; }
 
-.badge-bajo-stock {
-  background-color: #ff980022;
-  color: #ff9800;
-}
+.sin-stock         { background-color: #2a2a2a !important; color: #aaa; }
+.bajo-stock        { background-color: #2a1a1a; color: #ffcc00; }
 
-.badge-destacado {
-  background-color: #d4af3722;
-  color: #d4af37;
-}
-
-/* 🔴 Estado visual para productos sin stock */
-.sin-stock {
-  background-color: #2a2a2a !important;
-  color: #aaa;
-}
-
-/* 🔴 Etiqueta de advertencia visual */
+/* 🔴 ALERTA DE STOCK */
 .stock-alert {
   color: tomato;
   font-weight: bold;
@@ -148,13 +123,7 @@ h1 {
   display: inline-block;
 }
 
-/* 🟡 Estado visual para bajo stock (si decides usarlo) */
-.bajo-stock {
-  background-color: #2a1a1a;
-  color: #ffcc00;
-}
-
-/* 🖼️ Imagen en tabla */
+/* 🖼️ IMAGEN EN TABLA */
 .producto-img {
   width: 50px;
   height: 50px;
@@ -163,7 +132,7 @@ h1 {
   border: 1px solid #444;
 }
 
-/* === 🛠️ BOTONES DE ACCIÓN EN TABLA === */
+/* 🛠️ BOTONES DE ACCIÓN */
 .btn-tabla {
   background-color: transparent;
   border: none;
@@ -173,19 +142,11 @@ h1 {
   transition: transform 0.2s ease, color 0.2s ease;
 }
 
-.btn-tabla:hover {
-  transform: scale(1.15);
-}
+.btn-tabla:hover { transform: scale(1.15); }
+.btn-tabla.editar   { color: #f4d35e; }
+.btn-tabla.eliminar { color: #f44336; }
 
-.btn-tabla.editar {
-  color: #f4d35e;
-}
-
-.btn-tabla.eliminar {
-  color: #f44336;
-}
-
-/* === 🔎 FILTROS === */
+/* 🔍 FILTROS */
 .filtros {
   display: flex;
   flex-wrap: wrap;
@@ -212,13 +173,13 @@ h1 {
   outline: none;
 }
 
-/* ✅ Producto destacado (opcional) */
+/* ✅ DESTACADO */
 .destacado {
   background-color: rgba(212, 175, 55, 0.08);
   border-left: 5px solid #d4af37;
 }
 
-/* === 📱 RESPONSIVE PARA MÓVILES === */
+/* === 📱 RESPONSIVE === */
 @media (max-width: 768px) {
   .productos-table th,
   .productos-table td {
@@ -260,13 +221,4 @@ body.modo-oscuro .filtros select {
   background-color: #1e1e1e;
   color: #f5f5f5;
   border-color: #444;
-}
-.stock-alert {
-  color: tomato;
-  font-weight: bold;
-  font-size: 0.9rem;
-  background-color: rgba(255, 99, 71, 0.15);
-  padding: 0.2rem 0.5rem;
-  border-radius: 6px;
-  display: inline-block;
 }

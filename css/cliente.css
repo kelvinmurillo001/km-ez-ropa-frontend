@@ -1,204 +1,202 @@
 /* === 🎨 ESTILO CLIENTE KM & EZ ROPA === */
-
 body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #121212;
-    color: #f5f5f5;
-  }
-  
-  .main-header {
-    background-color: #1f1f1f;
-    padding: 1rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #333;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    flex-wrap: wrap;
-  }
-  
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-  
-  .logo img {
-    width: 50px;
-    height: 50px;
-    border-radius: 8px;
-    object-fit: cover;
-    box-shadow: 0 0 5px rgba(212, 175, 55, 0.4);
-  }
-  
-  .brand h1 {
-    margin: 0;
-    font-size: 1.4rem;
-    color: #d4af37;
-  }
-  
-  .brand p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: #aaa;
-  }
-  
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #121212;
+  color: #f5f5f5;
+}
+
+.main-header {
+  background-color: #1f1f1f;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  flex-wrap: wrap;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo img {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 0 5px rgba(212, 175, 55, 0.4);
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #d4af37;
+}
+
+.brand p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.nav-links a,
+.nav-links button {
+  background: transparent;
+  border: none;
+  color: #d4af37;
+  font-weight: bold;
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover,
+.nav-links button:hover {
+  color: #f4d35e;
+}
+
+.cliente-container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 2rem 1rem;
+  animation: fadeIn 0.6s ease;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 2rem; }
+
+.mis-pedidos h3 {
+  font-size: 1.4rem;
+  color: #ffa733;
+  margin-bottom: 1.5rem;
+}
+
+.lista-pedidos {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.pedido-card {
+  background-color: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 6px 14px rgba(212, 175, 55, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pedido-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(212, 175, 55, 0.15);
+}
+
+.pedido-card p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  color: #ccc;
+}
+
+.pedido-card strong {
+  color: #f5f5f5;
+}
+
+.pedido-card button {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: bold;
+  border-radius: 6px;
+  border: 2px solid #d4af37;
+  background: transparent;
+  color: #d4af37;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pedido-card button:hover {
+  background-color: #d4af37;
+  color: #121212;
+}
+
+[class^="estado-"] {
+  font-weight: bold;
+}
+
+.estado-pendiente   { color: orange; }
+.estado-procesando  { color: #f4d35e; }
+.estado-enviado     { color: #00e676; }
+.estado-entregado   { color: #4caf50; }
+.estado-cancelado   { color: tomato; }
+
+/* 🧾 Mensaje flotante */
+.admin-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #2a2a2a;
+  color: #f5f5f5;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.admin-message.mostrar {
+  opacity: 1;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
   .nav-links {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-top: 0.5rem;
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .nav-links a,
-  .nav-links button {
-    background: transparent;
-    border: none;
-    color: #d4af37;
-    font-weight: bold;
-    font-size: 1rem;
-    text-decoration: none;
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
-  
-  .nav-links a:hover,
-  .nav-links button:hover {
-    color: #f4d35e;
-  }
-  
-  .cliente-container {
-    max-width: 1000px;
-    margin: auto;
-    padding: 2rem 1rem;
-    animation: fadeIn 0.6s ease;
-  }
-  
-  .text-center {
-    text-align: center;
-  }
-  
-  .mt-2 { margin-top: 1rem; }
-  .mt-3 { margin-top: 2rem; }
-  
-  .mis-pedidos h3 {
-    font-size: 1.4rem;
-    color: #ffa733;
-    margin-bottom: 1.5rem;
-  }
-  
-  .lista-pedidos {
-    display: grid;
-    gap: 1.5rem;
-  }
-  
+
   .pedido-card {
-    background-color: #1e1e1e;
-    border: 1px solid #333;
-    border-radius: 10px;
-    padding: 1.5rem;
-    box-shadow: 0 6px 14px rgba(212, 175, 55, 0.1);
-    transition: transform 0.3s ease;
+    padding: 1rem;
   }
-  
-  .pedido-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 24px rgba(212, 175, 55, 0.15);
+
+  .cliente-container {
+    padding: 1.5rem 1rem;
   }
-  
-  .pedido-card p {
-    margin: 0.5rem 0;
-    font-size: 1rem;
-    color: #ccc;
+
+  .brand h1 {
+    font-size: 1.2rem;
   }
-  
-  .pedido-card strong {
-    color: #f5f5f5;
+
+  .brand p {
+    font-size: 0.85rem;
   }
-  
-  .pedido-card button {
-    margin-top: 1rem;
-    padding: 0.6rem 1.2rem;
-    font-size: 0.95rem;
-    font-weight: bold;
-    border-radius: 6px;
-    border: 2px solid #d4af37;
-    background: transparent;
-    color: #d4af37;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-  
-  .pedido-card button:hover {
-    background-color: #d4af37;
-    color: #121212;
-  }
-  
-  [class^="estado-"] {
-    font-weight: bold;
-  }
-  
-  .estado-pendiente { color: orange; }
-  .estado-procesando { color: #f4d35e; }
-  .estado-enviado { color: #00e676; }
-  .estado-entregado { color: #4caf50; }
-  .estado-cancelado { color: tomato; }
-  
-  /* 🧾 Mensaje */
-  .admin-message {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #2a2a2a;
-    color: #f5f5f5;
-    padding: 1rem 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    z-index: 9999;
+}
+
+/* 🌟 Animación entrada */
+@keyframes fadeIn {
+  from {
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transform: translateY(10px);
   }
-  
-  .admin-message.mostrar {
+  to {
     opacity: 1;
+    transform: translateY(0);
   }
-  
-  /* 📱 Responsive */
-  @media (max-width: 768px) {
-    .nav-links {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  
-    .pedido-card {
-      padding: 1rem;
-    }
-  
-    .cliente-container {
-      padding: 1.5rem 1rem;
-    }
-  
-    .brand h1 {
-      font-size: 1.2rem;
-    }
-  
-    .brand p {
-      font-size: 0.85rem;
-    }
-  }
-  
-  /* 🌟 Animación */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
+}

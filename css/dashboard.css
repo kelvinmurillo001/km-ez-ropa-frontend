@@ -1,24 +1,35 @@
+:root {
+  --dashboard-bg: #121212;
+  --dashboard-text: #f5f5f5;
+  --accent: #d4af37;
+  --accent-hover: #f4d35e;
+  --panel-dark: #1e1e1e;
+  --panel-alt: #1a1a1a;
+  --border-color: #2c2c2c;
+  --soft-border: #333;
+  --text-muted: #ccc;
+  --shadow-gold: rgba(212, 175, 55, 0.15);
+}
+
 /* === 🎛️ BASE GENERAL === */
 body {
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', sans-serif;
-  background-color: #121212;
-  color: #f5f5f5;
+  background-color: var(--dashboard-bg);
+  color: var(--dashboard-text);
   scroll-behavior: smooth;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 h1, h2, h3 {
-  color: #d4af37;
+  color: var(--accent);
   font-weight: 600;
   line-height: 1.3;
   margin: 0 0 1rem;
 }
 
-.text-center {
-  text-align: center;
-}
-
+.text-center { text-align: center; }
 .mt-2 { margin-top: 1rem; }
 .mt-3 { margin-top: 2rem; }
 
@@ -40,12 +51,12 @@ h1, h2, h3 {
 
 /* === 🧾 TARJETAS DE KPI === */
 .card {
-  background-color: #1e1e1e;
-  border: 1px solid #2c2c2c;
+  background-color: var(--panel-dark);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 1.5rem;
   text-align: center;
-  box-shadow: 0 6px 14px rgba(212, 175, 55, 0.1);
+  box-shadow: 0 6px 14px var(--shadow-gold);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -70,8 +81,8 @@ h1, h2, h3 {
 
 /* === 📂 SECCIONES ADICIONALES === */
 .analitica-extra {
-  background-color: #1a1a1a;
-  border: 1px solid #333;
+  background-color: var(--panel-alt);
+  border: 1px solid var(--soft-border);
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 6px 14px rgba(212, 175, 55, 0.08);
@@ -86,7 +97,7 @@ h1, h2, h3 {
 
 .listado-categorias li {
   margin-bottom: 0.6rem;
-  color: #ccc;
+  color: var(--text-muted);
   font-size: 1rem;
   padding-left: 1.5rem;
   position: relative;
@@ -97,7 +108,7 @@ h1, h2, h3 {
   content: "•";
   position: absolute;
   left: 0;
-  color: #d4af37;
+  color: var(--accent);
   font-size: 1.3rem;
   line-height: 1;
 }
@@ -116,49 +127,49 @@ button.btn-secundario {
 }
 
 button.btn {
-  background-color: #d4af37;
+  background-color: var(--accent);
   color: #121212;
 }
 
 button.btn:hover,
 button.btn:focus-visible {
-  background-color: #f4d35e;
+  background-color: var(--accent-hover);
   transform: scale(1.02);
   outline: none;
 }
 
 button.btn-secundario {
   background: transparent;
-  color: #d4af37;
-  border: 2px solid #d4af37;
+  color: var(--accent);
+  border: 2px solid var(--accent);
 }
 
 button.btn-secundario:hover,
 button.btn-secundario:focus-visible {
-  background-color: #d4af37;
+  background-color: var(--accent);
   color: #121212;
   transform: scale(1.02);
   outline: none;
 }
 
-/* === 🌙 MODO OSCURO (ya activo por defecto) === */
+/* === 🌙 MODO OSCURO (opcional ya activo por defecto) === */
 body.modo-oscuro .card,
 body.modo-oscuro .analitica-extra {
   background-color: #1b1b1b;
-  border-color: #333;
+  border-color: var(--soft-border);
 }
 
 body.modo-oscuro .card h3 {
-  color: #f4d35e;
+  color: var(--accent-hover);
 }
 
 body.modo-oscuro button.btn-secundario {
-  border-color: #f4d35e;
-  color: #f4d35e;
+  border-color: var(--accent-hover);
+  color: var(--accent-hover);
 }
 
 body.modo-oscuro button.btn-secundario:hover {
-  background-color: #f4d35e;
+  background-color: var(--accent-hover);
   color: #121212;
 }
 

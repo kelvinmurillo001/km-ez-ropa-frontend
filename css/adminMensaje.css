@@ -21,39 +21,44 @@
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
-/* ✅ Mostrar mensaje */
+/* ✅ Mostrar mensaje con animación */
 #adminMensaje.show {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
   pointer-events: auto;
 }
 
-/* 🎨 Tipos de mensajes */
+/* === TIPOS DE MENSAJE === */
+
+/* ✔️ Éxito */
 #adminMensaje.success {
   background-color: rgba(22, 63, 22, 0.9);
   color: #b9f6ca;
   border-color: #00e676;
 }
 
+/* ❌ Error */
 #adminMensaje.error {
   background-color: rgba(74, 18, 18, 0.9);
   color: #ffcdd2;
   border-color: #ef5350;
 }
 
+/* ℹ️ Info */
 #adminMensaje.info {
   background-color: rgba(33, 24, 0, 0.9);
   color: #fff3cd;
   border-color: #ffa726;
 }
 
+/* ⚠️ Advertencia */
 #adminMensaje.warning {
   background-color: rgba(102, 68, 0, 0.9);
   color: #ffecb3;
   border-color: #ffb300;
 }
 
-/* 🌓 Soporte visual adicional para dark mode */
+/* 🌓 Modo Oscuro */
 body.modo-oscuro #adminMensaje {
   box-shadow: 0 4px 12px rgba(255, 255, 255, 0.08);
 }
