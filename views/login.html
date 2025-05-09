@@ -30,7 +30,6 @@
 <!-- ✅ Mensaje flotante global -->
 <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="assertive"></div>
 
-<!-- 🧠 Contenido principal -->
 <main class="login-container fade-in" role="main" aria-labelledby="tituloLogin">
   <h1 id="tituloLogin" class="text-center">🔐 Acceso Administrativo</h1>
 
@@ -75,15 +74,16 @@
     <!-- 🔐 Login con Google -->
     <div class="text-center mt-3">
       <a 
-        href="/auth/google" 
-        class="btn-google" 
+        href="https://api.kmezropacatalogo.com/auth/google" 
+        rel="noopener" 
+        class="btn-google"
         aria-label="Iniciar sesión con Google"
         style="text-decoration: none; display: inline-block;">
         🔐 Iniciar sesión con Google
       </a>
     </div>
 
-    <!-- Error accesible -->
+    <!-- Mensaje de error -->
     <div 
       id="errorMensaje" 
       class="mensaje-error mt-2"
@@ -92,7 +92,7 @@
       style="display: none; color: red;">
     </div>
 
-    <!-- Navegación secundaria -->
+    <!-- Volver al inicio -->
     <div class="text-center mt-3">
       <button 
         type="button" 
@@ -112,7 +112,7 @@
   </div>
 </noscript>
 
-<!-- 🌙 Activación Automática de Modo Oscuro -->
+<!-- 🌙 Activación Modo Oscuro -->
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     if (localStorage.getItem("modoOscuro") === "true") {

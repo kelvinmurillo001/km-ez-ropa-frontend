@@ -1,6 +1,6 @@
 "use strict";
 
-import { API_BASE } from "./config.js";
+import { API_BASE, GOOGLE_LOGIN_URL } from "./config.js";
 
 // 🛡️ Sanitiza campos para prevenir inyecciones simples
 const sanitize = (str = "") => str.replace(/[<>"'`;]/g, "").trim();
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const inputPass = form?.password;
   const googleBtn = document.getElementById("googleLoginBtn");
 
-  // 🌙 Activar modo oscuro si fue guardado
+  // 🌙 Activar modo oscuro si está guardado
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!username || !password) {
       mostrarMensaje("⚠️ Ingresa tu usuario y contraseña.", "error");
+      inputUser.focus();
       return;
     }
 
@@ -51,12 +52,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // ⚠️ Almacenar token y usuario
+      // ✅ Guardar datos
       localStorage.setItem("admin_token", data.accessToken);
-      localStorage.setItem(
-        "admin_user",
-        JSON.stringify({ ...data.user, isAdmin: true })
-      );
+      localStorage.setItem("admin_user", JSON.stringify({ ...data.user, isAdmin: true }));
 
       mostrarMensaje("✅ Acceso concedido. Redirigiendo...", "success");
       setTimeout(() => {
@@ -71,23 +69,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ⌨️ Enter para inputs
+  // ⌨️ Submit con Enter
   form.querySelectorAll("input").forEach((input) => {
     input.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
+        e.preventDefault();
         form.dispatchEvent(new Event("submit"));
       }
     });
   });
 
   // 🔐 Login con Google
-  googleBtn?.addEventListener("click", () => {
-    window.location.href = `${API_BASE}/auth/google`;
-  });
+  if (googleBtn) {
+    googleBtn.addEventListener("click", () => {
+      window.location.href = GOOGLE_LOGIN_URL;
+    });
+  }
 });
 
 /**
- * ✅ Mostrar mensaje flotante accesible
+ * ✅ Mensaje accesible flotante
  */
 function mostrarMensaje(texto, tipo = "info") {
   const box = document.getElementById("adminMensaje");
