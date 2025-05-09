@@ -39,7 +39,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (e) {
       console.warn("⚠️ Error al cerrar sesión:", e);
     }
-
     window.location.href = "/login.html";
   });
 
@@ -90,9 +89,9 @@ async function cargarPedidos() {
 
     listaPedidos.innerHTML = pedidos.map(pedidoHTML).join("");
 
-    // 🚫 Sin inline JS: listeners dinámicos
-    listaPedidos.querySelectorAll(".ver-detalles").forEach(btn => {
-      btn.addEventListener("click", (e) => {
+    // ✅ Añadir listeners sin inline JS
+    document.querySelectorAll(".ver-detalles").forEach(btn => {
+      btn.addEventListener("click", e => {
         const id = e.target.closest(".pedido-card")?.dataset?.id;
         if (id) {
           window.location.href = `/detalle-pedido.html?id=${id}`;

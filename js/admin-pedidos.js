@@ -5,32 +5,60 @@ import { mostrarMensaje } from "./admin-utils.js";
 
 const API_ORDERS = `${API_BASE}/api/orders`;
 const tablaPedidos = document.getElementById("tablaPedidos");
-const estadoPedidos = document.getElementById("estadoPedidos");
 
 document.addEventListener("DOMContentLoaded", () => {
   cargarPedidos();
 });
 
+// 🚚 Cargar pedidos
 async function cargarPedidos() {
+  const token = localStorage.getItem("admin_token");
+  if (!token || token.length < 10) {
+    mostrarMensaje("❌ Token de admin no válido", "error");
+    return;
+  }
+
   try {
     const res = await fetch(API_ORDERS, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("admin_token")}` }
+      headers: { Authorization: `Bearer ${token}` }
     });
-    const data = await res.json();
 
-    if (!res.ok) throw new Error(data.message);
-    renderPedidos(data.data);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Error al obtener pedidos");
+
+    renderPedidos(data.data || []);
   } catch (err) {
     console.error("❌ Error:", err);
     mostrarMensaje(err.message, "error");
   }
 }
 
+// 🖼️ Mostrar pedidos en tabla
 function renderPedidos(pedidos = []) {
-  if (pedidos.length === 0) {
-    tablaPedidos.innerHTML = "<p class='text-warn text-center'>No hay pedidos aún.</p>";
+  if (!Array.isArray(pedidos) || pedidos.length === 0) {
+    tablaPedidos.innerHTML = "<p class='text-warn text-center'>📭 No hay pedidos registrados.</p>";
     return;
   }
+
+  const rowsHTML = pedidos
+    .map(p => {
+      const nombre = sanitize(p.nombreCliente);
+      const fecha = new Date(p.createdAt).toLocaleDateString();
+      const total = `$${p.total?.toFixed(2) || "0.00"}`;
+      const estado = sanitize(p.estado || "pendiente");
+
+      return `
+        <tr data-id="${p._id}">
+          <td>${nombre}</td>
+          <td>${total}</td>
+          <td>${estado}</td>
+          <td>${fecha}</td>
+          <td>
+            <button class="btn btn-peq btn-rojo eliminar-btn">🗑️ Eliminar</button>
+          </td>
+        </tr>`;
+    })
+    .join("");
 
   tablaPedidos.innerHTML = `
     <table class="tabla">
@@ -43,44 +71,43 @@ function renderPedidos(pedidos = []) {
           <th>Acciones</th>
         </tr>
       </thead>
-      <tbody>
-        ${pedidos
-          .map(p => {
-            return `
-              <tr>
-                <td>${p.nombreCliente}</td>
-                <td>$${p.total.toFixed(2)}</td>
-                <td>${p.estado}</td>
-                <td>${new Date(p.createdAt).toLocaleDateString()}</td>
-                <td>
-                  <button class="btn btn-peq btn-rojo" onclick="eliminarPedido('${p._id}')">🗑️ Eliminar</button>
-                </td>
-              </tr>`;
-          })
-          .join("")}
-      </tbody>
+      <tbody>${rowsHTML}</tbody>
     </table>
   `;
 }
 
-// 🗑️ Eliminar pedido
-window.eliminarPedido = async (id) => {
-  const confirmacion = confirm("¿Estás seguro de eliminar este pedido?");
-  if (!confirmacion) return;
+// 🚨 Delegación de eventos: eliminar pedido
+tablaPedidos.addEventListener("click", async (e) => {
+  const btn = e.target.closest(".eliminar-btn");
+  if (!btn) return;
+
+  const fila = btn.closest("tr");
+  const id = fila?.dataset?.id;
+
+  if (!id || !confirm("¿Estás seguro de eliminar este pedido?")) return;
 
   try {
     const res = await fetch(`${API_ORDERS}/${id}`, {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${localStorage.getItem("admin_token")}` }
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("admin_token")}`
+      }
     });
 
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message);
+    if (!res.ok) throw new Error(data.message || "Error eliminando pedido");
 
-    mostrarMensaje("✅ Pedido eliminado", "success");
+    mostrarMensaje("✅ Pedido eliminado exitosamente", "success");
     cargarPedidos();
   } catch (err) {
     console.error("❌", err);
     mostrarMensaje("❌ No se pudo eliminar el pedido", "error");
   }
-};
+});
+
+// 🧼 Sanitizar texto para evitar XSS simples
+function sanitize(text = "") {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML.trim();
+}

@@ -6,7 +6,9 @@
   <title>📦 Mis Pedidos | KM & EZ ROPA</title>
 
   <!-- 🔐 Seguridad y SEO -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:;">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src https://api.kmezropacatalogo.com;">
+
   <meta name="description" content="Revisa el historial de tus pedidos en KM & EZ ROPA, su estado y detalles de cada compra." />
   <meta name="robots" content="noindex, nofollow" />
   <meta name="theme-color" content="#ff6d00" />
@@ -19,7 +21,7 @@
 
   <!-- 🚀 Scripts -->
   <script type="module" src="/js/cliente.js" defer></script>
-  <script src="/js/modoOscuro.js" defer></script>
+  <script type="module" src="/js/modoOscuro.js" defer></script>
 </head>
 
 <body>

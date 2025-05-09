@@ -6,6 +6,7 @@ import { verificarSesion, mostrarMensaje } from "./admin-utils.js";
 const token = verificarSesion();
 const pedidoId = new URLSearchParams(window.location.search).get("id");
 const container = document.getElementById("pedidoDetalle");
+let pedidoActual = null; // 🧠 Guardar pedido para exportación
 
 document.addEventListener("DOMContentLoaded", () => {
   if (!pedidoId || pedidoId.length < 8) {
@@ -14,6 +15,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   cargarDetallePedido();
+
+  const btnPdf = document.getElementById("descargarPdfBtn");
+  if (btnPdf) {
+    btnPdf.addEventListener("click", generarPDF);
+  }
 });
 
 /**
@@ -28,16 +34,16 @@ async function cargarDetallePedido() {
     const data = await res.json();
     if (!res.ok || !data.pedido) throw new Error(data.message || "Pedido no encontrado");
 
+    pedidoActual = data.pedido;
     renderizarDetalle(data.pedido);
   } catch (err) {
     console.error("❌ Error al obtener pedido:", err);
-    mostrarError(`❌ ${err.message}`);
+    mostrarError(`❌ ${sanitize(err.message)}`);
   }
 }
 
 /**
  * 🎨 Renderiza la vista del pedido
- * @param {object} p - Pedido
  */
 function renderizarDetalle(p) {
   const fecha = new Date(p.createdAt).toLocaleDateString("es-ES", {
@@ -50,14 +56,15 @@ function renderizarDetalle(p) {
 
   const productosHTML = productos.map(item => {
     const imagen = sanitize(item.imagen || "/assets/logo.jpg");
+    const nombre = sanitize(item.nombre || "Producto");
     const subtotal = (item.precio * item.cantidad).toFixed(2);
 
     return `
-      <div class="producto-detalle fade-in" role="listitem" aria-label="Producto: ${sanitize(item.nombre)}">
-        <img src="${imagen}" alt="${sanitize(item.nombre)}" loading="lazy"
+      <div class="producto-detalle fade-in" role="listitem" aria-label="Producto: ${nombre}">
+        <img src="${imagen}" alt="${nombre}" loading="lazy"
              onerror="this.src='/assets/logo.jpg'; this.alt='Imagen no disponible';" />
         <div>
-          <p><strong>${sanitize(item.nombre)}</strong></p>
+          <p><strong>${nombre}</strong></p>
           <p>Talla: ${sanitize(item.talla || "-")}</p>
           <p>Color: ${sanitize(item.color || "-")}</p>
           <p>Cantidad: ${item.cantidad}</p>
@@ -70,7 +77,7 @@ function renderizarDetalle(p) {
     <section class="info-principal" aria-label="Información general del pedido">
       <p><strong>Pedido ID:</strong> #${p._id.slice(-6).toUpperCase()}</p>
       <p><strong>Fecha:</strong> ${fecha}</p>
-      <p><strong>Estado:</strong> <span class="estado-${p.estado}">${estado}</span></p>
+      <p><strong>Estado:</strong> <span class="estado-${sanitize(p.estado)}">${estado}</span></p>
       <p><strong>Total:</strong> ${total}</p>
     </section>
 
@@ -86,16 +93,48 @@ function renderizarDetalle(p) {
 }
 
 /**
- * 🧼 Sanitizar entrada para evitar XSS
+ * 📄 Genera PDF del pedido actual
  */
-function sanitize(str = "") {
-  const div = document.createElement("div");
-  div.textContent = str;
-  return div.innerHTML;
+async function generarPDF() {
+  if (!pedidoActual) return;
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  const fecha = new Date(pedidoActual.createdAt).toLocaleDateString("es-ES");
+  const productos = Array.isArray(pedidoActual.items) ? pedidoActual.items : [];
+
+  doc.setFontSize(16);
+  doc.text("Detalle del Pedido", 14, 20);
+
+  doc.setFontSize(11);
+  doc.text(`Pedido ID: #${pedidoActual._id.slice(-6).toUpperCase()}`, 14, 30);
+  doc.text(`Fecha: ${fecha}`, 14, 36);
+  doc.text(`Estado: ${estadoBonito(pedidoActual.estado)}`, 14, 42);
+  doc.text(`Total: $${pedidoActual.total?.toFixed(2)}`, 14, 48);
+
+  const rows = productos.map(item => ([
+    item.nombre,
+    item.talla || "-",
+    item.color || "-",
+    item.cantidad,
+    `$${item.precio.toFixed(2)}`,
+    `$${(item.precio * item.cantidad).toFixed(2)}`
+  ]));
+
+  doc.autoTable({
+    startY: 55,
+    head: [["Producto", "Talla", "Color", "Cantidad", "Precio", "Subtotal"]],
+    body: rows,
+    theme: "grid",
+    headStyles: { fillColor: [255, 109, 0] }
+  });
+
+  doc.save(`pedido-${pedidoActual._id.slice(-6)}.pdf`);
 }
 
 /**
- * 📍 Formatea estado con ícono
+ * ✅ Traducir estado a texto legible
  */
 function estadoBonito(estado = "") {
   const estados = {
@@ -110,14 +149,23 @@ function estadoBonito(estado = "") {
 }
 
 /**
- * 🔠 Capitalizar primera letra
+ * 🧼 Prevenir XSS
+ */
+function sanitize(str = "") {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+/**
+ * 🔠 Capitalizar
  */
 function capitalize(str = "") {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 /**
- * ⚠️ Mostrar mensaje de error en el DOM
+ * ⚠️ Mostrar error
  */
 function mostrarError(mensaje) {
   container.innerHTML = `<p class="text-center" style="color:red;">${mensaje}</p>`;
