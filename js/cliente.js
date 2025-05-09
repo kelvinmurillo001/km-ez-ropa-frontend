@@ -1,11 +1,7 @@
 "use strict";
 
-// ✅ Importar utilidades necesarias
 import { API_BASE } from "./config.js";
-import { mostrarMensaje, verificarSesion, getUsuarioActivo } from "./admin-utils.js";
-
-// 🌐 Endpoints
-const API_PEDIDOS = `${API_BASE}/api/orders/mis-pedidos`;
+import { mostrarMensaje } from "./sesion-utils.js";
 
 // 📌 Elementos del DOM
 const listaPedidos = document.getElementById("listaPedidos");
@@ -13,28 +9,58 @@ const saludo = document.getElementById("saludoUsuario");
 const cerrarSesionBtn = document.getElementById("cerrarSesionBtn");
 const filtroEstado = document.getElementById("filtroEstado");
 
-// 🔐 Validar sesión
-const token = verificarSesion();
-const usuario = getUsuarioActivo();
+const API_ME = `${API_BASE}/auth/me`;
+const API_PEDIDOS = `${API_BASE}/api/orders/mis-pedidos`;
 
 // ▶️ Al cargar el documento
-document.addEventListener("DOMContentLoaded", () => {
-  if (usuario && saludo) {
+document.addEventListener("DOMContentLoaded", async () => {
+  const usuario = await obtenerUsuario();
+
+  if (!usuario) {
+    mostrarMensaje("🔒 Sesión no iniciada. Redirigiendo...", "error");
+    setTimeout(() => {
+      window.location.href = "/login.html";
+    }, 1200);
+    return;
+  }
+
+  // Mostrar saludo
+  if (saludo) {
     saludo.textContent = `👤 Hola, ${sanitize(usuario.name)}`;
   }
 
-  cargarPedidos();
+  await cargarPedidos();
 
-  cerrarSesionBtn?.addEventListener("click", () => {
-    if (confirm("¿Cerrar sesión?")) {
-      localStorage.removeItem("km_ez_token");
-      localStorage.removeItem("km_ez_user");
-      window.location.href = "/";
+  cerrarSesionBtn?.addEventListener("click", async () => {
+    try {
+      await fetch(`${API_BASE}/auth/logout`, {
+        credentials: "include"
+      });
+    } catch (e) {
+      console.warn("⚠️ Error al cerrar sesión:", e);
     }
+
+    window.location.href = "/login.html";
   });
 
   filtroEstado?.addEventListener("change", cargarPedidos);
 });
+
+/**
+ * 🔐 Obtener usuario autenticado desde backend
+ */
+async function obtenerUsuario() {
+  try {
+    const res = await fetch(API_ME, {
+      credentials: "include"
+    });
+    const data = await res.json();
+    return res.ok ? data.user : null;
+  } catch (err) {
+    console.error("❌ Error al obtener usuario:", err);
+    return null;
+  }
+}
 
 /**
  * 🚚 Cargar pedidos del usuario autenticado
@@ -44,9 +70,7 @@ async function cargarPedidos() {
 
   try {
     const res = await fetch(API_PEDIDOS, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      credentials: "include"
     });
 
     const data = await res.json();
@@ -73,8 +97,6 @@ async function cargarPedidos() {
 
 /**
  * 🧾 Generar HTML de cada pedido
- * @param {object} p - Pedido
- * @returns {string} - HTML
  */
 function pedidoHTML(p) {
   const fecha = new Date(p.createdAt).toLocaleDateString("es-EC");
@@ -94,9 +116,7 @@ function pedidoHTML(p) {
 }
 
 /**
- * ✅ Traducir estado a formato legible con ícono
- * @param {string} e - Estado interno
- * @returns {string}
+ * ✅ Traducir estado interno a legible
  */
 function estadoBonito(e = "") {
   const estados = {
