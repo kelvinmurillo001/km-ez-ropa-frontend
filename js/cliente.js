@@ -89,6 +89,17 @@ async function cargarPedidos() {
     }
 
     listaPedidos.innerHTML = pedidos.map(pedidoHTML).join("");
+
+    // 🚫 Sin inline JS: listeners dinámicos
+    listaPedidos.querySelectorAll(".ver-detalles").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const id = e.target.closest(".pedido-card")?.dataset?.id;
+        if (id) {
+          window.location.href = `/detalle-pedido.html?id=${id}`;
+        }
+      });
+    });
+
   } catch (err) {
     console.error("❌ Error al cargar pedidos:", err);
     listaPedidos.innerHTML = `<p class="text-center" style="color:red;">❌ ${err.message}</p>`;
@@ -105,12 +116,12 @@ function pedidoHTML(p) {
   const id = p._id?.slice(-6)?.toUpperCase() || "XXXXXX";
 
   return `
-    <div class="pedido-card" role="region" aria-label="Pedido ${id}">
+    <div class="pedido-card" data-id="${p._id}" role="region" aria-label="Pedido ${id}">
       <p><strong>Pedido:</strong> #${id}</p>
       <p><strong>Fecha:</strong> ${fecha}</p>
       <p><strong>Total:</strong> ${total}</p>
       <p><strong>Estado:</strong> <span class="estado-${p.estado || 'otro'}">${estado}</span></p>
-      <button class="btn-secundario" onclick="verDetalles('${p._id}')">👁️ Ver Detalles</button>
+      <button class="btn-secundario ver-detalles">👁️ Ver Detalles</button>
     </div>
   `;
 }
@@ -129,15 +140,6 @@ function estadoBonito(e = "") {
   };
   return estados[e.toLowerCase()] || "🔘 Otro";
 }
-
-/**
- * 🔍 Redirigir a la vista de detalles del pedido
- */
-window.verDetalles = (id) => {
-  if (id) {
-    window.location.href = `/detalle-pedido.html?id=${id}`;
-  }
-};
 
 /**
  * 🧼 Sanitizar texto contra inyecciones simples

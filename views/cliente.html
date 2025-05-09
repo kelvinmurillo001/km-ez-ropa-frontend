@@ -6,7 +6,7 @@
   <title>📦 Mis Pedidos | KM & EZ ROPA</title>
 
   <!-- 🔐 Seguridad y SEO -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:;">
   <meta name="description" content="Revisa el historial de tus pedidos en KM & EZ ROPA, su estado y detalles de cada compra." />
   <meta name="robots" content="noindex, nofollow" />
   <meta name="theme-color" content="#ff6d00" />
@@ -17,8 +17,9 @@
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/cliente.css" />
 
-  <!-- 🚀 Script principal -->
+  <!-- 🚀 Scripts -->
   <script type="module" src="/js/cliente.js" defer></script>
+  <script src="/js/modoOscuro.js" defer></script>
 </head>
 
 <body>
@@ -70,21 +71,6 @@
 
 <!-- 🔔 Mensajes -->
 <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
-
-<!-- 🌙 Modo Oscuro -->
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const btnModoOscuro = document.getElementById("modoOscuroBtn");
-    const esOscuro = localStorage.getItem("modoOscuro") === "true";
-
-    if (esOscuro) document.body.classList.add("modo-oscuro");
-
-    btnModoOscuro?.addEventListener("click", () => {
-      const darkModeActivo = document.body.classList.toggle("modo-oscuro");
-      localStorage.setItem("modoOscuro", darkModeActivo);
-    });
-  });
-</script>
 
 <!-- ⚠️ JavaScript requerido -->
 <noscript>

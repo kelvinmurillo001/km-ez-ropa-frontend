@@ -28,6 +28,11 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "index.html"));
 });
 
+// ✅ Ruta explícita para usuarios autenticados (evita 404 post-login con Google)
+app.get("/cliente", (req, res) => {
+  res.sendFile(path.join(__dirname, "views", "cliente.html"));
+});
+
 // 📄 Otras páginas *.html
 app.get("/:page.html", (req, res) => {
   const { page } = req.params;
