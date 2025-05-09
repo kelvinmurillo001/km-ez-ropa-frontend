@@ -27,7 +27,6 @@
 
 <body lang="es" class="con-fondo fade-in">
 
-
 <!-- ✅ Mensaje flotante global -->
 <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="assertive"></div>
 
@@ -75,13 +74,13 @@
 
     <!-- 🔐 Login con Google -->
     <div class="text-center mt-3">
-      <button 
-        type="button" 
-        id="googleLoginBtn" 
+      <a 
+        href="/auth/google" 
         class="btn-google" 
-        aria-label="Iniciar sesión con Google">
+        aria-label="Iniciar sesión con Google"
+        style="text-decoration: none; display: inline-block;">
         🔐 Iniciar sesión con Google
-      </button>
+      </a>
     </div>
 
     <!-- Error accesible -->

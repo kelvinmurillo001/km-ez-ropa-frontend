@@ -2,8 +2,8 @@
 
 import { API_BASE } from "./config.js";
 
-// 🛡️ Simple sanitizador básico
-const sanitize = (str) => str.replace(/[<>"'`;]/g, "").trim();
+// 🛡️ Sanitiza campos para prevenir inyecciones simples
+const sanitize = (str = "") => str.replace(/[<>"'`;]/g, "").trim();
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formLogin");
@@ -12,12 +12,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const inputPass = form?.password;
   const googleBtn = document.getElementById("googleLoginBtn");
 
-  if (!form || !btnSubmit || !inputUser || !inputPass) return;
-
-  // 🌙 Activar modo oscuro si está guardado
+  // 🌙 Activar modo oscuro si fue guardado
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
+
+  if (!form || !btnSubmit || !inputUser || !inputPass) return;
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -37,22 +37,21 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // Si usas cookies para refresh
+        credentials: "include",
         body: JSON.stringify({ username, password }),
       });
 
       const data = await res.json();
 
       if (!res.ok || !data.accessToken) {
-        const msg =
-          res.status === 401
-            ? "🔐 Usuario o contraseña incorrectos."
-            : data.message || "❌ Error inesperado.";
+        const msg = res.status === 401
+          ? "🔐 Usuario o contraseña incorrectos."
+          : data.message || "❌ Error inesperado al iniciar sesión.";
         mostrarMensaje(msg, "error");
         return;
       }
 
-      // ⚠️ IMPORTANTE: Usa cookies HttpOnly para token si puedes
+      // ⚠️ Almacenar token y usuario
       localStorage.setItem("admin_token", data.accessToken);
       localStorage.setItem(
         "admin_user",
@@ -62,9 +61,9 @@ document.addEventListener("DOMContentLoaded", () => {
       mostrarMensaje("✅ Acceso concedido. Redirigiendo...", "success");
       setTimeout(() => {
         window.location.href = "/panel.html";
-      }, 800);
+      }, 900);
     } catch (err) {
-      console.error("❌ Error:", err);
+      console.error("❌ Error de red:", err);
       mostrarMensaje("❌ No se pudo conectar al servidor.", "error");
     } finally {
       btnSubmit.disabled = false;
@@ -72,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ⌨️ Enter directo
+  // ⌨️ Enter para inputs
   form.querySelectorAll("input").forEach((input) => {
     input.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
@@ -81,13 +80,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 🔐 Login con Google redirigido desde backend
-  if (googleBtn) {
-    googleBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      window.location.href = `${API_BASE}/auth/google`;
-    });
-  }
+  // 🔐 Login con Google
+  googleBtn?.addEventListener("click", () => {
+    window.location.href = `${API_BASE}/auth/google`;
+  });
 });
 
 /**
@@ -98,7 +94,7 @@ function mostrarMensaje(texto, tipo = "info") {
   if (!box) return alert(texto);
 
   box.textContent = texto;
-  box.className = "";
+  box.className = "admin-message";
   box.classList.add(tipo);
   box.classList.remove("oculto");
 
