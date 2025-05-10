@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KM & EZ ROPA | Moda, Estilo y Belleza</title>
 
+  <!-- ✅ CSP Mejorada para permitir recursos de Google y Kaspersky -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://apis.google.com https://gc.kis.v2.scr.kaspersky-labs.com;
+    connect-src 'self' https://api.kmezropacatalogo.com https://www.google-analytics.com;
+    style-src 'self' 'unsafe-inline' https://gc.kis.v2.scr.kaspersky-labs.com;
+    img-src 'self' data: https://*.googleusercontent.com https://lh3.googleusercontent.com https://developers.google.com https://gc.kis.v2.scr.kaspersky-labs.com;
+    font-src 'self' data:;
+  " />
+
   <!-- 🔍 SEO Básico -->
   <meta name="description" content="Encuentra todo lo que necesitas en moda y belleza en un solo lugar. KM & EZ ROPA viste todos tus momentos con estilo.">
   <meta name="keywords" content="ropa urbana, streetwear, ropa mujer, moda casual, KM & EZ ROPA, tienda de ropa, moda, belleza, estilo" />
@@ -48,7 +58,6 @@
   <!-- ✅ Google Analytics (respetando CSP) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-BNWNNFDCC3"></script>
   <script type="module" src="/js/gtag-loader.js"></script>
-
 </head>
 
 <body lang="es">
