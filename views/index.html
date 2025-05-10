@@ -9,12 +9,11 @@
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://apis.google.com https://gc.kis.v2.scr.kaspersky-labs.com;
-    connect-src 'self' https://api.kmezropacatalogo.com https://www.google-analytics.com;
+    connect-src 'self' https://api.kmezropacatalogo.com https://www.google-analytics.com https://gc.kis.v2.scr.kaspersky-labs.com;
     style-src 'self' 'unsafe-inline' https://gc.kis.v2.scr.kaspersky-labs.com;
-    img-src 'self' data: https://*.googleusercontent.com https://lh3.googleusercontent.com https://developers.google.com https://gc.kis.v2.scr.kaspersky-labs.com;
-    font-src 'self' data:;
+    img-src 'self' data: https://*.googleusercontent.com https://lh3.googleusercontent.com https://developers.google.com https://www.google-analytics.com https://gc.kis.v2.scr.kaspersky-labs.com;
+    font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com data:;
   " />
-
   <!-- 🔍 SEO Básico -->
   <meta name="description" content="Encuentra todo lo que necesitas en moda y belleza en un solo lugar. KM & EZ ROPA viste todos tus momentos con estilo.">
   <meta name="keywords" content="ropa urbana, streetwear, ropa mujer, moda casual, KM & EZ ROPA, tienda de ropa, moda, belleza, estilo" />
@@ -51,13 +50,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-  <!-- ✅ Scripts -->
+  <!-- Scripts -->
   <script type="module" src="/js/index.js" defer></script>
   <script type="module" src="/js/promo-display.js" defer></script>
-
-  <!-- ✅ Google Analytics (respetando CSP) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-BNWNNFDCC3"></script>
   <script type="module" src="/js/gtag-loader.js"></script>
+
+  <!-- Favicon y fuentes -->
+  <link rel="icon" href="/assets/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 </head>
 
 <body lang="es">
