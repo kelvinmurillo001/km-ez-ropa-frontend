@@ -24,15 +24,15 @@ app.use(helmet.frameguard({ action: "deny" }));
 app.use(helmet.noSniff());
 app.use(helmet.referrerPolicy({ policy: "strict-origin-when-cross-origin" }));
 
-// ✅ CSP explícita (evita bloqueos de scripts, fetch, GA)
+// ✅ CSP mejorada con soporte para Kaspersky y GA
 app.use((req, res, next) => {
   res.setHeader("Content-Security-Policy",
     "default-src 'self'; " +
-    "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://apis.google.com 'unsafe-inline'; " +
-    "style-src 'self' 'unsafe-inline'; " +
-    "img-src 'self' data: https://*.googleusercontent.com https://lh3.googleusercontent.com; " +
+    "script-src 'self' 'unsafe-inline' https://accounts.google.com https://apis.google.com https://www.googletagmanager.com https://www.google-analytics.com https://gc.kis.v2.scr.kaspersky-labs.com; " +
+    "style-src 'self' 'unsafe-inline' https://gc.kis.v2.scr.kaspersky-labs.com; " +
+    "img-src 'self' data: https://*.googleusercontent.com https://lh3.googleusercontent.com https://developers.google.com https://gc.kis.v2.scr.kaspersky-labs.com; " +
+    "connect-src 'self' https://api.kmezropacatalogo.com https://www.google-analytics.com; " +
     "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; " +
-    "connect-src 'self' https://api.kmezropacatalogo.com; " +
     "frame-src https://accounts.google.com https://*.google.com; " +
     "object-src 'none'; base-uri 'self'; frame-ancestors 'none';"
   );
