@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await res.json();
 
-      if (!res.ok || !data.accessToken) {
+      if (!res.ok || !data?.success) {
         const msg = res.status === 401
           ? "🔐 Usuario o contraseña incorrectos."
           : data.message || "❌ Error inesperado al iniciar sesión.";
@@ -56,12 +56,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // ✅ Guardar token y usuario
-      localStorage.setItem("admin_token", data.accessToken);
-      localStorage.setItem("admin_user", JSON.stringify({ ...data.user, isAdmin: true }));
-
+      // ✅ Acceso exitoso → Redirigir a panel de admin
       mostrarMensaje("✅ Acceso concedido. Redirigiendo...", "success");
-      setTimeout(() => window.location.href = "/panel.html", 1000);
+      setTimeout(() => window.location.href = "/cliente.html", 1000);
     } catch (err) {
       console.error("❌ Error de red:", err);
       mostrarMensaje("❌ No se pudo conectar al servidor.", "error");
@@ -71,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ⌨️ Soporte de tecla Enter
+  // ⌨️ Soporte tecla Enter
   form.querySelectorAll("input").forEach((input) => {
     input.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
@@ -81,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 🔐 Acceso con Google (si aplica)
+  // 🔐 Acceso con Google
   if (googleBtn) {
     googleBtn.addEventListener("click", () => {
       window.location.href = GOOGLE_LOGIN_URL;
