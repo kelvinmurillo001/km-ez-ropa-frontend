@@ -1,11 +1,16 @@
 "use strict";
 
 // ✅ Importar utilidades necesarias
-import { verificarSesion, goBack } from "./admin-utils.js";
+import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
-// 🔐 Validar sesión
+// 🔐 Obtener y validar token
 const token = verificarSesion();
+if (!token) {
+  mostrarMensaje("🔐 Debes iniciar sesión como administrador.", "error");
+  window.location.href = "/login.html";
+  throw new Error("Token de administrador no válido o ausente");
+}
 
 // 🌐 Endpoints API
 const API_ORDERS = `${API_BASE}/api/orders`;
@@ -35,9 +40,6 @@ async function loadDashboard() {
     const productos = Array.isArray(productosRaw?.productos) ? productosRaw.productos : [];
     const resumen = typeof resumenRaw === "object" && resumenRaw !== null ? resumenRaw : {};
 
-    if (!Array.isArray(pedidos)) throw new Error("🛑 Los pedidos no tienen formato válido");
-    if (!Array.isArray(productos)) throw new Error("🛑 Los productos no tienen formato válido");
-
     resumenPedidos = procesarPedidos(pedidos);
     resumenVentas = {
       ventasTotales: parseFloat(resumen?.ventasTotales || 0),
@@ -48,26 +50,31 @@ async function loadDashboard() {
 
     renderResumen(resumenPedidos, resumenVentas);
     renderCategoriasTop(productos);
+
   } catch (err) {
-    console.error("❌ Error al cargar el dashboard:", err.message || err);
-    alert("⚠️ No se pudieron cargar los datos del panel. Intenta más tarde.");
+    console.error("❌ Error al cargar el dashboard:", err);
+    mostrarMensaje("⚠️ Error al cargar el panel. Intenta nuevamente.", "error");
   }
 }
 
-/* 🌐 Fetch con token opcional */
+/* 🌐 Fetch con o sin token */
 async function fetchData(url, usarToken = false) {
   const headers = usarToken ? { Authorization: `Bearer ${token}` } : {};
   const res = await fetch(url, { headers });
 
   if (!res.ok) {
-    const error = await res.text();
-    throw new Error(`❌ ${url} → ${error}`);
+    const texto = await res.text();
+    if (res.status === 401) {
+      mostrarMensaje("🔐 Sesión expirada o inválida. Vuelve a iniciar sesión.", "error");
+      setTimeout(() => (window.location.href = "/login.html"), 1500);
+    }
+    throw new Error(`❌ Error al solicitar ${url}: ${texto}`);
   }
 
-  return await res.json();
+  return res.json();
 }
 
-/* 📊 Procesar pedidos por estado y día actual */
+/* 📊 Procesar pedidos por estado */
 function procesarPedidos(pedidos = []) {
   const hoy = new Date().setHours(0, 0, 0, 0);
 
@@ -94,7 +101,7 @@ function procesarPedidos(pedidos = []) {
   });
 }
 
-/* 📈 Renderizar KPIs y datos resumen */
+/* 📈 Renderizar KPIs y resumen */
 function renderResumen(pedidos, ventas) {
   setText("ventasTotales", `$${ventas.ventasTotales.toFixed(2)}`);
   setText("visitasTotales", ventas.totalVisitas);
@@ -133,7 +140,7 @@ function renderCategoriasTop(productos = []) {
 /* 📤 Exportar estadísticas a CSV */
 function exportarEstadisticas() {
   if (!resumenPedidos || !resumenVentas) {
-    return alert("⚠️ Espera a que se cargue todo antes de exportar.");
+    return mostrarMensaje("⚠️ Espera a que se cargue todo antes de exportar.", "info");
   }
 
   const fecha = new Date().toLocaleString("es-EC");
@@ -163,7 +170,7 @@ function exportarEstadisticas() {
   a.click();
 }
 
-/* 📝 Utilidad para escribir en elementos HTML por ID */
+/* 📝 Escribir en el DOM */
 function setText(id, value) {
   const el = document.getElementById(id);
   if (el) el.textContent = value;
