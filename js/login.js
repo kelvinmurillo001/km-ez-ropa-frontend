@@ -15,14 +15,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const inputPass = form?.password;
   const googleBtn = document.getElementById("googleLoginBtn");
 
-  // 🌙 Aplicar modo oscuro si está activado
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 
   if (!form || !btnSubmit || !inputUser || !inputPass) return;
 
-  // 🧾 Enviar formulario
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -41,37 +39,40 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         credentials: "include",
         body: JSON.stringify({ username, password }),
       });
 
-      const data = await res.json();
+      const result = await res.json();
 
-      if (!res.ok || !data?.accessToken) {
-        const msg = res.status === 401
-          ? "🔐 Usuario o contraseña incorrectos."
-          : data.message || "❌ Error inesperado al iniciar sesión.";
+      if (!res.ok || !result?.accessToken) {
+        const msg =
+          res.status === 400
+            ? "⚠️ Datos enviados inválidos. (400)"
+            : res.status === 401
+            ? "🔐 Usuario o contraseña incorrectos."
+            : result.message || "❌ Error inesperado al iniciar sesión.";
         mostrarMensaje(msg, "error");
         return;
       }
 
-      // ✅ Guardar token y usuario
-      localStorage.setItem("admin_token", data.accessToken);
-      localStorage.setItem("admin_user", JSON.stringify(data.user));
+      localStorage.setItem("admin_token", result.accessToken);
+      localStorage.setItem("admin_user", JSON.stringify(result.user));
 
       mostrarMensaje("✅ Acceso concedido. Redirigiendo...", "success");
 
-      // 🔁 Redirigir según rol
       setTimeout(() => {
-        if (data.user?.role === "admin") {
+        if (result.user?.role === "admin") {
           window.location.href = "/panel.html";
         } else {
           window.location.href = "/cliente.html";
         }
-      }, 1000);
-    } catch (err) {
-      console.error("❌ Error de red:", err);
+      }, 1200);
+    } catch (error) {
+      console.error("❌ Error de red:", error);
       mostrarMensaje("❌ No se pudo conectar al servidor.", "error");
     } finally {
       btnSubmit.disabled = false;
@@ -79,7 +80,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ⌨️ Soporte tecla Enter
   form.querySelectorAll("input").forEach((input) => {
     input.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
@@ -89,7 +89,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 🔐 Acceso con Google
   if (googleBtn) {
     googleBtn.addEventListener("click", () => {
       window.location.href = GOOGLE_LOGIN_URL;

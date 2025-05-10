@@ -1,19 +1,31 @@
 "use strict";
 
 /**
- * 🔐 Verifica y obtiene el token de administrador desde localStorage
- * Redirige si no existe.
- * @returns {string|null}
+ * 🔐 Verifica que exista una sesión válida de administrador
+ * Redirige automáticamente si no es válida o no es admin
  */
 export function verificarSesion() {
   const token = localStorage.getItem("admin_token");
+  const user = JSON.parse(localStorage.getItem("admin_user") || "{}");
 
-  if (!token || token.length < 20) {
-    console.warn("⚠️ Token de sesión inválido o ausente");
+  if (!token || token.length < 20 || user.role !== "admin") {
+    console.warn("❌ Acceso no autorizado o sesión inválida");
+    alert("⚠️ Acceso denegado. Debes ser administrador.");
+    window.location.href = "/login.html";
     return null;
   }
 
   return token;
+}
+
+/**
+ * 🔚 Cerrar sesión completa
+ */
+export function cerrarSesion() {
+  localStorage.removeItem("admin_token");
+  localStorage.removeItem("admin_user");
+  document.cookie = "refreshToken=; Max-Age=0; path=/;";
+  window.location.href = "/login.html";
 }
 
 /**
