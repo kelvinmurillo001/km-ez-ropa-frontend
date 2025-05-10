@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await res.json();
 
-      if (!res.ok || !data?.success) {
+      if (!res.ok || !data?.accessToken) {
         const msg = res.status === 401
           ? "🔐 Usuario o contraseña incorrectos."
           : data.message || "❌ Error inesperado al iniciar sesión.";
@@ -56,9 +56,20 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // ✅ Acceso exitoso → Redirigir a panel de admin
+      // ✅ Guardar token y usuario
+      localStorage.setItem("admin_token", data.accessToken);
+      localStorage.setItem("admin_user", JSON.stringify(data.user));
+
       mostrarMensaje("✅ Acceso concedido. Redirigiendo...", "success");
-      setTimeout(() => window.location.href = "/cliente.html", 1000);
+
+      // 🔁 Redirigir según rol
+      setTimeout(() => {
+        if (data.user?.role === "admin") {
+          window.location.href = "/panel.html";
+        } else {
+          window.location.href = "/cliente.html";
+        }
+      }, 1000);
     } catch (err) {
       console.error("❌ Error de red:", err);
       mostrarMensaje("❌ No se pudo conectar al servidor.", "error");
