@@ -11,6 +11,7 @@
   --highlight-border: #f4d35e;
   --input-bg: #222;
   --input-border: #555;
+  --danger: #ff5252;
 }
 
 /* 🌑 BASE GENERAL */
@@ -20,7 +21,7 @@ body {
   background-color: var(--bg-main);
   color: var(--text-light);
   line-height: 1.6;
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 a {
@@ -33,6 +34,7 @@ img {
   display: block;
   max-width: 100%;
   height: auto;
+  border: none;
 }
 
 /* 🔝 HEADER */
@@ -81,15 +83,15 @@ img {
 
 .nav-links a,
 .nav-links button {
-  background-color: transparent;
+  background: transparent;
   border: 2px solid var(--accent-strong);
   color: var(--accent-strong);
   padding: 0.5rem 1rem;
   border-radius: 6px;
   font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
   font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .nav-links a:hover,
@@ -110,13 +112,12 @@ img {
   grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
   gap: 2rem;
   margin-top: 2rem;
-  align-items: start;
+  align-items: flex-start;
 }
 
-/* 🖼️ Imagen principal */
+/* 🖼 Imagen principal */
 .detalle-img {
   position: relative;
-  overflow: hidden;
 }
 
 .detalle-img img {
@@ -129,11 +130,11 @@ img {
 }
 
 .detalle-img img:hover {
-  transform: scale(1.03);
+  transform: scale(1.02);
   box-shadow: 0 10px 25px rgba(255, 179, 0, 0.4);
 }
 
-/* 📋 Información del Producto */
+/* 📋 Info Producto */
 .detalle-info h2 {
   font-size: clamp(1.8rem, 4vw, 2.2rem);
   color: var(--accent);
@@ -142,28 +143,27 @@ img {
 
 .detalle-info p {
   margin: 0.5rem 0;
-  color: var(--text-muted);
   font-size: 1rem;
+  color: var(--text-muted);
 }
 
 .precio {
   font-size: 2rem;
+  font-weight: bold;
   color: #fff;
   margin: 1rem 0;
-  font-weight: bold;
 }
 
-/* 🔽 SELECTORES DE VARIANTES */
+/* 🔽 Selectores variantes */
 #selectorVariantes {
-  margin: 1.5rem 0;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  margin-top: 1.5rem;
 }
 
 #selectorVariantes label {
-  font-weight: bold;
-  margin-bottom: 0.3rem;
+  font-weight: 600;
   color: #f0f0f0;
 }
 
@@ -175,14 +175,14 @@ img {
   border-radius: 6px;
   background-color: var(--input-bg);
   border: 1px solid var(--input-border);
-  color: #fff;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  color: var(--text-light);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-#selectorVariantes select:focus-visible,
-#selectorVariantes input:focus-visible {
+#selectorVariantes select:focus,
+#selectorVariantes input:focus {
   border-color: var(--accent-strong);
-  box-shadow: 0 0 0 2px rgba(255, 179, 0, 0.4);
+  box-shadow: 0 0 0 2px rgba(255, 179, 0, 0.3);
   outline: none;
 }
 
@@ -192,20 +192,20 @@ img {
   cursor: not-allowed;
 }
 
-/* 📦 Stock Info */
+/* 📦 Stock info */
 #stockInfo {
   font-size: 0.95rem;
-  color: #ffa733;
+  color: var(--accent-light);
   font-style: italic;
 }
 
-/* ℹ️ Extra detalles */
+/* ℹ️ Detalles extra */
 .detalles-extra {
+  margin-top: 1.5rem;
   background-color: var(--bg-extra);
   border-left: 5px solid var(--highlight-border);
   padding: 1rem;
-  border-radius: 10px;
-  margin-top: 1.5rem;
+  border-radius: 8px;
 }
 
 .detalles-extra p {
@@ -214,19 +214,19 @@ img {
   color: #ddd;
 }
 
-/* 🛒 Botón Agregar */
+/* 🛒 Agregar al carrito */
 .btn-agregar {
   width: 100%;
   padding: 1rem 2rem;
   background-color: var(--accent);
   color: #000;
-  font-size: 1.1rem;
   font-weight: bold;
-  border: none;
+  font-size: 1.1rem;
   border-radius: 6px;
+  border: none;
   cursor: pointer;
   text-transform: uppercase;
-  transition: background-color 0.3s, transform 0.3s;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .btn-agregar:hover {
@@ -234,12 +234,12 @@ img {
   transform: translateY(-2px);
 }
 
-/* 🖼️ Galería de miniaturas */
+/* 🖼 Galería miniaturas */
 .galeria-mini {
   display: flex;
+  gap: 0.75rem;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 0.75rem;
   margin-top: 1rem;
 }
 
@@ -250,12 +250,12 @@ img {
   object-fit: cover;
   border: 2px solid #444;
   cursor: pointer;
-  transition: transform 0.3s, border-color 0.3s;
+  transition: transform 0.3s ease, border-color 0.3s ease;
 }
 
 .mini-img:hover {
+  transform: scale(1.1);
   border-color: var(--accent);
-  transform: scale(1.12);
 }
 
 /* 📱 Responsive */
@@ -272,12 +272,6 @@ img {
 
   .detalle-container {
     padding: 1rem;
-  }
-
-  .btn-agregar,
-  #selectorVariantes select,
-  #selectorVariantes input {
-    width: 100%;
   }
 
   .logo img {

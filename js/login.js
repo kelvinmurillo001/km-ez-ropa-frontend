@@ -3,11 +3,10 @@
 import { API_BASE, GOOGLE_LOGIN_URL } from "./config.js";
 
 /**
- * 🔐 Sanitiza entradas para prevenir XSS básicas
+ * 🔐 Sanitiza entradas básicas para evitar XSS
  */
-const sanitize = (str = "") => {
-  return str.replace(/[<>"'`;(){}[\]]/g, "").trim();
-};
+const sanitize = (str = "") =>
+  str.replace(/[<>"'`;(){}[\]]/g, "").trim();
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formLogin");
@@ -16,13 +15,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const inputPass = form?.password;
   const googleBtn = document.getElementById("googleLoginBtn");
 
-  // 🌙 Aplicar modo oscuro si está activo
+  // 🌙 Aplicar modo oscuro si está activado
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 
   if (!form || !btnSubmit || !inputUser || !inputPass) return;
 
+  // 🧾 Enviar formulario
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("admin_user", JSON.stringify({ ...data.user, isAdmin: true }));
 
       mostrarMensaje("✅ Acceso concedido. Redirigiendo...", "success");
-      setTimeout(() => window.location.href = "/panel.html", 900);
+      setTimeout(() => window.location.href = "/panel.html", 1000);
     } catch (err) {
       console.error("❌ Error de red:", err);
       mostrarMensaje("❌ No se pudo conectar al servidor.", "error");
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ⌨️ Soporte para Enter
+  // ⌨️ Soporte de tecla Enter
   form.querySelectorAll("input").forEach((input) => {
     input.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 🔐 Google Login
+  // 🔐 Acceso con Google (si aplica)
   if (googleBtn) {
     googleBtn.addEventListener("click", () => {
       window.location.href = GOOGLE_LOGIN_URL;

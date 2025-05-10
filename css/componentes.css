@@ -1,10 +1,11 @@
+/* === 🎨 VARIABLES === */
 :root {
   --color-bg: #121212;
   --color-text: #f5f5f5;
-  --color-acento: #d4af37;
-  --color-acento-secundario: #ff9800;
   --color-panel: #1a1a1a;
   --color-borde: #444;
+  --color-acento: #d4af37;
+  --color-acento-secundario: #ff9800;
 
   --color-badge-blue: #2196f3;
   --color-badge-orange: #fb8c00;
@@ -15,7 +16,7 @@
   --transition: 0.3s ease;
 }
 
-/* === BASE === */
+/* === 🌐 BASE === */
 body {
   background-color: var(--color-bg);
   color: var(--color-text);
@@ -25,7 +26,7 @@ body {
   line-height: 1.6;
 }
 
-/* === TITULARES === */
+/* === 🏷 TITULARES === */
 h1, h3 {
   color: var(--color-acento);
   text-align: center;
@@ -33,14 +34,14 @@ h1, h3 {
   letter-spacing: 0.5px;
 }
 
-/* === CONTENEDOR === */
+/* === 📦 CONTENEDORES === */
 .promociones-container {
   max-width: 900px;
   margin: auto;
   padding: 2rem 1rem;
 }
 
-/* === PROMOCIÓN ACTUAL === */
+/* === 🔥 PROMOCIÓN ACTUAL === */
 .promo-actual {
   background-color: #1e1e1e;
   padding: 1.5rem;
@@ -64,7 +65,7 @@ h1, h3 {
   max-height: 400px;
 }
 
-/* === BADGES === */
+/* === 🏷 BADGES === */
 .badge {
   display: inline-block;
   padding: 0.3rem 0.8rem;
@@ -80,7 +81,7 @@ h1, h3 {
 .badge.green { background-color: var(--color-badge-green); }
 .badge.red { background-color: var(--color-badge-red); }
 
-/* === FORMULARIO PROMOCIÓN === */
+/* === 📄 FORMULARIO DE PROMOCIÓN === */
 .form-editar-promo {
   background-color: var(--color-panel);
   padding: 1.5rem;
@@ -109,7 +110,7 @@ h1, h3 {
   padding: 0.7rem;
   border-radius: var(--radius);
   font-size: 1rem;
-  transition: border-color var(--transition), background-color var(--transition);
+  transition: var(--transition);
 }
 
 .form-editar-promo input:focus-visible,
@@ -125,7 +126,7 @@ h1, h3 {
   margin-right: 8px;
 }
 
-/* === MENSAJE DEL FORMULARIO === */
+/* === 💬 MENSAJES === */
 .form-msg {
   font-size: 0.95rem;
   font-weight: bold;
@@ -134,13 +135,14 @@ h1, h3 {
   color: var(--color-acento);
 }
 
-/* === CHECKBOXES AGRUPADOS === */
+/* === ✅ CHECKBOX AGRUPADOS === */
 .checkbox-group {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem 1.2rem;
   margin-bottom: 1rem;
 }
+
 .checkbox-group label {
   display: flex;
   align-items: center;
@@ -148,7 +150,7 @@ h1, h3 {
   font-size: 0.9rem;
 }
 
-/* === BOTONES === */
+/* === 🎯 BOTONES === */
 button.btn {
   background-color: var(--color-acento);
   color: #121212;
@@ -160,6 +162,7 @@ button.btn {
   cursor: pointer;
   transition: background-color var(--transition);
 }
+
 button.btn:hover {
   background-color: var(--color-acento-secundario);
 }
@@ -174,12 +177,13 @@ button.btn-secundario {
   cursor: pointer;
   transition: var(--transition);
 }
+
 button.btn-secundario:hover {
   background-color: var(--color-acento);
   color: var(--color-bg);
 }
 
-/* === FILTROS PROMOS === */
+/* === 🔎 FILTROS DE PROMO === */
 .filtros-promos {
   display: flex;
   flex-wrap: wrap;
@@ -200,7 +204,7 @@ button.btn-secundario:hover {
   transition: var(--transition);
 }
 
-/* === RESPONSIVE === */
+/* === 📱 RESPONSIVE === */
 @media (max-width: 600px) {
   .form-editar-promo form {
     gap: 0.8rem;

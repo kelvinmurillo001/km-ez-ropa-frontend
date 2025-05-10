@@ -1,4 +1,17 @@
-/* === RESET BASE === */
+:root {
+  --bg-main: #121212;
+  --panel-dark: #1a1a1a;
+  --border-color: #333;
+  --text-light: #f5f5f5;
+  --text-muted: #bbb;
+  --accent: #ff6d00;
+  --accent-light: #ffa733;
+  --radius: 8px;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --transition: all 0.3s ease;
+}
+
+/* === 🌐 RESET === */
 body {
   margin: 0;
   padding: 0;
@@ -13,13 +26,12 @@ a {
   color: inherit;
   text-decoration: none;
 }
-
 img {
   max-width: 100%;
   display: block;
 }
 
-/* === HEADER === */
+/* === 🔝 HEADER === */
 .main-header {
   background-color: var(--panel-dark);
   border-bottom: 1px solid var(--border-color);
@@ -36,7 +48,6 @@ img {
   align-items: center;
   gap: 1rem;
 }
-
 .logo img {
   width: 60px;
   height: 60px;
@@ -44,13 +55,11 @@ img {
   border: 2px solid var(--accent);
   object-fit: cover;
 }
-
 .brand h1 {
   margin: 0;
   font-size: 1.6rem;
   color: var(--accent);
 }
-
 .brand p {
   margin: 0;
   font-size: 0.9rem;
@@ -63,7 +72,6 @@ img {
   align-items: center;
   flex-wrap: wrap;
 }
-
 .nav-links a,
 .nav-links button {
   background: transparent;
@@ -73,9 +81,8 @@ img {
   border-radius: var(--radius);
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: var(--transition);
 }
-
 .nav-links a:hover,
 .nav-links button:hover,
 .nav-links a:focus-visible,
@@ -85,7 +92,7 @@ img {
   outline: none;
 }
 
-/* === PROMO BANNER === */
+/* === 🟡 PROMO BANNER === */
 .promo-banner {
   background: linear-gradient(90deg, var(--accent), var(--accent-light));
   color: white;
@@ -96,7 +103,7 @@ img {
   letter-spacing: 0.5px;
 }
 
-/* === FILTROS === */
+/* === 🧰 FILTROS === */
 .filtros-section {
   display: flex;
   flex-wrap: wrap;
@@ -114,14 +121,12 @@ img {
   min-width: 220px;
   max-width: 320px;
 }
-
 .filtro label {
   font-size: 0.85rem;
   color: var(--text-muted);
   margin-bottom: 0.4rem;
   font-weight: 500;
 }
-
 .filtro select,
 .filtro input[type="search"] {
   padding: 0.6rem 1rem;
@@ -141,20 +146,18 @@ body.modo-oscuro .filtro input[type="search"] {
   border-color: #444;
 }
 
-/* === CATÁLOGO === */
+/* === 🛍️ CATÁLOGO === */
 .catalogo-section {
   padding: 3rem 1rem;
   max-width: 1300px;
   margin: auto;
 }
-
 .section-title {
   text-align: center;
   color: var(--accent);
   font-size: clamp(1.8rem, 2.2vw, 2.1rem);
   margin-bottom: 2.5rem;
 }
-
 .product-grid {
   display: grid;
   gap: 2rem;
@@ -169,22 +172,19 @@ body.modo-oscuro .filtro input[type="search"] {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: var(--transition);
   box-shadow: var(--shadow);
 }
-
 .product-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 8px 24px rgba(212, 175, 55, 0.2);
 }
-
 .product-card img {
   width: 100%;
   height: 260px;
   object-fit: cover;
   background-color: #eee;
 }
-
 .product-info {
   padding: 1.2rem;
   display: flex;
@@ -192,20 +192,18 @@ body.modo-oscuro .filtro input[type="search"] {
   gap: 0.5rem;
   text-align: center;
 }
-
 .product-info h3 {
   margin: 0;
   font-size: 1.2rem;
   color: var(--text-light);
 }
-
 .product-info p {
   margin: 0;
   color: var(--accent-light);
   font-weight: bold;
 }
 
-/* === BOTÓN AGREGAR === */
+/* === ➕ BOTÓN AGREGAR === */
 .btn-card {
   margin-top: auto;
   padding: 0.6rem 1.2rem;
@@ -215,9 +213,8 @@ body.modo-oscuro .filtro input[type="search"] {
   border-radius: var(--radius);
   cursor: pointer;
   font-weight: bold;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: var(--transition);
 }
-
 .btn-card:hover,
 .btn-card:focus-visible {
   background-color: var(--accent-light);
@@ -225,7 +222,7 @@ body.modo-oscuro .filtro input[type="search"] {
   outline: none;
 }
 
-/* === BOTONES FLOTANTES === */
+/* === 🧲 BOTONES FLOTANTES === */
 .floating-buttons {
   position: fixed;
   right: 20px;
@@ -235,7 +232,6 @@ body.modo-oscuro .filtro input[type="search"] {
   gap: 1rem;
   z-index: 999;
 }
-
 .cart-icon,
 .whatsapp-icon {
   position: relative;
@@ -248,13 +244,11 @@ body.modo-oscuro .filtro input[type="search"] {
   justify-content: center;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
 }
-
 .cart-icon img,
 .whatsapp-icon img {
   width: 28px;
   height: 28px;
 }
-
 #cartCount {
   position: absolute;
   top: -6px;
@@ -266,7 +260,7 @@ body.modo-oscuro .filtro input[type="search"] {
   border-radius: 50%;
 }
 
-/* === FOOTER === */
+/* === 📄 FOOTER === */
 .site-footer {
   text-align: center;
   padding: 2.5rem 1rem;
@@ -277,28 +271,24 @@ body.modo-oscuro .filtro input[type="search"] {
   margin-top: 3rem;
 }
 
-/* === RESPONSIVE === */
+/* === 📱 RESPONSIVE === */
 @media (max-width: 768px) {
   .filtros-section {
     flex-direction: column;
     align-items: center;
   }
-
   .filtro {
     width: 100%;
     max-width: 320px;
   }
-
   .main-header {
     flex-direction: column;
     text-align: center;
     gap: 1rem;
   }
-
   .nav-links {
     justify-content: center;
   }
-
   .product-card img {
     height: 220px;
   }

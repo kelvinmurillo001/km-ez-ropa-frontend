@@ -13,18 +13,33 @@ const PORT = process.env.PORT || 3000;
 
 // 🌐 CORS (ajustado al dominio real del frontend)
 app.use(cors({
-  origin: "https://kmezropacatalogo.com", // ← tu dominio frontend
+  origin: "https://kmezropacatalogo.com",
   credentials: true,
 }));
 
-// 🛡️ Helmet con CSP y headers seguros
+// 🛡️ Helmet (cabeceras de seguridad base)
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "same-origin" }));
 app.use(helmet.frameguard({ action: "deny" }));
 app.use(helmet.noSniff());
 app.use(helmet.referrerPolicy({ policy: "strict-origin-when-cross-origin" }));
 
-// 🔐 Forzar HTTPS en producción
+// ✅ CSP explícita (evita bloqueos de scripts, fetch, GA)
+app.use((req, res, next) => {
+  res.setHeader("Content-Security-Policy",
+    "default-src 'self'; " +
+    "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://apis.google.com 'unsafe-inline'; " +
+    "style-src 'self' 'unsafe-inline'; " +
+    "img-src 'self' data: https://*.googleusercontent.com https://lh3.googleusercontent.com; " +
+    "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; " +
+    "connect-src 'self' https://api.kmezropacatalogo.com; " +
+    "frame-src https://accounts.google.com https://*.google.com; " +
+    "object-src 'none'; base-uri 'self'; frame-ancestors 'none';"
+  );
+  next();
+});
+
+// 🔐 Redirección HTTPS en producción
 if (process.env.NODE_ENV === "production") {
   app.use((req, res, next) => {
     if (req.headers["x-forwarded-proto"] !== "https") {
@@ -34,7 +49,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-// ✅ Archivos estáticos con cache
+// ✅ Archivos estáticos con caché optimizada
 app.use("/assets", express.static(path.join(__dirname, "assets"), { maxAge: "30d" }));
 app.use("/css", express.static(path.join(__dirname, "css"), { maxAge: "30d" }));
 app.use("/js", express.static(path.join(__dirname, "js"), { maxAge: "30d" }));
@@ -54,12 +69,12 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "index.html"));
 });
 
-// ✅ Ruta para cliente (autenticado)
+// ✅ Ruta para cliente autenticado
 app.get("/cliente", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "cliente.html"));
 });
 
-// 📄 Rutas *.html (excluyendo especiales)
+// 📄 Rutas *.html (excepto especiales)
 app.get("/:page.html", (req, res, next) => {
   const { page } = req.params;
   const exclusions = ["sitemap", "robots", "cliente"];

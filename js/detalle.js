@@ -8,53 +8,48 @@ let varianteSeleccionada = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   registrarVisitaPublica();
-
-  const id = new URLSearchParams(window.location.search).get("id");
-  if (!id || id === "undefined") {
-    mostrarError("❌ Producto no encontrado o inválido.");
-    return;
-  }
-
-  cargarProducto(id);
   activarModoOscuro();
   actualizarCarritoWidget();
+
+  const id = new URLSearchParams(window.location.search).get("id");
+  if (!id || id === "undefined") return mostrarError("❌ Producto no encontrado o inválido.");
+
+  cargarProducto(id);
 
   document.getElementById("btnFavorito")?.addEventListener("click", () => toggleFavorito(id));
 });
 
-/* 📦 Cargar producto desde API */
+/* 📦 Obtener producto desde API */
 async function cargarProducto(id) {
   try {
-    const res = await fetch(`${API_BASE}/api/products/${id}`);
-    if (!res.ok) throw new Error("⚠️ Producto no encontrado");
+    const res = await fetch(`${API_BASE}/api/products/${encodeURIComponent(id)}`);
+    const data = await res.json();
 
-    const { producto } = await res.json();
-    if (!producto?._id) throw new Error("❌ Producto inválido");
+    if (!res.ok || !data?.producto?._id) throw new Error(data.message || "❌ Producto inválido");
 
-    productoGlobal = producto;
-    renderizarProducto(producto);
-    actualizarSEO(producto);
+    productoGlobal = data.producto;
+    renderizarProducto(productoGlobal);
+    actualizarSEO(productoGlobal);
     actualizarFavoritoUI(id);
   } catch (err) {
     mostrarError(err.message);
   }
 }
 
-/* 🖼 Renderizar contenido de producto */
+/* 🖼 Renderizar producto */
 function renderizarProducto(p) {
   const contenedor = document.getElementById("detalleProducto");
   if (!contenedor) return;
 
-  const imagen = p.images?.[0]?.url || "/assets/logo.jpg";
+  const imagenPrincipal = p.images?.[0]?.url || "/assets/logo.jpg";
   const nombre = sanitize(p.name);
   const descripcion = sanitize(p.description);
   const precio = parseFloat(p.price || 0).toFixed(2);
+  const galeria = p.images?.map((img, idx) => `
+    <img src="${img.url}" class="mini-img" alt="Imagen ${idx + 1} de ${nombre}" data-full="${img.url}" loading="lazy" />
+  `).join("") || "";
 
-  const galeria = (p.images || []).map(img => `
-    <img src="${img.url}" class="mini-img" alt="${nombre}" onclick="document.getElementById('imgPrincipal').src='${img.url}'"/>
-  `).join("");
-
-  const detallesExtra = `
+  const detalles = `
     <div class="detalles-extra">
       <p><strong>Categoría:</strong> ${sanitize(p.category)}</p>
       <p><strong>Subcategoría:</strong> ${sanitize(p.subcategory)}</p>
@@ -63,53 +58,57 @@ function renderizarProducto(p) {
   `;
 
   const tieneVariantes = Array.isArray(p.variants) && p.variants.length > 0;
+  const stockDisplay = tieneVariantes
+    ? `
+      <div class="selectores" id="selectorVariantes">
+        <label for="colorSelect">🎨 Color:</label>
+        <select id="colorSelect" aria-label="Color"></select>
+
+        <label for="tallaSelect">📏 Talla:</label>
+        <select id="tallaSelect" aria-label="Talla" disabled></select>
+
+        <div id="stockInfo" role="status" aria-live="polite">📦 Stock: -</div>
+
+        <label for="cantidadInput">🔢 Cantidad:</label>
+        <input type="number" id="cantidadInput" min="1" value="1" disabled />
+      </div>
+    `
+    : `
+      <div class="mt-1 text-muted">📦 Stock disponible: ${p.stockTotal ?? 0}</div>
+      <label for="cantidadInput">🔢 Cantidad:</label>
+      <input type="number" id="cantidadInput" min="1" max="${p.stockTotal}" value="1" />
+    `;
 
   contenedor.innerHTML = `
     <div class="detalle-img">
-      <img id="imgPrincipal" src="${imagen}" alt="${nombre}" loading="lazy" />
+      <img id="imgPrincipal" src="${imagenPrincipal}" alt="${nombre}" loading="lazy" />
       <div class="galeria-mini">${galeria}</div>
     </div>
-
     <div class="detalle-info" itemscope itemtype="https://schema.org/Product">
       <h2 itemprop="name">${nombre}</h2>
       <p itemprop="description">${descripcion}</p>
       <p class="precio">$<span itemprop="price">${precio}</span></p>
-
       <meta itemprop="sku" content="${p._id}" />
       <meta itemprop="brand" content="KM & EZ ROPA" />
       <meta itemprop="availability" content="https://schema.org/InStock" />
       <meta itemprop="priceCurrency" content="USD" />
-
-      ${detallesExtra}
-
-      ${tieneVariantes ? `
-        <div class="selectores" id="selectorVariantes">
-          <label for="colorSelect">🎨 Color:</label>
-          <select id="colorSelect" aria-label="Selecciona color"></select>
-
-          <label for="tallaSelect">📏 Talla:</label>
-          <select id="tallaSelect" aria-label="Selecciona talla" disabled></select>
-
-          <div id="stockInfo" role="status" aria-live="polite">📦 Stock: -</div>
-
-          <label for="cantidadInput">🔢 Cantidad:</label>
-          <input type="number" id="cantidadInput" min="1" value="1" disabled />
-        </div>
-      ` : `
-        <div class="mt-1 text-muted">📦 Stock disponible: ${p.stockTotal ?? 0}</div>
-        <label for="cantidadInput">🔢 Cantidad:</label>
-        <input type="number" id="cantidadInput" min="1" max="${p.stockTotal ?? 0}" value="1" />
-      `}
-
+      ${detalles}
+      ${stockDisplay}
       <button class="btn-agregar" id="btnAgregarCarrito" ${tieneVariantes ? "disabled" : ""}>🛒 Agregar al carrito</button>
     </div>
   `;
 
   document.getElementById("btnAgregarCarrito")?.addEventListener("click", agregarAlCarrito);
+  document.querySelectorAll(".mini-img").forEach(img =>
+    img.addEventListener("click", e => {
+      document.getElementById("imgPrincipal").src = e.target.dataset.full;
+    })
+  );
+
   if (tieneVariantes) configurarSelectores(p);
 }
 
-/* 🎨 Configurar selectores de variantes */
+/* 🎨 Selectores para variantes */
 function configurarSelectores(p) {
   const variantes = (p.variants || []).filter(v => v.stock > 0 && v.activo);
   const colorSelect = document.getElementById("colorSelect");
@@ -124,9 +123,13 @@ function configurarSelectores(p) {
 
   colorSelect.onchange = () => {
     const color = colorSelect.value;
-    const tallas = variantes.filter(v => v.color.toLowerCase() === color).map(v => v.talla.toUpperCase());
+    const tallas = variantes
+      .filter(v => v.color.toLowerCase() === color)
+      .map(v => v.talla.toUpperCase());
+
     tallaSelect.innerHTML = `<option disabled selected>Selecciona una talla</option>` +
       tallas.map(t => `<option value="${t}">${t}</option>`).join("");
+
     tallaSelect.disabled = false;
     cantidadInput.disabled = true;
     btnAgregar.disabled = true;
@@ -139,6 +142,7 @@ function configurarSelectores(p) {
     const variante = variantes.find(v =>
       v.color.toLowerCase() === color && v.talla.toUpperCase() === talla
     );
+
     if (variante) {
       varianteSeleccionada = variante;
       stockInfo.textContent = `📦 Stock: ${variante.stock}`;
@@ -150,55 +154,50 @@ function configurarSelectores(p) {
   };
 }
 
-/* 🛒 Agregar al carrito */
+/* 🛒 Agregar producto al carrito */
 function agregarAlCarrito() {
   const cantidad = parseInt(document.getElementById("cantidadInput").value || "1");
   const carrito = JSON.parse(localStorage.getItem("km_ez_cart")) || [];
 
-  const agregarItem = (nuevoItem, clave) => {
+  const pushToCart = (clave, data, max) => {
     const idx = carrito.findIndex(p => `${p.id}_${p.talla}_${p.color}`.toLowerCase() === clave);
     if (idx >= 0) {
-      carrito[idx].cantidad = Math.min(carrito[idx].cantidad + cantidad, nuevoItem.max);
+      carrito[idx].cantidad = Math.min(carrito[idx].cantidad + cantidad, max);
     } else {
-      carrito.push(nuevoItem.data);
+      carrito.push(data);
     }
   };
 
   if (productoGlobal.variants?.length > 0) {
-    if (!varianteSeleccionada) return mostrarToast("⚠️ Selecciona una variante");
-    if (cantidad < 1 || cantidad > varianteSeleccionada.stock) {
+    if (!varianteSeleccionada) return mostrarToast("⚠️ Selecciona una variante válida.");
+    if (cantidad < 1 || cantidad > varianteSeleccionada.stock)
       return mostrarToast(`⚠️ Stock insuficiente (${varianteSeleccionada.stock})`);
-    }
 
-    agregarItem({
-      data: {
-        id: productoGlobal._id,
-        nombre: productoGlobal.name,
-        imagen: productoGlobal.images?.[0]?.url || "/assets/logo.jpg",
-        precio: productoGlobal.price,
-        talla: varianteSeleccionada.talla,
-        color: varianteSeleccionada.color,
-        cantidad
-      },
-      max: varianteSeleccionada.stock
-    }, `${productoGlobal._id}_${varianteSeleccionada.talla}_${varianteSeleccionada.color}`.toLowerCase());
+    const clave = `${productoGlobal._id}_${varianteSeleccionada.talla}_${varianteSeleccionada.color}`.toLowerCase();
+    const item = {
+      id: productoGlobal._id,
+      nombre: productoGlobal.name,
+      imagen: productoGlobal.images?.[0]?.url || "/assets/logo.jpg",
+      precio: productoGlobal.price,
+      talla: varianteSeleccionada.talla,
+      color: varianteSeleccionada.color,
+      cantidad
+    };
 
+    pushToCart(clave, item, varianteSeleccionada.stock);
   } else {
     const stock = productoGlobal.stockTotal ?? 0;
     if (cantidad < 1 || cantidad > stock) return mostrarToast(`⚠️ Stock insuficiente (${stock})`);
 
-    agregarItem({
-      data: {
-        id: productoGlobal._id,
-        nombre: productoGlobal.name,
-        imagen: productoGlobal.images?.[0]?.url || "/assets/logo.jpg",
-        precio: productoGlobal.price,
-        talla: "única",
-        color: "",
-        cantidad
-      },
-      max: stock
-    }, `${productoGlobal._id}_única_`.toLowerCase());
+    pushToCart(`${productoGlobal._id}_única_`.toLowerCase(), {
+      id: productoGlobal._id,
+      nombre: productoGlobal.name,
+      imagen: productoGlobal.images?.[0]?.url || "/assets/logo.jpg",
+      precio: productoGlobal.price,
+      talla: "única",
+      color: "",
+      cantidad
+    }, stock);
   }
 
   localStorage.setItem("km_ez_cart", JSON.stringify(carrito));
@@ -206,13 +205,13 @@ function agregarAlCarrito() {
   mostrarToast("🛒 Producto agregado al carrito.");
 }
 
-/* ✅ Utilidades */
-function sanitize(text = "") {
+/* 🛠️ Utilidades */
+function sanitize(str = "") {
   const div = document.createElement("div");
-  div.textContent = text;
+  div.textContent = str;
   return div.innerHTML;
 }
-function capitalize(str) {
+function capitalize(str = "") {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 function mostrarError(msg) {
@@ -238,9 +237,7 @@ function actualizarCarritoWidget() {
 }
 function activarModoOscuro() {
   const btn = document.getElementById("modoOscuroBtn");
-  if (localStorage.getItem("modoOscuro") === "true") {
-    document.body.classList.add("modo-oscuro");
-  }
+  if (localStorage.getItem("modoOscuro") === "true") document.body.classList.add("modo-oscuro");
   btn?.addEventListener("click", () => {
     const activo = document.body.classList.toggle("modo-oscuro");
     localStorage.setItem("modoOscuro", activo);
@@ -250,14 +247,13 @@ function toggleFavorito(id) {
   const key = "km_ez_favs";
   const favs = JSON.parse(localStorage.getItem(key)) || [];
   const btn = document.getElementById("btnFavorito");
-
   if (favs.includes(id)) {
     localStorage.setItem(key, JSON.stringify(favs.filter(f => f !== id)));
-    btn.setAttribute("aria-pressed", "false");
+    btn?.setAttribute("aria-pressed", "false");
   } else {
     favs.push(id);
     localStorage.setItem(key, JSON.stringify(favs));
-    btn.setAttribute("aria-pressed", "true");
+    btn?.setAttribute("aria-pressed", "true");
   }
 }
 function actualizarFavoritoUI(id) {
@@ -268,7 +264,6 @@ function actualizarSEO(p = {}) {
   const nombre = sanitize(p.name);
   const descripcion = sanitize(p.description);
   const imagen = p.images?.[0]?.url || "/assets/og-image.jpg";
-
   document.title = `${nombre} - Compra online | KM & EZ ROPA`;
   document.querySelector('meta[name="description"]')?.setAttribute("content", descripcion);
   document.getElementById("ogTitle")?.setAttribute("content", nombre);

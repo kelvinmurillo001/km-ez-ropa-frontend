@@ -25,10 +25,11 @@
   <meta name="twitter:description" content="Explora estilo y comodidad en cada prenda de KM & EZ ROPA.">
   <meta name="twitter:image" content="/assets/og-image.jpg">
 
-  <!-- 🌠 Favicon y Fuentes -->
+  <!-- 🌠 Recursos y fuentes -->
   <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="/assets/logo.jpg" as="image" />
 
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css">
@@ -37,13 +38,13 @@
   <link rel="stylesheet" href="/css/detalle.css">
   <link rel="stylesheet" href="/css/promo-display.css">
 
-  <!-- ✅ Scripts -->
+  <!-- ✅ Scripts externos seguros -->
   <script type="module" src="/js/detalle.js" defer></script>
   <script type="module" src="/js/promo-display.js" defer></script>
+  <script type="module" src="/js/share-utils.js" defer></script>
 </head>
 
 <body lang="es" class="con-fondo fade-in">
-
   <!-- 🔝 Encabezado -->
   <header class="main-header" role="banner">
     <div class="logo">
@@ -88,8 +89,8 @@
     <!-- 📤 Compartir -->
     <section class="redes-sociales mt-3 text-center" aria-label="Compartir este producto">
       <p>🔗 Compartir este producto:</p>
-      <a href="#" onclick="compartirEnRed('facebook')" aria-label="Compartir en Facebook" rel="noopener noreferrer">📘 Facebook</a> |
-      <a href="#" onclick="compartirEnRed('whatsapp')" aria-label="Compartir en WhatsApp" rel="noopener noreferrer">💬 WhatsApp</a>
+      <a href="#" data-red="facebook" class="btn-compartir" aria-label="Compartir en Facebook">📘 Facebook</a> |
+      <a href="#" data-red="whatsapp" class="btn-compartir" aria-label="Compartir en WhatsApp">💬 WhatsApp</a>
     </section>
   </main>
 
@@ -113,17 +114,5 @@
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Activa JavaScript para visualizar correctamente esta página.</p>
   </noscript>
-
-  <!-- 🔗 Compartir en redes -->
-  <script>
-    function compartirEnRed(red) {
-      const url = window.location.href;
-      const titulo = document.title;
-      const enlace = red === "facebook"
-        ? `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
-        : `https://wa.me/?text=${encodeURIComponent(titulo + ' ' + url)}`;
-      window.open(enlace, "_blank", "noopener,noreferrer");
-    }
-  </script>
 </body>
 </html>

@@ -12,7 +12,7 @@
   --borde-claro: #ddd;
 }
 
-/* === 🛒 BASE === */
+/* === 🌑 ESTILO BASE === */
 body {
   background-color: var(--bg-oscuro);
   color: var(--text-claro);
@@ -50,7 +50,7 @@ body:not(.modo-oscuro) .btn-eliminar:hover {
   color: #fff;
 }
 
-/* === 🧾 TÍTULO === */
+/* === 🛍️ ENCABEZADO === */
 h1 {
   color: var(--naranja-principal);
   text-align: center;
@@ -58,14 +58,14 @@ h1 {
   font-size: 2rem;
 }
 
-/* === 📦 CONTENEDOR === */
+/* === 📦 CONTENEDOR PRINCIPAL === */
 .carrito-container {
   max-width: 1100px;
   margin: auto;
   padding: 2rem 1rem;
 }
 
-/* === 📋 LISTA DE PRODUCTOS === */
+/* === 🧾 LISTA DE PRODUCTOS === */
 .carrito-lista {
   display: flex;
   flex-direction: column;
@@ -93,7 +93,7 @@ h1 {
   border: 2px solid var(--naranja-principal);
 }
 
-/* === 📝 DETALLES === */
+/* === 📋 DETALLES === */
 .carrito-detalles {
   flex: 1;
   display: flex;
@@ -229,7 +229,7 @@ h1 {
 /* === ✨ ANIMACIONES === */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .fade-out {
@@ -265,7 +265,7 @@ h1 {
   }
 }
 
-/* === 🧼 CORRECCIÓN DE IMAGEN SOLITARIA EN BODY === */
+/* === 🧼 PROTECCIÓN DE BODY IMG === */
 body > img {
   max-width: 100%;
   height: auto;
@@ -276,5 +276,5 @@ body > img {
 }
 
 body > img:only-child {
-  display: none; /* Evita mostrar imágenes sueltas fuera del flujo */
+  display: none;
 }

@@ -1,25 +1,29 @@
-// 📁 frontend/js/promo-display.js
 "use strict";
 
 import { API_BASE } from "./config.js";
 
-const API_PROMOS = `${API_BASE || "https://km-ez-ropa-backend.onrender.com"}/api/promos`;
+const API_PROMOS = `${API_BASE}/api/promos`;
 
 document.addEventListener("DOMContentLoaded", () => {
   if (location.protocol !== "https:" && location.hostname !== "localhost") {
-    console.warn("⚠️ Se recomienda usar HTTPS para mayor seguridad.");
+    console.warn("⚠️ Recomendación: utiliza HTTPS en producción para evitar errores CSP.");
   }
 
   cargarPromociones();
 });
 
+/* ───────────────────────────────────────────── */
 async function cargarPromociones() {
   try {
-    const res = await fetch(API_PROMOS);
+    const res = await fetch(API_PROMOS, {
+      headers: { "Content-Type": "application/json" },
+      credentials: "include"
+    });
+
     if (!res.ok) throw new Error("❌ Error al obtener promociones");
 
     const { data: promos = [] } = await res.json();
-    if (!Array.isArray(promos) || !promos.length) return;
+    if (!Array.isArray(promos) || promos.length === 0) return;
 
     const clavePagina = detectarClavePagina(location.pathname);
     const hoy = Date.now();
@@ -39,9 +43,18 @@ async function cargarPromociones() {
 
   } catch (err) {
     console.error("❌ Promociones no disponibles:", err.message || err);
+
+    const main = document.querySelector("main") || document.body;
+    const fallback = document.createElement("div");
+    fallback.className = "promo-banner";
+    fallback.style.backgroundColor = "#fff3cd";
+    fallback.style.color = "#856404";
+    fallback.innerHTML = `<p style="text-align:center;">⚠️ No se pudo cargar promociones activas.</p>`;
+    main.prepend(fallback);
   }
 }
 
+/* ───────────────────────────────────────────── */
 function detectarClavePagina(path) {
   if (path.includes("checkout")) return "checkout";
   if (path.includes("carrito")) return "carrito";
@@ -52,6 +65,7 @@ function detectarClavePagina(path) {
   return "otros";
 }
 
+/* ───────────────────────────────────────────── */
 function agruparPorPosicion(lista = []) {
   return lista.reduce((acc, promo) => {
     const pos = promo.position || "top";
@@ -61,6 +75,7 @@ function agruparPorPosicion(lista = []) {
   }, {});
 }
 
+/* ───────────────────────────────────────────── */
 function mostrarRotador(promos = [], posicion = "top") {
   if (!promos.length) return;
 
@@ -117,6 +132,7 @@ function mostrarRotador(promos = [], posicion = "top") {
   }
 }
 
+/* ───────────────────────────────────────────── */
 function insertarSegunPosicion(elemento, posicion) {
   const main = document.querySelector("main");
   const body = document.body;
@@ -140,8 +156,9 @@ function insertarSegunPosicion(elemento, posicion) {
   }
 }
 
+/* ───────────────────────────────────────────── */
 function sanitize(text = "") {
   const div = document.createElement("div");
-  div.appendChild(document.createTextNode(text));
+  div.textContent = text;
   return div.innerHTML;
 }
