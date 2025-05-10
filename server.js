@@ -11,20 +11,18 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 🛡️ Seguridad con helmet (desactiva CSP solo si usas inline styles/scripts)
-app.use(
-  helmet({
-    contentSecurityPolicy: false,
-  })
-);
+// 🌐 CORS (ajustado al dominio real del frontend)
+app.use(cors({
+  origin: "https://kmezropacatalogo.com", // ← tu dominio frontend
+  credentials: true,
+}));
 
-// 🌐 CORS (ajusta el origin a tu dominio real de frontend si usas cookies/sesión)
-app.use(
-  cors({
-    origin: "https://kmezropacatalogo.com", // ⚠️ Reemplaza con tu dominio real
-    credentials: true,
-  })
-);
+// 🛡️ Helmet con CSP y headers seguros
+app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({ policy: "same-origin" }));
+app.use(helmet.frameguard({ action: "deny" }));
+app.use(helmet.noSniff());
+app.use(helmet.referrerPolicy({ policy: "strict-origin-when-cross-origin" }));
 
 // 🔐 Forzar HTTPS en producción
 if (process.env.NODE_ENV === "production") {
@@ -36,7 +34,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-// ✅ Servir archivos estáticos con cache
+// ✅ Archivos estáticos con cache
 app.use("/assets", express.static(path.join(__dirname, "assets"), { maxAge: "30d" }));
 app.use("/css", express.static(path.join(__dirname, "css"), { maxAge: "30d" }));
 app.use("/js", express.static(path.join(__dirname, "js"), { maxAge: "30d" }));
@@ -56,22 +54,24 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "index.html"));
 });
 
-// ✅ Ruta explícita para usuarios autenticados (evita 404 post-login con Google)
+// ✅ Ruta para cliente (autenticado)
 app.get("/cliente", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "cliente.html"));
 });
 
-// 📄 Otras páginas *.html
+// 📄 Rutas *.html (excluyendo especiales)
 app.get("/:page.html", (req, res, next) => {
   const { page } = req.params;
-  if (["sitemap", "robots", "cliente"].includes(page)) return next();
+  const exclusions = ["sitemap", "robots", "cliente"];
+  if (exclusions.includes(page)) return next();
+
   const filePath = path.join(__dirname, "views", `${page}.html`);
   res.sendFile(filePath, (err) => {
     if (err) res.status(404).send("❌ Página no encontrada");
   });
 });
 
-// 🧹 Catch-all para rutas no definidas
+// 🧹 Catch-all
 app.use((req, res) => {
   res.status(404).send("❌ Ruta no encontrada en el frontend");
 });

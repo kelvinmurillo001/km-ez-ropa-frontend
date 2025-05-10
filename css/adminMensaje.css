@@ -17,11 +17,13 @@
   pointer-events: none;
   border: 2px solid transparent;
   backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
   transition: opacity 0.4s ease, transform 0.4s ease;
+  line-height: 1.4;
 }
 
-/* ✅ Mostrar mensaje con animación */
+/* ✅ Mostrar mensaje */
 #adminMensaje.show {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
@@ -29,29 +31,21 @@
 }
 
 /* === TIPOS DE MENSAJE === */
-
-/* ✔️ Éxito */
 #adminMensaje.success {
   background-color: rgba(22, 63, 22, 0.9);
   color: #b9f6ca;
   border-color: #00e676;
 }
-
-/* ❌ Error */
 #adminMensaje.error {
   background-color: rgba(74, 18, 18, 0.9);
   color: #ffcdd2;
   border-color: #ef5350;
 }
-
-/* ℹ️ Info */
 #adminMensaje.info {
   background-color: rgba(33, 24, 0, 0.9);
   color: #fff3cd;
   border-color: #ffa726;
 }
-
-/* ⚠️ Advertencia */
 #adminMensaje.warning {
   background-color: rgba(102, 68, 0, 0.9);
   color: #ffecb3;
@@ -61,4 +55,11 @@
 /* 🌓 Modo Oscuro */
 body.modo-oscuro #adminMensaje {
   box-shadow: 0 4px 12px rgba(255, 255, 255, 0.08);
+}
+
+/* ♿ Movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  #adminMensaje {
+    transition: none !important;
+  }
 }

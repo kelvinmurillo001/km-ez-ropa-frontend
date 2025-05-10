@@ -3,15 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <title>🔍 Diagnóstico del Sistema</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
   <link rel="stylesheet" href="/css/diagnostico.css" />
   <script type="module" src="/js/diagnostico.js"></script>
 
+  <style>
+
+  </style>
 </head>
+
 <body>
   <h1>🔧 Diagnóstico del Sistema</h1>
-  <p>Presiona el botón para comprobar que el backend, la base de datos y las integraciones externas están funcionando correctamente.</p>
+  <p>Presiona el botón para comprobar que el backend, base de datos y servicios externos están funcionando correctamente.</p>
 
   <button id="btnDiagnostico">📡 Ejecutar Diagnóstico</button>
-  <div id="resultados"></div>
+  <div id="resultados" role="region" aria-live="polite"></div>
 </body>
 </html>

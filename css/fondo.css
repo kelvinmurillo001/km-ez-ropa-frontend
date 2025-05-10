@@ -1,4 +1,4 @@
-/* ✅ Fondo con logo y branding mejorado */
+/* ✅ Fondo con imagen y branding personalizado */
 body.con-fondo {
   background-image: url("/assets/logo.jpg");
   background-repeat: no-repeat;
@@ -6,33 +6,35 @@ body.con-fondo {
   background-position: center;
   background-attachment: fixed;
   backdrop-filter: blur(2.5px);
-  -webkit-backdrop-filter: blur(2.5px); /* Soporte Safari */
-  position: relative;
-  z-index: 1;
+  -webkit-backdrop-filter: blur(2.5px); /* Safari support */
+  background-blend-mode: lighten;
   transition: background 0.4s ease, backdrop-filter 0.3s ease;
   min-height: 100vh;
   isolation: isolate;
   overflow-x: hidden;
   will-change: backdrop-filter, background;
   image-rendering: optimizeQuality;
+  position: relative;
+  z-index: 1;
 }
 
-/* 🧱 Capa de opacidad suave */
+/* 🧱 Capa de opacidad translúcida encima del fondo */
 body.con-fondo::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: rgba(255, 255, 255, 0.88); /* Fondo claro */
+  background: rgba(255, 255, 255, 0.88); /* Fondo claro por defecto */
   z-index: -1;
-  transition: background 0.3s ease;
   pointer-events: none;
+  transition: background 0.3s ease;
 }
 
+/* 🌙 Modo oscuro sobre fondo */
 body.modo-oscuro.con-fondo::before {
   background: rgba(0, 0, 0, 0.65);
 }
 
-/* ✨ Animación sutil */
+/* ✨ Fade-in suave */
 .fade-in {
   animation: fadeIn 0.6s ease-in-out;
 }
@@ -48,7 +50,14 @@ body.modo-oscuro.con-fondo::before {
   }
 }
 
-/* 📱 Optimización para móviles */
+/* 🚫 Preferencia de accesibilidad para reducir movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .fade-in {
+    animation: none !important;
+  }
+}
+
+/* 📱 Ajustes para móviles */
 @media (max-width: 600px) {
   body.con-fondo {
     background-attachment: scroll;

@@ -3,7 +3,7 @@
 import { API_BASE } from "./config.js";
 import { mostrarMensaje } from "./sesion-utils.js";
 
-// 📌 Elementos del DOM
+// 📌 DOM
 const listaPedidos = document.getElementById("listaPedidos");
 const saludo = document.getElementById("saludoUsuario");
 const cerrarSesionBtn = document.getElementById("cerrarSesionBtn");
@@ -12,30 +12,22 @@ const filtroEstado = document.getElementById("filtroEstado");
 const API_ME = `${API_BASE}/auth/me`;
 const API_PEDIDOS = `${API_BASE}/api/orders/mis-pedidos`;
 
-// ▶️ Al cargar el documento
 document.addEventListener("DOMContentLoaded", async () => {
   const usuario = await obtenerUsuario();
 
   if (!usuario) {
     mostrarMensaje("🔒 Sesión no iniciada. Redirigiendo...", "error");
-    setTimeout(() => {
-      window.location.href = "/login.html";
-    }, 1200);
+    setTimeout(() => window.location.href = "/login.html", 1500);
     return;
   }
 
-  // Mostrar saludo
-  if (saludo) {
-    saludo.textContent = `👤 Hola, ${sanitize(usuario.name)}`;
-  }
+  if (saludo) saludo.textContent = `👤 Hola, ${sanitize(usuario.name)}`;
 
   await cargarPedidos();
 
   cerrarSesionBtn?.addEventListener("click", async () => {
     try {
-      await fetch(`${API_BASE}/auth/logout`, {
-        credentials: "include"
-      });
+      await fetch(`${API_BASE}/auth/logout`, { credentials: "include" });
     } catch (e) {
       console.warn("⚠️ Error al cerrar sesión:", e);
     }
@@ -46,13 +38,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 /**
- * 🔐 Obtener usuario autenticado desde backend
+ * 🔐 Obtiene información del usuario autenticado
  */
 async function obtenerUsuario() {
   try {
-    const res = await fetch(API_ME, {
-      credentials: "include"
-    });
+    const res = await fetch(API_ME, { credentials: "include" });
     const data = await res.json();
     return res.ok ? data.user : null;
   } catch (err) {
@@ -62,51 +52,43 @@ async function obtenerUsuario() {
 }
 
 /**
- * 🚚 Cargar pedidos del usuario autenticado
+ * 🚚 Cargar pedidos del usuario
  */
 async function cargarPedidos() {
+  if (!listaPedidos) return;
   const estadoFiltrado = filtroEstado?.value?.trim().toLowerCase();
 
   try {
-    const res = await fetch(API_PEDIDOS, {
-      credentials: "include"
-    });
-
+    const res = await fetch(API_PEDIDOS, { credentials: "include" });
     const data = await res.json();
 
     if (!res.ok || !Array.isArray(data.pedidos)) {
-      throw new Error(data.message || "No se pudieron cargar los pedidos.");
+      throw new Error(data.message || "❌ No se pudieron cargar los pedidos.");
     }
 
     const pedidos = estadoFiltrado
       ? data.pedidos.filter(p => (p.estado || "").toLowerCase() === estadoFiltrado)
       : data.pedidos;
 
-    if (pedidos.length === 0) {
-      listaPedidos.innerHTML = `<p class="text-center">📭 No hay pedidos con ese estado.</p>`;
-      return;
-    }
+    listaPedidos.innerHTML = pedidos.length
+      ? pedidos.map(pedidoHTML).join("")
+      : `<p class="text-center">📭 No hay pedidos con ese estado.</p>`;
 
-    listaPedidos.innerHTML = pedidos.map(pedidoHTML).join("");
-
-    // ✅ Añadir listeners sin inline JS
     document.querySelectorAll(".ver-detalles").forEach(btn => {
       btn.addEventListener("click", e => {
-        const id = e.target.closest(".pedido-card")?.dataset?.id;
-        if (id) {
-          window.location.href = `/detalle-pedido.html?id=${id}`;
-        }
+        const id = e.currentTarget.closest(".pedido-card")?.dataset?.id;
+        if (id) window.location.href = `/detalle-pedido.html?id=${id}`;
       });
     });
 
   } catch (err) {
     console.error("❌ Error al cargar pedidos:", err);
-    listaPedidos.innerHTML = `<p class="text-center" style="color:red;">❌ ${err.message}</p>`;
+    listaPedidos.innerHTML = `<p class="text-center" style="color:red;">❌ ${sanitize(err.message)}</p>`;
   }
 }
 
 /**
- * 🧾 Generar HTML de cada pedido
+ * 🧾 Genera HTML para un pedido
  */
 function pedidoHTML(p) {
   const fecha = new Date(p.createdAt).toLocaleDateString("es-EC");
@@ -115,18 +97,18 @@ function pedidoHTML(p) {
   const id = p._id?.slice(-6)?.toUpperCase() || "XXXXXX";
 
   return `
-    <div class="pedido-card" data-id="${p._id}" role="region" aria-label="Pedido ${id}">
+    <div class="pedido-card" data-id="${sanitize(p._id)}" role="region" aria-label="Pedido ${id}">
       <p><strong>Pedido:</strong> #${id}</p>
       <p><strong>Fecha:</strong> ${fecha}</p>
       <p><strong>Total:</strong> ${total}</p>
-      <p><strong>Estado:</strong> <span class="estado-${p.estado || 'otro'}">${estado}</span></p>
+      <p><strong>Estado:</strong> <span class="estado-${sanitize(p.estado || 'otro')}">${estado}</span></p>
       <button class="btn-secundario ver-detalles">👁️ Ver Detalles</button>
     </div>
   `;
 }
 
 /**
- * ✅ Traducir estado interno a legible
+ * 🧠 Convierte estado técnico en estado legible
  */
 function estadoBonito(e = "") {
   const estados = {
@@ -141,7 +123,7 @@ function estadoBonito(e = "") {
 }
 
 /**
- * 🧼 Sanitizar texto contra inyecciones simples
+ * 🧼 Sanitiza texto plano
  */
 function sanitize(text = "") {
   const div = document.createElement("div");

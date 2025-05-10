@@ -1,4 +1,3 @@
-/* === 🎨 VARIABLES ROOT === */
 :root {
   --color-bg: #121212;
   --color-fg: #f5f5f5;
@@ -16,7 +15,6 @@
   --color-white: #fff;
 }
 
-/* === 🌙 BASE === */
 body {
   background-color: var(--color-bg);
   color: var(--color-fg);
@@ -27,9 +25,9 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 0;
+  line-height: 1.5;
 }
 
-/* === 🧱 CONTENEDOR LOGIN === */
 .login-container {
   max-width: 400px;
   width: 90%;
@@ -48,7 +46,6 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* === 📝 FORMULARIO === */
 .formulario {
   display: flex;
   flex-direction: column;
@@ -77,7 +74,7 @@ input[aria-invalid="true"] {
   box-shadow: 0 0 4px rgba(255, 0, 0, 0.4);
 }
 
-/* === 🔘 BOTONES === */
+/* === BOTONES === */
 .btn,
 .btn-secundario {
   padding: 0.85rem 1.3rem;
@@ -115,7 +112,7 @@ input[aria-invalid="true"] {
   transform: translateY(-1px);
 }
 
-/* === 🔐 GOOGLE LOGIN === */
+/* === LOGIN GOOGLE === */
 .btn-google {
   display: flex;
   align-items: center;
@@ -144,7 +141,7 @@ input[aria-invalid="true"] {
   display: inline-block;
 }
 
-/* === ⚠️ MENSAJE DE ERROR === */
+/* === MENSAJE DE ERROR === */
 #errorMensaje {
   background-color: var(--color-error-bg);
   color: var(--color-error-text);
@@ -168,7 +165,7 @@ input[aria-invalid="true"] {
   100% { transform: translateX(0); }
 }
 
-/* === 🔐 MODAL RECUPERACIÓN === */
+/* === MODAL RECUPERACIÓN === */
 .modal-recuperar {
   position: fixed;
   inset: 0;
@@ -219,7 +216,7 @@ input[aria-invalid="true"] {
   display: none !important;
 }
 
-/* === ✨ ANIMACIONES === */
+/* === ANIMACIÓN === */
 .fade-in {
   animation: fadeIn 0.5s ease-in;
 }
@@ -232,5 +229,13 @@ input[aria-invalid="true"] {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* ♿ Reducir movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .fade-in, .btn, .btn:hover, .btn-google, .btn-google:hover {
+    animation: none !important;
+    transition: none !important;
   }
 }

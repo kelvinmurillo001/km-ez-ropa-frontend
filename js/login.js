@@ -2,8 +2,12 @@
 
 import { API_BASE, GOOGLE_LOGIN_URL } from "./config.js";
 
-// 🛡️ Sanitiza campos para prevenir inyecciones simples
-const sanitize = (str = "") => str.replace(/[<>"'`;]/g, "").trim();
+/**
+ * 🔐 Sanitiza entradas para prevenir XSS básicas
+ */
+const sanitize = (str = "") => {
+  return str.replace(/[<>"'`;(){}[\]]/g, "").trim();
+};
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formLogin");
@@ -12,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const inputPass = form?.password;
   const googleBtn = document.getElementById("googleLoginBtn");
 
-  // 🌙 Activar modo oscuro si está guardado
+  // 🌙 Aplicar modo oscuro si está activo
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
@@ -52,14 +56,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // ✅ Guardar datos
+      // ✅ Guardar token y usuario
       localStorage.setItem("admin_token", data.accessToken);
       localStorage.setItem("admin_user", JSON.stringify({ ...data.user, isAdmin: true }));
 
       mostrarMensaje("✅ Acceso concedido. Redirigiendo...", "success");
-      setTimeout(() => {
-        window.location.href = "/panel.html";
-      }, 900);
+      setTimeout(() => window.location.href = "/panel.html", 900);
     } catch (err) {
       console.error("❌ Error de red:", err);
       mostrarMensaje("❌ No se pudo conectar al servidor.", "error");
@@ -69,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ⌨️ Submit con Enter
+  // ⌨️ Soporte para Enter
   form.querySelectorAll("input").forEach((input) => {
     input.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
@@ -79,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 🔐 Login con Google
+  // 🔐 Google Login
   if (googleBtn) {
     googleBtn.addEventListener("click", () => {
       window.location.href = GOOGLE_LOGIN_URL;
@@ -88,15 +90,16 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**
- * ✅ Mensaje accesible flotante
+ * 💬 Mostrar mensaje accesible
  */
 function mostrarMensaje(texto, tipo = "info") {
   const box = document.getElementById("adminMensaje");
   if (!box) return alert(texto);
 
   box.textContent = texto;
-  box.className = "admin-message";
-  box.classList.add(tipo);
+  box.setAttribute("role", "alert");
+  box.setAttribute("aria-live", "assertive");
+  box.className = `admin-message ${tipo}`;
   box.classList.remove("oculto");
 
   clearTimeout(box._timeout);

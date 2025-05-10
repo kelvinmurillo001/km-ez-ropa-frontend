@@ -10,6 +10,7 @@
   <meta name="description" content="Accede al panel administrativo de KM & EZ ROPA y gestiona productos, pedidos y promociones." />
   <meta name="author" content="KM & EZ ROPA" />
   <meta name="theme-color" content="#ff6d00" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -46,10 +47,11 @@
       id="username"
       placeholder="Ej: admin"
       required
-      autocomplete="username"
       maxlength="40"
+      autocomplete="username"
       inputmode="text"
       aria-required="true"
+      aria-describedby="errorMensaje"
     />
 
     <!-- Contraseña -->
@@ -60,10 +62,11 @@
       id="password"
       placeholder="••••••••"
       required
-      autocomplete="current-password"
       maxlength="100"
+      autocomplete="current-password"
       inputmode="text"
       aria-required="true"
+      aria-describedby="errorMensaje"
     />
 
     <!-- Botón de acceso -->
@@ -75,10 +78,9 @@
     <div class="text-center mt-3">
       <a 
         href="https://api.kmezropacatalogo.com/auth/google" 
-        rel="noopener" 
         class="btn-google"
-        aria-label="Iniciar sesión con Google"
-        style="text-decoration: none; display: inline-block;">
+        rel="noopener noreferrer"
+        aria-label="Iniciar sesión con Google">
         🔐 Iniciar sesión con Google
       </a>
     </div>

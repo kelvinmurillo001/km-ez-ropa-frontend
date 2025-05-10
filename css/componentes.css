@@ -22,6 +22,7 @@ body {
   font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 0;
+  line-height: 1.6;
 }
 
 /* === TITULARES === */
@@ -32,7 +33,7 @@ h1, h3 {
   letter-spacing: 0.5px;
 }
 
-/* === CONTENEDOR PRINCIPAL === */
+/* === CONTENEDOR === */
 .promociones-container {
   max-width: 900px;
   margin: auto;
@@ -46,7 +47,6 @@ h1, h3 {
   border: 2px dashed var(--color-acento-secundario);
   border-radius: var(--radius);
   margin-bottom: 2rem;
-  font-size: 1rem;
   text-align: center;
   box-shadow: 0 0 12px rgba(212, 175, 55, 0.1);
   transition: background-color var(--transition);
@@ -59,6 +59,7 @@ h1, h3 {
   border-radius: var(--radius);
   box-shadow: 0 2px 12px rgba(212, 175, 55, 0.2);
 }
+
 .promo-actual video {
   max-height: 400px;
 }
@@ -72,11 +73,12 @@ h1, h3 {
   font-size: 0.85rem;
   text-transform: uppercase;
   margin: 0 6px 0.4rem 6px;
+  color: #fff;
 }
-.badge.blue    { background-color: var(--color-badge-blue); color: #fff; }
-.badge.orange  { background-color: var(--color-badge-orange); color: #fff; }
-.badge.green   { background-color: var(--color-badge-green); color: #fff; }
-.badge.red     { background-color: var(--color-badge-red); color: #fff; }
+.badge.blue { background-color: var(--color-badge-blue); }
+.badge.orange { background-color: var(--color-badge-orange); }
+.badge.green { background-color: var(--color-badge-green); }
+.badge.red { background-color: var(--color-badge-red); }
 
 /* === FORMULARIO PROMOCIÓN === */
 .form-editar-promo {
@@ -84,7 +86,6 @@ h1, h3 {
   padding: 1.5rem;
   border-radius: var(--radius);
   box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
-  transition: box-shadow var(--transition);
 }
 
 .form-editar-promo form {
@@ -111,9 +112,9 @@ h1, h3 {
   transition: border-color var(--transition), background-color var(--transition);
 }
 
-.form-editar-promo input:focus,
-.form-editar-promo select:focus,
-.form-editar-promo textarea:focus {
+.form-editar-promo input:focus-visible,
+.form-editar-promo select:focus-visible,
+.form-editar-promo textarea:focus-visible {
   border-color: var(--color-acento);
   background-color: #2a2a2a;
   outline: none;
@@ -140,7 +141,6 @@ h1, h3 {
   gap: 0.6rem 1.2rem;
   margin-bottom: 1rem;
 }
-
 .checkbox-group label {
   display: flex;
   align-items: center;
@@ -160,7 +160,6 @@ button.btn {
   cursor: pointer;
   transition: background-color var(--transition);
 }
-
 button.btn:hover {
   background-color: var(--color-acento-secundario);
 }
@@ -175,7 +174,6 @@ button.btn-secundario {
   cursor: pointer;
   transition: var(--transition);
 }
-
 button.btn-secundario:hover {
   background-color: var(--color-acento);
   color: var(--color-bg);

@@ -3,7 +3,8 @@
 import { API_BASE } from "./config.js";
 
 /**
- * ✅ Obtener usuario autenticado usando cookie de sesión
+ * ✅ Obtiene información del usuario autenticado por cookie de sesión
+ * @returns {Object|null} Usuario o null si no hay sesión
  */
 export async function getUsuarioSesion() {
   try {
@@ -11,7 +12,7 @@ export async function getUsuarioSesion() {
       credentials: "include"
     });
     const data = await res.json();
-    return res.ok ? data.user : null;
+    return res.ok && data?.user ? data.user : null;
   } catch (err) {
     console.error("❌ Error al verificar sesión:", err);
     return null;
@@ -19,7 +20,7 @@ export async function getUsuarioSesion() {
 }
 
 /**
- * 🚪 Cerrar sesión limpia desde backend y frontend
+ * 🚪 Cierra sesión del usuario y redirige a login
  */
 export async function cerrarSesionCliente() {
   try {
@@ -27,18 +28,25 @@ export async function cerrarSesionCliente() {
       credentials: "include"
     });
   } catch (err) {
-    console.warn("⚠️ Error cerrando sesión en backend:", err);
+    console.warn("⚠️ Error al cerrar sesión en backend:", err);
+  } finally {
+    window.location.href = "/login.html";
   }
-
-  window.location.href = "/login.html";
 }
 
 /**
- * 💬 Mostrar mensaje global accesible
+ * 💬 Muestra un mensaje global accesible para el usuario
+ * @param {string} texto - Contenido del mensaje
+ * @param {string} tipo - Tipo visual ('info', 'success', 'error', 'warn')
  */
 export function mostrarMensaje(texto = "", tipo = "info") {
   const box = document.getElementById("adminMensaje");
-  if (!box) return alert(texto);
+
+  // Fallback visual si no existe el elemento
+  if (!box) {
+    alert(texto);
+    return;
+  }
 
   box.textContent = texto;
   box.setAttribute("role", "alert");
@@ -46,7 +54,7 @@ export function mostrarMensaje(texto = "", tipo = "info") {
   box.className = `admin-message ${tipo}`;
   box.classList.remove("oculto");
 
-  clearTimeout(box._timeout);
+  if (box._timeout) clearTimeout(box._timeout);
   box._timeout = setTimeout(() => {
     box.classList.add("oculto");
   }, 4000);
