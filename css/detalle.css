@@ -12,6 +12,8 @@
   --input-bg: #222;
   --input-border: #555;
   --danger: #ff5252;
+  --radius: 8px;
+  --transition: all 0.3s ease;
 }
 
 /* 🌑 BASE GENERAL */
@@ -22,12 +24,21 @@ body {
   color: var(--text-light);
   line-height: 1.6;
   transition: background-color 0.3s ease, color 0.3s ease;
+  scroll-behavior: smooth;
 }
 
 a {
   color: var(--accent);
   text-decoration: none;
   transition: color 0.3s ease;
+}
+
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 2px dashed var(--accent);
+  outline-offset: 4px;
 }
 
 img {
@@ -87,11 +98,11 @@ img {
   border: 2px solid var(--accent-strong);
   color: var(--accent-strong);
   padding: 0.5rem 1rem;
-  border-radius: 6px;
+  border-radius: var(--radius);
   font-weight: bold;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: var(--transition);
 }
 
 .nav-links a:hover,
@@ -126,7 +137,7 @@ img {
   object-fit: contain;
   border-radius: 14px;
   box-shadow: 0 6px 18px rgba(255, 179, 0, 0.3);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  transition: var(--transition);
 }
 
 .detalle-img img:hover {
@@ -172,11 +183,11 @@ img {
   width: 100%;
   padding: 0.75rem;
   font-size: 1rem;
-  border-radius: 6px;
+  border-radius: var(--radius);
   background-color: var(--input-bg);
   border: 1px solid var(--input-border);
   color: var(--text-light);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: var(--transition);
 }
 
 #selectorVariantes select:focus,
@@ -205,7 +216,7 @@ img {
   background-color: var(--bg-extra);
   border-left: 5px solid var(--highlight-border);
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: var(--radius);
 }
 
 .detalles-extra p {
@@ -222,11 +233,11 @@ img {
   color: #000;
   font-weight: bold;
   font-size: 1.1rem;
-  border-radius: 6px;
+  border-radius: var(--radius);
   border: none;
   cursor: pointer;
   text-transform: uppercase;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: var(--transition);
 }
 
 .btn-agregar:hover {
@@ -246,11 +257,11 @@ img {
 .mini-img {
   width: 75px;
   height: 75px;
-  border-radius: 8px;
+  border-radius: var(--radius);
   object-fit: cover;
   border: 2px solid #444;
   cursor: pointer;
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  transition: var(--transition);
 }
 
 .mini-img:hover {

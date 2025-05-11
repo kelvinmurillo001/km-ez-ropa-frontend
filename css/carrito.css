@@ -12,7 +12,7 @@
   --borde-claro: #ddd;
 }
 
-/* === 🌑 ESTILO BASE === */
+/* === 🌑 BASE === */
 body {
   background-color: var(--bg-oscuro);
   color: var(--text-claro);
@@ -50,7 +50,7 @@ body:not(.modo-oscuro) .btn-eliminar:hover {
   color: #fff;
 }
 
-/* === 🛍️ ENCABEZADO === */
+/* === 🛒 TÍTULO === */
 h1 {
   color: var(--naranja-principal);
   text-align: center;
@@ -58,14 +58,14 @@ h1 {
   font-size: 2rem;
 }
 
-/* === 📦 CONTENEDOR PRINCIPAL === */
+/* === CONTENEDOR === */
 .carrito-container {
   max-width: 1100px;
   margin: auto;
   padding: 2rem 1rem;
 }
 
-/* === 🧾 LISTA DE PRODUCTOS === */
+/* === LISTA === */
 .carrito-lista {
   display: flex;
   flex-direction: column;
@@ -82,9 +82,10 @@ h1 {
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(255, 109, 0, 0.08);
   animation: fadeIn 0.4s ease-in;
+  transition: all 0.3s ease;
 }
 
-/* === 🖼️ IMAGEN === */
+/* === IMAGEN === */
 .carrito-img {
   width: 100px;
   height: 100px;
@@ -93,7 +94,7 @@ h1 {
   border: 2px solid var(--naranja-principal);
 }
 
-/* === 📋 DETALLES === */
+/* === DETALLES === */
 .carrito-detalles {
   flex: 1;
   display: flex;
@@ -114,7 +115,7 @@ h1 {
   color: #bbb;
 }
 
-/* === 🔢 CANTIDAD === */
+/* === CANTIDAD === */
 .carrito-cantidad {
   display: flex;
   align-items: center;
@@ -140,7 +141,7 @@ h1 {
   outline: none;
 }
 
-/* === 🗑️ ELIMINAR === */
+/* === ELIMINAR === */
 .btn-eliminar {
   background-color: transparent;
   border: 2px solid var(--rojo-error);
@@ -159,7 +160,7 @@ h1 {
   color: #fff;
 }
 
-/* === 💳 RESUMEN === */
+/* === RESUMEN === */
 .carrito-resumen {
   margin-top: 2.5rem;
   padding: 1.5rem;
@@ -177,7 +178,7 @@ h1 {
   margin-bottom: 1rem;
 }
 
-/* === 🎯 BOTONES === */
+/* === BOTONES === */
 .botones-carrito {
   display: flex;
   flex-wrap: wrap;
@@ -218,7 +219,7 @@ h1 {
   color: var(--bg-oscuro);
 }
 
-/* === ♿ ACCESIBILIDAD === */
+/* === ♿ FOCUS === */
 .btn:focus-visible,
 .btn-secundario:focus-visible,
 .btn-eliminar:focus-visible {
@@ -234,7 +235,8 @@ h1 {
 
 .fade-out {
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transform: scale(0.95);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 /* === 📱 RESPONSIVE === */
@@ -265,7 +267,7 @@ h1 {
   }
 }
 
-/* === 🧼 PROTECCIÓN DE BODY IMG === */
+/* === PROTECCIÓN IMG === */
 body > img {
   max-width: 100%;
   height: auto;

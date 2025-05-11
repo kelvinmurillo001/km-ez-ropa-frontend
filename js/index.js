@@ -18,6 +18,7 @@ async function mostrarProductosDestacados(reintentos = 1) {
   const catalogo = document.getElementById("catalogo");
   if (!catalogo) return;
 
+  catalogo.setAttribute("aria-busy", "true");
   catalogo.innerHTML = `<p class="text-center">⏳ Cargando productos...</p>`;
 
   try {
@@ -32,16 +33,17 @@ async function mostrarProductosDestacados(reintentos = 1) {
     const productos = Array.isArray(data.productos) ? data.productos : [];
     if (!productos.length) {
       catalogo.innerHTML = `<p class="text-center">😢 No hay productos destacados en este momento.</p>`;
+      catalogo.setAttribute("aria-busy", "false");
       return;
     }
 
     catalogo.innerHTML = "";
 
     productos.forEach(producto => {
-      const imagen = producto.image || producto.images?.[0]?.url || "/assets/logo.jpg";
+      const imagen = sanitize(producto.image || producto.images?.[0]?.url || "/assets/logo.jpg");
       const nombre = sanitize(producto.name || "Producto sin nombre");
       const precio = typeof producto.price === "number" ? `$${producto.price.toFixed(2)}` : "$ --";
-      const id = producto._id || "";
+      const id = encodeURIComponent(producto._id || "");
 
       const card = document.createElement("div");
       card.className = "product-card fade-in";
@@ -67,7 +69,6 @@ async function mostrarProductosDestacados(reintentos = 1) {
   } catch (error) {
     console.error("❌ Error cargando productos destacados:", error);
 
-    // Intentar 1 vez más si es CSP o red
     if (reintentos > 0) {
       setTimeout(() => mostrarProductosDestacados(reintentos - 1), 1500);
       return;
@@ -78,6 +79,8 @@ async function mostrarProductosDestacados(reintentos = 1) {
       : "⚠️ No se pudieron cargar los productos. Intenta más tarde.";
 
     catalogo.innerHTML = `<p class="text-center" style="color:red;">${sanitize(mensaje)}</p>`;
+  } finally {
+    catalogo.setAttribute("aria-busy", "false");
   }
 }
 
@@ -95,18 +98,21 @@ function mostrarSaludo() {
 function aplicarModoOscuro() {
   const btn = document.getElementById("modoOscuroBtn");
   const dark = localStorage.getItem("modoOscuro") === "true";
-  if (dark) document.body.classList.add("modo-oscuro");
 
-  btn?.addEventListener("click", () => {
-    const isDark = document.body.classList.toggle("modo-oscuro");
-    localStorage.setItem("modoOscuro", isDark);
-    btn.textContent = isDark ? "☀️" : "🌙";
-    btn.setAttribute("aria-label", isDark ? "Modo claro" : "Modo oscuro");
-  });
+  if (dark) document.body.classList.add("modo-oscuro");
 
   if (btn) {
     btn.textContent = dark ? "☀️" : "🌙";
     btn.setAttribute("aria-label", dark ? "Modo claro" : "Modo oscuro");
+    btn.setAttribute("aria-pressed", String(dark));
+
+    btn.addEventListener("click", () => {
+      const isDark = document.body.classList.toggle("modo-oscuro");
+      localStorage.setItem("modoOscuro", isDark);
+      btn.textContent = isDark ? "☀️" : "🌙";
+      btn.setAttribute("aria-label", isDark ? "Modo claro" : "Modo oscuro");
+      btn.setAttribute("aria-pressed", String(isDark));
+    });
   }
 }
 

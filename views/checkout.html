@@ -30,6 +30,7 @@
   <!-- 🔥 Promociones -->
   <div id="promo-display-container" data-page="checkout" role="region" aria-label="Promociones activas"></div>
 
+  <!-- 🛍️ Checkout -->
   <main class="checkout-container fade-in" role="main" aria-label="Formulario de compra">
     <h1 class="text-center">🛒 Finalizar Compra</h1>
     <p class="text-center subtitulo-checkout">Completa tus datos y recibe tu pedido sin problemas. 🚚</p>
@@ -41,9 +42,9 @@
       <div class="step">4. Confirmación</div>
     </div>
 
-    <!-- 📝 Formulario -->
+    <!-- 📋 Formulario -->
     <form id="formCheckout" class="form-checkout" novalidate autocomplete="on">
-
+      <!-- 👤 Datos personales -->
       <fieldset>
         <legend>👤 Tus Datos</legend>
         <label for="nombreInput">Nombre completo: *</label>
@@ -56,6 +57,7 @@
         <input type="tel" id="telefonoInput" name="telefono" required pattern="^[0-9+\-\s]{7,20}$" autocomplete="tel" placeholder="0991234567" />
       </fieldset>
 
+      <!-- 🧾 Facturación -->
       <fieldset>
         <legend>🧾 Datos de Facturación <small>(opcional)</small></legend>
         <label for="facturaNombre">Razón social:</label>
@@ -68,6 +70,7 @@
         <input type="email" id="facturaCorreo" name="facturaCorreo" />
       </fieldset>
 
+      <!-- 📍 Dirección -->
       <fieldset>
         <legend>📍 Dirección de Entrega</legend>
         <label for="direccionInput">Dirección completa: *</label>
@@ -75,6 +78,7 @@
         <button type="button" class="btn-secundario mt-1" id="btnUbicacion" aria-label="Detectar ubicación automáticamente">📍 Detectar ubicación</button>
       </fieldset>
 
+      <!-- 💳 Pago -->
       <fieldset>
         <legend>💳 Método de Pago</legend>
         <div class="metodo-pago-selector" role="radiogroup" aria-labelledby="metodoPagoLabel">
@@ -89,28 +93,30 @@
         <div id="infoMetodoPago" class="metodo-pago-info mt-1" aria-live="polite"></div>
       </fieldset>
 
+      <!-- 🧾 Resumen -->
       <fieldset>
         <legend>🛒 Resumen de tu Pedido</legend>
         <div id="resumenPedido" aria-live="polite"></div>
         <h3>Total: <span id="totalFinal" aria-live="assertive" role="status">$0.00</span></h3>
       </fieldset>
 
+      <!-- ✅ Botones -->
       <div class="form-actions mt-3">
         <button type="submit" class="btn" aria-label="Confirmar pedido y continuar">✅ Confirmar Pedido</button>
         <button type="button" onclick="window.location.href='/carrito.html'" class="btn-secundario" aria-label="Volver al carrito">🔙 Volver al Carrito</button>
       </div>
 
-      <!-- Estado -->
+      <!-- ℹ️ Estado del pedido -->
       <p id="msgEstado" class="form-msg text-center mt-2" role="alert" aria-live="assertive"></p>
     </form>
   </main>
 
-  <!-- ⚠️ Sin JS -->
+  <!-- 🚫 No JavaScript -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Activa JavaScript para finalizar tu compra.</p>
   </noscript>
 
-  <!-- 🌙 Activar modo oscuro -->
+  <!-- 🌙 Modo oscuro -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const oscuro = localStorage.getItem("modoOscuro") === "true";

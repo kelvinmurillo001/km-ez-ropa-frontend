@@ -32,7 +32,7 @@ async function cargarProducto(id) {
     actualizarSEO(productoGlobal);
     actualizarFavoritoUI(id);
   } catch (err) {
-    mostrarError(err.message);
+    mostrarError(err.message || "❌ Error al obtener producto.");
   }
 }
 
@@ -98,12 +98,13 @@ function renderizarProducto(p) {
     </div>
   `;
 
-  document.getElementById("btnAgregarCarrito")?.addEventListener("click", agregarAlCarrito);
   document.querySelectorAll(".mini-img").forEach(img =>
     img.addEventListener("click", e => {
       document.getElementById("imgPrincipal").src = e.target.dataset.full;
     })
   );
+
+  document.getElementById("btnAgregarCarrito")?.addEventListener("click", agregarAlCarrito);
 
   if (tieneVariantes) configurarSelectores(p);
 }
@@ -205,7 +206,7 @@ function agregarAlCarrito() {
   mostrarToast("🛒 Producto agregado al carrito.");
 }
 
-/* 🛠️ Utilidades */
+/* 📦 Utilidades */
 function sanitize(str = "") {
   const div = document.createElement("div");
   div.textContent = str;

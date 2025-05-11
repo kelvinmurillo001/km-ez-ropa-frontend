@@ -119,7 +119,7 @@ form?.addEventListener("submit", async e => {
         );
         if (!variante) throw new Error(`❌ Variante no disponible: ${sanitize(item.nombre)} - ${item.talla} - ${item.color}`);
       } else {
-        const stock = producto.stock || 0;
+        const stock = producto.stockTotal || 0;
         if (stock < cantidad) throw new Error(`❌ Stock insuficiente: ${sanitize(item.nombre)}`);
       }
 

@@ -25,11 +25,11 @@
   <meta name="twitter:description" content="Explora estilo y comodidad en cada prenda de KM & EZ ROPA.">
   <meta name="twitter:image" content="/assets/og-image.jpg">
 
-  <!-- 🌠 Recursos y fuentes -->
+  <!-- 🌠 Recursos -->
   <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" href="/assets/logo.jpg" as="image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css">
@@ -38,7 +38,7 @@
   <link rel="stylesheet" href="/css/detalle.css">
   <link rel="stylesheet" href="/css/promo-display.css">
 
-  <!-- ✅ Scripts externos seguros -->
+  <!-- ✅ Scripts -->
   <script type="module" src="/js/detalle.js" defer></script>
   <script type="module" src="/js/promo-display.js" defer></script>
   <script type="module" src="/js/share-utils.js" defer></script>
@@ -51,7 +51,7 @@
       <a href="/" aria-label="Ir al inicio">
         <img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" loading="lazy" />
       </a>
-      <div class="brand">
+      <div class="brand-text">
         <h1>KM & EZ ROPA</h1>
         <p>Moda Urbana con Estilo</p>
       </div>
@@ -60,7 +60,7 @@
     <nav class="nav-links" role="navigation" aria-label="Menú principal">
       <a href="/index.html">🏠 Inicio</a>
       <a href="/categorias.html">🛍️ Catálogo</a>
-      <button id="modoOscuroBtn" aria-label="Activar o desactivar modo oscuro">🌙</button>
+      <button id="modoOscuroBtn" aria-label="Activar o desactivar modo oscuro" type="button">🌙</button>
     </nav>
   </header>
 
@@ -75,13 +75,13 @@
 
     <!-- ❤️ Favoritos -->
     <div class="text-center mt-2">
-      <button id="btnFavorito" class="btn-secundario" aria-label="Agregar a favoritos" aria-pressed="false">
+      <button id="btnFavorito" class="btn-secundario" type="button" aria-label="Agregar a favoritos" aria-pressed="false">
         ❤️ Agregar a Favoritos
       </button>
     </div>
 
     <!-- 🗣️ Reseñas -->
-    <section id="reseñas" class="mt-3" aria-labelledby="tituloReseñas">
+    <section id="reseñas" class="mt-3" aria-labelledby="tituloReseñas" aria-live="polite">
       <h2 id="tituloReseñas" class="text-center">🗣️ Opiniones y Reseñas</h2>
       <p class="text-center">✨ Próximamente podrás dejar tu valoración aquí.</p>
     </section>
@@ -100,7 +100,7 @@
       <img src="/assets/cart-icon.svg" alt="Carrito de compras" loading="lazy" />
       <span id="cartCount" role="status" aria-live="polite">0</span>
     </a>
-    <a href="https://wa.me/593990270864" class="whatsapp-icon" target="_blank" rel="noopener noreferrer" aria-label="Chatear por WhatsApp">
+    <a href="https://wa.me/593990270864" target="_blank" rel="noopener noreferrer" class="whatsapp-icon" aria-label="Chatear por WhatsApp">
       <img src="/assets/whatsapp.svg" alt="WhatsApp" loading="lazy" />
     </a>
   </div>
@@ -110,7 +110,7 @@
     <p>&copy; 2024 KM & EZ ROPA. Todos los derechos reservados.</p>
   </footer>
 
-  <!-- 🚫 No JavaScript Warning -->
+  <!-- 🚫 No JavaScript -->
   <noscript>
     <p style="text-align: center; color: red;">⚠️ Activa JavaScript para visualizar correctamente esta página.</p>
   </noscript>

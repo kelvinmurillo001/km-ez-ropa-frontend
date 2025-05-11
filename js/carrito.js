@@ -5,6 +5,7 @@ const carritoItems = document.getElementById("carritoItems");
 const carritoTotal = document.getElementById("carritoTotal");
 const btnIrCheckout = document.getElementById("btnIrCheckout");
 const btnVaciarCarrito = document.getElementById("btnVaciarCarrito");
+const contadorCarrito = document.getElementById("cartCount");
 
 // 🔐 LocalStorage Keys
 const STORAGE_KEY = "km_ez_cart";
@@ -48,6 +49,7 @@ function sanitizeURL(url) {
 function guardarCarrito() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(carrito));
   sessionStorage.setItem(BACKUP_KEY, JSON.stringify(carrito)); // respaldo
+  actualizarCarritoWidget();
 }
 
 function limpiarItemsInvalidos() {
@@ -81,6 +83,12 @@ function actualizarTotal() {
   btnVaciarCarrito.disabled = disabled;
 }
 
+/* 🧮 Widget flotante carrito */
+function actualizarCarritoWidget() {
+  const total = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+  if (contadorCarrito) contadorCarrito.textContent = total;
+}
+
 /* ─────────────────────────────────────────────────────────────── */
 /* 🛍️ RENDERIZAR CARRITO                                           */
 /* ─────────────────────────────────────────────────────────────── */
@@ -93,6 +101,7 @@ function renderizarCarrito() {
     carritoTotal.textContent = "$0.00";
     btnIrCheckout.disabled = true;
     btnVaciarCarrito.disabled = true;
+    actualizarCarritoWidget();
     return;
   }
 

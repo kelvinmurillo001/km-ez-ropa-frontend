@@ -37,6 +37,7 @@
 
   <!-- 🌠 Preload y optimización -->
   <link rel="preload" href="/assets/logo.jpg" as="image" />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" as="style">
   <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -46,11 +47,6 @@
   <script type="module" src="/js/promo-display.js" defer></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-BNWNNFDCC3"></script>
   <script type="module" src="/js/gtag-loader.js"></script>
-
-  <!-- Favicon y fuentes -->
-  <link rel="icon" href="/assets/favicon.ico" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 </head>
 
 <body lang="es">
@@ -69,13 +65,15 @@
     <nav class="nav-links" role="navigation" aria-label="Menú principal">
       <a href="/categorias.html">🛍️ Catálogo</a>
       <a href="/login.html">🔐 Admin</a>
-      <button id="modoOscuroBtn" aria-label="Activar o desactivar modo oscuro">🌙</button>
+      <button id="modoOscuroBtn" aria-label="Activar o desactivar modo oscuro" aria-pressed="false">🌙</button>
     </nav>
   </header>
 
   <!-- 🔥 Promociones activas -->
   <section id="promo-display-container" data-page="home" role="region" aria-label="Promociones activas">
-    <!-- Renderizado dinámico desde promo-display.js -->
+    <div class="promo-fallback">
+      <p style="text-align: center; opacity: 0.6;">🔄 Cargando promociones...</p>
+    </div>
   </section>
 
   <!-- ✨ Hero Principal -->
@@ -107,8 +105,8 @@
   </div>
 
   <!-- 🔚 Footer -->
-  <footer class="site-footer" role="contentinfo">
-    <p>&copy; 2024 KM & EZ ROPA — Viste para cada ocasión, brilla siempre.</p>
+  <footer class="site-footer" role="contentinfo" itemscope itemtype="https://schema.org/Organization">
+    <p>&copy; <span itemprop="name">KM & EZ ROPA</span> — Viste para cada ocasión, brilla siempre.</p>
   </footer>
 
   <!-- ⚠️ Sin JS fallback -->
