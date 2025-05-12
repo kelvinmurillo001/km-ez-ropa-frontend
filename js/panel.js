@@ -2,7 +2,12 @@
 "use strict";
 
 import { API_BASE } from "./config.js";
-import { mostrarMensaje, cerrarSesion, getUsuarioActivo, verificarSesion } from "./admin-utils.js";
+import {
+  mostrarMensaje,
+  cerrarSesion,
+  getUsuarioActivo,
+  verificarSesion,
+} from "./admin-utils.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -13,6 +18,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     configurarLogout();
   } catch (err) {
     console.error("❌ Error al verificar sesión:", err.message);
+    mostrarMensaje("❌ Error de sesión. Intenta iniciar sesión de nuevo.", "error");
+    window.location.href = "/login.html";
   }
 });
 
@@ -36,7 +43,7 @@ async function cargarProductos() {
 
   try {
     const res = await fetch(`${API_BASE}/api/products?limite=50`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     });
 
     const data = await res.json();
@@ -48,7 +55,7 @@ async function cargarProductos() {
     }
 
     contenedor.innerHTML = "";
-    data.productos.forEach(prod => {
+    data.productos.forEach((prod) => {
       const card = document.createElement("div");
       card.className = "producto-card";
       card.innerHTML = `
@@ -70,7 +77,9 @@ async function cargarProductos() {
 /* 🚪 Cerrar sesión con confirmación             */
 /* ───────────────────────────────────────────── */
 function configurarLogout() {
-  const btnLogout = document.getElementById("btnLogout") || document.getElementById("btnCerrarSesion");
+  const btnLogout =
+    document.getElementById("btnLogout") ||
+    document.getElementById("btnCerrarSesion");
   if (!btnLogout) return;
 
   btnLogout.addEventListener("click", () => {

@@ -43,15 +43,15 @@ document.addEventListener("DOMContentLoaded", () => {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ usuario: username, password })
       });
 
       const result = await res.json();
 
-      if (!res.ok || !result?.accessToken) {
+      if (!res.ok || !result?.success || !result?.user) {
         const msg =
           res.status === 400
-            ? "⚠️ Datos enviados inválidos. (400)"
+            ? "⚠️ Datos inválidos enviados. (400)"
             : res.status === 401
             ? "🔐 Usuario o contraseña incorrectos."
             : result.message || "❌ Error inesperado al iniciar sesión.";
@@ -59,17 +59,15 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      localStorage.setItem("admin_token", result.accessToken);
+      // Guardar datos
       localStorage.setItem("admin_user", JSON.stringify(result.user));
 
       mostrarMensaje("✅ Acceso concedido. Redirigiendo...", "success");
 
       setTimeout(() => {
-        if (result.user?.role === "admin") {
-          window.location.href = "/panel.html";
-        } else {
-          window.location.href = "/cliente.html";
-        }
+        const role = result.user?.role || "client";
+        const destino = role === "admin" ? "/admin.html" : "/cliente.html";
+        window.location.href = destino;
       }, 1200);
     } catch (error) {
       console.error("❌ Error de red:", error);

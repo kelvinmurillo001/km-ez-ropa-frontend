@@ -43,11 +43,11 @@
       <a href="/admin-categorias.html" class="btn-panel" aria-label="Gestionar categorías">🗂️ Categorías</a>
       <a href="/promociones.html" class="btn-panel" aria-label="Configurar promociones activas">🎯 Promociones</a>
       <a href="/dashboard.html" class="btn-panel" aria-label="Ver estadísticas del negocio">📊 Analítica</a>
-      <a href="/diagnostico.html" class="btn-panel" aria-label="diagnostico de conexiones">Diagnostico</a>
+      <a href="/diagnostico.html" class="btn-panel" aria-label="Diagnóstico de conexiones">🧪 Diagnóstico</a>
     </nav>
   </main>
 
-  <!-- 🌙 Activación automática de modo oscuro -->
+  <!-- 🌙 Modo oscuro -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("modoOscuro") === "true") {
@@ -56,7 +56,7 @@
     });
   </script>
 
-  <!-- 🔐 Validación de sesión y cierre -->
+  <!-- 🔐 Validación de sesión y cierre seguro -->
   <script type="module">
     import { verificarSesion, cerrarSesion } from "/js/admin-utils.js";
     verificarSesion();
@@ -65,7 +65,7 @@
     });
   </script>
 
-  <!-- ⚠️ Sin JS fallback -->
+  <!-- ⚠️ Fallback para navegadores sin JS -->
   <noscript>
     <p style="text-align: center; color: red;">
       ⚠️ Esta página requiere JavaScript activado para funcionar correctamente.

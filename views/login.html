@@ -37,14 +37,14 @@
     </p>
 
     <!-- Usuario -->
-    <label for="username">Usuario:</label>
+    <label for="username">Usuario o correo:</label>
     <input 
       type="text"
       name="username"
       id="username"
-      placeholder="Ej: admin"
+      placeholder="Ej: admin o email@dominio.com"
       required
-      maxlength="40"
+      maxlength="100"
       autocomplete="username"
       inputmode="text"
       aria-required="true"
@@ -111,7 +111,7 @@
   </div>
 </noscript>
 
-<!-- 🌙 Activación Modo Oscuro + Redirección -->
+<!-- 🌙 Activación Modo Oscuro + Lógica de inicio -->
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     if (localStorage.getItem("modoOscuro") === "true") {
@@ -122,14 +122,17 @@
       window.location.href = "/";
     });
 
-    // 🟠 Lógica de inicio de sesión
-    document.getElementById("formLogin").addEventListener("submit", async (e) => {
+    document.getElementById("formLogin")?.addEventListener("submit", async (e) => {
       e.preventDefault();
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value.trim();
       const errorDiv = document.getElementById("errorMensaje");
 
       try {
+        if (!username || !password) {
+          throw new Error("⚠️ Usuario y contraseña requeridos.");
+        }
+
         const response = await fetch("https://api.kmezropacatalogo.com/api/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -140,7 +143,9 @@
         const result = await response.json();
 
         if (response.ok && result?.success) {
-          window.location.href = "/cliente.html";
+          const rol = result?.user?.role || "client";
+          const destino = rol === "admin" ? "/admin.html" : "/cliente.html";
+          window.location.href = destino;
         } else {
           throw new Error(result.message || "Credenciales inválidas.");
         }

@@ -1,75 +1,46 @@
-/* ✅ Fondo con imagen y branding personalizado */
+/* === 🎨 FONDO ANIMADO O ESTÁTICO === */
 body.con-fondo {
-  background-image: url("/assets/logo.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  backdrop-filter: blur(2.5px);
-  -webkit-backdrop-filter: blur(2.5px); /* Safari support */
-  background-blend-mode: lighten;
-  transition: background 0.4s ease, backdrop-filter 0.3s ease;
+  background: linear-gradient(135deg, #ffffff, #f8f8f8);
   min-height: 100vh;
-  isolation: isolate;
-  overflow-x: hidden;
-  will-change: backdrop-filter, background;
-  image-rendering: optimizeQuality;
-  position: relative;
-  z-index: 1;
-}
-
-/* 🧱 Capa de opacidad translúcida encima del fondo */
-body.con-fondo::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.88); /* Fondo claro por defecto */
-  z-index: -1;
-  pointer-events: none;
+  background-attachment: fixed;
+  background-size: cover;
   transition: background 0.3s ease;
 }
 
-/* 🌙 Modo oscuro sobre fondo */
-body.modo-oscuro.con-fondo::before {
-  background: rgba(0, 0, 0, 0.65);
+body.modo-oscuro.con-fondo {
+  background: linear-gradient(135deg, #1a1a1a, #121212);
 }
 
-/* ✨ Fade-in suave */
+/* === 🌟 EFECTO DE DESVANECIMIENTO === */
 .fade-in {
-  animation: fadeIn 0.6s ease-in-out;
+  animation: fadeInAnimation 0.5s ease-in;
 }
 
-@keyframes fadeIn {
+@keyframes fadeInAnimation {
   from {
     opacity: 0;
-    transform: scale(1.01);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0);
   }
 }
 
-/* 🚫 Preferencia de accesibilidad para reducir movimiento */
-@media (prefers-reduced-motion: reduce) {
-  .fade-in {
-    animation: none !important;
-  }
+/* === 💫 OPCIONAL: ESTRELLAS / PARTÍCULAS === */
+body.con-fondo::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* 📱 Ajustes para móviles */
-@media (max-width: 600px) {
-  body.con-fondo {
-    background-attachment: scroll;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-
-  body.con-fondo::before {
-    background: rgba(255, 255, 255, 0.95);
-  }
-
-  body.modo-oscuro.con-fondo::before {
-    background: rgba(0, 0, 0, 0.75);
-  }
+body.modo-oscuro.con-fondo::before {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
 }
