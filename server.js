@@ -24,12 +24,12 @@ app.use(helmet.frameguard({ action: "deny" }));
 app.use(helmet.noSniff());
 app.use(helmet.referrerPolicy({ policy: "strict-origin-when-cross-origin" }));
 
-// ✅ CSP mejorada (Kaspersky + GA + WebSocket)
+// ✅ CSP mejorada (incluye servicios externos necesarios)
 app.use((req, res, next) => {
   res.setHeader("Content-Security-Policy",
     "default-src 'self'; " +
     "script-src 'self' 'unsafe-inline' https://accounts.google.com https://apis.google.com https://www.googletagmanager.com https://www.google-analytics.com https://gc.kis.v2.scr.kaspersky-labs.com; " +
-    "style-src 'self' 'unsafe-inline' https://gc.kis.v2.scr.kaspersky-labs.com; " +
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://gc.kis.v2.scr.kaspersky-labs.com; " +
     "img-src 'self' data: https://*.googleusercontent.com https://lh3.googleusercontent.com https://developers.google.com https://gc.kis.v2.scr.kaspersky-labs.com; " +
     "connect-src 'self' https://api.kmezropacatalogo.com https://www.google-analytics.com wss://gc.kis.v2.scr.kaspersky-labs.com https://gc.kis.v2.scr.kaspersky-labs.com; " +
     "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; " +
@@ -49,7 +49,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-// ✅ Archivos estáticos con caché optimizada
+// 📁 Servir archivos estáticos con caché
 app.use("/assets", express.static(path.join(__dirname, "assets"), { maxAge: "30d" }));
 app.use("/css", express.static(path.join(__dirname, "css"), { maxAge: "30d" }));
 app.use("/js", express.static(path.join(__dirname, "js"), { maxAge: "30d" }));
@@ -69,12 +69,12 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "index.html"));
 });
 
-// ✅ Ruta para cliente autenticado
+// ✅ Ruta exclusiva de cliente
 app.get("/cliente", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "cliente.html"));
 });
 
-// 📄 Rutas *.html (excepto especiales)
+// 📄 Rutas *.html genéricas (excepto excluidas)
 app.get("/:page.html", (req, res, next) => {
   const { page } = req.params;
   const exclusions = ["sitemap", "robots", "cliente"];

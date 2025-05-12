@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🔐 Solicitar Nueva Contraseña | KM & EZ ROPA</title>
+
+  <!-- 🔒 Seguridad y SEO -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#ff6d00" />
+  <meta name="description" content="Solicita una nueva contraseña segura para tu cuenta." />
+  <meta name="author" content="KM & EZ ROPA" />
+
+  <!-- 🎨 Estilos -->
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/componentes.css" />
+  <link rel="stylesheet" href="/css/fondo.css" />
+  <link rel="stylesheet" href="/css/login.css" />
+
+  <!-- 🔐 Script de solicitud -->
+  <script type="module" src="/js/resetear.js" defer></script>
+</head>
+
+<body lang="es" class="con-fondo fade-in">
+
+  <main class="login-container fade-in" role="main" aria-labelledby="tituloReset">
+    <h1 id="tituloReset" class="text-center">🔐 Recuperar Acceso</h1>
+
+    <form id="resetForm" class="formulario" novalidate aria-describedby="descReset">
+      <p id="descReset" class="text-center mb-2">
+        Ingresa tu correo electrónico y te enviaremos una nueva contraseña temporal.
+      </p>
+
+      <!-- Campo de Email -->
+      <label for="email">Correo electrónico:</label>
+      <input 
+        type="email"
+        id="email"
+        name="email"
+        placeholder="ejemplo@correo.com"
+        required
+        maxlength="100"
+        autocomplete="email"
+        aria-required="true"
+      />
+
+      <!-- Botón de Envío -->
+      <button type="submit" class="btn mt-2">📧 Solicitar Contraseña</button>
+
+      <!-- Mensaje de Estado -->
+      <div id="msgEstado" class="form-msg mt-2 text-center" role="alert" aria-live="assertive"></div>
+    </form>
+  </main>
+
+  <!-- ⚠️ JS necesario -->
+  <noscript>
+    <div role="alert" style="text-align:center; color:red; font-weight:bold;">
+      ⚠️ Activa JavaScript para continuar.
+    </div>
+  </noscript>
+
+  <!-- 🌙 Activación Modo Oscuro -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("modoOscuro") === "true") {
+        document.body.classList.add("modo-oscuro");
+      }
+    });
+  </script>
+</body>
+</html>
