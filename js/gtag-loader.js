@@ -1,5 +1,15 @@
-// 📁 public/js/gtag-loader.js
+// 📁 frontend/js/gtag-loader.js
+
 window.dataLayer = window.dataLayer || [];
-function gtag() { dataLayer.push(arguments); }
+function gtag() {
+  dataLayer.push(arguments);
+}
+
+// 🕐 Inicialización
 gtag('js', new Date());
-gtag('config', 'G-BNWNNFDCC3');
+
+// 🧭 Configuración GA4 (ajusta el ID si es necesario)
+gtag('config', 'G-BNWNNFDCC3', {
+  anonymize_ip: true,
+  send_page_view: true
+});

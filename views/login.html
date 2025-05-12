@@ -25,137 +25,137 @@
 
 <body lang="es" class="con-fondo fade-in">
 
-<!-- ✅ Mensaje flotante global -->
-<div id="adminMensaje" class="admin-message oculto" role="status" aria-live="assertive"></div>
+  <!-- ✅ Mensaje flotante global -->
+  <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="assertive"></div>
 
-<main class="login-container fade-in" role="main" aria-labelledby="tituloLogin">
-  <h1 id="tituloLogin" class="text-center">🔐 Acceso Administrativo</h1>
+  <main class="login-container fade-in" role="main" aria-labelledby="tituloLogin">
+    <h1 id="tituloLogin" class="text-center">🔐 Acceso Administrativo</h1>
 
-  <form id="formLogin" class="formulario" aria-describedby="instruccionesLogin" novalidate>
-    <p id="instruccionesLogin" class="text-center mb-2">
-      Introduce tus credenciales para entrar al panel.
-    </p>
+    <form id="formLogin" class="formulario" aria-describedby="instruccionesLogin" novalidate>
+      <p id="instruccionesLogin" class="text-center mb-2">
+        Introduce tus credenciales para entrar al panel.
+      </p>
 
-    <!-- Usuario -->
-    <label for="username">Usuario o correo:</label>
-    <input 
-      type="text"
-      name="username"
-      id="username"
-      placeholder="Ej: admin o email@dominio.com"
-      required
-      maxlength="100"
-      autocomplete="username"
-      inputmode="text"
-      aria-required="true"
-      aria-describedby="errorMensaje"
-    />
+      <!-- Usuario -->
+      <label for="username">Usuario o correo:</label>
+      <input 
+        type="text"
+        name="username"
+        id="username"
+        placeholder="Ej: admin o email@dominio.com"
+        required
+        maxlength="100"
+        autocomplete="username"
+        inputmode="text"
+        aria-required="true"
+        aria-describedby="errorMensaje"
+      />
 
-    <!-- Contraseña -->
-    <label for="password">Contraseña:</label>
-    <input 
-      type="password"
-      name="password"
-      id="password"
-      placeholder="••••••••"
-      required
-      maxlength="100"
-      autocomplete="current-password"
-      inputmode="text"
-      aria-required="true"
-      aria-describedby="errorMensaje"
-    />
+      <!-- Contraseña -->
+      <label for="password">Contraseña:</label>
+      <input 
+        type="password"
+        name="password"
+        id="password"
+        placeholder="••••••••"
+        required
+        maxlength="100"
+        autocomplete="current-password"
+        inputmode="text"
+        aria-required="true"
+        aria-describedby="errorMensaje"
+      />
 
-    <!-- Botón de acceso -->
-    <button type="submit" class="btn mt-2" aria-label="Ingresar al panel de control">
-      🔓 Ingresar
-    </button>
-
-    <!-- 🔐 Login con Google -->
-    <div class="text-center mt-3">
-      <a 
-        href="https://api.kmezropacatalogo.com/auth/google" 
-        class="btn-google"
-        rel="noopener noreferrer"
-        aria-label="Iniciar sesión con Google">
-        🔐 Iniciar sesión con Google
-      </a>
-    </div>
-
-    <!-- Mensaje de error -->
-    <div 
-      id="errorMensaje" 
-      class="mensaje-error mt-2"
-      role="alert" 
-      aria-live="assertive" 
-      style="display: none; color: red;">
-    </div>
-
-    <!-- Volver al inicio -->
-    <div class="text-center mt-3">
-      <button 
-        type="button" 
-        class="btn-secundario" 
-        id="volverInicioBtn"
-        aria-label="Volver al inicio del sitio">
-        🔙 Volver al Inicio
+      <!-- Botón de acceso -->
+      <button type="submit" class="btn mt-2" aria-label="Ingresar al panel de control">
+        🔓 Ingresar
       </button>
+
+      <!-- 🔐 Login con Google -->
+      <div class="text-center mt-3">
+        <a 
+          href="https://api.kmezropacatalogo.com/auth/google" 
+          class="btn-google"
+          rel="noopener noreferrer"
+          aria-label="Iniciar sesión con Google">
+          🔐 Iniciar sesión con Google
+        </a>
+      </div>
+
+      <!-- Mensaje de error -->
+      <div 
+        id="errorMensaje" 
+        class="mensaje-error mt-2"
+        role="alert" 
+        aria-live="assertive" 
+        style="display: none; color: red;">
+      </div>
+
+      <!-- Volver al inicio -->
+      <div class="text-center mt-3">
+        <button 
+          type="button" 
+          class="btn-secundario" 
+          id="volverInicioBtn"
+          aria-label="Volver al inicio del sitio">
+          🔙 Volver al Inicio
+        </button>
+      </div>
+    </form>
+  </main>
+
+  <!-- ⚠️ Sin JS Warning -->
+  <noscript>
+    <div role="alert" style="text-align: center; color: red; font-weight: bold;">
+      ⚠️ JavaScript debe estar habilitado para iniciar sesión.
     </div>
-  </form>
-</main>
+  </noscript>
 
-<!-- ⚠️ Sin JS Warning -->
-<noscript>
-  <div role="alert" style="text-align: center; color: red; font-weight: bold;">
-    ⚠️ JavaScript debe estar habilitado para iniciar sesión.
-  </div>
-</noscript>
-
-<!-- 🌙 Activación Modo Oscuro + Lógica de inicio -->
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    if (localStorage.getItem("modoOscuro") === "true") {
-      document.body.classList.add("modo-oscuro");
-    }
-
-    document.getElementById("volverInicioBtn")?.addEventListener("click", () => {
-      window.location.href = "/";
-    });
-
-    document.getElementById("formLogin")?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const errorDiv = document.getElementById("errorMensaje");
-
-      try {
-        if (!username || !password) {
-          throw new Error("⚠️ Usuario y contraseña requeridos.");
-        }
-
-        const response = await fetch("https://api.kmezropacatalogo.com/api/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ usuario: username, password })
-        });
-
-        const result = await response.json();
-
-        if (response.ok && result?.success) {
-          const rol = result?.user?.role || "client";
-          const destino = rol === "admin" ? "/admin.html" : "/cliente.html";
-          window.location.href = destino;
-        } else {
-          throw new Error(result.message || "Credenciales inválidas.");
-        }
-      } catch (error) {
-        errorDiv.style.display = "block";
-        errorDiv.textContent = error.message;
+  <!-- 🌙 Activación Modo Oscuro + Lógica de inicio -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("modoOscuro") === "true") {
+        document.body.classList.add("modo-oscuro");
       }
+
+      document.getElementById("volverInicioBtn")?.addEventListener("click", () => {
+        window.location.href = "/";
+      });
+
+      document.getElementById("formLogin")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const errorDiv = document.getElementById("errorMensaje");
+
+        try {
+          if (!username || !password) {
+            throw new Error("⚠️ Usuario y contraseña requeridos.");
+          }
+
+          const response = await fetch("https://api.kmezropacatalogo.com/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ usuario: username, password })
+          });
+
+          const result = await response.json();
+
+          if (response.ok && result?.success) {
+            const rol = result?.user?.role || "client";
+            const destino = rol === "admin" ? "/admin.html" : "/cliente.html";
+            window.location.href = destino;
+          } else {
+            throw new Error(result.message || "Credenciales inválidas.");
+          }
+        } catch (error) {
+          errorDiv.style.display = "block";
+          errorDiv.textContent = error.message;
+        }
+      });
     });
-  });
-</script>
+  </script>
 
 </body>
 </html>

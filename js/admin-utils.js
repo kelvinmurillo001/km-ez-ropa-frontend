@@ -1,25 +1,33 @@
 "use strict";
 
 /**
- * 🔐 Verifica que exista una sesión válida de administrador
- * Redirige automáticamente si no es válida o no es admin
+ * 🔐 Verifica que exista una sesión válida de administrador.
+ * Redirige automáticamente si no es válida o no es admin.
+ * Devuelve el token si todo está correcto.
  */
 export function verificarSesion() {
-  try {
-    const token = localStorage.getItem("admin_token");
-    const rawUser = localStorage.getItem("admin_user");
-    if (!token || token.length < 20 || !rawUser) throw new Error("Token o usuario inválido");
+  return new Promise((resolve, reject) => {
+    try {
+      const token = localStorage.getItem("admin_token");
+      const rawUser = localStorage.getItem("admin_user");
 
-    const user = JSON.parse(rawUser);
-    if (user.role !== "admin") throw new Error("Rol no autorizado");
+      if (!token || token.length < 20 || !rawUser) {
+        throw new Error("Token o usuario inválido");
+      }
 
-    return token;
-  } catch (error) {
-    console.warn("❌ Acceso no autorizado o sesión inválida:", error.message);
-    alert("⚠️ Acceso denegado. Debes ser administrador.");
-    window.location.href = "/login.html";
-    return null;
-  }
+      const user = JSON.parse(rawUser);
+      if (!user || user.role !== "admin") {
+        throw new Error("Rol no autorizado");
+      }
+
+      resolve(token);
+    } catch (error) {
+      console.warn("❌ Acceso no autorizado o sesión inválida:", error.message);
+      alert("⚠️ Acceso denegado. Debes ser administrador.");
+      window.location.href = "/login.html";
+      reject(error);
+    }
+  });
 }
 
 /**
@@ -29,6 +37,9 @@ export function cerrarSesion() {
   try {
     localStorage.removeItem("admin_token");
     localStorage.removeItem("admin_user");
+    sessionStorage.clear();
+
+    // Elimina refreshToken si existe
     document.cookie = "refreshToken=; Max-Age=0; path=/; Secure; SameSite=Strict;";
     window.location.href = "/login.html";
   } catch (err) {
@@ -51,8 +62,9 @@ export function goBack() {
  */
 export function mostrarMensaje(texto, tipo = "info") {
   const box = document.getElementById("adminMensaje");
+
   if (!box) {
-    alert(texto); // Fallback si el elemento no está en el DOM
+    alert(texto); // Fallback si no existe el DOM aún
     return;
   }
 
@@ -74,8 +86,12 @@ export function mostrarMensaje(texto, tipo = "info") {
  */
 export function getUsuarioActivo() {
   try {
-    const user = JSON.parse(localStorage.getItem("admin_user"));
-    return user || null;
+    const raw = localStorage.getItem("admin_user");
+    const user = JSON.parse(raw);
+    if (typeof user === "object" && user && user.username) {
+      return user;
+    }
+    return null;
   } catch {
     return null;
   }

@@ -41,12 +41,24 @@ async function cargarProductos() {
   contenedor.innerHTML = `<p>⏳ Cargando productos...</p>`;
   const token = localStorage.getItem("admin_token");
 
+  if (!token) {
+    contenedor.innerHTML = `<p style="color:red;">❌ Token de sesión no disponible.</p>`;
+    return;
+  }
+
   try {
     const res = await fetch(`${API_BASE}/api/products?limite=50`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
     const data = await res.json();
+
+    if (res.status === 401 || res.status === 403) {
+      mostrarMensaje("⛔ Acceso no autorizado. Redirigiendo al login...", "error");
+      setTimeout(() => (window.location.href = "/login.html"), 1500);
+      return;
+    }
+
     if (!res.ok) throw new Error(data.message || "Error cargando productos");
 
     if (!Array.isArray(data.productos) || data.productos.length === 0) {

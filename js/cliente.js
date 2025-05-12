@@ -3,7 +3,7 @@
 import { API_BASE } from "./config.js";
 import { mostrarMensaje } from "./sesion-utils.js";
 
-// 📌 DOM
+// 📌 DOM Elements
 const listaPedidos = document.getElementById("listaPedidos");
 const saludo = document.getElementById("saludoUsuario");
 const cerrarSesionBtn = document.getElementById("cerrarSesionBtn");
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 /**
- * 🔐 Obtiene información del usuario autenticado
+ * 🔐 Obtener datos del usuario autenticado
  */
 async function obtenerUsuario() {
   try {
@@ -52,11 +52,12 @@ async function obtenerUsuario() {
 }
 
 /**
- * 🚚 Cargar pedidos del usuario
+ * 📦 Cargar pedidos del usuario
  */
 async function cargarPedidos() {
   if (!listaPedidos) return;
-  const estadoFiltrado = filtroEstado?.value?.trim().toLowerCase();
+
+  const estadoFiltro = filtroEstado?.value?.trim().toLowerCase();
 
   try {
     const res = await fetch(API_PEDIDOS, { credentials: "include" });
@@ -66,12 +67,12 @@ async function cargarPedidos() {
       throw new Error(data.message || "❌ No se pudieron cargar los pedidos.");
     }
 
-    const pedidos = estadoFiltrado
-      ? data.pedidos.filter(p => (p.estado || "").toLowerCase() === estadoFiltrado)
+    const pedidos = estadoFiltro
+      ? data.pedidos.filter(p => (p.estado || "").toLowerCase() === estadoFiltro)
       : data.pedidos;
 
     listaPedidos.innerHTML = pedidos.length
-      ? pedidos.map(pedidoHTML).join("")
+      ? pedidos.map(renderPedidoHTML).join("")
       : `<p class="text-center">📭 No hay pedidos con ese estado.</p>`;
 
     document.querySelectorAll(".ver-detalles").forEach(btn => {
@@ -88,11 +89,11 @@ async function cargarPedidos() {
 }
 
 /**
- * 🧾 Genera HTML para un pedido
+ * 🧾 Renderiza HTML de un pedido
  */
-function pedidoHTML(p) {
-  const fecha = new Date(p.createdAt).toLocaleDateString("es-EC");
-  const estado = estadoBonito(p.estado);
+function renderPedidoHTML(p) {
+  const fecha = p.createdAt ? new Date(p.createdAt).toLocaleDateString("es-EC") : "--";
+  const estado = traducirEstado(p.estado);
   const total = `$${p.total?.toFixed(2) || "0.00"}`;
   const id = p._id?.slice(-6)?.toUpperCase() || "XXXXXX";
 
@@ -108,9 +109,9 @@ function pedidoHTML(p) {
 }
 
 /**
- * 🧠 Convierte estado técnico en estado legible
+ * 🔁 Traduce estado técnico a uno legible
  */
-function estadoBonito(e = "") {
+function traducirEstado(e = "") {
   const estados = {
     pendiente: "⏳ Pendiente",
     procesando: "🛠️ Procesando",
@@ -127,6 +128,6 @@ function estadoBonito(e = "") {
  */
 function sanitize(text = "") {
   const div = document.createElement("div");
-  div.textContent = text;
+  div.textContent = String(text);
   return div.innerHTML.trim();
 }

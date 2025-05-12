@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 /* ───────────────────────────────────────────── */
-/* 🛍️ Productos Destacados con reintento        */
+/* 🛍️ Productos Destacados con GA4 eventos       */
 /* ───────────────────────────────────────────── */
 async function mostrarProductosDestacados(reintentos = 1) {
   const catalogo = document.getElementById("catalogo");
@@ -39,29 +39,61 @@ async function mostrarProductosDestacados(reintentos = 1) {
 
     catalogo.innerHTML = "";
 
-    productos.forEach(producto => {
+    // GA4: Lista de productos mostrados
+    const itemsGA = [];
+
+    productos.forEach((producto, index) => {
       const imagen = sanitize(producto.image || producto.images?.[0]?.url || "/assets/logo.jpg");
       const nombre = sanitize(producto.name || "Producto sin nombre");
       const precio = typeof producto.price === "number" ? `$${producto.price.toFixed(2)}` : "$ --";
       const id = encodeURIComponent(producto._id || "");
 
+      if (id) {
+        itemsGA.push({
+          item_id: producto._id,
+          item_name: producto.name,
+          price: producto.price,
+          index,
+          item_category: producto.category || "",
+          item_list_name: "Destacados"
+        });
+      }
+
       const card = document.createElement("div");
       card.className = "product-card fade-in";
       card.innerHTML = `
         <img src="${imagen}" alt="Imagen de ${nombre}" loading="lazy"
-          onerror="this.onerror=null;this.src='/assets/logo.jpg'" />
+             onerror="this.onerror=null;this.src='/assets/logo.jpg'" />
         <div class="product-info">
           <h3>${nombre}</h3>
           <p>${precio}</p>
-          ${id ? `<button class="btn-card" data-id="${id}" aria-label="Ver detalles de ${nombre}">👁️ Ver</button>` : ""}
+          ${id ? `<button class="btn-card" data-id="${id}" data-name="${nombre}" aria-label="Ver detalles de ${nombre}">👁️ Ver</button>` : ""}
         </div>
       `;
       catalogo.appendChild(card);
     });
 
+    // Enviar evento GA4 al mostrar lista
+    if (typeof gtag === "function" && itemsGA.length) {
+      gtag("event", "view_item_list", {
+        item_list_name: "Destacados",
+        items: itemsGA
+      });
+    }
+
     catalogo.addEventListener("click", e => {
       if (e.target.matches(".btn-card")) {
         const id = e.target.dataset.id;
+        const name = e.target.dataset.name;
+        if (typeof gtag === "function") {
+          gtag("event", "select_item", {
+            item_list_name: "Destacados",
+            items: [{
+              item_id: id,
+              item_name: name
+            }]
+          });
+        }
         verDetalle(id);
       }
     });

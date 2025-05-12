@@ -4,8 +4,7 @@ import { API_BASE } from "./config.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("km_ez_token");
-
-  if (!token) {
+  if (!token || token.length < 20) {
     mostrarError("🔐 Debes iniciar sesión para ver tus pedidos.");
     return;
   }
@@ -14,10 +13,12 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**
- * Obtiene los pedidos del usuario autenticado y los muestra
+ * Carga los pedidos y los muestra en el contenedor
  */
 async function cargarPedidos(token) {
   const contenedor = document.getElementById("misPedidosContainer");
+  if (!contenedor) return;
+
   contenedor.innerHTML = "<p>⏳ Cargando pedidos...</p>";
 
   try {
@@ -30,16 +31,13 @@ async function cargarPedidos(token) {
 
     const data = await res.json();
 
-    if (!res.ok) {
-      throw new Error(data?.message || "Error al obtener pedidos");
-    }
+    if (!res.ok) throw new Error(data.message || "Error al obtener pedidos");
 
-    if (!Array.isArray(data.pedidos) || data.pedidos.length === 0) {
-      contenedor.innerHTML = "<p class='info text-center'>📭 No tienes pedidos aún.</p>";
-      return;
-    }
+    const pedidos = Array.isArray(data.pedidos) ? data.pedidos : [];
 
-    contenedor.innerHTML = data.pedidos.map(renderPedidoCard).join("");
+    contenedor.innerHTML = pedidos.length
+      ? pedidos.map(renderPedidoCard).join("")
+      : `<p class="info text-center">📭 No tienes pedidos aún.</p>`;
 
   } catch (err) {
     console.error("❌ Error al cargar pedidos:", err);
@@ -48,9 +46,7 @@ async function cargarPedidos(token) {
 }
 
 /**
- * Renderiza una tarjeta HTML con la información de un pedido
- * @param {object} p - Pedido
- * @returns {string} HTML
+ * Renderiza una tarjeta HTML por pedido
  */
 function renderPedidoCard(p) {
   const fecha = new Date(p.createdAt).toLocaleDateString("es-EC", {
@@ -59,26 +55,24 @@ function renderPedidoCard(p) {
 
   const total = `$${Number(p.total || 0).toFixed(2)}`;
   const estado = estadoBonito(p.estado || "pendiente");
-  const idCorto = p._id?.slice(-6)?.toUpperCase() || "XXXXXX";
+  const idCorto = sanitize(p._id?.slice(-6)?.toUpperCase() || "XXXXXX");
 
   const seguimientoHTML = p.codigoSeguimiento
     ? `<a href="/seguimiento.html?codigo=${encodeURIComponent(p.codigoSeguimiento)}" class="btn" aria-label="Ver seguimiento del pedido">📦 Ver seguimiento</a>`
     : `<span class="text-muted">🔍 Seguimiento no disponible</span>`;
 
   return `
-    <div class="pedido-card" role="region" aria-label="Pedido ${idCorto}">
-      <h3>Pedido #${idCorto}</h3>
+    <div class="pedido-card fade-in" role="region" aria-label="Pedido ${idCorto}">
+      <h3>📦 Pedido #${idCorto}</h3>
       <p><strong>📅 Fecha:</strong> ${fecha}</p>
       <p><strong>💰 Total:</strong> ${total}</p>
-      <p><strong>📌 Estado:</strong> <span class="estado-${p.estado}">${estado}</span></p>
+      <p><strong>📌 Estado:</strong> <span class="estado-${sanitize(p.estado)}">${estado}</span></p>
       <div class="acciones mt-1">${seguimientoHTML}</div>
     </div>`;
 }
 
 /**
- * Traducir estado a un formato amigable con íconos
- * @param {string} estado - Estado en crudo
- * @returns {string}
+ * Convierte estados técnicos en etiquetas amigables
  */
 function estadoBonito(estado = "") {
   const estados = {
@@ -88,14 +82,30 @@ function estadoBonito(estado = "") {
     entregado: "📬 Entregado",
     cancelado: "❌ Cancelado"
   };
-  return estados[estado.toLowerCase()] || estado;
+  return estados[estado.toLowerCase()] || capitalize(estado);
 }
 
 /**
- * Muestra un mensaje de error estilizado
- * @param {string} msg - Mensaje
+ * Capitaliza la primera letra
+ */
+function capitalize(str = "") {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+/**
+ * Protege texto dinámico contra XSS
+ */
+function sanitize(text = "") {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML.trim();
+}
+
+/**
+ * Muestra un mensaje de error accesible
  */
 function mostrarError(msg) {
   const contenedor = document.getElementById("misPedidosContainer");
-  contenedor.innerHTML = `<p class="error text-center" role="alert" aria-live="assertive">${msg}</p>`;
+  if (!contenedor) return;
+  contenedor.innerHTML = `<p class="error text-center" role="alert" aria-live="assertive">${sanitize(msg)}</p>`;
 }

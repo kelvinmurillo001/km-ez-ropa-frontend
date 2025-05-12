@@ -24,8 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const username = sanitize(inputUser.value.toLowerCase());
-    const password = sanitize(inputPass.value);
+    const username = sanitize(inputUser.value.trim().toLowerCase());
+    const password = sanitize(inputPass.value.trim());
 
     if (!username || !password) {
       mostrarMensaje("⚠️ Ingresa tu usuario y contraseña.", "error");
@@ -43,25 +43,25 @@ document.addEventListener("DOMContentLoaded", () => {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ usuario: username, password })
+        body: JSON.stringify({ username, password })
       });
 
       const result = await res.json();
 
-      if (!res.ok || !result?.success || !result?.user) {
+      if (!res.ok || !result?.user) {
         const msg =
           res.status === 400
-            ? "⚠️ Datos inválidos enviados. (400)"
+            ? "⚠️ Datos inválidos enviados."
             : res.status === 401
             ? "🔐 Usuario o contraseña incorrectos."
+            : res.status === 403
+            ? "⛔ Acceso denegado. Solo administradores."
             : result.message || "❌ Error inesperado al iniciar sesión.";
         mostrarMensaje(msg, "error");
         return;
       }
 
-      // Guardar datos
       localStorage.setItem("admin_user", JSON.stringify(result.user));
-
       mostrarMensaje("✅ Acceso concedido. Redirigiendo...", "success");
 
       setTimeout(() => {

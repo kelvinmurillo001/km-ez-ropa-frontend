@@ -3,9 +3,10 @@
 import { verificarSesion, goBack, mostrarMensaje } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
-const token = verificarSesion();
-const productId = new URLSearchParams(window.location.search).get("id");
+let token = "";
+let categorias = [];
 
+const productId = new URLSearchParams(window.location.search).get("id");
 if (!productId) {
   alert("❌ ID de producto no válido.");
   goBack();
@@ -20,27 +21,28 @@ const msgEstado = document.getElementById("msgEstado");
 const variantesDiv = document.getElementById("variantesExistentes");
 const subcategoriaInput = document.getElementById("subcategoriaInput");
 
-let categorias = [];
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    token = await verificarSesion();
 
-document.addEventListener("DOMContentLoaded", () => {
-  if (localStorage.getItem("modoOscuro") === "true") {
-    document.body.classList.add("modo-oscuro");
+    if (localStorage.getItem("modoOscuro") === "true") {
+      document.body.classList.add("modo-oscuro");
+    }
+
+    await cargarCategorias();
+    await cargarProducto();
+
+    document.getElementById("btnAgregarVariante")?.addEventListener("click", renderVarianteNueva);
+  } catch (err) {
+    mostrarMensaje("❌ Sesión inválida o error al iniciar", "error");
+    setTimeout(() => goBack(), 1500);
   }
-  cargarCategorias().then(cargarProducto);
-  document.getElementById("btnAgregarVariante")?.addEventListener("click", renderVarianteNueva);
 });
 
-// 🧹 Validar campos obligatorios
-function validarCampo(valor, mensaje) {
-  if (!valor || valor.trim() === "") throw new Error(mensaje);
-}
+// 🔡 Limpiar texto
+const limpiarTexto = (txt) => (txt || "").trim();
 
-// 🔡 Limpiar texto de entrada
-function limpiarTexto(texto) {
-  return (texto || "").trim();
-}
-
-// ⬆️ Subir imagen al servidor
+// ⬆️ Subir imagen
 async function subirImagen(file) {
   if (!file || !file.type.startsWith("image/") || file.size > 2 * 1024 * 1024) {
     throw new Error("⚠️ Imagen inválida o muy pesada");
@@ -52,64 +54,63 @@ async function subirImagen(file) {
   const res = await fetch(API_UPLOAD, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
-    body: formData
+    body: formData,
   });
 
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || "Error subiendo imagen");
 
-  return {
-    url: data.url || data.secure_url,
-    cloudinaryId: data.public_id
-  };
+  return { url: data.url || data.secure_url, cloudinaryId: data.public_id };
 }
 
-// 📚 Cargar categorías y subcategorías
+// 📚 Cargar categorías
 async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIAS);
     const result = await res.json();
     const data = result.data || result;
 
-    if (!res.ok || !Array.isArray(data)) throw new Error();
+    if (!Array.isArray(data)) throw new Error();
 
     categorias = data;
     const categoriaSelect = form.categoriaInput;
     categoriaSelect.innerHTML = '<option value="">Selecciona una categoría</option>';
 
-    categorias.forEach(cat => {
-      const option = document.createElement("option");
-      option.value = cat.name;
-      option.textContent = cat.name;
-      categoriaSelect.appendChild(option);
+    data.forEach((cat) => {
+      const opt = document.createElement("option");
+      opt.value = cat.name;
+      opt.textContent = cat.name;
+      categoriaSelect.appendChild(opt);
     });
 
     categoriaSelect.addEventListener("change", () => {
       const seleccionada = categoriaSelect.value;
-      const categoriaObj = categorias.find(c => c.name === seleccionada);
+      const categoriaObj = categorias.find((c) => c.name === seleccionada);
       if (categoriaObj?.subcategories?.length) {
-        subcategoriaInput.innerHTML = `<option value="">Selecciona subcategoría</option>` +
-          categoriaObj.subcategories.map(sub => `<option value="${sub}">${sub}</option>`).join("");
+        subcategoriaInput.innerHTML =
+          `<option value="">Selecciona subcategoría</option>` +
+          categoriaObj.subcategories.map((sub) => `<option value="${sub}">${sub}</option>`).join("");
         subcategoriaInput.disabled = false;
       } else {
         subcategoriaInput.innerHTML = `<option value="">Sin subcategorías</option>`;
         subcategoriaInput.disabled = true;
       }
     });
-
   } catch (err) {
-    console.error("❌ Error cargando categorías:", err);
+    console.error("❌ Categorías error:", err);
     mostrarMensaje("❌ No se pudieron cargar las categorías", "error");
   }
 }
 
-// 🧾 Cargar información del producto
+// 🧾 Cargar producto
 async function cargarProducto() {
   try {
     const res = await fetch(API_PRODUCTO);
     const { producto } = await res.json();
 
-    if (!res.ok || !producto || producto._id !== productId) throw new Error("Producto no encontrado");
+    if (!res.ok || !producto || producto._id !== productId) {
+      throw new Error("Producto no encontrado");
+    }
 
     form.nombreInput.value = producto.name || "";
     form.descripcionInput.value = producto.description || "";
@@ -133,14 +134,13 @@ async function cargarProducto() {
     }
 
     producto.variants?.forEach(renderVarianteExistente);
-
   } catch (err) {
-    console.error("❌ Error al cargar producto:", err);
+    console.error("❌ Producto error:", err);
     msgEstado.innerHTML = `❌ Error al cargar producto.<br><button onclick="goBack()">🔙 Volver</button>`;
   }
 }
 
-// 🧩 Dibujar variante existente
+// 🧩 Mostrar variantes existentes
 function renderVarianteExistente(v, i) {
   const div = document.createElement("div");
   div.className = "variante-box";
@@ -165,7 +165,7 @@ function renderVarianteExistente(v, i) {
   div.querySelector(".btn-quitar-variante").addEventListener("click", () => div.remove());
 }
 
-// ➕ Añadir nueva variante
+// ➕ Añadir variante nueva
 function renderVarianteNueva() {
   const actual = document.querySelectorAll(".variante-box").length;
   if (actual >= 4) {
@@ -194,11 +194,11 @@ function renderVarianteNueva() {
   div.querySelector(".btn-quitar-variante").addEventListener("click", () => div.remove());
 }
 
-// 💾 Guardar formulario
+// 💾 Guardar cambios
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  mostrarMensaje("⏳ Guardando cambios...", "info");
   form.classList.add("bloqueado");
+  mostrarMensaje("⏳ Guardando cambios...", "info");
 
   try {
     const nombre = limpiarTexto(form.nombreInput.value);
@@ -214,17 +214,14 @@ form.addEventListener("submit", async (e) => {
     const color = limpiarTexto(form.colorInput.value);
     const sizes = form.tallasInput.value.split(",").map(s => s.trim()).filter(Boolean);
 
-    validarCampo(nombre, "⚠️ Nombre obligatorio");
-    validarCampo(descripcion, "⚠️ Descripción requerida");
-    validarCampo(categoria, "⚠️ Selecciona una categoría");
-    validarCampo(tallaTipo, "⚠️ Tipo de talla requerido");
-    if (isNaN(precio)) throw new Error("⚠️ Precio inválido");
+    if (!nombre || !descripcion || !categoria || !tallaTipo || isNaN(precio)) {
+      throw new Error("⚠️ Todos los campos obligatorios deben ser completados");
+    }
 
     const nuevaImg = form.imagenPrincipalNueva?.files?.[0];
     const nuevaImagen = nuevaImg ? await subirImagen(nuevaImg) : null;
 
-    const bloques = document.querySelectorAll(".variante-box");
-    const variantes = await Promise.all(Array.from(bloques).map(async (b) => {
+    const variantes = await Promise.all(Array.from(document.querySelectorAll(".variante-box")).map(async (b) => {
       const file = b.querySelector(".variante-img")?.files[0];
       const color = limpiarTexto(b.querySelector(".variante-color")?.value);
       const talla = limpiarTexto(b.querySelector(".variante-talla")?.value);
@@ -232,9 +229,7 @@ form.addEventListener("submit", async (e) => {
       const cloudinaryId = b.querySelector(".variante-id")?.value;
       const active = b.querySelector(".variante-activo")?.checked ?? true;
 
-      validarCampo(color, "⚠️ Color requerido");
-      validarCampo(talla, "⚠️ Talla requerida");
-      if (isNaN(stock) || stock < 0) throw new Error("⚠️ Stock inválido");
+      if (!color || !talla || isNaN(stock)) throw new Error("⚠️ Variante incompleta");
 
       let imageUrl = b.querySelector("img")?.src;
       let finalCloudinaryId = cloudinaryId;

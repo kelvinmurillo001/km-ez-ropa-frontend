@@ -11,20 +11,20 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 🌐 CORS (ajustado al dominio real del frontend)
+// 🌐 CORS
 app.use(cors({
   origin: "https://kmezropacatalogo.com",
   credentials: true,
 }));
 
-// 🛡️ Helmet (cabeceras de seguridad base)
+// 🛡️ Seguridad base con Helmet
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "same-origin" }));
 app.use(helmet.frameguard({ action: "deny" }));
 app.use(helmet.noSniff());
 app.use(helmet.referrerPolicy({ policy: "strict-origin-when-cross-origin" }));
 
-// ✅ CSP mejorada (incluye servicios externos necesarios)
+// ✅ Content Security Policy extendida
 app.use((req, res, next) => {
   res.setHeader("Content-Security-Policy",
     "default-src 'self'; " +
@@ -39,27 +39,27 @@ app.use((req, res, next) => {
   next();
 });
 
-// 🔐 Redirección HTTPS en producción
+// 🔐 Forzar HTTPS en producción
 if (process.env.NODE_ENV === "production") {
   app.use((req, res, next) => {
-    if (req.headers["x-forwarded-proto"] !== "https") {
+    const isSecure = req.secure || req.headers["x-forwarded-proto"] === "https";
+    if (!isSecure) {
       return res.redirect("https://" + req.headers.host + req.url);
     }
     next();
   });
 }
 
-// 📁 Servir archivos estáticos con caché
-app.use("/assets", express.static(path.join(__dirname, "assets"), { maxAge: "30d" }));
-app.use("/css", express.static(path.join(__dirname, "css"), { maxAge: "30d" }));
-app.use("/js", express.static(path.join(__dirname, "js"), { maxAge: "30d" }));
+// 📁 Servir archivos estáticos con cache
+const staticOptions = { maxAge: "30d", immutable: true };
+app.use("/assets", express.static(path.join(__dirname, "assets"), staticOptions));
+app.use("/css", express.static(path.join(__dirname, "css"), staticOptions));
+app.use("/js", express.static(path.join(__dirname, "js"), staticOptions));
 
-// 🌐 sitemap.xml
+// 🌐 sitemap.xml y robots.txt
 app.get("/sitemap.xml", (req, res) => {
   res.sendFile(path.join(__dirname, "sitemap.xml"));
 });
-
-// 🤖 robots.txt
 app.get("/robots.txt", (req, res) => {
   res.sendFile(path.join(__dirname, "robots.txt"));
 });
@@ -69,12 +69,12 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "index.html"));
 });
 
-// ✅ Ruta exclusiva de cliente
+// 🎯 Página exclusiva de cliente
 app.get("/cliente", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "cliente.html"));
 });
 
-// 📄 Rutas *.html genéricas (excepto excluidas)
+// 📄 Todas las otras rutas *.html
 app.get("/:page.html", (req, res, next) => {
   const { page } = req.params;
   const exclusions = ["sitemap", "robots", "cliente"];
@@ -93,6 +93,6 @@ app.use((req, res) => {
 
 // 🚀 Iniciar servidor
 app.listen(PORT, () => {
-  console.log(`🌐 Frontend en ejecución: http://localhost:${PORT}`);
-  console.log(`📁 Base de archivos: ${__dirname}`);
+  console.log(`🌐 Frontend corriendo en: http://localhost:${PORT}`);
+  console.log(`📁 Carpeta base: ${__dirname}`);
 });

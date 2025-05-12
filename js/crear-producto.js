@@ -8,10 +8,6 @@ import {
 } from "./admin-utils.js";
 import { API_BASE } from "./config.js";
 
-// 🔐 Seguridad
-const token = verificarSesion();
-const user = getUsuarioActivo();
-
 // 🔗 Endpoints
 const API_PRODUCTS = `${API_BASE}/api/products`;
 const API_CATEGORIES = `${API_BASE}/api/categories`;
@@ -30,10 +26,17 @@ const msgEstado = document.getElementById("msgEstado");
 
 let variantes = [];
 let categoriasConSubcategorias = [];
+let token = "";
+let user = null;
 
 // ▶️ Init
 document.addEventListener("DOMContentLoaded", async () => {
   try {
+    token = await verificarSesion();
+    user = getUsuarioActivo();
+
+    if (!token || !user) throw new Error("Sesión inválida");
+
     await cargarCategorias();
     agregarVariante();
 
@@ -41,7 +44,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.body.classList.add("modo-oscuro");
     }
   } catch (err) {
-    mostrarMensaje("❌ Error durante la carga inicial", "error");
+    console.error("❌ Error inicial:", err);
+    mostrarMensaje("❌ Error al iniciar. Redirigiendo...", "error");
+    setTimeout(() => (window.location.href = "/login.html"), 1500);
   }
 });
 
