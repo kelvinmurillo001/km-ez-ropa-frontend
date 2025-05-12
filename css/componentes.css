@@ -75,7 +75,7 @@ body.modo-oscuro .section-title {
   align-items: center;
 }
 
-/* 🖼️ Imagen responsiva dentro de componente */
+/* 🖼️ Imagen dentro de componente */
 .component-img {
   max-width: 100%;
   border-radius: 6px;
@@ -97,8 +97,104 @@ body.modo-oscuro .section-title {
   border-radius: 6px;
 }
 
+/* === 🔝 ENCABEZADO PRINCIPAL === */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: background-color 0.3s ease;
+}
+
+body.modo-oscuro .main-header {
+  background-color: #1e1e1e;
+}
+
+/* 📸 Logo y texto */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo img {
+  height: 48px;
+  width: auto;
+  border-radius: 6px;
+}
+
+.brand-text h1 {
+  font-size: 1.25rem;
+  color: #ff6d00;
+  margin-bottom: 0;
+}
+
+.brand-text p {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+body.modo-oscuro .brand-text p {
+  color: #ccc;
+}
+
+/* 🔗 Navegación */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-links a {
+  color: #333;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: #ff6d00;
+}
+
+body.modo-oscuro .nav-links a {
+  color: #eee;
+}
+
+#modoOscuroBtn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+#modoOscuroBtn:hover {
+  transform: scale(1.1);
+}
+
 /* 📱 Responsive */
 @media (max-width: 768px) {
+  .main-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+
+  .nav-links {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+  }
+
+  .brand-text p {
+    display: none;
+  }
+
   .flex-container {
     flex-direction: column;
   }
