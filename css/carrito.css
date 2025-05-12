@@ -1,161 +1,129 @@
-/* === 🛒 CONTENEDOR PRINCIPAL DEL CARRITO === */
+/* === 🛒 ESTILOS ESPECÍFICOS PARA EL CARRITO === */
+
+/* Contenedor principal del carrito */
 .carrito-container {
-  background-color: #ffffff;
-  color: #1e1e1e;
-  max-width: 1000px;
+  max-width: 960px;
   margin: 2rem auto;
-  padding: 2rem;
-  border-radius: 14px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  font-family: 'Segoe UI', sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  padding: 1rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: background 0.3s ease;
 }
 
-body.modo-oscuro .carrito-container {
-  background-color: #1e1e1e;
-  color: #f0f0f0;
-  border: 1px solid #333;
-  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.05);
-}
-
-/* === 🛒 TÍTULO === */
-.carrito-container h2 {
-  text-align: center;
+/* Título principal */
+.carrito-container h1 {
   font-size: 2rem;
+  color: #ff6d00;
   margin-bottom: 1.5rem;
+}
+
+/* Lista de productos */
+.carrito-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Resumen del carrito */
+.carrito-resumen {
+  border-top: 2px solid #eee;
+  margin-top: 2rem;
+  padding-top: 1rem;
+}
+
+.carrito-resumen h2 {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.carrito-resumen span {
+  font-weight: bold;
   color: #ff6d00;
 }
 
-.carrito-vacio {
-  text-align: center;
-  font-size: 1.1rem;
-  margin: 1.5rem 0;
-  color: #777;
-}
-
-body.modo-oscuro .carrito-vacio {
-  color: #ccc;
-}
-
-/* === 🧾 LISTA DE PRODUCTOS === */
-.producto-carrito {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 0;
-  border-bottom: 1px solid #ddd;
-}
-
-body.modo-oscuro .producto-carrito {
-  border-color: #444;
-}
-
-.producto-carrito img {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  background: #f9f9f9;
-}
-
-body.modo-oscuro .producto-carrito img {
-  border-color: #555;
-  background: #2a2a2a;
-}
-
-.info-producto {
-  flex: 1;
-}
-
-.info-producto h4 {
-  margin: 0;
-  font-size: 1.1rem;
-}
-
-.info-producto p {
-  margin: 0.2rem 0;
-  color: #555;
-  font-size: 0.95rem;
-}
-
-body.modo-oscuro .info-producto p {
-  color: #ccc;
-}
-
-/* === 💰 PRECIO TOTAL === */
-.carrito-total {
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: right;
-  margin-top: 1.5rem;
-  color: #009688;
-}
-
-body.modo-oscuro .carrito-total {
-  color: #26d7c4;
-}
-
-/* === 🔘 BOTONES === */
+/* Botones del carrito */
 .botones-carrito {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   gap: 1rem;
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
-.botones-carrito .btn {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
+/* === Iconos flotantes (Carrito + WhatsApp) === */
+.floating-buttons {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 1000;
+}
+
+.floating-buttons a {
+  background: white;
+  border-radius: 50%;
+  padding: 0.6rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: background 0.3s ease;
+}
+
+.floating-buttons a:hover {
+  background: #ff6d00;
+}
+
+.cart-icon span {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 50%;
   font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-  border: none;
-  transition: all 0.2s ease;
 }
 
-.btn-vaciar {
-  background-color: #ff6d00;
-  color: white;
+/* === Modo oscuro === */
+body.modo-oscuro .carrito-container {
+  background-color: #1e1e1e;
+  color: #f5f5f5;
 }
 
-.btn-vaciar:hover {
-  background-color: #e65c00;
+body.modo-oscuro .carrito-resumen h2 {
+  color: #f5f5f5;
 }
 
-.btn-continuar {
-  background-color: #2196f3;
-  color: white;
+body.modo-oscuro .carrito-resumen span {
+  color: #ffa726;
 }
 
-.btn-continuar:hover {
-  background-color: #1976d2;
+body.modo-oscuro .floating-buttons a {
+  background: #333;
 }
 
-.btn-finalizar {
-  background-color: #4caf50;
-  color: white;
+body.modo-oscuro .floating-buttons a:hover {
+  background: #ffa726;
 }
 
-.btn-finalizar:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-/* === 📱 RESPONSIVE === */
+/* === Responsive === */
 @media (max-width: 768px) {
-  .producto-carrito {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .carrito-total {
-    text-align: center;
+  .carrito-container {
+    padding: 1rem 0.8rem;
   }
 
   .botones-carrito {
     flex-direction: column;
+    align-items: stretch;
+  }
+
+  .floating-buttons {
+    right: 0.5rem;
+    bottom: 0.5rem;
   }
 }

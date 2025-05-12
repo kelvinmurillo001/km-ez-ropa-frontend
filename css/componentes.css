@@ -1,210 +1,105 @@
-/* === 🌟 COMPONENTES REUTILIZABLES === */
+/* === 🧩 COMPONENTES REUTILIZABLES === */
 
-/* 🎯 ENCABEZADOS Y SECCIONES */
-h1, h2, h3, h4 {
-  color: #1e1e1e;
-  font-weight: 700;
-  margin-bottom: 1rem;
+/* 🔲 Tarjeta básica */
+.card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  padding: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-body.modo-oscuro h1,
-body.modo-oscuro h2,
-body.modo-oscuro h3,
-body.modo-oscuro h4 {
-  color: #f4f4f4;
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.1);
 }
 
-.section {
-  margin: 2rem auto;
-  padding: 1.5rem 1rem;
-  max-width: 1100px;
-}
-
-/* 🔘 BOTONES DINÁMICOS */
-.btn-google {
-  display: inline-block;
-  padding: 0.75rem 1.2rem;
-  background-color: #4285f4;
-  color: #fff;
-  border-radius: 6px;
-  font-weight: bold;
-  text-align: center;
-  text-decoration: none;
-  transition: background-color 0.2s ease;
-}
-
-.btn-google:hover {
-  background-color: #357ae8;
-}
-
-.btn-agregar {
-  display: inline-block;
-  padding: 0.8rem 1.3rem;
-  background-color: #ff6d00;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.btn-agregar:hover {
-  background-color: #e65c00;
-  transform: translateY(-1px);
-}
-
-/* 🖼️ GALERÍA MINIATURAS */
-.galeria-mini {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 1rem;
-}
-
-.mini-img {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border: 2px solid transparent;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: border 0.2s ease, transform 0.2s ease;
-}
-
-.mini-img:hover {
-  border-color: #ff6d00;
-  transform: scale(1.05);
-}
-
-/* 🧭 NAVEGACIÓN PRINCIPAL */
-.nav-links {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-
-.nav-links a,
-.nav-links button {
-  font-weight: 600;
-  color: #333;
-  background: transparent;
-  border: none;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.nav-links a:hover,
-.nav-links button:hover {
-  color: #ff6d00;
-}
-
-body.modo-oscuro .nav-links a,
-body.modo-oscuro .nav-links button {
-  color: #ddd;
-}
-
-body.modo-oscuro .nav-links a:hover,
-body.modo-oscuro .nav-links button:hover {
-  color: #f4d35e;
-}
-
-/* 🛒 BOTÓN CARRITO FLOTANTE */
-.cart-icon {
-  position: relative;
-  display: inline-block;
-  padding: 0.4rem;
-  background-color: white;
-  border-radius: 50%;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s ease;
-}
-
-.cart-icon:hover {
-  transform: scale(1.05);
-}
-
-.cart-icon img {
-  width: 28px;
-  height: 28px;
-}
-
-.cart-icon span {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  background-color: #ff6d00;
-  color: white;
-  font-size: 0.75rem;
-  padding: 2px 6px;
-  border-radius: 50%;
-  font-weight: bold;
-}
-
-/* 💬 REDES SOCIALES */
-.redes-sociales {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.btn-compartir {
-  background-color: #e0e0e0;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  color: #222;
-  font-weight: bold;
-  text-decoration: none;
-  transition: background-color 0.2s ease;
-}
-
-.btn-compartir:hover {
-  background-color: #d0d0d0;
-}
-
-body.modo-oscuro .btn-compartir {
-  background-color: #2a2a2a;
+body.modo-oscuro .card {
+  background-color: #1e1e1e;
   color: #eee;
 }
 
-body.modo-oscuro .btn-compartir:hover {
-  background-color: #3a3a3a;
+/* 💬 Etiqueta / Badge */
+.badge {
+  display: inline-block;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  background-color: #ff6d00;
+  color: white;
+  border-radius: 50px;
+  text-transform: uppercase;
 }
 
-/* 📋 LISTA ESTÁNDAR */
-.lista-simple {
-  list-style: disc inside;
-  padding-left: 1rem;
+.badge.secundario {
+  background-color: #999;
+}
+
+body.modo-oscuro .badge.secundario {
+  background-color: #444;
+}
+
+/* 🧭 Separador visual */
+.divider {
+  height: 1px;
+  background-color: #e0e0e0;
+  margin: 1.5rem 0;
+}
+
+body.modo-oscuro .divider {
+  background-color: #333;
+}
+
+/* 🔠 Encabezado de sección */
+.section-title {
+  font-size: 1.75rem;
   margin-bottom: 1rem;
+  border-left: 6px solid #ff6d00;
+  padding-left: 0.5rem;
+  color: #1e1e1e;
 }
 
-/* 🔘 SWITCH MODOS (botón 🌙) */
-#modoOscuroBtn {
-  background: none;
-  border: none;
-  font-size: 1.3rem;
-  cursor: pointer;
-  transition: transform 0.2s ease;
+body.modo-oscuro .section-title {
+  color: #eee;
 }
 
-#modoOscuroBtn:hover {
-  transform: rotate(20deg);
+/* 📦 Contenedor flexible */
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-body.modo-oscuro #modoOscuroBtn {
-  color: #f4d35e;
+.flex-center {
+  justify-content: center;
+  align-items: center;
 }
 
-/* 📤 FOOTER */
-.site-footer {
-  text-align: center;
-  font-size: 0.9rem;
-  padding: 1rem;
-  margin-top: 2rem;
-  color: #666;
+/* 🖼️ Imagen responsiva dentro de componente */
+.component-img {
+  max-width: 100%;
+  border-radius: 6px;
+  object-fit: cover;
 }
 
-body.modo-oscuro .site-footer {
-  color: #aaa;
+/* ✅ Estados */
+.estado-exito {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+}
+
+.estado-error {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .flex-container {
+    flex-direction: column;
+  }
 }
