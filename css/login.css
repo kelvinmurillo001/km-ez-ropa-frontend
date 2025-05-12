@@ -1,51 +1,22 @@
-:root {
-  --color-bg: #121212;
-  --color-fg: #f5f5f5;
-  --color-accent: #d4af37;
-  --color-accent-hover: #f4d35e;
-  --color-error: #cc0000;
-  --color-error-bg: #4a1212;
-  --color-error-text: #ffc1c1;
-  --color-input-bg: #292929;
-  --color-input-border: #444;
-  --color-modal-bg: #1f1f1f;
-  --color-google: #4285f4;
-  --color-google-hover: #3367d6;
-  --color-shadow: rgba(212, 175, 55, 0.25);
-  --color-white: #fff;
-}
-
-body {
-  background-color: var(--color-bg);
-  color: var(--color-fg);
-  font-family: 'Segoe UI', sans-serif;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-  line-height: 1.5;
-}
-
+/* === 🎨 ESTILO PARA FORMULARIOS DE LOGIN / RESET === */
 .login-container {
-  max-width: 400px;
-  width: 90%;
-  background-color: #1a1a1a;
+  max-width: 420px;
+  margin: 4rem auto;
   padding: 2rem;
-  border-radius: 14px;
-  box-shadow: 0 0 24px var(--color-shadow);
-  animation: fadeIn 0.4s ease-in-out;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  color: #1f1f1f;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.login-container h1 {
-  text-align: center;
-  color: var(--color-accent);
-  margin-bottom: 1.5rem;
-  font-size: 1.6rem;
-  letter-spacing: 0.5px;
+body.modo-oscuro .login-container {
+  background-color: #1b1b1b;
+  color: #f0f0f0;
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
 }
 
+/* === 📋 FORMULARIO === */
 .formulario {
   display: flex;
   flex-direction: column;
@@ -53,189 +24,109 @@ body {
 }
 
 .formulario input {
-  background-color: var(--color-input-bg);
-  color: var(--color-white);
-  border: 1px solid var(--color-input-border);
-  padding: 0.85rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 1rem;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  appearance: none;
+  outline: none;
+  transition: border 0.2s ease;
 }
 
 .formulario input:focus {
-  outline: none;
-  border-color: var(--color-accent);
-  box-shadow: 0 0 5px rgba(212, 175, 55, 0.4);
+  border-color: #ff6d00;
 }
 
-input[aria-invalid="true"] {
-  border-color: var(--color-error) !important;
-  box-shadow: 0 0 4px rgba(255, 0, 0, 0.4);
+body.modo-oscuro .formulario input {
+  background-color: #2a2a2a;
+  color: #f9f9f9;
+  border-color: #444;
 }
 
-/* === BOTONES === */
-.btn,
-.btn-secundario {
-  padding: 0.85rem 1.3rem;
-  font-size: 1rem;
+body.modo-oscuro .formulario input:focus {
+  border-color: #ff6d00;
+}
+
+/* === 🔘 BOTONES === */
+.formulario button.btn,
+.btn {
+  padding: 0.75rem;
+  background-color: #ff6d00;
+  color: #fff;
+  border: none;
   border-radius: 8px;
   font-weight: bold;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-  letter-spacing: 0.3px;
-  display: block;
-  width: 100%;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-.btn {
-  background-color: var(--color-accent);
-  color: var(--color-bg);
-  border: none;
-}
-
+.formulario button.btn:hover,
 .btn:hover {
-  background-color: var(--color-accent-hover);
-  transform: translateY(-1px);
+  background-color: #e65c00;
+  transform: translateY(-2px);
 }
 
 .btn-secundario {
-  background-color: transparent;
-  color: var(--color-accent);
-  border: 2px solid var(--color-accent);
-  margin-top: 0.5rem;
+  background-color: #ccc;
+  color: #222;
 }
 
-.btn-secundario:hover {
-  background-color: var(--color-accent);
-  color: var(--color-bg);
-  transform: translateY(-1px);
+body.modo-oscuro .btn-secundario {
+  background-color: #444;
+  color: #fff;
 }
 
-/* === LOGIN GOOGLE === */
+/* === 📧 Google Button === */
 .btn-google {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  background-color: var(--color-google);
-  color: white;
-  padding: 0.6em 1.2em;
+  display: inline-block;
+  padding: 0.6rem 1rem;
+  background-color: #ffffff;
+  color: #333;
+  font-weight: 600;
+  border: 2px solid #4285f4;
+  border-radius: 8px;
   text-decoration: none;
-  border-radius: 4px;
-  font-weight: bold;
-  transition: background-color 0.2s;
-  margin-top: 10px;
+  transition: all 0.25s ease;
 }
 
 .btn-google:hover {
-  background-color: var(--color-google-hover);
+  background-color: #f1f1f1;
+  color: #000;
 }
 
-.btn-google::before {
-  content: "";
-  background: url("https://developers.google.com/identity/images/g-logo.png") no-repeat center center;
-  background-size: contain;
-  width: 20px;
-  height: 20px;
-  display: inline-block;
+/* === 🧾 MENSAJE DE ESTADO === */
+.form-msg {
+  font-size: 0.95rem;
+  font-weight: 500;
 }
 
-/* === MENSAJE DE ERROR === */
-#errorMensaje {
-  background-color: var(--color-error-bg);
-  color: var(--color-error-text);
-  padding: 0.8rem;
-  border-radius: 8px;
-  text-align: center;
-  display: none;
+.form-msg.success {
+  color: limegreen;
+}
+
+.form-msg.error {
+  color: tomato;
+}
+
+.form-msg.warn {
+  color: orange;
+}
+
+.mensaje-error {
+  font-size: 0.9rem;
   font-weight: bold;
-  border: 1px solid var(--color-error);
+  color: red;
 }
 
-#errorMensaje.shake {
-  animation: shake 0.3s ease-in-out;
-}
-
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  50% { transform: translateX(5px); }
-  75% { transform: translateX(-5px); }
-  100% { transform: translateX(0); }
-}
-
-/* === MODAL RECUPERACIÓN === */
-.modal-recuperar {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-  animation: fadeIn 0.3s ease;
-}
-
-.modal-contenido {
-  background-color: var(--color-modal-bg);
-  padding: 2rem;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 400px;
-  text-align: center;
-  box-shadow: 0 0 14px rgba(0, 0, 0, 0.3);
-}
-
-.modal-contenido input {
-  width: 100%;
-  padding: 0.8rem;
-  margin-top: 1rem;
-  border-radius: 8px;
-  border: none;
-  background-color: var(--color-input-bg);
-  color: white;
-  font-size: 1rem;
-}
-
-.modal-contenido input:focus {
-  outline: none;
-  box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
-  border: 1px solid var(--color-accent);
-}
-
-.modal-botones {
-  margin-top: 1.5rem;
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-
-/* === UTILIDADES === */
-.oculto {
-  display: none !important;
-}
-
-/* === ANIMACIÓN === */
-.fade-in {
-  animation: fadeIn 0.5s ease-in;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+/* === RESPONSIVE === */
+@media (max-width: 480px) {
+  .login-container {
+    margin: 2rem 1rem;
+    padding: 1.5rem;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
-/* ♿ Reducir movimiento */
-@media (prefers-reduced-motion: reduce) {
-  .fade-in, .btn, .btn:hover, .btn-google, .btn-google:hover {
-    animation: none !important;
-    transition: none !important;
+  .btn,
+  .btn-google {
+    font-size: 0.95rem;
   }
 }
