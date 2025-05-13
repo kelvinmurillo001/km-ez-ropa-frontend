@@ -31,7 +31,7 @@
 
 <body lang="es" class="con-fondo fade-in">
 
-  <!-- ✅ Mensaje flotante global -->
+  <!-- ✅ Mensaje flotante accesible -->
   <div id="adminMensaje" class="admin-message oculto" role="status" aria-live="assertive"></div>
 
   <main class="login-container fade-in" role="main" aria-labelledby="tituloLogin">
@@ -79,14 +79,13 @@
 
       <!-- 🔐 Login con Google -->
       <div class="text-center mt-3">
-        <a 
-          id="googleLoginBtn"
-          href="https://api.kmezropacatalogo.com/auth/google" 
-          class="btn-google"
-          rel="noopener noreferrer"
+        <button 
+          type="button" 
+          id="googleLoginBtn" 
+          class="btn-google" 
           aria-label="Iniciar sesión con Google">
           🔐 Iniciar sesión con Google
-        </a>
+        </button>
       </div>
 
       <!-- Mensaje de error -->
@@ -111,14 +110,14 @@
     </form>
   </main>
 
-  <!-- ⚠️ Sin JS Warning -->
+  <!-- ⚠️ Fallback si JS está desactivado -->
   <noscript>
     <div role="alert" style="text-align: center; color: red; font-weight: bold;">
       ⚠️ JavaScript debe estar habilitado para iniciar sesión.
     </div>
   </noscript>
 
-  <!-- 🌙 Activación Modo Oscuro + Volver -->
+  <!-- 🌙 Modo oscuro y volver -->
   <script type="module">
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("modoOscuro") === "true") {
@@ -128,10 +127,15 @@
       document.getElementById("volverInicioBtn")?.addEventListener("click", () => {
         window.location.href = "/";
       });
+
+      // Google login (reenvío directo)
+      document.getElementById("googleLoginBtn")?.addEventListener("click", () => {
+        window.location.href = "https://api.kmezropacatalogo.com/auth/google";
+      });
     });
   </script>
 
-  <!-- 🔐 Lógica principal de inicio -->
+  <!-- 🔐 Script principal de login -->
   <script type="module" src="/js/login.js"></script>
 </body>
 </html>

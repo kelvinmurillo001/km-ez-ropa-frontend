@@ -22,7 +22,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!form || !btnSubmit || !inputUser || !inputPass) return;
 
-  // ▶️ Manejar envío del formulario
+  /**
+   * ▶️ Manejar envío del formulario
+   */
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -41,16 +43,14 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ username, password })
       });
 
       const result = await res.json();
 
-      if (!res.ok) {
+      if (!res.ok || !result?.data?.user || !result?.data?.accessToken) {
         const msg =
           res.status === 400
             ? "⚠️ Datos inválidos enviados."
@@ -63,24 +63,18 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const token = result.accessToken || result.data?.accessToken;
-      const user = result.user || result.data?.user;
+      const token = result.data.accessToken;
+      const user = result.data.user;
 
-      if (!token || !user) {
-        mostrarMensaje("❌ No se recibió sesión válida del servidor.", "error");
-        return;
-      }
-
-      // ✅ Guardar token y usuario
+      // ✅ Guardar token y usuario en localStorage
       localStorage.setItem(STORAGE_KEYS.token, token);
       localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(user));
 
       mostrarMensaje("✅ Acceso concedido. Redirigiendo...", "success");
 
-      setTimeout(() => {
-        const destino = user.role === "admin" ? "/panel.html" : "/cliente.html";
-        window.location.href = destino;
-      }, 1200);
+      // 🟢 Redireccionar por rol
+      const destino = user.role === "admin" ? "/panel.html" : "/cliente.html";
+      setTimeout(() => (window.location.href = destino), 1000);
     } catch (error) {
       console.error("❌ Error de red:", error);
       mostrarMensaje("❌ No se pudo conectar al servidor.", "error");
@@ -90,7 +84,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ⌨️ Presionar Enter en inputs también envía el formulario
+  /**
+   * ⌨️ Permitir envío al presionar Enter
+   */
   form.querySelectorAll("input").forEach((input) => {
     input.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
@@ -100,16 +96,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 🔐 Botón de acceso con Google
-  if (googleBtn) {
-    googleBtn.addEventListener("click", () => {
-      window.location.href = GOOGLE_LOGIN_URL;
-    });
-  }
+  /**
+   * 🔐 Iniciar sesión con Google
+   */
+  googleBtn?.addEventListener("click", () => {
+    window.location.href = GOOGLE_LOGIN_URL;
+  });
 });
 
 /**
- * 💬 Mostrar mensaje accesible
+ * 💬 Muestra mensaje accesible
  */
 function mostrarMensaje(texto, tipo = "info") {
   const box = document.getElementById("adminMensaje");
@@ -124,5 +120,5 @@ function mostrarMensaje(texto, tipo = "info") {
   clearTimeout(box._timeout);
   box._timeout = setTimeout(() => {
     box.classList.add("oculto");
-  }, 4000);
+  }, 4500);
 }

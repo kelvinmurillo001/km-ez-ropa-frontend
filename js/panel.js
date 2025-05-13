@@ -11,15 +11,18 @@ import {
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    await verificarSesion(); // 🔐 Verificación segura vía backend
+    // 🔐 Verificar sesión segura
+    await verificarSesion();
+
     const user = getUsuarioActivo();
-    mostrarBienvenida(user.name || user.username || "Administrador");
+    mostrarBienvenida(user?.name || user?.username || "Administrador");
+
     await cargarProductos();
     configurarLogout();
   } catch (err) {
-    console.error("❌ Error al verificar sesión:", err.message);
-    mostrarMensaje("❌ Error de sesión. Intenta iniciar sesión de nuevo.", "error");
-    window.location.href = "/login.html";
+    console.error("❌ Error de sesión:", err.message);
+    mostrarMensaje("❌ Sesión inválida. Redirigiendo...", "error");
+    setTimeout(() => (window.location.href = "/login.html"), 1500);
   }
 });
 
@@ -28,17 +31,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 /* ───────────────────────────────────────────── */
 function mostrarBienvenida(nombre) {
   const saludo = document.getElementById("adminSaludo");
-  if (saludo) saludo.textContent = `👋 Bienvenido, ${sanitize(nombre)}`;
+  if (saludo) {
+    saludo.textContent = `👋 Bienvenido, ${sanitize(nombre)}`;
+  }
 }
 
 /* ───────────────────────────────────────────── */
-/* 📦 Cargar productos protegidos por token      */
+/* 📦 Cargar productos protegidos                */
 /* ───────────────────────────────────────────── */
 async function cargarProductos() {
   const contenedor = document.getElementById("listaProductos");
   if (!contenedor) return;
 
   contenedor.innerHTML = `<p>⏳ Cargando productos...</p>`;
+
   const token = localStorage.getItem("admin_token");
 
   if (!token) {
@@ -54,12 +60,14 @@ async function cargarProductos() {
     const data = await res.json();
 
     if (res.status === 401 || res.status === 403) {
-      mostrarMensaje("⛔ Acceso no autorizado. Redirigiendo al login...", "error");
+      mostrarMensaje("⛔ Acceso no autorizado. Redirigiendo...", "error");
       setTimeout(() => (window.location.href = "/login.html"), 1500);
       return;
     }
 
-    if (!res.ok) throw new Error(data.message || "Error cargando productos");
+    if (!res.ok) {
+      throw new Error(data.message || "Error desconocido al obtener productos.");
+    }
 
     if (!Array.isArray(data.productos) || data.productos.length === 0) {
       contenedor.innerHTML = `<p>📭 No hay productos registrados.</p>`;
@@ -67,34 +75,39 @@ async function cargarProductos() {
     }
 
     contenedor.innerHTML = "";
-    data.productos.forEach((prod) => {
-      const card = document.createElement("div");
-      card.className = "producto-card";
-      card.innerHTML = `
-        <h3>${sanitize(prod.name)}</h3>
-        <p>💲 ${prod.price ? `$${parseFloat(prod.price).toFixed(2)}` : "--"}</p>
-        <p>📦 ${sanitize(prod.category || "Sin categoría")}</p>
-        <p>⭐ ${prod.featured ? "Destacado" : "Normal"}</p>
-      `;
-      contenedor.appendChild(card);
-    });
+    data.productos.forEach(renderProductoCard(contenedor));
   } catch (err) {
-    console.error("❌ Error cargando productos:", err);
-    mostrarMensaje("❌ Error cargando productos. Verifica conexión.", "error");
+    console.error("❌ Error al obtener productos:", err);
     contenedor.innerHTML = `<p style="color:red;">❌ ${sanitize(err.message)}</p>`;
+    mostrarMensaje("❌ No se pudieron cargar los productos.", "error");
   }
 }
 
+/**
+ * 📄 Renderiza tarjeta de producto
+ */
+function renderProductoCard(contenedor) {
+  return (producto) => {
+    const card = document.createElement("div");
+    card.className = "producto-card";
+    card.innerHTML = `
+      <h3>${sanitize(producto.name)}</h3>
+      <p>💲 ${producto.price ? `$${parseFloat(producto.price).toFixed(2)}` : "--"}</p>
+      <p>📦 ${sanitize(producto.category || "Sin categoría")}</p>
+      <p>⭐ ${producto.featured ? "Destacado" : "Normal"}</p>
+    `;
+    contenedor.appendChild(card);
+  };
+}
+
 /* ───────────────────────────────────────────── */
-/* 🚪 Cerrar sesión con confirmación             */
+/* 🚪 Configurar botón de logout                 */
 /* ───────────────────────────────────────────── */
 function configurarLogout() {
-  const btnLogout =
-    document.getElementById("btnLogout") ||
-    document.getElementById("btnCerrarSesion");
-  if (!btnLogout) return;
+  const btn = document.getElementById("btnLogout") || document.getElementById("btnCerrarSesion");
+  if (!btn) return;
 
-  btnLogout.addEventListener("click", () => {
+  btn.addEventListener("click", () => {
     if (confirm("¿Estás seguro de cerrar sesión?")) {
       cerrarSesion();
     }
@@ -102,10 +115,10 @@ function configurarLogout() {
 }
 
 /* ───────────────────────────────────────────── */
-/* 🧼 Sanitizar texto para evitar XSS            */
+/* 🧼 Sanitizador básico                         */
 /* ───────────────────────────────────────────── */
 function sanitize(text = "") {
   const div = document.createElement("div");
-  div.textContent = text;
+  div.textContent = String(text);
   return div.innerHTML.trim();
 }

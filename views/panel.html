@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🎛️ Panel Administrativo | KM & EZ ROPA</title>
 
-  <!-- 🔐 Seguridad y SEO -->
+  <!-- 🔒 Seguridad y SEO -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="author" content="KM & EZ ROPA" />
   <meta name="description" content="Administra productos, pedidos, categorías, promociones y estadísticas desde el panel privado de KM & EZ ROPA." />
   <meta name="theme-color" content="#ff6d00" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
 
   <!-- 🎨 Estilos -->
@@ -28,10 +29,11 @@
 
   <!-- 🎛️ Contenedor principal del panel -->
   <main class="panel-container fade-in" role="main" aria-label="Área de administración">
-    
+
     <!-- 👤 Encabezado -->
     <header class="header-panel" role="banner">
       <h1 class="text-center">🎛️ Panel de Administración</h1>
+      <p id="adminSaludo" class="text-center mt-1" aria-live="polite"></p>
       <button id="btnCerrarSesion" class="btn-secundario" aria-label="Cerrar sesión del administrador">
         🚪 Cerrar Sesión
       </button>
@@ -48,7 +50,7 @@
     </nav>
   </main>
 
-  <!-- 🌙 Aplicación de modo oscuro si está activo -->
+  <!-- 🌙 Modo oscuro -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("modoOscuro") === "true") {
@@ -57,23 +59,33 @@
     });
   </script>
 
-  <!-- 🔐 Verificación de sesión y cierre -->
+  <!-- 🔐 Verificación de sesión y bienvenida -->
   <script type="module">
-    import { verificarSesion, cerrarSesion } from "/js/admin-utils.js";
+    import { verificarSesion, cerrarSesion, getUsuarioActivo, mostrarMensaje } from "/js/admin-utils.js";
 
-    verificarSesion();
-
-    document.getElementById("btnCerrarSesion")?.addEventListener("click", () => {
-      if (confirm("¿Estás seguro de cerrar sesión?")) {
-        cerrarSesion();
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        await verificarSesion();
+        const user = getUsuarioActivo();
+        const saludo = document.getElementById("adminSaludo");
+        if (saludo && user?.name) {
+          saludo.textContent = `👋 Bienvenido, ${user.name}`;
+        }
+      } catch (err) {
+        mostrarMensaje("⚠️ Acceso denegado. Redirigiendo...", "error");
+        setTimeout(() => window.location.href = "/login.html", 1200);
       }
+
+      document.getElementById("btnCerrarSesion")?.addEventListener("click", () => {
+        if (confirm("¿Estás seguro de cerrar sesión?")) cerrarSesion();
+      });
     });
   </script>
 
-  <!-- ⚠️ Fallback si JavaScript está desactivado -->
+  <!-- ⚠️ Sin JavaScript -->
   <noscript>
     <p style="text-align: center; color: red;">
-      ⚠️ Esta página requiere JavaScript para funcionar correctamente.
+      ⚠️ Esta página requiere JavaScript activado para funcionar correctamente.
     </p>
   </noscript>
 
