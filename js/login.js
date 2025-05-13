@@ -41,14 +41,16 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         credentials: "include",
         body: JSON.stringify({ username, password })
       });
 
       const result = await res.json();
 
-      if (!res.ok || !result?.data?.user || !result?.data?.accessToken) {
+      if (!res.ok) {
         const msg =
           res.status === 400
             ? "⚠️ Datos inválidos enviados."
@@ -61,27 +63,23 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // ✅ Guardar token y usuario usando STORAGE_KEYS
-      localStorage.setItem(STORAGE_KEYS.token, result.data.accessToken);
-      localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(result.data.user));
+      const token = result.accessToken || result.data?.accessToken;
+      const user = result.user || result.data?.user;
+
+      if (!token || !user) {
+        mostrarMensaje("❌ No se recibió sesión válida del servidor.", "error");
+        return;
+      }
+
+      // ✅ Guardar token y usuario
+      localStorage.setItem(STORAGE_KEYS.token, token);
+      localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(user));
 
       mostrarMensaje("✅ Acceso concedido. Redirigiendo...", "success");
 
       setTimeout(() => {
-        const role = result.data.user?.role;
-
-        if (!role) {
-          mostrarMensaje("⚠️ No se pudo determinar el rol del usuario.", "error");
-          return;
-        }
-
-        if (role === "admin") {
-          window.location.href = "/panel.html";
-        } else if (role === "client") {
-          window.location.href = "/cliente.html";
-        } else {
-          mostrarMensaje("⛔ Rol no reconocido. Contacta al soporte.", "error");
-        }
+        const destino = user.role === "admin" ? "/panel.html" : "/cliente.html";
+        window.location.href = destino;
       }, 1200);
     } catch (error) {
       console.error("❌ Error de red:", error);
