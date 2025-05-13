@@ -41,9 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ username, password })
       });
@@ -70,9 +68,20 @@ document.addEventListener("DOMContentLoaded", () => {
       mostrarMensaje("✅ Acceso concedido. Redirigiendo...", "success");
 
       setTimeout(() => {
-        const role = result.data.user?.role || "client";
-        const destino = role === "admin" ? "/panel.html" : "/cliente.html";
-        window.location.href = destino;
+        const role = result.data.user?.role;
+
+        if (!role) {
+          mostrarMensaje("⚠️ No se pudo determinar el rol del usuario.", "error");
+          return;
+        }
+
+        if (role === "admin") {
+          window.location.href = "/panel.html";
+        } else if (role === "client") {
+          window.location.href = "/cliente.html";
+        } else {
+          mostrarMensaje("⛔ Rol no reconocido. Contacta al soporte.", "error");
+        }
       }, 1200);
     } catch (error) {
       console.error("❌ Error de red:", error);
