@@ -7,11 +7,10 @@
 
   <!-- 🔐 Seguridad y SEO -->
   <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src https://api.kmezropacatalogo.com;">
-
-  <meta name="description" content="Revisa el historial de tus pedidos en KM & EZ ROPA, su estado y detalles de cada compra." />
+        content="default-src 'self'; style-src 'self' https://fonts.googleapis.com; script-src 'self' https://www.googletagmanager.com; img-src 'self' data:; connect-src https://api.kmezropacatalogo.com;">
   <meta name="robots" content="noindex, nofollow" />
   <meta name="theme-color" content="#ff6d00" />
+  <meta name="description" content="Revisa el historial de tus pedidos en KM & EZ ROPA, su estado y detalles de cada compra." />
 
   <!-- 🎨 Estilos -->
   <link rel="stylesheet" href="/css/global.css" />
@@ -19,73 +18,75 @@
   <link rel="stylesheet" href="/css/fondo.css" />
   <link rel="stylesheet" href="/css/cliente.css" />
 
-  <!-- 🚀 Scripts -->
+  <!-- 🚀 Scripts Deferidos -->
   <script type="module" src="/js/cliente.js" defer></script>
   <script type="module" src="/js/modoOscuro.js" defer></script>
+
   <!-- ✅ Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-BNWNNFDCC3"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag(){ dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'G-BNWNNFDCC3');
   </script>
 </head>
 
-<body>
-<!-- 🧭 Encabezado -->
-<header class="main-header" role="banner">
-  <div class="logo">
-    <a href="/" aria-label="Ir al inicio">
-      <img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" />
-    </a>
-    <div class="brand">
-      <h1>KM & EZ ROPA</h1>
-      <p>Tu historial de compras</p>
+<body lang="es" class="con-fondo fade-in">
+
+  <!-- 🧭 Encabezado de navegación -->
+  <header class="main-header" role="banner">
+    <div class="logo">
+      <a href="/" aria-label="Ir al inicio">
+        <img src="/assets/logo.jpg" alt="Logo KM & EZ ROPA" />
+      </a>
+      <div class="brand">
+        <h1>KM & EZ ROPA</h1>
+        <p>Tu historial de compras</p>
+      </div>
     </div>
-  </div>
 
-  <nav class="nav-links" role="navigation" aria-label="Menú principal">
-    <a href="/index.html" aria-label="Ir al inicio">🏠 Inicio</a>
-    <a href="/carrito.html" aria-label="Ir al carrito">🛒 Carrito</a>
-    <button id="modoOscuroBtn" class="btn-secundario" aria-label="Cambiar a modo oscuro o claro">🌙</button>
-    <button id="cerrarSesionBtn" class="btn-secundario" aria-label="Cerrar sesión de usuario">🚪 Cerrar Sesión</button>
-  </nav>
-</header>
+    <nav class="nav-links" role="navigation" aria-label="Menú principal">
+      <a href="/index.html" aria-label="Ir al inicio">🏠 Inicio</a>
+      <a href="/carrito.html" aria-label="Ir al carrito">🛒 Carrito</a>
+      <button id="modoOscuroBtn" class="btn-secundario" aria-label="Alternar modo oscuro o claro">🌙</button>
+      <button id="cerrarSesionBtn" class="btn-secundario" aria-label="Cerrar sesión de usuario">🚪 Cerrar Sesión</button>
+    </nav>
+  </header>
 
-<!-- 📋 Contenido Principal -->
-<main class="cliente-container fade-in" role="main" aria-label="Panel de usuario">
-  <h2 id="saludoUsuario" class="text-center">👤 Bienvenido</h2>
+  <!-- 📋 Contenido principal -->
+  <main class="cliente-container fade-in" role="main" aria-label="Panel de usuario">
+    <h2 id="saludoUsuario" class="text-center">👤 Bienvenido</h2>
 
-  <!-- 🔎 Filtro de estado -->
-  <div class="filtros-pedidos mt-2 text-center" role="region" aria-label="Filtrar por estado de pedido">
-    <label for="filtroEstado">Filtrar por estado:</label>
-    <select id="filtroEstado" name="estado">
-      <option value="">Todos</option>
-      <option value="pendiente">⏳ Pendiente</option>
-      <option value="preparando">🛠️ Preparando</option>
-      <option value="enviado">🚚 Enviado</option>
-      <option value="entregado">✅ Entregado</option>
-      <option value="cancelado">❌ Cancelado</option>
-    </select>
-  </div>
-
-  <!-- 📦 Pedidos -->
-  <section class="mis-pedidos mt-3" aria-labelledby="tituloPedidos">
-    <h3 id="tituloPedidos" class="text-center">📦 Tus Pedidos</h3>
-    <div id="listaPedidos" class="lista-pedidos mt-2" aria-live="polite">
-      <p class="text-center">⏳ Cargando pedidos...</p>
+    <!-- 🔎 Filtro de estado de pedidos -->
+    <div class="filtros-pedidos mt-2 text-center" role="region" aria-label="Filtrar por estado de pedido">
+      <label for="filtroEstado">Filtrar por estado:</label>
+      <select id="filtroEstado" name="estado">
+        <option value="">Todos</option>
+        <option value="pendiente">⏳ Pendiente</option>
+        <option value="preparando">🛠️ Preparando</option>
+        <option value="enviado">🚚 Enviado</option>
+        <option value="entregado">✅ Entregado</option>
+        <option value="cancelado">❌ Cancelado</option>
+      </select>
     </div>
-  </section>
-</main>
 
-<!-- 🔔 Mensajes -->
-<div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
+    <!-- 🧾 Listado de pedidos -->
+    <section class="mis-pedidos mt-3" aria-labelledby="tituloPedidos">
+      <h3 id="tituloPedidos" class="text-center">📦 Tus Pedidos</h3>
+      <div id="listaPedidos" class="lista-pedidos mt-2" aria-live="polite">
+        <p class="text-center">⏳ Cargando pedidos...</p>
+      </div>
+    </section>
+  </main>
 
-<!-- ⚠️ JavaScript requerido -->
-<noscript>
-  <p style="text-align: center; color:red;">⚠️ Activa JavaScript para ver tus pedidos correctamente.</p>
-</noscript>
+  <!-- 🔔 Sistema de mensajes -->
+  <div id="adminMensaje" class="admin-message oculto" role="alert" aria-live="assertive"></div>
+
+  <!-- ⚠️ Fallback para JavaScript deshabilitado -->
+  <noscript>
+    <p style="text-align: center; color:red;">⚠️ Activa JavaScript para ver tus pedidos correctamente.</p>
+  </noscript>
 
 </body>
 </html>

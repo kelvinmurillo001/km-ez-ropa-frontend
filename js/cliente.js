@@ -3,12 +3,13 @@
 import { API_BASE } from "./config.js";
 import { mostrarMensaje } from "./sesion-utils.js";
 
-// 📌 Referencias DOM
+// 📌 Elementos del DOM
 const listaPedidos = document.getElementById("listaPedidos");
 const saludo = document.getElementById("saludoUsuario");
 const cerrarSesionBtn = document.getElementById("cerrarSesionBtn");
 const filtroEstado = document.getElementById("filtroEstado");
 
+// Endpoints
 const API_ME = `${API_BASE}/auth/me`;
 const API_PEDIDOS = `${API_BASE}/api/orders/mis-pedidos`;
 
@@ -17,21 +18,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (!usuario) {
     mostrarMensaje("🔒 Sesión no iniciada. Redirigiendo...", "error");
-    setTimeout(() => window.location.href = "/login.html", 1500);
+    setTimeout(() => (window.location.href = "/login.html"), 1500);
     return;
   }
 
   if (saludo) {
-    saludo.textContent = `👤 Hola, ${sanitize(usuario.name)}`;
+    saludo.textContent = `👤 Hola, ${sanitize(usuario.name || usuario.username || "Cliente")}`;
   }
 
   await cargarPedidos();
 
   cerrarSesionBtn?.addEventListener("click", async () => {
     try {
-      await fetch(`${API_BASE}/auth/logout`, {
-        credentials: "include"
-      });
+      await fetch(`${API_BASE}/auth/logout`, { credentials: "include" });
     } catch (err) {
       console.warn("⚠️ Error al cerrar sesión:", err);
     } finally {
@@ -43,8 +42,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 /**
- * 🔐 Obtiene la sesión activa del usuario
- * @returns {object|null}
+ * 🔐 Obtiene los datos del usuario autenticado
+ * @returns {Promise<object|null>}
  */
 async function obtenerUsuario() {
   try {
@@ -58,7 +57,7 @@ async function obtenerUsuario() {
 }
 
 /**
- * 📦 Cargar los pedidos del usuario autenticado
+ * 📦 Cargar pedidos del usuario
  */
 async function cargarPedidos() {
   if (!listaPedidos) return;
@@ -81,6 +80,7 @@ async function cargarPedidos() {
       ? pedidos.map(renderPedidoHTML).join("")
       : `<p class="text-center">📭 No hay pedidos con ese estado.</p>`;
 
+    // Agregar eventos a botones
     document.querySelectorAll(".ver-detalles").forEach(btn => {
       btn.addEventListener("click", e => {
         const id = e.currentTarget.closest(".pedido-card")?.dataset?.id;
@@ -95,8 +95,8 @@ async function cargarPedidos() {
 }
 
 /**
- * 🧾 Renderiza HTML de un pedido individual
- * @param {object} p - Objeto del pedido
+ * 🧾 Genera el HTML de un pedido
+ * @param {object} p - Pedido
  * @returns {string}
  */
 function renderPedidoHTML(p) {
@@ -112,14 +112,16 @@ function renderPedidoHTML(p) {
       <p><strong>Pedido:</strong> #${id}</p>
       <p><strong>Fecha:</strong> ${fecha}</p>
       <p><strong>Total:</strong> ${total}</p>
-      <p><strong>Estado:</strong> <span class="estado-${sanitize(p.estado || "otro")}">${estado}</span></p>
+      <p><strong>Estado:</strong> 
+        <span class="estado-${sanitize(p.estado || "otro")}">${estado}</span>
+      </p>
       <button class="btn-secundario ver-detalles">👁️ Ver Detalles</button>
     </div>
   `;
 }
 
 /**
- * 🔁 Traduce estado técnico a formato legible
+ * 🔁 Traduce un estado técnico en una representación legible
  * @param {string} e
  * @returns {string}
  */
@@ -136,7 +138,7 @@ function traducirEstado(e = "") {
 }
 
 /**
- * 🧼 Sanitiza texto plano contra XSS
+ * 🧼 Escapa texto para evitar XSS
  * @param {string} text
  * @returns {string}
  */
