@@ -1,6 +1,6 @@
 "use strict";
 
-import { API_BASE, GOOGLE_LOGIN_URL } from "./config.js";
+import { API_BASE, GOOGLE_LOGIN_URL, STORAGE_KEYS } from "./config.js";
 
 /**
  * 🔐 Sanitiza entradas básicas para evitar XSS
@@ -15,12 +15,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const inputPass = form?.password;
   const googleBtn = document.getElementById("googleLoginBtn");
 
+  // 🌙 Modo oscuro persistente
   if (localStorage.getItem("modoOscuro") === "true") {
     document.body.classList.add("modo-oscuro");
   }
 
   if (!form || !btnSubmit || !inputUser || !inputPass) return;
 
+  // ▶️ Manejar envío del formulario
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -48,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const result = await res.json();
 
-      if (!res.ok || !result?.user) {
+      if (!res.ok || !result?.data?.user || !result?.data?.accessToken) {
         const msg =
           res.status === 400
             ? "⚠️ Datos inválidos enviados."
@@ -61,12 +63,15 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      localStorage.setItem("admin_user", JSON.stringify(result.user));
+      // ✅ Guardar token y usuario usando STORAGE_KEYS
+      localStorage.setItem(STORAGE_KEYS.token, result.data.accessToken);
+      localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(result.data.user));
+
       mostrarMensaje("✅ Acceso concedido. Redirigiendo...", "success");
 
       setTimeout(() => {
-        const role = result.user?.role || "client";
-        const destino = role === "admin" ? "/admin.html" : "/cliente.html";
+        const role = result.data.user?.role || "client";
+        const destino = role === "admin" ? "/panel.html" : "/cliente.html";
         window.location.href = destino;
       }, 1200);
     } catch (error) {
@@ -78,6 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // ⌨️ Presionar Enter en inputs también envía el formulario
   form.querySelectorAll("input").forEach((input) => {
     input.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
@@ -87,6 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // 🔐 Botón de acceso con Google
   if (googleBtn) {
     googleBtn.addEventListener("click", () => {
       window.location.href = GOOGLE_LOGIN_URL;

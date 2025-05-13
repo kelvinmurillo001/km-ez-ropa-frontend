@@ -114,19 +114,24 @@
   <!-- 🌙 Activación Modo Oscuro + Lógica de inicio -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+      // 🌙 Modo oscuro persistente
       if (localStorage.getItem("modoOscuro") === "true") {
         document.body.classList.add("modo-oscuro");
       }
 
+      // 🔙 Botón volver al inicio
       document.getElementById("volverInicioBtn")?.addEventListener("click", () => {
         window.location.href = "/";
       });
 
+      // 🔐 Formulario de inicio de sesión
       document.getElementById("formLogin")?.addEventListener("submit", async (e) => {
         e.preventDefault();
         const username = document.getElementById("username").value.trim();
         const password = document.getElementById("password").value.trim();
         const errorDiv = document.getElementById("errorMensaje");
+        errorDiv.style.display = "none";
+        errorDiv.textContent = "";
 
         try {
           if (!username || !password) {
@@ -136,18 +141,22 @@
           const response = await fetch("https://api.kmezropacatalogo.com/api/auth/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ usuario: username, password })
+            body: JSON.stringify({ username, password })
           });
 
           const result = await response.json();
 
-          if (response.ok && result?.success) {
-            const rol = result?.user?.role || "client";
-            const destino = rol === "admin" ? "/admin.html" : "/cliente.html";
+          if (response.ok && result?.ok) {
+            const token = result.data.accessToken;
+            const user = result.data.user;
+
+            localStorage.setItem("token", token);
+            localStorage.setItem("user", JSON.stringify(user));
+
+            const destino = user.role === "admin" ? "/admin.html" : "/cliente.html";
             window.location.href = destino;
           } else {
-            throw new Error(result.message || "Credenciales inválidas.");
+            throw new Error(result.message || "❌ Credenciales inválidas.");
           }
         } catch (error) {
           errorDiv.style.display = "block";

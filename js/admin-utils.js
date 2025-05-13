@@ -1,5 +1,7 @@
 "use strict";
 
+import { STORAGE_KEYS } from "./config.js";
+
 /**
  * 🔐 Verifica que exista una sesión válida de administrador.
  * Redirige automáticamente si no es válida o no es admin.
@@ -8,8 +10,8 @@
 export function verificarSesion() {
   return new Promise((resolve, reject) => {
     try {
-      const token = localStorage.getItem("admin_token");
-      const rawUser = localStorage.getItem("admin_user");
+      const token = localStorage.getItem(STORAGE_KEYS.token);
+      const rawUser = localStorage.getItem(STORAGE_KEYS.user);
 
       if (!token || token.length < 20 || !rawUser) {
         throw new Error("Token o usuario inválido");
@@ -35,12 +37,13 @@ export function verificarSesion() {
  */
 export function cerrarSesion() {
   try {
-    localStorage.removeItem("admin_token");
-    localStorage.removeItem("admin_user");
+    localStorage.removeItem(STORAGE_KEYS.token);
+    localStorage.removeItem(STORAGE_KEYS.user);
     sessionStorage.clear();
 
-    // Elimina refreshToken si existe
+    // Elimina cualquier cookie de sesión (ej: refreshToken)
     document.cookie = "refreshToken=; Max-Age=0; path=/; Secure; SameSite=Strict;";
+    
     window.location.href = "/login.html";
   } catch (err) {
     console.error("❌ Error al cerrar sesión:", err);
@@ -86,7 +89,7 @@ export function mostrarMensaje(texto, tipo = "info") {
  */
 export function getUsuarioActivo() {
   try {
-    const raw = localStorage.getItem("admin_user");
+    const raw = localStorage.getItem(STORAGE_KEYS.user);
     const user = JSON.parse(raw);
     if (typeof user === "object" && user && user.username) {
       return user;

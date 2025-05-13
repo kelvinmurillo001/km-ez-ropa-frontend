@@ -1,14 +1,23 @@
 // 🌐 Detectar entorno actual
 const hostname = (window?.location?.hostname || "").toLowerCase();
-const isLocalhost = hostname.includes("localhost") || hostname.includes("127.0.0.1");
+export const IS_LOCALHOST = hostname.includes("localhost") || hostname.includes("127.0.0.1");
 
-// 🌍 Dominio del frontend (uso general)
+// 🌍 Dominio del frontend
 export const FRONTEND_DOMAIN = window.location.origin;
 
-// 🔗 Base URL de la API según entorno
-export const API_BASE = isLocalhost
-  ? "http://localhost:5000"               // 🧪 Local dev
-  : "https://api.kmezropacatalogo.com";   // ✅ Producción
+// 🔗 Base URL de la API
+export const API_BASE = IS_LOCALHOST
+  ? "http://localhost:5000"               // 🧪 Desarrollo local
+  : "https://api.kmezropacatalogo.com";  // ✅ Producción real
 
-// 🔐 URL de login con Google
+// 🔐 URL para iniciar sesión con Google
 export const GOOGLE_LOGIN_URL = `${API_BASE}/auth/google`;
+
+// 📦 Claves estándar para almacenamiento local
+export const STORAGE_KEYS = {
+  token: "admin_token",
+  user: "admin_user"
+};
+
+// ⏱️ Tiempo estándar de expiración de sesión (en minutos)
+export const SESSION_TIMEOUT_MIN = 60;
