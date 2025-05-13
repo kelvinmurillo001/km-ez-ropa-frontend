@@ -23,11 +23,11 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const username = sanitize(inputUser.value.trim().toLowerCase());
+    const userInput = sanitize(inputUser.value.trim());
     const password = sanitize(inputPass.value.trim());
 
-    if (!username || !password) {
-      mostrarMensaje("⚠️ Ingresa tu usuario y contraseña.", "error");
+    if (!userInput || !password) {
+      mostrarMensaje("⚠️ Ingresa tu usuario o correo y contraseña.", "error");
       inputUser.focus();
       return;
     }
@@ -35,12 +35,22 @@ document.addEventListener("DOMContentLoaded", () => {
     btnSubmit.disabled = true;
     btnSubmit.textContent = "🔄 Verificando...";
 
+    // ✨ Determinar si es email o username
+    const esCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userInput);
+    const endpoint = esCorreo
+      ? `${API_BASE}/auth/login-cliente`
+      : `${API_BASE}/api/auth/login`;
+
+    const payload = esCorreo
+      ? { email: userInput.toLowerCase(), password }
+      : { username: userInput.toLowerCase(), password };
+
     try {
-      const res = await fetch(`${API_BASE}/api/auth/login`, {
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify(payload),
       });
 
       const result = await res.json();
@@ -52,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
             : res.status === 401
             ? "🔐 Usuario o contraseña incorrectos."
             : res.status === 403
-            ? "⛔ Acceso denegado. Solo administradores."
+            ? "⛔ Acceso denegado."
             : result.message || "❌ Error inesperado al iniciar sesión.";
         mostrarMensaje(msg, "error");
         return;
@@ -72,7 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
           window.location.assign("/cliente.html");
         }
       }, 1000);
-
     } catch (err) {
       console.error("❌ Error de red:", err);
       mostrarMensaje("❌ No se pudo conectar con el servidor.", "error");

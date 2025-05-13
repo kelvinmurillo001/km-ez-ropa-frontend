@@ -1,7 +1,11 @@
 "use strict";
 
 import { API_BASE } from "./config.js";
-import { mostrarMensaje } from "./sesion-utils.js";
+import {
+  mostrarMensaje,
+  getUsuarioSesionSeguro,
+  cerrarSesionCliente
+} from "./sesion-utils.js";
 
 // 📌 Referencias del DOM
 const listaPedidos = document.getElementById("listaPedidos");
@@ -9,19 +13,14 @@ const saludo = document.getElementById("saludoUsuario");
 const cerrarSesionBtn = document.getElementById("cerrarSesionBtn");
 const filtroEstado = document.getElementById("filtroEstado");
 
-// Endpoints
-const API_ME = `${API_BASE}/auth/me`;
+// Endpoint
 const API_PEDIDOS = `${API_BASE}/api/orders/mis-pedidos`;
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    const usuario = await obtenerUsuario();
-
-    if (!usuario) {
-      mostrarMensaje("🔒 Sesión no iniciada. Redirigiendo...", "error");
-      setTimeout(() => (window.location.href = "/login.html"), 1500);
-      return;
-    }
+    // 🔐 Verificar sesión activa de cliente
+    const usuario = await getUsuarioSesionSeguro();
+    if (!usuario) return;
 
     if (saludo) {
       saludo.textContent = `👤 Hola, ${sanitize(usuario.name || usuario.username || "Cliente")}`;
@@ -29,41 +28,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     await cargarPedidos();
 
-    cerrarSesionBtn?.addEventListener("click", cerrarSesionUsuario);
+    cerrarSesionBtn?.addEventListener("click", cerrarSesionCliente);
     filtroEstado?.addEventListener("change", cargarPedidos);
   } catch (error) {
     console.error("❌ Error general en cliente.js:", error);
     mostrarMensaje("❌ Ocurrió un error inesperado.", "error");
   }
 });
-
-/**
- * 🔐 Obtiene los datos del usuario autenticado
- * @returns {Promise<object|null>}
- */
-async function obtenerUsuario() {
-  try {
-    const res = await fetch(API_ME, { credentials: "include" });
-    const data = await res.json();
-    return res.ok ? data.user : null;
-  } catch (err) {
-    console.error("❌ Error al obtener usuario:", err);
-    return null;
-  }
-}
-
-/**
- * 🚪 Cierra sesión de forma segura
- */
-async function cerrarSesionUsuario() {
-  try {
-    await fetch(`${API_BASE}/auth/logout`, { credentials: "include" });
-  } catch (err) {
-    console.warn("⚠️ Error al cerrar sesión:", err);
-  } finally {
-    window.location.href = "/login.html";
-  }
-}
 
 /**
  * 📦 Carga y renderiza los pedidos del usuario
@@ -124,7 +95,7 @@ function renderPedidoHTML(p) {
 }
 
 /**
- * 🧭 Asocia eventos de click a los botones de ver detalles
+ * 🧭 Asocia eventos a los botones de ver detalles
  */
 function agregarEventosDetalles() {
   document.querySelectorAll(".ver-detalles").forEach(btn => {
@@ -153,7 +124,7 @@ function traducirEstado(estado = "") {
 }
 
 /**
- * 🧼 Escapa texto para prevenir XSS
+ * 🧼 Previene XSS escapando texto
  * @param {string} text
  * @returns {string}
  */
