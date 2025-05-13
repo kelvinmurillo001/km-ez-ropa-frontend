@@ -73,13 +73,14 @@
 
       <!-- 🔐 Login con Google -->
       <div class="text-center mt-3">
-        <button 
-          type="button" 
+        <a 
           id="googleLoginBtn"
+          href="https://api.kmezropacatalogo.com/auth/google" 
           class="btn-google"
+          rel="noopener noreferrer"
           aria-label="Iniciar sesión con Google">
           🔐 Iniciar sesión con Google
-        </button>
+        </a>
       </div>
 
       <!-- Mensaje de error -->
@@ -111,7 +112,20 @@
     </div>
   </noscript>
 
-  <!-- 🌙 Activación Modo Oscuro + Lógica -->
+  <!-- 🌙 Modo oscuro y lógica externa -->
+  <script type="module">
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("modoOscuro") === "true") {
+        document.body.classList.add("modo-oscuro");
+      }
+
+      document.getElementById("volverInicioBtn")?.addEventListener("click", () => {
+        window.location.href = "/";
+      });
+    });
+  </script>
+  
+  <!-- Carga el login mejorado -->
   <script type="module" src="/js/login.js"></script>
 </body>
 </html>
