@@ -19,6 +19,12 @@
   <link rel="stylesheet" href="/css/login.css" />
   <link rel="stylesheet" href="/css/adminMensaje.css" />
 
+  <!-- ✅ Google Fonts preload + fallback -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" as="style" onload="this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap">
+  </noscript>
+
   <!-- ✅ Google Sign-In -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -112,7 +118,7 @@
     </div>
   </noscript>
 
-  <!-- 🌙 Modo oscuro y lógica externa -->
+  <!-- 🌙 Activación Modo Oscuro + volverInicio -->
   <script type="module">
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("modoOscuro") === "true") {
@@ -124,8 +130,8 @@
       });
     });
   </script>
-  
-  <!-- Carga el login mejorado -->
+
+  <!-- 🔐 Lógica principal de inicio -->
   <script type="module" src="/js/login.js"></script>
 </body>
 </html>
