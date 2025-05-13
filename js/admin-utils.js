@@ -4,8 +4,8 @@ import { STORAGE_KEYS } from "./config.js";
 
 /**
  * 🔐 Verifica que exista una sesión válida de administrador.
- * Redirige automáticamente si no es válida o no es admin.
- * Devuelve el token si todo está correcto.
+ * Si la sesión no es válida o el usuario no es admin, redirige al login.
+ * @returns {Promise<string>} - El token de sesión si es válido.
  */
 export function verificarSesion() {
   return new Promise((resolve, reject) => {
@@ -33,7 +33,8 @@ export function verificarSesion() {
 }
 
 /**
- * 🔚 Cerrar sesión completa
+ * 🔚 Cierra completamente la sesión del usuario.
+ * Limpia el almacenamiento local, la sesión y cookies.
  */
 export function cerrarSesion() {
   try {
@@ -41,9 +42,9 @@ export function cerrarSesion() {
     localStorage.removeItem(STORAGE_KEYS.user);
     sessionStorage.clear();
 
-    // Elimina cualquier cookie de sesión (ej: refreshToken)
+    // Elimina cookies relacionadas (como refreshToken si fue seteado por el backend)
     document.cookie = "refreshToken=; Max-Age=0; path=/; Secure; SameSite=Strict;";
-    
+
     window.location.href = "/login.html";
   } catch (err) {
     console.error("❌ Error al cerrar sesión:", err);
@@ -52,22 +53,22 @@ export function cerrarSesion() {
 }
 
 /**
- * 🔙 Regresar a la página anterior
+ * 🔙 Regresa a la página anterior del historial.
  */
 export function goBack() {
   window.history.back();
 }
 
 /**
- * 💬 Muestra un mensaje accesible en el panel admin
- * @param {string} texto - Texto del mensaje
- * @param {"info" | "success" | "error"} tipo - Tipo de mensaje
+ * 💬 Muestra un mensaje de sistema visible para el administrador.
+ * @param {string} texto - Contenido del mensaje.
+ * @param {"info" | "success" | "error"} tipo - Tipo de alerta.
  */
 export function mostrarMensaje(texto, tipo = "info") {
   const box = document.getElementById("adminMensaje");
 
   if (!box) {
-    alert(texto); // Fallback si no existe el DOM aún
+    alert(texto); // Fallback si no hay contenedor visible.
     return;
   }
 
@@ -84,14 +85,14 @@ export function mostrarMensaje(texto, tipo = "info") {
 }
 
 /**
- * 👤 Obtener datos del usuario activo
- * @returns {object|null}
+ * 👤 Obtiene los datos del usuario activo desde el localStorage.
+ * @returns {object|null} - Objeto de usuario o null si no hay sesión válida.
  */
 export function getUsuarioActivo() {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.user);
     const user = JSON.parse(raw);
-    if (typeof user === "object" && user && user.username) {
+    if (user && typeof user === "object" && user.username) {
       return user;
     }
     return null;

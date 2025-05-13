@@ -3,7 +3,7 @@
 import { API_BASE } from "./config.js";
 import { mostrarMensaje } from "./sesion-utils.js";
 
-// 📌 DOM Elements
+// 📌 Referencias DOM
 const listaPedidos = document.getElementById("listaPedidos");
 const saludo = document.getElementById("saludoUsuario");
 const cerrarSesionBtn = document.getElementById("cerrarSesionBtn");
@@ -21,24 +21,30 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  if (saludo) saludo.textContent = `👤 Hola, ${sanitize(usuario.name)}`;
+  if (saludo) {
+    saludo.textContent = `👤 Hola, ${sanitize(usuario.name)}`;
+  }
 
   await cargarPedidos();
 
   cerrarSesionBtn?.addEventListener("click", async () => {
     try {
-      await fetch(`${API_BASE}/auth/logout`, { credentials: "include" });
-    } catch (e) {
-      console.warn("⚠️ Error al cerrar sesión:", e);
+      await fetch(`${API_BASE}/auth/logout`, {
+        credentials: "include"
+      });
+    } catch (err) {
+      console.warn("⚠️ Error al cerrar sesión:", err);
+    } finally {
+      window.location.href = "/login.html";
     }
-    window.location.href = "/login.html";
   });
 
   filtroEstado?.addEventListener("change", cargarPedidos);
 });
 
 /**
- * 🔐 Obtener datos del usuario autenticado
+ * 🔐 Obtiene la sesión activa del usuario
+ * @returns {object|null}
  */
 async function obtenerUsuario() {
   try {
@@ -52,7 +58,7 @@ async function obtenerUsuario() {
 }
 
 /**
- * 📦 Cargar pedidos del usuario
+ * 📦 Cargar los pedidos del usuario autenticado
  */
 async function cargarPedidos() {
   if (!listaPedidos) return;
@@ -89,12 +95,16 @@ async function cargarPedidos() {
 }
 
 /**
- * 🧾 Renderiza HTML de un pedido
+ * 🧾 Renderiza HTML de un pedido individual
+ * @param {object} p - Objeto del pedido
+ * @returns {string}
  */
 function renderPedidoHTML(p) {
-  const fecha = p.createdAt ? new Date(p.createdAt).toLocaleDateString("es-EC") : "--";
+  const fecha = p.createdAt
+    ? new Date(p.createdAt).toLocaleDateString("es-EC")
+    : "--";
   const estado = traducirEstado(p.estado);
-  const total = `$${p.total?.toFixed(2) || "0.00"}`;
+  const total = `$${parseFloat(p.total || 0).toFixed(2)}`;
   const id = p._id?.slice(-6)?.toUpperCase() || "XXXXXX";
 
   return `
@@ -102,14 +112,16 @@ function renderPedidoHTML(p) {
       <p><strong>Pedido:</strong> #${id}</p>
       <p><strong>Fecha:</strong> ${fecha}</p>
       <p><strong>Total:</strong> ${total}</p>
-      <p><strong>Estado:</strong> <span class="estado-${sanitize(p.estado || 'otro')}">${estado}</span></p>
+      <p><strong>Estado:</strong> <span class="estado-${sanitize(p.estado || "otro")}">${estado}</span></p>
       <button class="btn-secundario ver-detalles">👁️ Ver Detalles</button>
     </div>
   `;
 }
 
 /**
- * 🔁 Traduce estado técnico a uno legible
+ * 🔁 Traduce estado técnico a formato legible
+ * @param {string} e
+ * @returns {string}
  */
 function traducirEstado(e = "") {
   const estados = {
@@ -124,7 +136,9 @@ function traducirEstado(e = "") {
 }
 
 /**
- * 🧼 Sanitiza texto plano
+ * 🧼 Sanitiza texto plano contra XSS
+ * @param {string} text
+ * @returns {string}
  */
 function sanitize(text = "") {
   const div = document.createElement("div");
