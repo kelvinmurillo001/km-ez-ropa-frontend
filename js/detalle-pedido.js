@@ -1,22 +1,32 @@
 "use strict";
 
 import { API_BASE } from "./config.js";
-import { verificarSesion, mostrarMensaje } from "./admin-utils.js";
+import {
+  getUsuarioSesionSeguro,
+  mostrarMensaje,
+  cerrarSesionCliente
+} from "./sesion-utils.js";
 
-const token = verificarSesion();
 const pedidoId = new URLSearchParams(window.location.search).get("id");
 const container = document.getElementById("pedidoDetalle");
 let pedidoActual = null;
 
-document.addEventListener("DOMContentLoaded", () => {
-  if (!pedidoId || pedidoId.length < 8) {
-    mostrarError("❌ Pedido no válido.");
-    return;
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const usuario = await getUsuarioSesionSeguro(); // ✅ solo clientes logueados
+
+    if (!usuario || !pedidoId || pedidoId.length < 8) {
+      mostrarError("❌ Pedido no válido o sesión no activa.");
+      return;
+    }
+
+    await cargarDetallePedido();
+
+    document.getElementById("descargarPdfBtn")?.addEventListener("click", generarPDF);
+  } catch (err) {
+    console.error("❌ Error en DOMContentLoaded:", err);
+    mostrarError("❌ Error al cargar los datos.");
   }
-
-  cargarDetallePedido();
-
-  document.getElementById("descargarPdfBtn")?.addEventListener("click", generarPDF);
 });
 
 /**
@@ -25,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 async function cargarDetallePedido() {
   try {
     const res = await fetch(`${API_BASE}/api/orders/${pedidoId}`, {
-      headers: { Authorization: `Bearer ${token}` }
+      credentials: "include" // ✅ cookies de sesión
     });
 
     const data = await res.json();
@@ -135,7 +145,7 @@ async function generarPDF() {
 }
 
 /**
- * 💬 Traducir estado técnico
+ * 🔁 Traducir estado técnico
  */
 function traducirEstado(e = "") {
   const estados = {
