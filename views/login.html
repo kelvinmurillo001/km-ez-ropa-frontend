@@ -153,7 +153,7 @@
             localStorage.setItem("token", token);
             localStorage.setItem("user", JSON.stringify(user));
 
-            const destino = user.role === "admin" ? "/admin.html" : "/cliente.html";
+            const destino = user.role === "admin" ? "/panel.html" : "/cliente.html";
             window.location.href = destino;
           } else {
             throw new Error(result.message || "❌ Credenciales inválidas.");
