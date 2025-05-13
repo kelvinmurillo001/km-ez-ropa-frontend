@@ -3,7 +3,7 @@
 import { API_BASE } from "./config.js";
 import { mostrarMensaje } from "./sesion-utils.js";
 
-// 📌 Elementos del DOM
+// 📌 Referencias del DOM
 const listaPedidos = document.getElementById("listaPedidos");
 const saludo = document.getElementById("saludoUsuario");
 const cerrarSesionBtn = document.getElementById("cerrarSesionBtn");
@@ -14,31 +14,27 @@ const API_ME = `${API_BASE}/auth/me`;
 const API_PEDIDOS = `${API_BASE}/api/orders/mis-pedidos`;
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const usuario = await obtenerUsuario();
+  try {
+    const usuario = await obtenerUsuario();
 
-  if (!usuario) {
-    mostrarMensaje("🔒 Sesión no iniciada. Redirigiendo...", "error");
-    setTimeout(() => (window.location.href = "/login.html"), 1500);
-    return;
-  }
-
-  if (saludo) {
-    saludo.textContent = `👤 Hola, ${sanitize(usuario.name || usuario.username || "Cliente")}`;
-  }
-
-  await cargarPedidos();
-
-  cerrarSesionBtn?.addEventListener("click", async () => {
-    try {
-      await fetch(`${API_BASE}/auth/logout`, { credentials: "include" });
-    } catch (err) {
-      console.warn("⚠️ Error al cerrar sesión:", err);
-    } finally {
-      window.location.href = "/login.html";
+    if (!usuario) {
+      mostrarMensaje("🔒 Sesión no iniciada. Redirigiendo...", "error");
+      setTimeout(() => (window.location.href = "/login.html"), 1500);
+      return;
     }
-  });
 
-  filtroEstado?.addEventListener("change", cargarPedidos);
+    if (saludo) {
+      saludo.textContent = `👤 Hola, ${sanitize(usuario.name || usuario.username || "Cliente")}`;
+    }
+
+    await cargarPedidos();
+
+    cerrarSesionBtn?.addEventListener("click", cerrarSesionUsuario);
+    filtroEstado?.addEventListener("change", cargarPedidos);
+  } catch (error) {
+    console.error("❌ Error general en cliente.js:", error);
+    mostrarMensaje("❌ Ocurrió un error inesperado.", "error");
+  }
 });
 
 /**
@@ -57,11 +53,25 @@ async function obtenerUsuario() {
 }
 
 /**
- * 📦 Cargar pedidos del usuario
+ * 🚪 Cierra sesión de forma segura
+ */
+async function cerrarSesionUsuario() {
+  try {
+    await fetch(`${API_BASE}/auth/logout`, { credentials: "include" });
+  } catch (err) {
+    console.warn("⚠️ Error al cerrar sesión:", err);
+  } finally {
+    window.location.href = "/login.html";
+  }
+}
+
+/**
+ * 📦 Carga y renderiza los pedidos del usuario
  */
 async function cargarPedidos() {
   if (!listaPedidos) return;
 
+  listaPedidos.innerHTML = `<p class="text-center">⏳ Cargando pedidos...</p>`;
   const estadoFiltro = filtroEstado?.value?.trim().toLowerCase();
 
   try {
@@ -72,22 +82,15 @@ async function cargarPedidos() {
       throw new Error(data.message || "❌ No se pudieron cargar los pedidos.");
     }
 
-    const pedidos = estadoFiltro
+    const pedidosFiltrados = estadoFiltro
       ? data.pedidos.filter(p => (p.estado || "").toLowerCase() === estadoFiltro)
       : data.pedidos;
 
-    listaPedidos.innerHTML = pedidos.length
-      ? pedidos.map(renderPedidoHTML).join("")
+    listaPedidos.innerHTML = pedidosFiltrados.length
+      ? pedidosFiltrados.map(renderPedidoHTML).join("")
       : `<p class="text-center">📭 No hay pedidos con ese estado.</p>`;
 
-    // Agregar eventos a botones
-    document.querySelectorAll(".ver-detalles").forEach(btn => {
-      btn.addEventListener("click", e => {
-        const id = e.currentTarget.closest(".pedido-card")?.dataset?.id;
-        if (id) window.location.href = `/detalle-pedido.html?id=${id}`;
-      });
-    });
-
+    agregarEventosDetalles();
   } catch (err) {
     console.error("❌ Error al cargar pedidos:", err);
     listaPedidos.innerHTML = `<p class="text-center" style="color:red;">❌ ${sanitize(err.message)}</p>`;
@@ -95,7 +98,7 @@ async function cargarPedidos() {
 }
 
 /**
- * 🧾 Genera el HTML de un pedido
+ * 🧾 Renderiza el HTML de un pedido
  * @param {object} p - Pedido
  * @returns {string}
  */
@@ -121,11 +124,23 @@ function renderPedidoHTML(p) {
 }
 
 /**
- * 🔁 Traduce un estado técnico en una representación legible
- * @param {string} e
+ * 🧭 Asocia eventos de click a los botones de ver detalles
+ */
+function agregarEventosDetalles() {
+  document.querySelectorAll(".ver-detalles").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      const id = e.currentTarget.closest(".pedido-card")?.dataset?.id;
+      if (id) window.location.href = `/detalle-pedido.html?id=${id}`;
+    });
+  });
+}
+
+/**
+ * 🔁 Traduce estado técnico a texto legible
+ * @param {string} estado
  * @returns {string}
  */
-function traducirEstado(e = "") {
+function traducirEstado(estado = "") {
   const estados = {
     pendiente: "⏳ Pendiente",
     procesando: "🛠️ Procesando",
@@ -134,11 +149,11 @@ function traducirEstado(e = "") {
     entregado: "📬 Entregado",
     cancelado: "❌ Cancelado"
   };
-  return estados[e.toLowerCase()] || "🔘 Otro";
+  return estados[estado.toLowerCase()] || "🔘 Otro";
 }
 
 /**
- * 🧼 Escapa texto para evitar XSS
+ * 🧼 Escapa texto para prevenir XSS
  * @param {string} text
  * @returns {string}
  */

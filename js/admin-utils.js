@@ -3,9 +3,9 @@
 import { STORAGE_KEYS } from "./config.js";
 
 /**
- * 🔐 Verifica que exista una sesión válida de administrador.
- * Si no es válido o el usuario no es admin, redirige al login.
- * @returns {Promise<string>} Token JWT si es válido.
+ * 🔐 Verifica una sesión activa de administrador.
+ * Si no es válida o el usuario no es admin, redirige al login.
+ * @returns {Promise<string>} JWT válido.
  */
 export function verificarSesion() {
   return new Promise((resolve, reject) => {
@@ -14,18 +14,18 @@ export function verificarSesion() {
       const rawUser = localStorage.getItem(STORAGE_KEYS.user);
 
       if (!token || token.length < 20 || !rawUser) {
-        throw new Error("Token o usuario ausente o inválido.");
+        throw new Error("❌ Token o usuario ausente o inválido.");
       }
 
       const user = JSON.parse(rawUser);
       if (!user || typeof user !== "object" || user.role !== "admin") {
-        throw new Error("Rol no autorizado o formato de usuario inválido.");
+        throw new Error("⛔ Rol no autorizado. Solo administradores.");
       }
 
       resolve(token);
     } catch (error) {
-      console.warn("❌ Verificación fallida:", error.message);
-      mostrarMensaje("⚠️ Acceso denegado. Redirigiendo...", "error");
+      console.warn("🔐 Verificación fallida:", error.message);
+      mostrarMensaje("⚠️ Sesión no válida. Redirigiendo...", "error");
       setTimeout(() => {
         window.location.href = "/login.html";
       }, 1200);
@@ -35,7 +35,7 @@ export function verificarSesion() {
 }
 
 /**
- * 🔚 Cierra completamente la sesión actual.
+ * 🔚 Cierra la sesión actual limpiando datos locales y cookies.
  */
 export function cerrarSesion() {
   try {
@@ -43,7 +43,7 @@ export function cerrarSesion() {
     localStorage.removeItem(STORAGE_KEYS.user);
     sessionStorage.clear();
 
-    // ⚠️ Eliminar cookies del servidor si existen (ej: refreshToken)
+    // 🧹 Elimina posibles cookies del servidor
     document.cookie = "refreshToken=; Max-Age=0; path=/; Secure; SameSite=Strict;";
 
     window.location.href = "/login.html";
@@ -54,22 +54,22 @@ export function cerrarSesion() {
 }
 
 /**
- * 🔙 Vuelve una página atrás en el historial.
+ * 🔁 Vuelve a la página anterior del historial.
  */
 export function goBack() {
   window.history.back();
 }
 
 /**
- * 💬 Muestra un mensaje accesible en el panel administrativo.
- * @param {string} texto - Texto del mensaje.
- * @param {"info" | "success" | "error"} tipo - Tipo visual del mensaje.
+ * 💬 Muestra un mensaje visual accesible para el usuario.
+ * @param {string} texto - Contenido textual.
+ * @param {"info" | "success" | "error"} tipo - Estilo visual.
  */
 export function mostrarMensaje(texto, tipo = "info") {
   const box = document.getElementById("adminMensaje");
 
   if (!box) {
-    alert(texto); // Fallback si el DOM no está listo
+    alert(texto); // fallback básico
     return;
   }
 
@@ -86,8 +86,8 @@ export function mostrarMensaje(texto, tipo = "info") {
 }
 
 /**
- * 👤 Obtiene el usuario activo del almacenamiento local.
- * @returns {object|null} Objeto de usuario o null.
+ * 👤 Devuelve el objeto del usuario activo si está bien formado.
+ * @returns {object|null}
  */
 export function getUsuarioActivo() {
   try {
@@ -95,7 +95,7 @@ export function getUsuarioActivo() {
     const user = JSON.parse(raw);
     return user && typeof user === "object" && user.username ? user : null;
   } catch (err) {
-    console.warn("⚠️ Error parseando datos de usuario:", err);
+    console.warn("⚠️ Error al recuperar el usuario:", err);
     return null;
   }
 }

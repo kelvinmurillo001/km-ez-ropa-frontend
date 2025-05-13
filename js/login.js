@@ -2,9 +2,7 @@
 
 import { API_BASE, GOOGLE_LOGIN_URL, STORAGE_KEYS } from "./config.js";
 
-/**
- * 🔐 Sanitiza entradas básicas para evitar XSS
- */
+// 🔐 Evita XSS en inputs
 const sanitize = (str = "") =>
   str.replace(/[<>"'`;(){}[\]]/g, "").trim();
 
@@ -22,9 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!form || !btnSubmit || !inputUser || !inputPass) return;
 
-  /**
-   * ▶️ Manejar envío del formulario
-   */
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -38,14 +33,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     btnSubmit.disabled = true;
-    btnSubmit.textContent = "🔄 Iniciando...";
+    btnSubmit.textContent = "🔄 Verificando...";
 
     try {
       const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password }),
       });
 
       const result = await res.json();
@@ -63,30 +58,31 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const token = result.data.accessToken;
-      const user = result.data.user;
-
-      // ✅ Guardar token y usuario en localStorage
-      localStorage.setItem(STORAGE_KEYS.token, token);
-      localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(user));
+      // ✅ Guardar token y datos del usuario
+      localStorage.setItem(STORAGE_KEYS.token, result.data.accessToken);
+      localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(result.data.user));
 
       mostrarMensaje("✅ Acceso concedido. Redirigiendo...", "success");
 
-      // 🟢 Redireccionar por rol
-      const destino = user.role === "admin" ? "/panel.html" : "/cliente.html";
-      setTimeout(() => (window.location.href = destino), 1000);
-    } catch (error) {
-      console.error("❌ Error de red:", error);
-      mostrarMensaje("❌ No se pudo conectar al servidor.", "error");
+      setTimeout(() => {
+        const role = result.data.user.role;
+        if (role === "admin") {
+          window.location.assign("/panel.html");
+        } else {
+          window.location.assign("/cliente.html");
+        }
+      }, 1000);
+
+    } catch (err) {
+      console.error("❌ Error de red:", err);
+      mostrarMensaje("❌ No se pudo conectar con el servidor.", "error");
     } finally {
       btnSubmit.disabled = false;
       btnSubmit.textContent = "🔓 Ingresar";
     }
   });
 
-  /**
-   * ⌨️ Permitir envío al presionar Enter
-   */
+  // ⌨️ Enter también activa el formulario
   form.querySelectorAll("input").forEach((input) => {
     input.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
@@ -96,16 +92,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  /**
-   * 🔐 Iniciar sesión con Google
-   */
+  // 🔐 Botón para login con Google
   googleBtn?.addEventListener("click", () => {
     window.location.href = GOOGLE_LOGIN_URL;
   });
 });
 
 /**
- * 💬 Muestra mensaje accesible
+ * 💬 Muestra un mensaje en pantalla accesible y amigable
  */
 function mostrarMensaje(texto, tipo = "info") {
   const box = document.getElementById("adminMensaje");

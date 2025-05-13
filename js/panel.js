@@ -1,7 +1,7 @@
 // 📁 js/panel.js
 "use strict";
 
-import { API_BASE } from "./config.js";
+import { API_BASE, STORAGE_KEYS } from "./config.js";
 import {
   mostrarMensaje,
   cerrarSesion,
@@ -11,8 +11,7 @@ import {
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    // 🔐 Verificar sesión segura
-    await verificarSesion();
+    await verificarSesion(); // 🔐 Sesión segura
 
     const user = getUsuarioActivo();
     mostrarBienvenida(user?.name || user?.username || "Administrador");
@@ -29,7 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 /* ───────────────────────────────────────────── */
 /* 👋 Mostrar saludo personalizado               */
 /* ───────────────────────────────────────────── */
-function mostrarBienvenida(nombre) {
+function mostrarBienvenida(nombre = "Administrador") {
   const saludo = document.getElementById("adminSaludo");
   if (saludo) {
     saludo.textContent = `👋 Bienvenido, ${sanitize(nombre)}`;
@@ -45,16 +44,18 @@ async function cargarProductos() {
 
   contenedor.innerHTML = `<p>⏳ Cargando productos...</p>`;
 
-  const token = localStorage.getItem("admin_token");
-
+  const token = localStorage.getItem(STORAGE_KEYS.token);
   if (!token) {
-    contenedor.innerHTML = `<p style="color:red;">❌ Token de sesión no disponible.</p>`;
+    contenedor.innerHTML = `<p style="color:red;">❌ Token no encontrado.</p>`;
     return;
   }
 
   try {
     const res = await fetch(`${API_BASE}/api/products?limite=50`, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
     });
 
     const data = await res.json();
@@ -66,7 +67,7 @@ async function cargarProductos() {
     }
 
     if (!res.ok) {
-      throw new Error(data.message || "Error desconocido al obtener productos.");
+      throw new Error(data.message || "❌ Error cargando productos.");
     }
 
     if (!Array.isArray(data.productos) || data.productos.length === 0) {
@@ -75,29 +76,29 @@ async function cargarProductos() {
     }
 
     contenedor.innerHTML = "";
-    data.productos.forEach(renderProductoCard(contenedor));
+    data.productos.forEach((producto) => contenedor.appendChild(crearTarjetaProducto(producto)));
   } catch (err) {
-    console.error("❌ Error al obtener productos:", err);
-    contenedor.innerHTML = `<p style="color:red;">❌ ${sanitize(err.message)}</p>`;
-    mostrarMensaje("❌ No se pudieron cargar los productos.", "error");
+    console.error("❌ Error obteniendo productos:", err);
+    mostrarMensaje("❌ Error cargando productos. Intenta más tarde.", "error");
+    contenedor.innerHTML = `<p style="color:red;">${sanitize(err.message)}</p>`;
   }
 }
 
 /**
- * 📄 Renderiza tarjeta de producto
+ * 🧾 Crea un elemento HTML para el producto
+ * @param {object} producto 
+ * @returns {HTMLElement}
  */
-function renderProductoCard(contenedor) {
-  return (producto) => {
-    const card = document.createElement("div");
-    card.className = "producto-card";
-    card.innerHTML = `
-      <h3>${sanitize(producto.name)}</h3>
-      <p>💲 ${producto.price ? `$${parseFloat(producto.price).toFixed(2)}` : "--"}</p>
-      <p>📦 ${sanitize(producto.category || "Sin categoría")}</p>
-      <p>⭐ ${producto.featured ? "Destacado" : "Normal"}</p>
-    `;
-    contenedor.appendChild(card);
-  };
+function crearTarjetaProducto(producto) {
+  const card = document.createElement("div");
+  card.className = "producto-card";
+  card.innerHTML = `
+    <h3>${sanitize(producto.name)}</h3>
+    <p>💲 ${producto.price ? `$${parseFloat(producto.price).toFixed(2)}` : "--"}</p>
+    <p>📦 ${sanitize(producto.category || "Sin categoría")}</p>
+    <p>⭐ ${producto.featured ? "Destacado" : "Normal"}</p>
+  `;
+  return card;
 }
 
 /* ───────────────────────────────────────────── */
@@ -115,7 +116,7 @@ function configurarLogout() {
 }
 
 /* ───────────────────────────────────────────── */
-/* 🧼 Sanitizador básico                         */
+/* 🧼 Sanitizador seguro contra XSS              */
 /* ───────────────────────────────────────────── */
 function sanitize(text = "") {
   const div = document.createElement("div");
